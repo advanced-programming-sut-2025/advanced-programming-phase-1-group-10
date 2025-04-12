@@ -1,4 +1,4 @@
-package src.Models;
+package src.PlayerStuff;
 
 public class Energy {
 }

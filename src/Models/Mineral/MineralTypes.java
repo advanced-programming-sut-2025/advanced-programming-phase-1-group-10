@@ -1,4 +1,4 @@
-package src.Models.Crop;
+package src.Models.Mineral;
 
 public enum MineralTypes {
 }

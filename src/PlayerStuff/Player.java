@@ -1,5 +1,6 @@
-package src.Models;
+package src.PlayerStuff;
 
+import src.Models.Position;
 import src.Models.Tools.BackPack;
 import src.Models.Tools.Tool;
 
@@ -14,8 +15,7 @@ public class Player {
     private Player couple;
     private Tool currentTool;
     private BackPack backPack;
-    private FarmType farmType;
-    //TODO Animals
+
 
 
     private boolean faint;

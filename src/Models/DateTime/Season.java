@@ -1,4 +1,4 @@
-package src.Models;
+package src.Models.DateTime;
 
 public enum Season {
     Spring,

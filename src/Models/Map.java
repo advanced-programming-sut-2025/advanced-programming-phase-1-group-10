@@ -1,4 +1,4 @@
 package src.Models;
 
-public enum FarmType {
+public class Map {
 }

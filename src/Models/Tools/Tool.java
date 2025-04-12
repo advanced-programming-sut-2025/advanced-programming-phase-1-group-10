@@ -1,4 +1,6 @@
 package src.Models.Tools;
 
-public class Tool {
+import src.Models.Item;
+
+public class Tool implements Item {
 }

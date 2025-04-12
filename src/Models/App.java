@@ -1,20 +1,9 @@
 package src.Models;
 
+import java.util.ArrayList;
+
 public class App {
-
-    private Menu currentMenu = Menu.LoginMenu;
-
-    public Menu getCurrentMenu() {
-        return currentMenu;
-    }
-
-    public void setCurrentMenu(Menu currentMenu) {
-        this.currentMenu = currentMenu;
-    }
-
-    public enum Gender {
-        Male,
-        Female,
-        ;
-    }
+    private final Menu currentMenu = Menu.LoginMenu;
+    private ArrayList<User> users;
+    private ArrayList<Game> games;
 }

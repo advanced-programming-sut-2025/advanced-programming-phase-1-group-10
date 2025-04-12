@@ -1,4 +1,4 @@
-package src.Models.Date;
+package src.Models.DateTime;
 
 public class DateTimeManager {
 }
