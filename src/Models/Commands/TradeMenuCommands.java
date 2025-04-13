@@ -1,4 +1,4 @@
 package src.Models.Commands;
 
-public class TradeMenuCommands {
+public class TradeMenuCommands implements Commands {
 }

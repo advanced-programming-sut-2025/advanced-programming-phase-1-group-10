@@ -2,7 +2,7 @@ package src.Models;
 
 import src.Models.DateTime.DateTime;
 import src.Models.Weather.Weather;
-import src.PlayerStuff.Player;
+import src.Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
 

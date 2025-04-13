@@ -1,5 +1,7 @@
 package src.Models.Cooking;
 
+import src.Models.Item;
+
 public enum CookingType {
 
     FRIED_EGG("Fried egg", "1 egg", 50, "", "Starter", 35),

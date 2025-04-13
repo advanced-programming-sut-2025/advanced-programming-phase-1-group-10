@@ -1,5 +1,7 @@
 package src.Models.Animal;
 
-public class Fish {
+import src.Models.Item;
+
+public class Fish implements Item {
     private FishType fishType;
 }

@@ -1,12 +1,12 @@
 package src.Models.DateTime;
 
 public enum DaysOfWeek {
-    Saturday,
-    Sunday,
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
+    SATURDAY,
+    SUNDAY,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
     ;
 }

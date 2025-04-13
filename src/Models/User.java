@@ -1,6 +1,6 @@
 package src.Models;
 
-import src.PlayerStuff.Gender;
+import src.Models.PlayerStuff.Gender;
 
 import java.util.ArrayList;
 

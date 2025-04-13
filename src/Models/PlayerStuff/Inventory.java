@@ -1,4 +1,4 @@
-package src.PlayerStuff;
+package src.Models.PlayerStuff;
 
 import src.Models.Tools.BackPack;
 

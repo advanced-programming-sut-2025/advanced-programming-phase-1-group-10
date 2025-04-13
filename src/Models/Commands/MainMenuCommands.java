@@ -1,4 +1,4 @@
 package src.Models.Commands;
 
-public class MainMenuCommands {
+public class MainMenuCommands implements Commands {
 }
