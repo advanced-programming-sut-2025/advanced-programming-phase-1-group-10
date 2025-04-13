@@ -1,6 +1,8 @@
 package src.Models.NPC;
 
-public class NPC {
+import src.Models.Person;
+
+public class NPC implements Person {
     String name;
 
 }

@@ -8,4 +8,11 @@ public class DateTime {
     private int day;
     private int hour;
 
+    public void nextDay(){}
+    public void nextMonth(){}
+    public void nextYear(){}
+    public void nextSeason(){}
+    public void nextHour(){}
+
+
 }
