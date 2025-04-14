@@ -26,7 +26,6 @@ public class Player implements Person {
     private int foragingAbility;
     private int fishingAbility;
 
-    private ArrayList<FriendShip> friendShips;
     private ArrayList<TradeRequest> acceptedTradeRequests;
 
     private Trading trading;

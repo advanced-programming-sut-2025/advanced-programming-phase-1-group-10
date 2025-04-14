@@ -1,4 +1,4 @@
-package src.Models.PlayerStuff;
+package src.Models.FriendShip;
 
 public enum FriendShipLevel {
 

@@ -5,6 +5,6 @@ import src.Models.Item;
 public class Artisan {
 
     private String name ;
-    private Item item;
+    private ArtisanType type;
 
 }
