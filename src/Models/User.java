@@ -5,29 +5,30 @@ import src.Models.PlayerStuff.Gender;
 import java.util.ArrayList;
 
 public class User {
-    private String name;
     private String nickname;
     private String password;
     private String username;
     private Gender gender;
+    private String email;
+
+
 
     private ArrayList<String> questions = new ArrayList<>();
 
-    public User(String name, String nickname, String password, String username, Gender gender, ArrayList<String> questions) {
-        this.name = name;
+    public User(String nickname, String password, String username, Gender gender) {
         this.nickname = nickname;
         this.password = password;
         this.username = username;
         this.gender = gender;
-        this.questions = questions;
+        this.questions = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getNickname() {
