@@ -3,8 +3,8 @@ package src.Models;
 import java.util.ArrayList;
 
 public class App {
-    private final Menu currentMenu = Menu.LoginMenu;
-    public static ArrayList<User> users;
+    private static final Menu currentMenu = Menu.LoginMenu;
+    public static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Game> games;
 
 
@@ -15,6 +15,10 @@ public class App {
             }
         }
         return null;
+    }
+
+    public static Menu getCurrentMenu() {
+        return currentMenu;
     }
 
     public static void addUser(User user){

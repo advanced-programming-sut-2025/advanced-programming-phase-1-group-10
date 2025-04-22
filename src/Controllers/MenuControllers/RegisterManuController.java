@@ -14,8 +14,16 @@ public class RegisterManuController {
     public Result register(String username, String password, String confirmPassword,
                                     String nickname, String email, String gender){
 
-        if(App.getUserByUserName(username) != null){
-            return new Result(false, "username already taken!");
+        if (App.getUserByUserName(username) != null) {
+            ArrayList<String> suggestions = suggestAlternativeUsernames(username);
+            StringBuilder message = new StringBuilder("username already taken! Here are some suggestions:");
+
+            for (String suggestion : suggestions) {
+                message.append("\n- ").append(suggestion);
+            }
+
+            message.append("\nPlease choose one of these or try another username.");
+            return new Result(false, message.toString());
         }
 
         if(!checkUsername(username)){
@@ -30,19 +38,18 @@ public class RegisterManuController {
             return new Result(false, "email already taken!");
         }
 
-        boolean isRandomPassword = false;
         if(password.equalsIgnoreCase("random")){
-            isRandomPassword = true;
             password = generateStrongPassword(12);
+            return new Result(false, "Generated random password: " + password);
+
         }
-        //TODO user confirmed the random password ?
 
         StringBuilder passwordResult = checkStrengthPassword(password);
-        if(!passwordResult.isEmpty() && !isRandomPassword){
+        if(!passwordResult.isEmpty()){
             return new Result(false, passwordResult.toString());
         }
 
-        if(!password.contains(confirmPassword) && !isRandomPassword){
+        if(!password.contains(confirmPassword)){
             return new Result(false, "confirm password doesn't match password!");
         }
 
@@ -53,9 +60,32 @@ public class RegisterManuController {
 
         User newuser = new User(nickname,password,username,usergender);
         App.addUser(newuser);
+        newuser.setEmail(email);
         return new Result(true, "user registered successfully!");
     }
 
+    public ArrayList<String> suggestAlternativeUsernames(String username) {
+        ArrayList<String> suggestions = new ArrayList<>();
+        SecureRandom random = new SecureRandom();
+
+        for (int i = 0; i < 3; i++) {
+            int randomNumber = 1 + random.nextInt(99);
+            String suggestion = username + randomNumber;
+            if (App.getUserByUserName(suggestion) == null) {
+                suggestions.add(suggestion);
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            int randomNumber = 1 + random.nextInt(99);
+            String suggestion = username + "-" + randomNumber;
+            if (App.getUserByUserName(suggestion) == null) {
+                suggestions.add(suggestion);
+            }
+        }
+
+        return suggestions;
+    }
 
     private boolean checkUsername(String username){
         return username.matches(RegisterMenuCommands.USERNAME.getPattern());
@@ -68,10 +98,10 @@ public class RegisterManuController {
     private boolean checkEmailTaken(String email){
         for (User user : App.users){
             if(user.getEmail().equals(email)){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private StringBuilder  checkStrengthPassword(String password){
