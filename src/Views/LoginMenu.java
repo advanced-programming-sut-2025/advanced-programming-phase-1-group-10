@@ -1,13 +1,11 @@
 package src.Views;
 
 import src.Controllers.MenuControllers.RegisterManuController;
-import src.Models.App;
 import src.Models.Commands.RegisterMenuCommands;
-import src.Models.Menu;
 import src.Models.Result;
-
 import java.util.Scanner;
 import java.util.regex.Matcher;
+
 
 public class LoginMenu implements AppMenu {
 
@@ -22,6 +20,9 @@ public class LoginMenu implements AppMenu {
         }
         else if ((matcher = RegisterMenuCommands.REGISTER.getMatcher(input)) != null){
             HandleRegister(matcher,scanner);
+        }
+        else if((matcher = RegisterMenuCommands.PICK_QUESTION.getMatcher(input)) != null){
+            HandlePickQuestion(matcher);
         }
         else
             System.out.println("invalid command!");
@@ -52,7 +53,7 @@ public class LoginMenu implements AppMenu {
             String generatedPassword;
 
             do {
-                System.out.print("Your choice: ");
+                System.out.print("Your choice (yes or no) : ");
                 userInput = scanner.nextLine().trim();
 
                 if (userInput.equalsIgnoreCase("yes")) {
@@ -71,5 +72,29 @@ public class LoginMenu implements AppMenu {
         else if(!isUsernameTaken){
             System.out.println(result.message());
         }
+        if(result.state()){
+            System.out.println(controller.showSecurityQuestions());
+        }
+    }
+
+    private void HandlePickQuestion(Matcher matcher){
+        String questionNumber = matcher.group("questionnumber");
+        String answer = matcher.group("answer");
+        String answerConfirm = matcher.group("answerconfirm");
+
+        int number = Integer.parseInt(questionNumber);;
+
+        if(number < 1 || number > 10){
+            System.out.println("The question number must be between 1 and 10 .");
+            return;
+        }
+
+        if(!answer.equals(answerConfirm)){
+            System.out.println("the (answerconfirm) doesn't match answer!");
+            return;
+        }
+
+        Result result = controller.pickQuestion(number,answer);
+        System.out.println(result.message());
     }
 }

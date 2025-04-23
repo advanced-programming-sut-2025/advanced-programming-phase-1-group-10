@@ -6,6 +6,7 @@ public class App {
     private static final Menu currentMenu = Menu.LoginMenu;
     public static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Game> games;
+    private static User currentUser = null;
 
 
     public static User getUserByUserName(String username){
@@ -19,6 +20,14 @@ public class App {
 
     public static Menu getCurrentMenu() {
         return currentMenu;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        App.currentUser = currentUser;
     }
 
     public static void addUser(User user){

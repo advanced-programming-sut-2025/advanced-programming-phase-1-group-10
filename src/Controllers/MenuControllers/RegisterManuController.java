@@ -4,9 +4,12 @@ import src.Models.App;
 import src.Models.Commands.RegisterMenuCommands;
 import src.Models.PlayerStuff.Gender;
 import src.Models.Result;
+import src.Models.SecurityQuestions;
 import src.Models.User;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegisterManuController {
@@ -61,6 +64,7 @@ public class RegisterManuController {
         User newuser = new User(nickname,password,username,usergender);
         App.addUser(newuser);
         newuser.setEmail(email);
+        App.setCurrentUser(newuser);
         return new Result(true, "user registered successfully!");
     }
 
@@ -181,5 +185,26 @@ public class RegisterManuController {
         }
 
         return new String(password);
+    }
+
+    public String showSecurityQuestions(){
+        StringBuilder questions = new StringBuilder();
+
+        questions.append("List of security questions: (you can choose questions with **PickQuestion** command)\n");
+        for(int i = 1; i < 11; i++){
+            String temp = i + ". " + SecurityQuestions.getQuestionByNumber(i) + "\n";
+            questions.append(temp);
+        }
+        return questions.toString();
+    }
+
+    public Result pickQuestion(int number, String answer){
+        String question = SecurityQuestions.getQuestionByNumber(number);
+        Map<String, String> questionWithAnswer = new HashMap<>();
+        questionWithAnswer.put(question,answer);
+        Map<Integer,Map<String, String>> userQuestion = new HashMap<>();
+        userQuestion.put(number,questionWithAnswer);
+        App.getCurrentUser().setPickQuestion(userQuestion);
+        return new Result(true, "you chose question number " + number + " with answer: " + answer + ".");
     }
 }
