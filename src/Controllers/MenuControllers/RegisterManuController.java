@@ -64,7 +64,7 @@ public class RegisterManuController {
         User newuser = new User(nickname,password,username,usergender);
         App.getInstance().addUser(newuser);
         newuser.setEmail(email);
-        App.setCurrentUser(newuser);
+        App.getInstance().setCurrentUser(newuser);
         return new Result(true, "user registered successfully!");
     }
 
@@ -204,7 +204,7 @@ public class RegisterManuController {
         questionWithAnswer.put(question,answer);
         Map<Integer,Map<String, String>> userQuestion = new HashMap<>();
         userQuestion.put(number,questionWithAnswer);
-        App.getCurrentUser().setPickQuestion(userQuestion);
+        App.getInstance().getCurrentUser().setPickQuestion(userQuestion);
         return new Result(true, "you chose question number " + number + " with answer: " + answer + ".");
     }
 }

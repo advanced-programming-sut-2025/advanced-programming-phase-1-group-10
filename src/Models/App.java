@@ -3,25 +3,70 @@ package src.Models;
 import java.util.ArrayList;
 
 public class App {
-    private static final Menu currentMenu = Menu.LoginMenu;
-    public static ArrayList<User> users = new ArrayList<>();
+
+    private static App instance;
+
+    private App() {
+        games = new ArrayList<>();
+        users = new ArrayList<>();
+    }
+
+    public static App getInstance() {
+        if (instance == null) {
+            instance = new App();
+        }
+        return instance;
+    }
+
+    private final Menu currentMenu = Menu.LoginMenu;
+    private ArrayList<User> users;
     private ArrayList<Game> games;
+    private User currentUser;
+    private Game currentGame;
 
-
-    public static User getUserByUserName(String username){
-        for(User user : App.users){
-            if(user.getUsername().equals(username)){
+    public User getUserByUserName(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
                 return user;
             }
         }
         return null;
     }
 
-    public static Menu getCurrentMenu() {
+    public Menu getCurrentMenu() {
         return currentMenu;
     }
 
-    public static void addUser(User user){
+    public void addUser(User user) {
         users.add(user);
     }
+
+    public Game getCurrentGame() {
+        return currentGame;
+    }
+
+    public void setCurrentGame(Game currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public ArrayList<Game> getGames() {
+        return games;
+    }
+
+    public void addGame(Game game) {
+        games.add(game);
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
 }
+
