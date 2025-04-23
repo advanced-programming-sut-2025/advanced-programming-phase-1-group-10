@@ -9,7 +9,7 @@ public class AppView {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         do {
-            App.getCurrentMenu().check(scanner);
-        } while (App.getCurrentMenu() != Menu.ExitMenu);
+            App.getInstance().getCurrentMenu().check(scanner);
+        } while (App.getInstance().getCurrentMenu() != Menu.ExitMenu);
     }
 }

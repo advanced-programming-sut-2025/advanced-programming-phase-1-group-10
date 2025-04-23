@@ -1,9 +1,19 @@
 package src.Models.Weather;
 
 public enum Weather {
-    SUNNY,
-    RAIN,
-    STORM,
-    SNOW,
+    SUNNY("Sunny"),
+    RAIN("Rain"),
+    STORM("Storm"),
+    SNOW("Snow"),
     ;
+
+    private final String name;
+
+    Weather(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

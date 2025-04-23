@@ -14,7 +14,7 @@ public class RegisterManuController {
     public Result register(String username, String password, String confirmPassword,
                                     String nickname, String email, String gender){
 
-        if (App.getUserByUserName(username) != null) {
+        if (App.getInstance().getUserByUserName(username) != null) {
             ArrayList<String> suggestions = suggestAlternativeUsernames(username);
             StringBuilder message = new StringBuilder("username already taken! Here are some suggestions:");
 
@@ -59,7 +59,7 @@ public class RegisterManuController {
         }
 
         User newuser = new User(nickname,password,username,usergender);
-        App.addUser(newuser);
+        App.getInstance().addUser(newuser);
         newuser.setEmail(email);
         return new Result(true, "user registered successfully!");
     }
@@ -71,7 +71,7 @@ public class RegisterManuController {
         for (int i = 0; i < 3; i++) {
             int randomNumber = 1 + random.nextInt(99);
             String suggestion = username + randomNumber;
-            if (App.getUserByUserName(suggestion) == null) {
+            if (App.getInstance().getUserByUserName(suggestion) == null) {
                 suggestions.add(suggestion);
             }
         }
@@ -79,7 +79,7 @@ public class RegisterManuController {
         for (int i = 0; i < 3; i++) {
             int randomNumber = 1 + random.nextInt(99);
             String suggestion = username + "-" + randomNumber;
-            if (App.getUserByUserName(suggestion) == null) {
+            if (App.getInstance().getUserByUserName(suggestion) == null) {
                 suggestions.add(suggestion);
             }
         }
@@ -96,7 +96,7 @@ public class RegisterManuController {
     }
 
     private boolean checkEmailTaken(String email){
-        for (User user : App.users){
+        for (User user : App.getInstance().getUsers()){
             if(user.getEmail().equals(email)){
                 return false;
             }

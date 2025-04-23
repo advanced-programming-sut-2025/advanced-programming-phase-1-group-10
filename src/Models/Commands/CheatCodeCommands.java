@@ -1,4 +1,4 @@
 package src.Models.Commands;
 
-public class CheatCodeCommands  {
+public enum CheatCodeCommands  {
 }
