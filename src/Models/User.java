@@ -3,6 +3,8 @@ package src.Models;
 import src.Models.PlayerStuff.Gender;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
     private String nickname;
@@ -10,17 +12,24 @@ public class User {
     private String username;
     private Gender gender;
     private String email;
+    private Map<Integer, Map<String, String>> pickQuestion ;
 
 
-
-    private ArrayList<String> questions = new ArrayList<>();
 
     public User(String nickname, String password, String username, Gender gender) {
         this.nickname = nickname;
         this.password = password;
         this.username = username;
         this.gender = gender;
-        this.questions = new ArrayList<>();
+        this.pickQuestion = new HashMap<>();
+    }
+
+    public Map<Integer, Map<String, String>> getPickQuestion() {
+        return pickQuestion;
+    }
+
+    public void setPickQuestion(Map<Integer, Map<String, String>> pickQuestion) {
+        this.pickQuestion = pickQuestion;
     }
 
     public String getEmail() {
@@ -61,13 +70,5 @@ public class User {
 
     public void setGender(Gender gender) {
         this.gender = gender;
-    }
-
-    public ArrayList<String> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(ArrayList<String> questions) {
-        this.questions = questions;
     }
 }
