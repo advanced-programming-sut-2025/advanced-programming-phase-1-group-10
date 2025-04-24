@@ -15,7 +15,8 @@ public enum RegisterMenuCommands implements Commands{
     PICK_QUESTION("^pick\\s+question\\s+-q\\s+(?<questionnumber>-?\\d+)\\s+-a\\s+" +
                 "(?<answer>.+)\\s+-c\\s+(?<answerconfirm>.+)$"),
     LOGIN("^login\\s+-u\\s+(?<username>\\S+)\\s+-p\\s+(?<password>\\S+)(?:\\s+(?<stayLoggedIn>-stay-logged-in))?$"),
-    FORGET_PASSWORD("^forget\\s+password\\s+-u\\s+(?<username>.+)$")
+    FORGET_PASSWORD("^forget\\s+password\\s+-u\\s+(?<username>.+)$"),
+    MENU_ENTER("^menu\\s+enter\\s+(?<menuname>.+)$")
     ;
 
     private final String pattern;

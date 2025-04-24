@@ -37,6 +37,9 @@ public class LoginMenu implements AppMenu {
         else if((matcher = RegisterMenuCommands.FORGET_PASSWORD.getMatcher(input)) != null){
             HandleForgotPassword(matcher,scanner);
         }
+        else if((matcher = RegisterMenuCommands.MENU_ENTER.getMatcher(input)) != null){
+            HandleEnterMenu(matcher);
+        }
         else
             System.out.println("invalid command!");
     }
@@ -103,7 +106,7 @@ public class LoginMenu implements AppMenu {
         }
 
         if(!answer.equals(answerConfirm)){
-            System.out.println("the (answerconfirm) doesn't match answer!");
+            System.out.println("the (answer confirm) doesn't match answer!");
             return;
         }
 
@@ -159,6 +162,13 @@ public class LoginMenu implements AppMenu {
                 System.out.println(controller.changePassword(password,false).message());
             }
         }
+    }
+
+    private void HandleEnterMenu(Matcher matcher){
+        String menuName = matcher.group("menuname");
+
+        Result result = controller.enterMenu(menuName);
+        System.out.println(result.message());
     }
 
     private void HandleExitGame(){

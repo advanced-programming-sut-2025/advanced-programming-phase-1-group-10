@@ -263,6 +263,15 @@ public class RegisterManuController {
         }
     }
 
+    public Result enterMenu(String menuName){
+        if(menuName.equalsIgnoreCase("main menu")){
+            App.getInstance().setCurrentMenu(Menu.MainMenu);
+            return new Result(true, "you are now in MAIN MENU.");
+        }
+        else
+            return new Result(false, "you should go to MAIN MENU first.");
+    }
+
     public String exitGame(){
         App.getInstance().setCurrentMenu(Menu.ExitMenu);
         return "Exiting game ...";
