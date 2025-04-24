@@ -1,9 +1,0 @@
-package src;
-
-import src.Views.AppView;
-
-public class Main {
-    public static void main(String[] args) {
-        (new AppView()).run();
-    }
-}

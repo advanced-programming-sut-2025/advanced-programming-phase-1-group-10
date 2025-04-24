@@ -1,0 +1,27 @@
+plugins {
+    id 'application'
+}
+
+group = 'com.group10'
+version = '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+
+application {
+    mainClass = 'Main'
+}
+
+run {
+    standardInput = System.in
+}
