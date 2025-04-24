@@ -18,7 +18,7 @@ public class App {
         return instance;
     }
 
-    private final Menu currentMenu = Menu.LoginMenu;
+    private Menu currentMenu = Menu.LoginMenu;
     private ArrayList<User> users;
     private ArrayList<Game> games;
     private User currentUser;
@@ -31,6 +31,10 @@ public class App {
             }
         }
         return null;
+    }
+
+    public void setCurrentMenu(Menu currentMenu) {
+        this.currentMenu = currentMenu;
     }
 
     public Menu getCurrentMenu() {

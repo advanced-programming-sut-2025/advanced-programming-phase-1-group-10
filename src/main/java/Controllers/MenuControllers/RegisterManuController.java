@@ -1,12 +1,9 @@
 package Controllers.MenuControllers;
 
 
-import Models.App;
+import Models.*;
 import Models.Commands.RegisterMenuCommands;
 import Models.PlayerStuff.Gender;
-import Models.Result;
-import Models.SecurityQuestions;
-import Models.User;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -110,7 +107,7 @@ public class RegisterManuController {
         return true;
     }
 
-    private StringBuilder  checkStrengthPassword(String password){
+    private StringBuilder checkStrengthPassword(String password){
         boolean correctLength = password.length() > 8;
 
         boolean hasLowercase = false;
@@ -207,6 +204,67 @@ public class RegisterManuController {
         Map<Integer,Map<String, String>> userQuestion = new HashMap<>();
         userQuestion.put(number,questionWithAnswer);
         App.getInstance().getCurrentUser().setPickQuestion(userQuestion);
+        App.getInstance().getCurrentUser().setPickQuestionNumber(number);
         return new Result(true, "you chose question number " + number + " with answer: " + answer + ".");
+    }
+
+    public Result login(String username, String password, String stayLoggedInStr){
+        if(App.getInstance().getUserByUserName(username) == null){
+            return new Result(false, "no user with this username exist!");
+        }
+        User user = App.getInstance().getUserByUserName(username);
+
+        if(!user.getPassword().equals(password)){
+            return new Result(false, "the password is incorrect!");
+        }
+
+        boolean stayLoggedIn = !stayLoggedInStr.isEmpty();
+        //TODO stay logged in method
+        App.getInstance().getCurrentUser().setStayLoggedIn(stayLoggedIn);
+        App.getInstance().setCurrentUser(user);
+        return new Result(true, "the user with username " + "(" + username + ") " + "logged in successfully!");
+    }
+
+    public Result forgotPassword(String username){
+
+        if(App.getInstance().getUserByUserName(username) == null){
+            return new Result(false, "no user with this username exist!");
+        }
+
+        return new Result(true, "please answer the security question :");
+    }
+
+    public Result answerSecurityQuestion(String answer){
+
+        int number = App.getInstance().getCurrentUser().getPickQuestionNumber();
+        Map<String, String> questionWithAnswer = App.getInstance().getCurrentUser().getAnswerAndQuestionWithNumber(number);
+        String question = SecurityQuestions.getQuestionByNumber(number);
+        String correctAnswer = questionWithAnswer.get(question);
+
+        if(!answer.equals(correctAnswer)){
+            return new Result(false, "your answer doesn't match the correct answer!");
+        }
+        return new Result(true, "Do you want randomPassword or no ?");
+    }
+
+    public Result changePassword(String newPassword, boolean isRandom){
+        if(isRandom){
+            App.getInstance().getCurrentUser().setPassword(newPassword);
+            return new Result(true, "your password changed successfully! NEW PASSWORD: " + newPassword);
+        }
+        else {
+            StringBuilder passwordResult = checkStrengthPassword(newPassword);
+            if(!passwordResult.isEmpty()){
+                return new Result(false, passwordResult.toString());
+            }
+            else{
+                return new Result(true, "your password changed successfully! NEW PASSWORD: " + newPassword);
+            }
+        }
+    }
+
+    public String exitGame(){
+        App.getInstance().setCurrentMenu(Menu.ExitMenu);
+        return "Exiting game ...";
     }
 }
