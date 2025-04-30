@@ -7,8 +7,8 @@ public enum ProfileMenuCommands implements Commands {
 
     CHANGE_USERNAME("^change username\\s+-u\\s+(?<username>.+)$"),
     USERNAME("^[a-zA-Z0-9-]+$"),
-    CHANGE_PASSWORD("^change password\\s+-p\\s+(?<new_password>.+)\\s+-o\\s+(?<old_password>.+)$"),
-    CHANGE_EMAIL("^change email\\s+-e\\s+(?<email>[^\\s]+)$"),
+    CHANGE_PASSWORD("^change password\\s+-p\\s+(?<newpassword>.+)\\s+-o\\s+(?<oldpassword>.+)$"),
+    CHANGE_EMAIL("^change email\\s+-e\\s+(?<email>.+)$"),
     EMAIL("^[a-zA-Z0-9](?!.*[.]{2})[a-zA-Z0-9._-]*[a-zA-Z0-9]@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]{2,})+$"),
     CHANGE_NICKNAME("^change nickname\\s+-u\\s+(?<nickname>.+)$"),
     USER_INFO("^user\\s+info$")

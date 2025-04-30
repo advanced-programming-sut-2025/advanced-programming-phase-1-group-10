@@ -7,6 +7,7 @@ import Models.Commands.RegisterMenuCommands;
 import Models.Menu;
 import Models.Result;
 
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -117,7 +118,7 @@ public class LoginMenu implements AppMenu {
     private void HandleLogin(Matcher matcher){
         String username = matcher.group("username");
         String password = matcher.group("password");
-        String stayLoggedInStr = matcher.group("stayLoggedIn");
+        String stayLoggedInStr = Optional.ofNullable(matcher.group("stayLoggedIn")).orElse("default_value");
 
         Result result = controller.login(username,password,stayLoggedInStr);
         System.out.println(result.message());

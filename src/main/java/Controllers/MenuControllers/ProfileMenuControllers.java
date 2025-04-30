@@ -16,7 +16,9 @@ public class ProfileMenuControllers {
             return new Result(false, "username format is invalid!");
         }
 
-        if (App.getInstance().getUserByUserName(username) != null) {
+        if (App.getInstance().getUserByUserName(username) != null &&
+                !App.getInstance().getUserByUserName(username).equals(App.getInstance().getCurrentUser())) {
+
             ArrayList<String> suggestions = suggestAlternativeUsernames(username);
             StringBuilder message = new StringBuilder("username already taken! Here are some suggestions:");
 
@@ -31,7 +33,7 @@ public class ProfileMenuControllers {
             User currentUser = App.getInstance().getCurrentUser();
 
         if(currentUser.getUsername().equals(username)){
-            return new Result(false, "the new password is the same as the previous password!");
+            return new Result(false, "the new username is the same as the previous username!");
         }
         currentUser.setUsername(username);
         return new Result(true, "the username changed successfully to " + username + "!");
@@ -79,12 +81,12 @@ public class ProfileMenuControllers {
             return new Result(false, "email format is invalid!");
         }
 
-        if(!checkEmailTaken(email)){
-            return new Result(false, "email already taken!");
-        }
-
         if(currentUser.getEmail().equals(email)){
             return new Result(false, "the new email is the same as the previous email!");
+        }
+
+        if(!checkEmailTaken(email)){
+            return new Result(false, "email already taken!");
         }
 
         currentUser.setEmail(email);
@@ -176,7 +178,7 @@ public class ProfileMenuControllers {
         info.append("\n");
         info.append("NICKNAME : ");
         info.append(currentUser.getNickname());
-        info.append("\n");
+        //info.append("\n");
         // TODO add max coins && add count of gamesPlayed
         return new Result(true, info.toString());
     }
