@@ -5,7 +5,7 @@ public enum SecurityQuestions {
     FAVORITE_COLOR(1, "What is your favorite color?"),
     CHILDHOOD_FRIEND(2, "Who was your best friend in childhood?"),
     FIRST_PET(3, "What was the name of your first pet?"),
-    MOTHER_MAIDEN_NAME(4, "What was the name of your favorite book?"),
+    FAVORITE_BOOK(4, "What was the name of your favorite book?"),
     FIRST_SCHOOL(5, "What was the name of your first school?"),
     BIRTH_CITY(6, "In which city were you born?"),
     FAVORITE_FOOD(7, "What is your favorite food?"),

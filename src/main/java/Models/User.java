@@ -12,8 +12,9 @@ public class User {
     private String username;
     private Gender gender;
     private String email;
+    private int pickQuestionNumber;
     private Map<Integer, Map<String, String>> pickQuestion ;
-
+    private boolean stayLoggedIn = true;
 
 
     public User(String nickname, String password, String username, Gender gender) {
@@ -22,6 +23,26 @@ public class User {
         this.username = username;
         this.gender = gender;
         this.pickQuestion = new HashMap<>();
+    }
+
+    public boolean isStayLoggedIn() {
+        return stayLoggedIn;
+    }
+
+    public void setStayLoggedIn(boolean stayLoggedIn) {
+        this.stayLoggedIn = stayLoggedIn;
+    }
+
+    public int getPickQuestionNumber() {
+        return pickQuestionNumber;
+    }
+
+    public void setPickQuestionNumber(int pickQuestionNumber) {
+        this.pickQuestionNumber = pickQuestionNumber;
+    }
+
+    public Map<String, String> getAnswerAndQuestionWithNumber(int number){
+        return pickQuestion.get(number);
     }
 
     public Map<Integer, Map<String, String>> getPickQuestion() {
