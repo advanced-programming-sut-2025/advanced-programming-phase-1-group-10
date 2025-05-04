@@ -2,7 +2,9 @@ package Controllers;
 
 import Models.App;
 import Models.Item;
+import Models.PlayerStuff.Player;
 import Models.Result;
+import Models.Tools.Tool;
 
 import java.util.List;
 
@@ -51,4 +53,37 @@ public class GameController {
 
         return new Result(false, "Item not found in inventory.");
     }
+
+    public Result equipTool(String toolName) {
+        for(Item item : App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()) {
+            if(item instanceof Tool && (item).getName().equalsIgnoreCase(toolName)) {
+                App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool((Tool)item);
+                return new Result(true, item.getName() + " equipped.");
+            }
+        }
+        return new Result(false, "Tool not found.");
+    }
+
+    public Result showCurrentTool() {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(player.getCurrentTool() == null) {
+            return new Result(false, "No tool equipped.");
+        } else {
+            return new Result(true, player.getCurrentTool().getName() + " equipped.");
+        }
+    }
+
+    public Result showAvaliableTools() {
+        StringBuilder message = new StringBuilder();
+        List<Item> items = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems();
+        for(Item item : items) {
+            if(item instanceof Tool) {
+                message.append(item.getName()).append(" ");
+            }
+        }
+        return new Result(true, message.toString());
+    }
+
+
+
 }

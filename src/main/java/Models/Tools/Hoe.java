@@ -6,6 +6,10 @@ public class Hoe extends Tool {
         super();
     }
 
+    private final String name = "Hoe";
 
-
+    @Override
+    public String getName() {
+        return name;
+    }
 }

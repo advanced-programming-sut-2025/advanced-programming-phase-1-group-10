@@ -22,6 +22,11 @@ public enum GameCommands implements Commands {
     SHOW_INVENTORY("^inventory show$"),
     DELETE_ITEM_FROM_INVENTORY("^inventory trash -i (?<itemName>[\\S ]+) -n (?<number>[\\S]+)$"),
 
+    //Tool Commands
+    EQUIP_TOOL("^tools equip (?<toolName>[\\S ]+)$"),
+    SHOW__CURRENT_TOOL("^tools show current$"),
+    UPGRADE_TOOL("tools upgrade (?<toolName>[\\S ]+)"),
+    TOOL_USE("tools use -d (?<direction>)[\\S+]")
     ;
 
     private final String pattern;

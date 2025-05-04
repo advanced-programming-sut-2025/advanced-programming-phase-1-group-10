@@ -72,6 +72,10 @@ public class Player implements Person {
         return currentTool;
     }
 
+    public void setCurrentTool(Tool currentTool) {
+        this.currentTool = currentTool;
+    }
+
     public Inventory getInventory() {
         return inventory;
     }
