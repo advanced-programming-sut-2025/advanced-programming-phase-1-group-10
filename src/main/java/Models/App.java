@@ -19,8 +19,9 @@ public class App {
     }
 
     private final Menu currentMenu = Menu.LoginMenu;
-    private ArrayList<User> users;
-    private ArrayList<Game> games;
+    private final ArrayList<User> users;
+    private final ArrayList<Game> games;
+
     private User currentUser;
     private Game currentGame;
 

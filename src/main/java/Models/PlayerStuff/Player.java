@@ -4,7 +4,6 @@ package Models.PlayerStuff;
 import Models.Item;
 import Models.Person;
 import Models.Position;
-import Models.Tools.BackPack;
 import Models.Tools.Tool;
 
 
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 
 public class Player implements Person {
 
+    private String name;
 
     private Position position;
 
@@ -20,7 +20,7 @@ public class Player implements Person {
     private Energy energy;
     private Player couple;
     private Tool currentTool;
-    private BackPack backPack;
+    private Inventory inventory;
 
     private boolean faint;
     private int miningAbility;
@@ -36,6 +36,10 @@ public class Player implements Person {
         //Faint process implements here.
     }
 
+    public Energy getEnergy() {
+        return energy;
+    }
+
     public void talkPerson(Person person) {
         //Increase friendship amount.
     }
@@ -43,5 +47,62 @@ public class Player implements Person {
     public void sendGift(Item gift, Person person) {
         //Send gift to a Person
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public int getWood() {
+        return wood;
+    }
+
+    public Player getCouple() {
+        return couple;
+    }
+
+    public Tool getCurrentTool() {
+        return currentTool;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public boolean isFaint() {
+        return faint;
+    }
+
+    public int getMiningAbility() {
+        return miningAbility;
+    }
+
+    public int getFarmingAbility() {
+        return farmingAbility;
+    }
+
+    public int getForagingAbility() {
+        return foragingAbility;
+    }
+
+    public int getFishingAbility() {
+        return fishingAbility;
+    }
+
+    public ArrayList<TradeRequest> getAcceptedTradeRequests() {
+        return acceptedTradeRequests;
+    }
+
+    public Trading getTrading() {
+        return trading;
+    }
+
 
 }

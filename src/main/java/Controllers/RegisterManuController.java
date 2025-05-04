@@ -1,4 +1,4 @@
-package Controllers.MenuControllers;
+package Controllers;
 
 
 import Models.App;

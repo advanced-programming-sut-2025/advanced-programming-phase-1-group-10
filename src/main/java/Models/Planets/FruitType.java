@@ -20,12 +20,12 @@ public enum FruitType {
     MYSTIC_SYRUP("Mystic Syrup",7,1000,true,500,null),
     ;
 
-    private String name;
-    private int harvestCycle;
-    private int baseSellPrice;
-    private boolean isEdible;
-    private int energy;
-    private Season season;
+    private final String name;
+    private final  int harvestCycle;
+    private final int baseSellPrice;
+    private final boolean isEdible;
+    private final int energy;
+    private final Season season;
 
     FruitType(String name,int harvestCycle, int baseSellPrice, boolean isEdible, int energy, Season season) {
         this.name = name;
@@ -34,5 +34,29 @@ public enum FruitType {
         this.isEdible = isEdible;
         this.energy = energy;
         this.season = season;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getHarvestCycle() {
+        return harvestCycle;
+    }
+
+    public int getBaseSellPrice() {
+        return baseSellPrice;
+    }
+
+    public boolean isEdible() {
+        return isEdible;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public Season getSeason() {
+        return season;
     }
 }

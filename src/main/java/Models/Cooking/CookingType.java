@@ -44,4 +44,28 @@ public enum CookingType {
         this.source = source;
         this.price = price;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getIngredient() {
+        return ingredient;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public String getBuff() {
+        return buff;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public int getPrice() {
+        return price;
+    }
 }

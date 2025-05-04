@@ -3,7 +3,7 @@ package Models.Planets.Crop;
 import Models.DateTime.Season;
 import Models.Item;
 
-public enum ForagingCropType implements CropType, Item {
+public enum ForagingCropType implements CropType {
 
     COMMON_MUSHROOM("Common Mushroom", null, 40, 38),
     DAFFODIL("Daffodil", Season.SPRING, 30, 0),
@@ -29,15 +29,32 @@ public enum ForagingCropType implements CropType, Item {
     SNOW_YAM("Snow Yam", Season.WINTER, 100, 30),
     WINTER_ROOT("WINTER Root", Season.WINTER, 70, 25);
 
-    private String name;
-    private Season season;
-    private int baseSellPrice;
-    private int energy;
+    private final String name;
+    private final Season season;
+    private final int baseSellPrice;
+    private final int energy;
 
     ForagingCropType(String name, Season season, int baseSellPrice, int energy) {
         this.name = name;
         this.season = season;
         this.baseSellPrice = baseSellPrice;
         this.energy = energy;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public int getBaseSellPrice() {
+        return baseSellPrice;
+    }
+
+    public int getEnergy() {
+        return energy;
     }
 }

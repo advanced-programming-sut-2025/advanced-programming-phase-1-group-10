@@ -1,4 +1,4 @@
-package Controllers.MenuControllers;
+package Controllers;
 
 public class TradeMenuControllers {
 }

@@ -21,15 +21,31 @@ public enum MineralTypes {
     COAL("Coal","A combustible rock that is useful for crafting and smelting.",15,true),
     ;
 
-    private String name;
-    private String description;
-    private int sellPrice;
-    private boolean isForaging;
+    private final String name;
+    private final String description;
+    private final int sellPrice;
+    private final boolean isForaging;
 
     MineralTypes(String name, String description, int sellPrice, boolean isForaging) {
         this.name = name;
         this.description = description;
         this.sellPrice = sellPrice;
         this.isForaging = isForaging;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getSellPrice() {
+        return sellPrice;
+    }
+
+    public boolean isForaging() {
+        return isForaging;
     }
 }

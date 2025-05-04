@@ -34,4 +34,28 @@ public enum ArtisanType {
         this.ingredients = ingredients;
         this.sellPrice = sellPrice;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getProcessingTime() {
+        return processingTime;
+    }
+
+    public String getIngredients() {
+        return ingredients;
+    }
+
+    public int getSellPrice() {
+        return sellPrice;
+    }
 }

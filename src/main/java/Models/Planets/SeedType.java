@@ -45,11 +45,19 @@ public enum SeedType {
     ANCIENT_SEED("Ancient seed", null),
     MIXED_SEED("Mixed seed", null),
     ;
-    private String name;
-    private Season season;
+    private final String name;
+    private final Season season;
 
     SeedType(String name, Season season) {
         this.name = name;
         this.season = season;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Season getSeason() {
+        return season;
     }
 }

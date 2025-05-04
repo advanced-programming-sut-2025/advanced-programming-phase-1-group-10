@@ -1,7 +1,7 @@
 package Views;
 
 
-import Controllers.MenuControllers.RegisterManuController;
+import Controllers.RegisterManuController;
 import Models.Commands.RegisterMenuCommands;
 import Models.Result;
 

@@ -1,4 +1,4 @@
 package Models;
 
-public class TileType {
+public enum TileType {
 }

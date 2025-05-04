@@ -13,6 +13,8 @@ public class Game {
     private ArrayList<Player> players;
     private Map gameMap;
 
+    private Player currentPlayer;
+
     private Weather weather;
     private Weather nextDayWeather;
 
@@ -23,5 +25,13 @@ public class Game {
 
     public Weather getNextDayWeather() {
         return nextDayWeather;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }

@@ -2,9 +2,24 @@ package Models.Artisan;
 
 import Models.Item;
 
-public class Artisan {
+public class Artisan implements Item {
 
-    private String name ;
-    private ArtisanType type;
+    private ArtisanType artisanType;
+    private int numberOfArtisan;
+
+    @Override
+    public String getName() {
+        return artisanType.getName();
+    }
+
+    @Override
+    public int getNumber() {
+        return numberOfArtisan;
+    }
+
+    @Override
+    public void setNumber(int number) {
+        numberOfArtisan = number;
+    }
 
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public enum CropTypeNormal implements CropType, Item {
+public enum CropTypeNormal implements CropType {
 
     BLUE_JAZZ("Blue Jazz", SeedType.JAZZ_SEED, new ArrayList<>(Arrays.asList(1, 2, 2, 2)), 7, true, -1, 50, true, 45, List.of(Season.SPRING), false),
     CARROT("Carrot", SeedType.CARROT_SEED, new ArrayList<>(Arrays.asList(1, 1, 1)), 3, true, -1, 35, true, 75, List.of(Season.SPRING), false),
@@ -78,4 +78,48 @@ public enum CropTypeNormal implements CropType, Item {
         this.canBecomeGiant = canBecomeGiant;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public SeedType getSource() {
+        return source;
+    }
+
+    public ArrayList<Integer> getCropTypes() {
+        return cropTypes;
+    }
+
+    public int getTotalHarvestTime() {
+        return totalHarvestTime;
+    }
+
+    public boolean isOneTime() {
+        return oneTime;
+    }
+
+    public int getRegrowthTime() {
+        return regrowthTime;
+    }
+
+    public int getBaseSellPrice() {
+        return baseSellPrice;
+    }
+
+    public boolean isEdible() {
+        return isEdible;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public List<Season> getSeasons() {
+        return seasons;
+    }
+
+    public boolean isCanBecomeGiant() {
+        return canBecomeGiant;
+    }
 }
