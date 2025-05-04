@@ -1,6 +1,6 @@
 package Views;
 
-import Controllers.MenuControllers.ProfileMenuControllers;
+import Controllers.ProfileMenuControllers;
 import Models.Commands.ProfileMenuCommands;
 import Models.Result;
 
