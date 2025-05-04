@@ -1,5 +1,7 @@
 package Controllers;
 
+import Models.Animal.Animal;
+import Models.Animal.AnimalType;
 import Models.App;
 import Models.Item;
 import Models.PlayerStuff.Player;
@@ -84,6 +86,22 @@ public class GameController {
         return new Result(true, message.toString());
     }
 
+    public Result buyAnimal(String animalType, String name){
+        Animal animal = Animal.animalFactory(animalType,name);
+        if(animal == null){
+            return new Result(false, "invalid animal type!");
+        }
 
+        for(Animal animal1 : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()){
+            if(animal1.getName().equals(name)){
+                return new Result(false,"each animal must have a unique name.");
+            }
+        }
 
+        //TODO palce animal in map
+        //TODO check capacity of coob
+
+        App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+        return new Result(false, "a new " + animalType + " named " + "has been bought.");
+    }
 }

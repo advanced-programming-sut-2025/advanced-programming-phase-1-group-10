@@ -1,6 +1,7 @@
 package Models.PlayerStuff;
 
 
+import Models.Animal.Animal;
 import Models.Item;
 import Models.Person;
 import Models.Position;
@@ -14,6 +15,8 @@ public class Player implements Person {
     private String name;
 
     private Position position;
+
+    private ArrayList<Animal> playerAnimals = new ArrayList<>();
 
     private int gold;
     private int wood;
@@ -108,5 +111,7 @@ public class Player implements Person {
         return trading;
     }
 
-
+    public ArrayList<Animal> getPlayerAnimals() {
+        return playerAnimals;
+    }
 }
