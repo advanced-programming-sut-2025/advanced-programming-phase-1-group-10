@@ -47,9 +47,9 @@ public class GameMenuControllers {
 
     public Position chooseStartingPoint(int index) {
         switch (index){
-            case 0: return new Position(1,1);
-            case 1: return new Position(1,Map.mapWidth - Farm.farmWidth);
-            case 2: return new Position(Map.mapHeight - Farm.farmHeight,1);
+            case 0: return new Position(0,0);
+            case 1: return new Position(0,Map.mapWidth - Farm.farmWidth);
+            case 2: return new Position(Map.mapHeight - Farm.farmHeight,0);
             case 3: return new Position(Map.mapHeight - Farm.farmHeight,Map.mapWidth - Farm.farmWidth);
         }
         assert false : "Index out of bounds";
@@ -61,17 +61,25 @@ public class GameMenuControllers {
         Farm farm = new Farm();
         farm.setPosition(startingPosition);
         //Create Farm
-        for (int height = startingPosition.getX() + 1; height < startingPosition.getX() + Farm.farmHeight; height++) {
-            for (int width = startingPosition.getY() + 1; width < startingPosition.getY() + Farm.farmWidth; width++) {
+        for (int height = startingPosition.getX() ; height < startingPosition.getX() + Farm.farmHeight; height++) {
+            for (int width = startingPosition.getY() ; width < startingPosition.getY() + Farm.farmWidth; width++) {
                 Tile tile = game.getGameMap().getMap()[height][width];
-                farm.getTiles().add(tile);
+                farm.getTiles()[height - startingPosition.getX()][width - startingPosition.getY()] = tile;
                 tile.setFarm(farm);
+            }
+        }
+        for (int height = 0; height < Farm.farmHeight; height++) {
+            for (int width = 0; width < Farm.farmWidth; width++) {
+                if(height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
+                    farm.getTiles()[height][width].setTileType(TileType.Wall);
+                }
+
             }
         }
         //Create lake, lake data:
         final int lakeHeight = 3;
         final int lakeWidth = 6;
-        final Position lakeBasePositon = new Position( 2 * Farm.farmWidth / 3, 2 * Farm.farmWidth / 3);
+        final Position lakeBasePositon = new Position( 10, 40);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
         //Create house, house data:
@@ -101,11 +109,19 @@ public class GameMenuControllers {
         Farm farm = new Farm();
         farm.setPosition(startingPosition);
         //Create Farm
-        for (int height = startingPosition.getX() + 1; height < startingPosition.getX() + Farm.farmHeight; height++) {
-            for (int width = startingPosition.getY() + 1; width < startingPosition.getY() + Farm.farmWidth; width++) {
+        for (int height = startingPosition.getX(); height < startingPosition.getX() + Farm.farmHeight; height++) {
+            for (int width = startingPosition.getY(); width < startingPosition.getY() + Farm.farmWidth; width++) {
                 Tile tile = game.getGameMap().getMap()[height][width];
-                farm.getTiles().add(tile);
+                farm.getTiles()[height - startingPosition.getX()][width - startingPosition.getY()] = tile;
                 tile.setFarm(farm);
+            }
+        }
+        for (int height = 0; height < Farm.farmHeight; height++) {
+            for (int width = 0; width < Farm.farmWidth; width++) {
+                if(height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
+                    farm.getTiles()[height][width].setTileType(TileType.Wall);
+                }
+
             }
         }
         //Create lake, lake data:

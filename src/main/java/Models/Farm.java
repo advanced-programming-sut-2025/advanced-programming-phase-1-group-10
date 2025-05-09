@@ -10,11 +10,11 @@ public class Farm {
     private Player player;
     private Position position;
 
-    public static final int farmHeight = 24;
-    public static final int farmWidth = 32;
+    public static final int farmHeight = 48;
+    public static final int farmWidth = 64;
 
 
-    private final ArrayList<Tile> tiles = new ArrayList<>();
+    private final Tile[][] tiles = new Tile[farmHeight][farmWidth];
     private final ArrayList<Place> places = new ArrayList<>();
 
 
@@ -34,7 +34,7 @@ public class Farm {
         this.position = position;
     }
 
-    public ArrayList<Tile> getTiles() {
+    public Tile[][] getTiles() {
         return tiles;
     }
 
