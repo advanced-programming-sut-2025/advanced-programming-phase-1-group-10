@@ -31,4 +31,24 @@ public enum TreeType{
         this.name = name;
         this.fruitType = fruitType;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Integer> getItems() {
+        return items;
+    }
+
+    public FruitType getFruitType() {
+        return fruitType;
+    }
+
+    public void setFruitType(FruitType fruitType) {
+        this.fruitType = fruitType;
+    }
 }

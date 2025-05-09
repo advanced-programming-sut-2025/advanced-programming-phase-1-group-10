@@ -12,6 +12,11 @@ public class Crop implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "M";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfCrop;
     }

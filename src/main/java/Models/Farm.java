@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Farm {
 
-    private Player player;
     private Position position;
 
     public static final int farmHeight = 48;
@@ -18,13 +17,6 @@ public class Farm {
     private final ArrayList<Place> places = new ArrayList<>();
 
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
 
     public Position getPosition() {
         return position;

@@ -5,6 +5,7 @@ import Models.Item;
 import java.util.ArrayList;
 
 public class BackPack extends Tool {
+
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();
     public BackPack() {
@@ -17,5 +18,9 @@ public class BackPack extends Tool {
 
     public ArrayList<Item> getItems() {
         return items;
+    }
+
+    public void setBackpackType(BackpackType backpackType) {
+        this.backpackType = backpackType;
     }
 }

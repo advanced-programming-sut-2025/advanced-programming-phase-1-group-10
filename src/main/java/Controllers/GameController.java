@@ -2,20 +2,16 @@ package Controllers;
 
 import Models.Animal.Animal;
 import Models.App;
-import Models.Crafting.Crafting;
-import Models.Crafting.CraftingType;
 import Models.Item;
 import Models.PlayerStuff.Player;
 import Models.Result;
 import Models.Tools.Tool;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameController {
     public Result showEnergy() {
-        final int energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergy();
+        final int energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
         return new Result(true, "Player Energy: " + energy);
     }
 
@@ -107,22 +103,4 @@ public class GameController {
         App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
         return new Result(false, "a new " + animalType + " named " + "has been bought.");
     }
-
-    public Result craftingShowRecipes() {
-        ArrayList<CraftingType> availableCraftings = new ArrayList<>();
-
-        for(CraftingType craftingtype : CraftingType.values()) {
-            String abilityType = craftingtype.getAbilityType();
-            int abilityLevel = craftingtype.getAbilityLevel();
-            String learnedRecipe = craftingtype.getLaernedRecipe();
-            if(abilityType.equals(null) && learnedRecipe.equals(null)) {
-                availableCraftings.add(craftingtype);
-            }
-        }
-    }
-
-    public Result craftingCraft(String itemName) {
-
-    }
-
 }

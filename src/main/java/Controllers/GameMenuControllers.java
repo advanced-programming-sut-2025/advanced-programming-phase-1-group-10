@@ -1,14 +1,16 @@
 package Controllers;
 
 import Models.*;
+import Models.Mineral.Mineral;
+import Models.Mineral.MineralTypes;
 import Models.Place.*;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class GameMenuControllers {
-
 
 
     public Result createGame(String username1, String username2, String username3, String username4) {
@@ -182,11 +184,63 @@ public class GameMenuControllers {
             for (int width = position.getY(); width < position.getY() + placewidth; width++) {
                 Tile tile = game.getGameMap().getMap()[height][width];
                 tile.setPlace(place);
-                place.getPlaceTiles().add(tile);
+                place.getPlaceTiles()[height - position.getX()][width -position.getY()] = tile;
             }
         }
     }
 
+    public Place getPlaceByName(ArrayList<Place> places, String name) {
+        for (Place place : places) {
+            if(place.getClass().getSimpleName().equals(name)) {
+                return place;
+            }
+        }
+        assert false : "Place not found";
+        return null;
+    }
 
+    public Tile getTileByPosition(Position position) {
+        return App.getInstance().getCurrentGame().getGameMap().getMap()[position.getX()][position.getY()];
+    }
+
+    public Tile getRandomTile(Tile[][] map) {
+        int height = map.length;
+        int width = map[0].length;
+
+        Random random = new Random();
+        int row = random.nextInt(height);
+        int col = random.nextInt(width);
+
+        return map[row][col];
+    }
+
+    public boolean isAvailableTileForMineral(Tile tile){
+        if(tile.getItem() != null){
+            return false;
+        }
+        return true;
+    }
+
+    public Item getRandomItem(ArrayList<Item> list) {
+        if (list.isEmpty()) return null;
+        Random random = new Random();
+        return list.get(random.nextInt(list.size()));
+    }
+
+    public void putRandomMineral(Farm farm, int numberOfRandom) {
+        Tile[][] tiles = getPlaceByName(farm.getPlaces(),"Quarry").getPlaceTiles();
+        ArrayList<Item> minerals = new ArrayList<>();
+        for (MineralTypes type : MineralTypes.values()) {
+            minerals.add(new Mineral(type,1));
+        }
+        for(int i = 0; i < numberOfRandom; i++){
+            Tile randomTile = getRandomTile(tiles);
+            Mineral mineral = (Mineral)getRandomItem(minerals);
+            if(!isAvailableTileForMineral(randomTile)){
+                continue;
+            }
+            randomTile.setItem(mineral);
+        }
+    }
 
 }

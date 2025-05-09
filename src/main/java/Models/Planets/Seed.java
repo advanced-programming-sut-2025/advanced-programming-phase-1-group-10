@@ -13,6 +13,11 @@ public class Seed implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "s";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfSeed;
     }

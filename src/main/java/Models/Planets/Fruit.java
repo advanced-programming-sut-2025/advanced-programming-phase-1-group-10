@@ -13,6 +13,11 @@ public class Fruit implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "f";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfFruit;
     }
