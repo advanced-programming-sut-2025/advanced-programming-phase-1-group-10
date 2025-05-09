@@ -6,6 +6,11 @@ public class Crop implements Item {
     CropType cropType;
     private int numberOfCrop;
 
+    public Crop(CropType cropType, int numberOfCrop) {
+        this.cropType = cropType;
+        this.numberOfCrop = numberOfCrop;
+    }
+
     @Override
     public String getName() {
         return cropType.getName();

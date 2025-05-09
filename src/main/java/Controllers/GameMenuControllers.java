@@ -4,11 +4,14 @@ import Models.*;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.Place.*;
+import Models.Planets.Crop.Crop;
+import Models.Planets.Crop.ForagingCropType;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class GameMenuControllers {
 
@@ -227,6 +230,12 @@ public class GameMenuControllers {
         return list.get(random.nextInt(list.size()));
     }
 
+    public Tile getRandomTileArrayList(ArrayList<Tile> list) {
+        if (list.isEmpty()) return null;
+        Random random = new Random();
+        return list.get(random.nextInt(list.size()));
+    }
+
     public void putRandomMineral(Farm farm, int numberOfRandom) {
         Tile[][] tiles = getPlaceByName(farm.getPlaces(),"Quarry").getPlaceTiles();
         ArrayList<Item> minerals = new ArrayList<>();
@@ -240,6 +249,25 @@ public class GameMenuControllers {
                 continue;
             }
             randomTile.setItem(mineral);
+        }
+    }
+
+    public boolean isAvailableForPlant(Tile tile){
+        //TODO Maybe type of tile should be added.
+        return tile.getItem() == null && tile.getPlace() == null;
+    }
+
+    public void putRandomForagingPlanet(Farm farm, int numberOfRandom) {
+        ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream).filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Item> planets = new ArrayList<>();
+        for(ForagingCropType foragingCropType: ForagingCropType.values()) {
+            planets.add(new Crop(foragingCropType, 1));
+        }
+        //TODO Add foraging tree (either here or in the foraging seed)
+        for(int i = 0; i < numberOfRandom; i++){
+            Item randomItem = getRandomItem(planets);
+            Tile tile = getRandomTileArrayList(tiles);
+            if (tile != null && randomItem != null) tile.setItem(randomItem);
         }
     }
 

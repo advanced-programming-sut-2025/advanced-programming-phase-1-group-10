@@ -26,5 +26,4 @@ public class Artisan implements Item {
     public void setNumber(int number) {
         numberOfArtisan = number;
     }
-
 }
