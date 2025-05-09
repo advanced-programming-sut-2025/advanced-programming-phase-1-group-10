@@ -20,7 +20,7 @@ public class Mineral implements Item {
 
     @Override
     public String getSymbol() {
-        return "a";
+        return "o";
     }
 
     @Override
