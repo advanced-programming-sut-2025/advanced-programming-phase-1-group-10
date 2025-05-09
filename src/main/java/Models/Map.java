@@ -1,24 +1,31 @@
 package Models;
 
 
-import Models.DateTime.DateTime;
-import Models.Weather.Weather;
-
 public class Map {
 
-    public static final int mapWidth = 400;
-    public static final int mapHeight = 300;
+    public static final int mapHeight = 120;
+    public static final int mapWidth = 160;
+
 
     private final Tile[][] map = new Tile[mapHeight][mapWidth];
 
-    public Map(){
-
+    public Map() {
+        for (int height = 0; height < mapHeight; height++) {
+            for (int width = 0; width < mapWidth; width++) map[height][width] = new Tile();
+        }
+        for (int height = 0; height < mapHeight; height++) {
+            for (int width = 0; width < mapWidth; width++) {
+                Tile tile = map[height][width];
+                if ((height == 0 || height == Map.mapHeight - 1) || (width == 0 || width == Map.mapWidth - 1)){
+                    tile.setTileType(TileType.Wall);
+                }
+            }
+        }
     }
 
     public Tile[][] getMap() {
         return map;
     }
-
 
 
 }

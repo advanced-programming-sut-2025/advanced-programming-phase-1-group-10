@@ -33,9 +33,19 @@ public class Tile {
         this.place = place;
     }
 
+    public TileType getTileType() {
+        return tileType;
+    }
+
+    public void setTileType(TileType tileType) {
+        this.tileType = tileType;
+    }
+
     public void printTile(){
-        if(this.place == null){
-            System.out.print("O");
+        if(this.getTileType() == TileType.Wall){
+            System.out.print("X");
+        } else if(this.place == null){
+            System.out.print(" ");
         } else {
             System.out.print(this.place.getSymbol());
         }

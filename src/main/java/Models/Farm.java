@@ -10,8 +10,9 @@ public class Farm {
     private Player player;
     private Position position;
 
-    public static final int farmWidth = 80;
-    public static final int farmHeight = 60;
+    public static final int farmHeight = 24;
+    public static final int farmWidth = 32;
+
 
     private final ArrayList<Tile> tiles = new ArrayList<>();
     private final ArrayList<Place> places = new ArrayList<>();

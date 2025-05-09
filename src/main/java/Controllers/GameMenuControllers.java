@@ -48,9 +48,9 @@ public class GameMenuControllers {
     public Position chooseStartingPoint(int index) {
         switch (index){
             case 0: return new Position(1,1);
-            case 1: return new Position(1,Map.mapWidth - 80);
-            case 2: return new Position(Map.mapHeight - 60,1);
-            case 3: return new Position(Map.mapHeight - 60,Map.mapWidth - 80);
+            case 1: return new Position(1,Map.mapWidth - Farm.farmWidth);
+            case 2: return new Position(Map.mapHeight - Farm.farmHeight,1);
+            case 3: return new Position(Map.mapHeight - Farm.farmHeight,Map.mapWidth - Farm.farmWidth);
         }
         assert false : "Index out of bounds";
         return null;
@@ -69,27 +69,27 @@ public class GameMenuControllers {
             }
         }
         //Create lake, lake data:
-        final int lakeHeight = 10;
-        final int lakeWidth = 60;
-        final Position lakeBasePositon = new Position(45, 20);
+        final int lakeHeight = 3;
+        final int lakeWidth = 6;
+        final Position lakeBasePositon = new Position( 2 * Farm.farmWidth / 3, 2 * Farm.farmWidth / 3);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
         //Create house, house data:
         final int houseHeight = 4;
         final int houseWidth = 4;
-        final Position houseBasePostion = new Position(20, 60);
+        final Position houseBasePostion = new Position(12, 24);
         final Position housePosition = new Position(startingPosition.getX() + houseBasePostion.getX(), startingPosition.getY() + houseBasePostion.getY());
         farm.getPlaces().add(createHouse(startingPosition, game, farm, houseHeight, houseWidth, housePosition));
         //Create Quarry
-        final int quarryHeight = 10;
-        final int quarryWidth = 60;
-        final Position quarryBasePosition = new Position(25, 20);
+        final int quarryHeight = 4;
+        final int quarryWidth = 6;
+        final Position quarryBasePosition = new Position(16, 8);
         final Position quarryPostion = new Position(startingPosition.getX() + quarryBasePosition.getX(), startingPosition.getY() + quarryBasePosition.getY());
         farm.getPlaces().add(createQuarry(startingPosition, game, farm, quarryHeight, quarryWidth, quarryPostion));
         //Create GreenHouse
         final int greenHouseHeight = 6;
         final int greenHouseWidth = 7;
-        final Position greenHouseBasePostion = new Position(10, 20);
+        final Position greenHouseBasePostion = new Position(4, 8);
         final Position greenHousePosition = new Position(startingPosition.getX() + greenHouseBasePostion.getX(), startingPosition.getY() + greenHouseBasePostion.getY());
         farm.getPlaces().add(createGreenHouse(startingPosition, game, farm, greenHouseHeight, greenHouseWidth, greenHousePosition));
         return farm;
@@ -109,27 +109,27 @@ public class GameMenuControllers {
             }
         }
         //Create lake, lake data:
-        final int lakeHeight = 8;
-        final int lakeWidth = 16;
-        final Position lakeBasePositon = new Position(40, 60);
+        final int lakeHeight = 2;
+        final int lakeWidth = 4;
+        final Position lakeBasePositon = new Position(16, 24);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
         //Create house, house data:
         final int houseHeight = 4;
         final int houseWidth = 4;
-        final Position houseBasePostion = new Position(20, 60);
+        final Position houseBasePostion = new Position(8, 24);
         final Position housePosition = new Position(startingPosition.getX() + houseBasePostion.getX(), startingPosition.getY() + houseBasePostion.getY());
         farm.getPlaces().add(createHouse(startingPosition, game, farm, houseHeight, houseWidth, housePosition));
         //Create Quarry
-        final int quarryHeight = 15;
-        final int quarryWidth = 20;
-        final Position quarryBasePosition = new Position(40, 10);
+        final int quarryHeight = 4;
+        final int quarryWidth = 8;
+        final Position quarryBasePosition = new Position(16, 4);
         final Position quarryPostion = new Position(startingPosition.getX() + quarryBasePosition.getX(), startingPosition.getY() + quarryBasePosition.getY());
         farm.getPlaces().add(createQuarry(startingPosition, game, farm, quarryHeight, quarryWidth, quarryPostion));
         //Create GreenHouse
         final int greenHouseHeight = 6;
         final int greenHouseWidth = 7;
-        final Position greenHouseBasePostion = new Position(20, 20);
+        final Position greenHouseBasePostion = new Position(8, 8);
         final Position greenHousePosition = new Position(startingPosition.getX() + greenHouseBasePostion.getX(), startingPosition.getY() + greenHouseBasePostion.getY());
         farm.getPlaces().add(createGreenHouse(startingPosition, game, farm, greenHouseHeight, greenHouseWidth, greenHousePosition));
         return farm;
