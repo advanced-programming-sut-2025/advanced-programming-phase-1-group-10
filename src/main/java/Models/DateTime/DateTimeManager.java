@@ -1,5 +1,6 @@
 package Models.DateTime;
 
+import Models.Game;
 import Models.Result;
 
 public class DateTimeManager {
@@ -17,25 +18,25 @@ public class DateTimeManager {
         return instance;
     }
 
-    public Result showGameTime(){
-        return new Result(true, "Game Time: " + DateTime.getInstance().getHour() + ":00");
+    public Result showGameTime(Game game) {
+        return new Result(true, "Game Time: " + game.getGameTime().getHour() + ":00");
     }
 
-    public Result showGameDate(){
-        return new Result(true, "Game Date: " + DateTime.getInstance().getYear() + "-" + DateTime.getInstance().getMonth() + "-" + DateTime.getInstance().getDay());
+    public Result showGameDate(Game game) {
+        return new Result(true, "Game Date: " + game.getGameTime().getYear() + "-" + game.getGameTime().getMonth() + "-" + game.getGameTime().getDay());
     }
 
-    public Result showGameDateTime(){
-        return new Result(true, showGameTime() + "\n" + showGameDate());
+    public Result showGameDateTime(Game game) {
+        return new Result(true, showGameTime(game) + "\n" + showGameDate(game));
     }
 
-    public Result showDayOfWeek(){
+    public Result showDayOfWeek(Game game) {
         String[] weekdays = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        return new Result(true,"Day of week: " + weekdays[DateTime.getInstance().getDay() % weekdays.length]);
+        return new Result(true,"Day of week: " + weekdays[game.getGameTime().getDay() % weekdays.length]);
     }
 
-    public Result showSeason(){
-        return new Result(true, "Season: " + DateTime.getInstance().getSeason().getName());
+    public Result showSeason(Game game) {
+        return new Result(true, "Season: " + game.getGameTime().getSeason().getName());
     }
 
 

@@ -22,6 +22,13 @@ public class DateTime {
         this.hour = 9;
     }
 
+    public DateTime(Season season, int year, int month, int day, int hour) {
+        this.season = season;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+    }
 
     public int getHour() {
         return hour;
@@ -42,13 +49,6 @@ public class DateTime {
     public Season getSeason() {
         return season;
     }
-
-    private static DateTime instance;
-    public static DateTime getInstance(){
-        if(instance == null){
-            instance = new DateTime();
-        }
-        return instance;
-    }
+    
 
 }

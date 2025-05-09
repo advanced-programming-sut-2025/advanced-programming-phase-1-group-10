@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public enum GameMenuCommands implements Commands{
 
+    //New game
+    NEW_GAME("game new -u (?<username1>[\\S]+) (?<username2>[\\S]+) (?<username3>[\\S]+)"),
 
     ;
 

@@ -1,13 +1,13 @@
 package Controllers;
 
 import Models.Animal.Animal;
-import Models.Animal.AnimalType;
 import Models.App;
 import Models.Item;
 import Models.PlayerStuff.Player;
 import Models.Result;
 import Models.Tools.Tool;
 
+import java.awt.*;
 import java.util.List;
 
 public class GameController {
@@ -57,9 +57,9 @@ public class GameController {
     }
 
     public Result equipTool(String toolName) {
-        for(Item item : App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()) {
-            if(item instanceof Tool && (item).getName().equalsIgnoreCase(toolName)) {
-                App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool((Tool)item);
+        for (Item item : App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()) {
+            if (item instanceof Tool && (item).getName().equalsIgnoreCase(toolName)) {
+                App.getInstance().getCurrentGame().getCurrentPlayer().setCurrentTool((Tool) item);
                 return new Result(true, item.getName() + " equipped.");
             }
         }
@@ -68,7 +68,7 @@ public class GameController {
 
     public Result showCurrentTool() {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        if(player.getCurrentTool() == null) {
+        if (player.getCurrentTool() == null) {
             return new Result(false, "No tool equipped.");
         } else {
             return new Result(true, player.getCurrentTool().getName() + " equipped.");
@@ -78,23 +78,23 @@ public class GameController {
     public Result showAvaliableTools() {
         StringBuilder message = new StringBuilder();
         List<Item> items = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems();
-        for(Item item : items) {
-            if(item instanceof Tool) {
+        for (Item item : items) {
+            if (item instanceof Tool) {
                 message.append(item.getName()).append(" ");
             }
         }
         return new Result(true, message.toString());
     }
 
-    public Result buyAnimal(String animalType, String name){
-        Animal animal = Animal.animalFactory(animalType,name);
-        if(animal == null){
+    public Result buyAnimal(String animalType, String name) {
+        Animal animal = Animal.animalFactory(animalType, name);
+        if (animal == null) {
             return new Result(false, "invalid animal type!");
         }
 
-        for(Animal animal1 : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()){
-            if(animal1.getName().equals(name)){
-                return new Result(false,"each animal must have a unique name.");
+        for (Animal animal1 : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
+            if (animal1.getName().equals(name)) {
+                return new Result(false, "each animal must have a unique name.");
             }
         }
 

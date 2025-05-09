@@ -2,6 +2,7 @@ package Models.PlayerStuff;
 
 
 import Models.Animal.Animal;
+import Models.Farm;
 import Models.Item;
 import Models.Person;
 import Models.Position;
@@ -15,6 +16,8 @@ public class Player implements Person {
     private String name;
 
     private Position position;
+
+    private Farm farm;
 
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
 
@@ -34,6 +37,12 @@ public class Player implements Person {
     private ArrayList<TradeRequest> acceptedTradeRequests;
 
     private Trading trading;
+
+    public Player(String name) {
+        this.name = name;
+        //this.position = new Position();
+        //TODO Add starting items for player
+    }
 
     public void setEnergy(int energy) {
         //Faint process implements here.
