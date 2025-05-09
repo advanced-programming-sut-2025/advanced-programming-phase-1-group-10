@@ -26,7 +26,11 @@ public enum GameCommands implements Commands {
     EQUIP_TOOL("^tools equip (?<toolName>[\\S ]+)$"),
     SHOW__CURRENT_TOOL("^tools show current$"),
     UPGRADE_TOOL("tools upgrade (?<toolName>[\\S ]+)"),
-    TOOL_USE("tools use -d (?<direction>)[\\S+]")
+    TOOL_USE("tools use -d (?<direction>)[\\S]+"),
+
+    //Crafting Commands
+    CRAFTING_SHOW_RECIPES("^crafting show recipes$"),
+    CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)")
     ;
 
     private final String pattern;
