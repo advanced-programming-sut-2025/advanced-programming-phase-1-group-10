@@ -10,5 +10,8 @@ public class GreenHouse extends Place {
         super(position, height, width);
     }
 
-    public void build(){}
+    @Override
+    public String getSymbol() {
+        return "G";
+    }
 }

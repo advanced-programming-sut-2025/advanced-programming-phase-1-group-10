@@ -9,5 +9,8 @@ public class House extends Place {
         super(position, height, width);
     }
 
-    public void build(){}
+    @Override
+    public String getSymbol() {
+        return "H";
+    }
 }

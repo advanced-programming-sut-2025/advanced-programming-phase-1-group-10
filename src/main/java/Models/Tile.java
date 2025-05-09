@@ -32,4 +32,13 @@ public class Tile {
     public void setPlace(Place place) {
         this.place = place;
     }
+
+    public void printTile(){
+        if(this.place == null){
+            System.out.print("O");
+        } else {
+            System.out.print(this.place.getSymbol());
+        }
+    }
+
 }

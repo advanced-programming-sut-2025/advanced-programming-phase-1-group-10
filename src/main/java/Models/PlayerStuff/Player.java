@@ -123,4 +123,12 @@ public class Player implements Person {
     public ArrayList<Animal> getPlayerAnimals() {
         return playerAnimals;
     }
+
+    public Farm getFarm() {
+        return farm;
+    }
+
+    public void setFarm(Farm farm) {
+        this.farm = farm;
+    }
 }

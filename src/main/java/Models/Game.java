@@ -24,6 +24,8 @@ public class Game {
     public Game(String gameOwner) {
         this.gameOwner = gameOwner;
         this.gameTime = new DateTime(Season.SPRING,2000,1,1,9);
+        this.weather = Weather.SUNNY;
+        this.nextDayWeather = Weather.SUNNY;
         this.gameMap = new Map();
     }
 

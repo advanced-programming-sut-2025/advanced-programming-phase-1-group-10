@@ -30,4 +30,9 @@ public class Place {
         return placeTiles;
     }
 
+    public String getSymbol() {
+        //Should never be printed
+        return "X";
+    }
+
 }

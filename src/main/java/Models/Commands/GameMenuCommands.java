@@ -7,7 +7,7 @@ public enum GameMenuCommands implements Commands{
 
     //New game
     NEW_GAME("game new -u (?<username1>[\\S]+) (?<username2>[\\S]+) (?<username3>[\\S]+)"),
-
+    CHOOSE_MAP("game map (?<mapNumber>1|2)"),
     ;
 
 
