@@ -1,10 +1,15 @@
 package Models.PlayerStuff;
 
 public class Energy {
+
+    public final static int startingEnergy = 200;
+
     int energy;
 
+
+
     public Energy(int energy) {
-        this.energy = energy;
+        this.energy = startingEnergy;
     }
 
     public int getEnergy() {

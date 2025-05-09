@@ -10,7 +10,6 @@ import java.util.Arrays;
 public class GameMenuControllers {
 
 
-
     public Result createGame(String username1, String username2, String username3, String username4) {
         final ArrayList<String> names = new ArrayList<>(Arrays.asList(username1, username2, username3, username4));
         for (String name : names)
@@ -187,6 +186,18 @@ public class GameMenuControllers {
         }
     }
 
+    public Place getPlaceByName(ArrayList<Place> places, String name) {
+        for (Place place : places) {
+            if(place.getClass().getSimpleName().equals(name)) {
+                return place;
+            }
+        }
+        assert false : "Place not found";
+        return null;
+    }
 
+    public Tile getTileByPosition(Position position) {
+        return App.getInstance().getCurrentGame().getGameMap().getMap()[position.getX()][position.getY()];
+    }
 
 }

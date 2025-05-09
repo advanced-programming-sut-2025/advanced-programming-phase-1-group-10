@@ -14,6 +14,7 @@ public enum Menu {
     ProfileMenu(new ProfileMenu()),
     MainMenu(new MainMenu()),
     TradeMenu(new TradeMenu()),
+    GameLauncher(new GameLauncher()),
     ExitMenu(new ExitMenu());
     ;
     private final AppMenu menu;

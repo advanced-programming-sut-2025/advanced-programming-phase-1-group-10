@@ -1,11 +1,9 @@
 package Views;
 
 import Controllers.GameMenuControllers;
-import Models.App;
+import Models.*;
 import Models.Commands.GameMenuCommands;
 import Models.PlayerStuff.Player;
-import Models.Position;
-import Models.Tile;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -28,7 +26,7 @@ public class GameMenu implements AppMenu {
                     matcher.group("username2").trim(),
                     matcher.group("username3").trim()
             ));
-            if(getInstance().getCurrentGame() != null) {
+            if (getInstance().getCurrentGame() != null) {
                 for (Player player : getInstance().getCurrentGame().getPlayers()) {
                     while (true) {
                         System.out.println("Enter farmType for " + player.getName() + " :");
@@ -40,7 +38,16 @@ public class GameMenu implements AppMenu {
                             Position position = controller.chooseStartingPoint(
                                     getInstance().getCurrentGame().getPlayers().indexOf(player)
                             );
-                            player.setFarm(controller.createFarm(mapNumber, position, getInstance().getCurrentGame()));
+                            //Create farm
+                            Farm farm = controller.createFarm(mapNumber, position, getInstance().getCurrentGame());
+                            //Set player postion left-up of the house.
+                            Position playerPostion = controller.getPlaceByName(farm.getPlaces(), "House").getPosition();
+                            player.setPosition(new Position(0,0));
+                            player.getPosition().setX(playerPostion.getX() - 1);
+                            player.getPosition().setY(playerPostion.getY() - 1);
+                            controller.getTileByPosition(player.getPosition()).setPlayer(player);
+                            //Give farm to player
+                            player.setFarm(farm);
                             System.out.println("Farm created for " + player.getName() + " with map type " + mapNumber);
                             break;
                         } else {
@@ -48,14 +55,14 @@ public class GameMenu implements AppMenu {
                         }
                     }
                 }
+                App.getInstance().setCurrentMenu(Menu.GameLauncher);
                 System.out.println("All players have chosen their farms. Game starts!");
-                for(Tile[] tiles : App.getInstance().getCurrentGame().getGameMap().getMap()){
-                    for(Tile tile : tiles){
+                for (Tile[] tiles : App.getInstance().getCurrentGame().getGameMap().getMap()) {
+                    for (Tile tile : tiles) {
                         tile.printTile();
                     }
                     System.out.println();
                 }
-
             }
         } else {
             System.out.println("Invalid command.");

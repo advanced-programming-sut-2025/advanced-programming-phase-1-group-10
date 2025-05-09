@@ -22,7 +22,6 @@ public class Player implements Person {
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
 
     private int gold;
-    private int wood;
     private Energy energy;
     private Player couple;
     private Tool currentTool;
@@ -40,8 +39,18 @@ public class Player implements Person {
 
     public Player(String name) {
         this.name = name;
-        //this.position = new Position();
-        //TODO Add starting items for player
+        this.inventory = new Inventory();
+        this.gold = 0;
+        this.energy = new Energy(Energy.startingEnergy);
+        this.couple = null;
+        this.currentTool = null;
+        this.faint = false;
+        this.miningAbility = 0;
+        this.farmingAbility = 0;
+        this.foragingAbility = 0;
+        this.fishingAbility = 0;
+        this.acceptedTradeRequests = new ArrayList<>();
+        this.trading = null;
     }
 
     public void setEnergy(int energy) {
@@ -70,10 +79,6 @@ public class Player implements Person {
 
     public int getGold() {
         return gold;
-    }
-
-    public int getWood() {
-        return wood;
     }
 
     public Player getCouple() {
@@ -130,5 +135,53 @@ public class Player implements Person {
 
     public void setFarm(Farm farm) {
         this.farm = farm;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
+    public void setEnergy(Energy energy) {
+        this.energy = energy;
+    }
+
+    public void setCouple(Player couple) {
+        this.couple = couple;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setFaint(boolean faint) {
+        this.faint = faint;
+    }
+
+    public void setMiningAbility(int miningAbility) {
+        this.miningAbility = miningAbility;
+    }
+
+    public void setFarmingAbility(int farmingAbility) {
+        this.farmingAbility = farmingAbility;
+    }
+
+    public void setForagingAbility(int foragingAbility) {
+        this.foragingAbility = foragingAbility;
+    }
+
+    public void setFishingAbility(int fishingAbility) {
+        this.fishingAbility = fishingAbility;
+    }
+
+    public void setTrading(Trading trading) {
+        this.trading = trading;
     }
 }

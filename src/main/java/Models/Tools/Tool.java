@@ -7,7 +7,6 @@ public class Tool implements Item {
     private int energyUsage;
     private Quality quality;
 
-
     @Override
     public String getName() {
         return name;
@@ -23,5 +22,23 @@ public class Tool implements Item {
         //Must not be coded, because number of tool is constant (one per player);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public int getEnergyUsage() {
+        return energyUsage;
+    }
+
+    public void setEnergyUsage(int energyUsage) {
+        this.energyUsage = energyUsage;
+    }
+
+    public Quality getQuality() {
+        return quality;
+    }
+
+    public void setQuality(Quality quality) {
+        this.quality = quality;
+    }
 }
