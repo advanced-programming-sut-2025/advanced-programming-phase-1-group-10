@@ -24,11 +24,12 @@ public class Player implements Person {
     private int gold;
     private int wood;
     private Energy energy;
+    private boolean isFainted;
     private Player couple;
     private Tool currentTool;
     private Inventory inventory;
 
-    private boolean faint;
+
     private int miningAbility;
     private int farmingAbility;
     private int foragingAbility;
@@ -40,11 +41,13 @@ public class Player implements Person {
 
     public Player(String name) {
         this.name = name;
+        this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
+        this.isFainted = false;
         //this.position = new Position();
         //TODO Add starting items for player
     }
 
-    public void setEnergy(int energy) {
+    public void setEnergy(int energyAmount) {
         //Faint process implements here.
     }
 
@@ -92,8 +95,8 @@ public class Player implements Person {
         return inventory;
     }
 
-    public boolean isFaint() {
-        return faint;
+    public boolean isFainted() {
+        return isFainted;
     }
 
     public int getMiningAbility() {
@@ -130,5 +133,9 @@ public class Player implements Person {
 
     public void setFarm(Farm farm) {
         this.farm = farm;
+    }
+
+    public void setFainted(boolean fainted) {
+        isFainted = fainted;
     }
 }
