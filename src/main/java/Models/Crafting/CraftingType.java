@@ -19,22 +19,22 @@ public enum CraftingType {
     MayonnaiseMachine("Mayonnaise Machine", null, 0, null),
     OilMaker("Oil Maker", "farming", 3, null),
     PreservesJar("Preserve Jar",  "farming", 2, null),
-    Dehydrator("Dehydrator", null, 0, "Pierre's General Store"),
-    GrassStarter("Grass Starter", null, 0, "Pierre's General Store"),
-    FishSmoker("Fish Smoker", null, 0, "Fish Shop"),
+    Dehydrator("Dehydrator", null, 0, "Dehydrator Recipe"),
+    GrassStarter("Grass Starter", null, 0, "Grass Starter Recipe"),
+    FishSmoker("Fish Smoker", null, 0, "Fish Smoker Recipe"),
     MysticTreeSeed("Mystic Tree Seed", "farming",4, null)
     ;
 
     private final String name;
     private final String abilityType;
     private final Integer abilityLevel;
-    private final String laernedRecipe;
+    private final String requiredRecipe;
 
-    CraftingType(String name, String abilityType, int abilityLevel, String learnedRecipe) {
+    CraftingType(String name, String abilityType, int abilityLevel, String requiredRecipe) {
         this.name = name;
         this.abilityType = abilityType;
         this.abilityLevel = abilityLevel;
-        this.laernedRecipe = learnedRecipe;
+        this.requiredRecipe = requiredRecipe;
     }
 
     public String getName() {
@@ -42,6 +42,6 @@ public enum CraftingType {
     }
     public String getAbilityType() {return abilityType;}
     public Integer getAbilityLevel() {return abilityLevel;}
-    public String getLaernedRecipe() {return laernedRecipe;}
+    public String getRequiredRecipe() {return requiredRecipe;}
 
 }

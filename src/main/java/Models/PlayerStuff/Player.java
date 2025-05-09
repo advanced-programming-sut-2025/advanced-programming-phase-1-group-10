@@ -6,6 +6,7 @@ import Models.Farm;
 import Models.Item;
 import Models.Person;
 import Models.Position;
+import Models.Recipe.Recipe;
 import Models.Tools.Tool;
 
 
@@ -28,7 +29,6 @@ public class Player implements Person {
     private Player couple;
     private Tool currentTool;
     private Inventory inventory;
-
 
     private int miningAbility;
     private int farmingAbility;

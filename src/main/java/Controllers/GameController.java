@@ -5,6 +5,7 @@ import Models.App;
 import Models.Crafting.CraftingType;
 import Models.Item;
 import Models.PlayerStuff.Player;
+import Models.Recipe.Recipe;
 import Models.Result;
 import Models.Tools.Tool;
 
@@ -110,15 +111,58 @@ public class GameController {
     public Result craftingShowRecipes() {
         ArrayList<CraftingType> availableCraftings = new ArrayList<>();
 
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        int miningLevel = player.getMiningAbility();
+        int farmingLevel = player.getFarmingAbility();
+        int foragingLevel = player.getForagingAbility();
+
+        ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        for (Item item : items) {
+            if (item instanceof Recipe) {
+                recipes.add((Recipe) item);
+            }
+        }
+
         for(CraftingType craftingtype : CraftingType.values()) {
             String abilityType = craftingtype.getAbilityType();
             int abilityLevel = craftingtype.getAbilityLevel();
-            String learnedRecipe = craftingtype.getLaernedRecipe();
-            if(abilityType.equals(null) && learnedRecipe.equals(null)) {
+            String requiredRecipe = craftingtype.getRequiredRecipe();
+
+            if(abilityType.equals(null) && requiredRecipe.equals(null)) {
                 availableCraftings.add(craftingtype);
             }
+            if(abilityType.equals("mining")){
+                if(abilityLevel <= miningLevel) {
+                    availableCraftings.add(craftingtype);
+                }
+            }
+            if(abilityType.equals("farming")){
+                if(abilityLevel <= farmingLevel) {
+                    availableCraftings.add(craftingtype);
+                }
+            }
+            if(abilityType.equals("foraging")){
+                if(abilityLevel <= foragingLevel) {
+                    availableCraftings.add(craftingtype);
+                }
+            }
+            if(!requiredRecipe.equals(null)) {
+                for (Recipe recipe: recipes) {
+                    if(requiredRecipe.equals(recipe.getName()))
+                        availableCraftings.add(craftingtype);
+                }
+            }
+
+            StringBuilder massage = new StringBuilder();
+            for (CraftingType availableCrafting : availableCraftings) {
+                massage.append(availableCrafting).append("\n");
+            }
+            String finalMassage = massage.toString();
+
+            return new Result(true, finalMassage);
         }
-        return null;
+        return new Result(false, "no crafting found.");
     }
 
     public Result craftingCraft(String itemName) {
