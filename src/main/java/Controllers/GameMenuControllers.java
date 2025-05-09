@@ -1,10 +1,7 @@
 package Controllers;
 
 import Models.*;
-import Models.Place.House;
-import Models.Place.Lake;
-import Models.Place.Place;
-import Models.Place.Quarry;
+import Models.Place.*;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
@@ -138,10 +135,10 @@ public class GameMenuControllers {
         return farm;
     }
 
-    private Quarry createGreenHouse(Position startingPosition, Game game, Farm farm, int greenhouseHeight, int greenhouseWidth, Position grenhousePosition) {
-        Quarry quarry = new Quarry(grenhousePosition, greenhouseHeight, greenhouseWidth);
-        setUpPlace(game, greenhouseHeight, greenhouseWidth, grenhousePosition, quarry);
-        return quarry;
+    private GreenHouse createGreenHouse(Position startingPosition, Game game, Farm farm, int greenhouseHeight, int greenhouseWidth, Position grenhousePosition) {
+        GreenHouse greenHouse = new GreenHouse(grenhousePosition, greenhouseHeight, greenhouseWidth);
+        setUpPlace(game, greenhouseHeight, greenhouseWidth, grenhousePosition, greenHouse);
+        return greenHouse;
     }
 
 
