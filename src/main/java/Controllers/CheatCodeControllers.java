@@ -19,7 +19,7 @@ public class CheatCodeControllers {
     }
 
     public Result setUnlimitedEnergy() {
-        App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().setEnergy(Integer.MAX_VALUE);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().setEnergyAmount(Integer.MAX_VALUE);
         return new Result(true, "Player Energy set to unlimited energy");
     }
 

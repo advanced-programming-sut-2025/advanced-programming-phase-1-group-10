@@ -7,12 +7,11 @@ import Models.PlayerStuff.Player;
 import Models.Result;
 import Models.Tools.Tool;
 
-import java.awt.*;
 import java.util.List;
 
 public class GameController {
     public Result showEnergy() {
-        final int energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergy();
+        final int energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
         return new Result(true, "Player Energy: " + energy);
     }
 
