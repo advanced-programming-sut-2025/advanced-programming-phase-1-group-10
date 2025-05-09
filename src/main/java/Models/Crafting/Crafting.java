@@ -11,6 +11,11 @@ public class Crafting implements Item {
         return craftingType.getName();
     }
 
+    @Override
+    public String getSymbol() {
+        return "r";
+    }
+
     public int getNumber() {
         return numberOfCrafting;
     }

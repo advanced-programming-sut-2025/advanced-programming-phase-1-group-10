@@ -13,6 +13,11 @@ public class Tool implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "t";
+    }
+
+    @Override
     public int getNumber() {
         return 1;
     }

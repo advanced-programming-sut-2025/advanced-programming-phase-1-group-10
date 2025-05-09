@@ -7,10 +7,20 @@ public class Mineral implements Item {
     private MineralTypes mineralType;
     private int numberOfMineral;
 
+    public Mineral(MineralTypes mineralType, int numberOfMineral) {
+        this.mineralType = mineralType;
+        this.numberOfMineral = numberOfMineral;
+    }
+
 
     @Override
     public String getName() {
         return mineralType.getName();
+    }
+
+    @Override
+    public String getSymbol() {
+        return "a";
     }
 
     @Override

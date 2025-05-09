@@ -13,6 +13,11 @@ public class Fish implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfFish;
     }

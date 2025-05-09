@@ -13,6 +13,11 @@ public class Artisan implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "a";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfArtisan;
     }

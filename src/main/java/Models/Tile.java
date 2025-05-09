@@ -62,6 +62,8 @@ public class Tile {
     public void printTile() {
         if (this.player != null) {
             System.out.print("P");
+        } else if(this.item != null) {
+            System.out.print(item.getSymbol());
         } else if (this.getTileType() == TileType.Wall) {
             System.out.print("X");
         } else if (this.place == null) {

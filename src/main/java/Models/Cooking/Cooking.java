@@ -14,6 +14,11 @@ public class Cooking implements Item {
     }
 
     @Override
+    public String getSymbol() {
+        return "c";
+    }
+
+    @Override
     public int getNumber() {
         return numberOfCooking;
     }
