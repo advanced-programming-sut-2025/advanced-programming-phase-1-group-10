@@ -138,4 +138,8 @@ public class Player implements Person {
     public void setFainted(boolean fainted) {
         isFainted = fainted;
     }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 }
