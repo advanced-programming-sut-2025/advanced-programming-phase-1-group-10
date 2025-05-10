@@ -3,14 +3,13 @@ package Models.Place;
 import Models.Position;
 import Models.Tile;
 
-import java.util.ArrayList;
 
 public class Place {
 
     protected Position position;
     protected int height;
     protected int width;
-    protected Tile[][] placeTiles = new Tile[height][width];
+    protected Tile[][] placeTiles;
 
     public Place(Position position,int height,int width) {
         this.position = position;
@@ -19,9 +18,6 @@ public class Place {
         this.placeTiles = new Tile[height][width];
     }
 
-    public Place() {
-
-    }
 
     public Position getPosition() {
         return position;

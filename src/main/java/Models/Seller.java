@@ -3,8 +3,8 @@ package Models;
 public class Seller implements Person {
 
     private String name;
-    private String symbol;
-    private Position position;
+    private final String symbol;
+    private final Position position;
 
 
     public Seller(String name, String symbol, Position position) {
@@ -26,11 +26,10 @@ public class Seller implements Person {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
+    @Override
     public Position getPosition() {
         return position;
     }
+
+
 }

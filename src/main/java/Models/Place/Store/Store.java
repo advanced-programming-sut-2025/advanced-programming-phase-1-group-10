@@ -10,15 +10,8 @@ public class Store extends Place {
     private String name;
     private StoreMenu storeMenu;
 
-    private String symbol;
-
-    //The value is not important ( and thus should never use)
     private final int openHour;
     private final int closeHour;
-
-    //The value is not important ( and thus should never use)
-    private final int height;
-    private final int width;
 
 
     public Store(Position position, int height, int width, Seller seller, int openHour, int closeHour) {
@@ -33,7 +26,7 @@ public class Store extends Place {
 
     @Override
     public String getSymbol() {
-        return "S";
+        return "-";
     }
 
     public int getCloseHour() {

@@ -3,6 +3,7 @@ package Controllers;
 import Models.*;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
+import Models.NPC.*;
 import Models.Place.*;
 import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
@@ -30,32 +31,44 @@ public class GameMenuControllers {
 
         App.getInstance().setCurrentGame(game);
         setUpCity(game);
+        setUpNPCs(game);
 
         return new Result(true, "Game created.");
     }
-
 
 
     public boolean isUsernameExist(String username) {
         return App.getInstance().getUsers().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 
-    public void setUpCity(Game game){
+    public void setUpCity(Game game) {
         game.getStores().addAll(Arrays.asList(
-                new BlackSmith(new Position(58,12),4,6,new Seller("Clint","1",new Position(54,12)),9,16),
-                new CarpenterShop(new Position(61,43),4,16,new Seller("Robin","4",new Position(62,45)),9,20),
-                new JojaMart(new Position(53,10),4,20, new Seller("Morris","2",new Position(59,16)), 9,23),
-                new FishStore(new Position(65,17),5,8,new Seller("Willy","5",new Position(66,19)),9,17),
-                new PierreGeneralStore(new Position(52,37),4,5,new Seller("Pierrre","3",new Position(53,39)),9,17),
-                new StardropSaloon(new Position(67,46),3,12,new Seller("Gus","7",new Position(68,48)),12,24),
-                new MarrineRanchStore(new Position(53,56),4,12, new Seller("Marnie","6",new Position(54,65)),9,16)
+                new BlackSmith(new Position(58, 12), 4, 6, new Seller("Clint", "1", new Position(54, 12)), 9, 16),
+                new CarpenterShop(new Position(61, 43), 4, 16, new Seller("Robin", "4", new Position(62, 45)), 9, 20),
+                new JojaMart(new Position(53, 10), 4, 20, new Seller("Morris", "2", new Position(59, 16)), 9, 23),
+                new FishStore(new Position(65, 17), 5, 8, new Seller("Willy", "5", new Position(66, 19)), 9, 17),
+                new PierreGeneralStore(new Position(52, 37), 4, 5, new Seller("Pierrre", "3", new Position(53, 39)), 9, 17),
+                new StardropSaloon(new Position(67, 46), 3, 12, new Seller("Gus", "7", new Position(68, 48)), 12, 24),
+                new MarrineRanchStore(new Position(53, 56), 4, 12, new Seller("Marnie", "6", new Position(54, 65)), 9, 16)
         ));
-        for(Store store : game.getStores()){
-            setUpPlace(game,store.getHeight(),store.getWidth(),store.getPosition(),store);
+        for (Store store : game.getStores()) {
+            setUpPlace(game, store.getHeight(), store.getWidth(), store.getPosition(), store);
             getTileByPosition(store.getSeller().getPosition()).setPerson(store.getSeller());
         }
+    }
 
-
+    public void setUpNPCs(Game game) {
+        game.getNpcs().addAll(Arrays.asList(
+                new Abigel("Abigel",new Position(56,105),new NpcHosue(new Position(55,103),4,9)),
+                new Harvey("Harvey",new Position(56,127),new NpcHosue(new Position(55,122),4,9)),
+                new Lia("Lia",new Position(56,145),new NpcHosue(new Position(55,142),4,9)),
+                new Robbin("Robbin",new Position(63,114),new NpcHosue(new Position(62,112),4,9)),
+                new Sebastian("Sebastian",new Position(63,134),new NpcHosue(new Position(62,132),4,9))
+                ));
+        for(NPC npc : game.getNpcs()) {
+            getTileByPosition(npc.getPosition()).setPerson(npc);
+            setUpPlace(game,npc.getHosue().getHouseHeight(),npc.getHosue().getHouseWidth(),npc.getHosue().getPosition(),npc.getHosue());
+        }
     }
 
 
@@ -70,11 +83,15 @@ public class GameMenuControllers {
     }
 
     public Position chooseStartingPoint(int index) {
-        switch (index){
-            case 0: return new Position(0,0);
-            case 1: return new Position(0,Map.mapWidth - Farm.farmWidth);
-            case 2: return new Position(Map.mapHeight - Farm.farmHeight,0);
-            case 3: return new Position(Map.mapHeight - Farm.farmHeight,Map.mapWidth - Farm.farmWidth);
+        switch (index) {
+            case 0:
+                return new Position(0, 0);
+            case 1:
+                return new Position(0, Map.mapWidth - Farm.farmWidth);
+            case 2:
+                return new Position(Map.mapHeight - Farm.farmHeight, 0);
+            case 3:
+                return new Position(Map.mapHeight - Farm.farmHeight, Map.mapWidth - Farm.farmWidth);
         }
         assert false : "Index out of bounds";
         return null;
@@ -85,8 +102,8 @@ public class GameMenuControllers {
         Farm farm = new Farm();
         farm.setPosition(startingPosition);
         //Create Farm
-        for (int height = startingPosition.getX() ; height < startingPosition.getX() + Farm.farmHeight; height++) {
-            for (int width = startingPosition.getY() ; width < startingPosition.getY() + Farm.farmWidth; width++) {
+        for (int height = startingPosition.getX(); height < startingPosition.getX() + Farm.farmHeight; height++) {
+            for (int width = startingPosition.getY(); width < startingPosition.getY() + Farm.farmWidth; width++) {
                 Tile tile = game.getGameMap().getMap()[height][width];
                 farm.getTiles()[height - startingPosition.getX()][width - startingPosition.getY()] = tile;
                 tile.setFarm(farm);
@@ -94,7 +111,7 @@ public class GameMenuControllers {
         }
         for (int height = 0; height < Farm.farmHeight; height++) {
             for (int width = 0; width < Farm.farmWidth; width++) {
-                if(height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
+                if (height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
                     farm.getTiles()[height][width].setTileType(TileType.Wall);
                 }
 
@@ -103,7 +120,7 @@ public class GameMenuControllers {
         //Create lake, lake data:
         final int lakeHeight = 3;
         final int lakeWidth = 6;
-        final Position lakeBasePositon = new Position( 10, 40);
+        final Position lakeBasePositon = new Position(10, 40);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
         //Create house, house data:
@@ -142,7 +159,7 @@ public class GameMenuControllers {
         }
         for (int height = 0; height < Farm.farmHeight; height++) {
             for (int width = 0; width < Farm.farmWidth; width++) {
-                if(height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
+                if (height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
                     farm.getTiles()[height][width].setTileType(TileType.Wall);
                 }
 
@@ -204,7 +221,7 @@ public class GameMenuControllers {
 
     public Place getPlaceByName(ArrayList<Place> places, String name) {
         for (Place place : places) {
-            if(place.getClass().getSimpleName().equals(name)) {
+            if (place.getClass().getSimpleName().equals(name)) {
                 return place;
             }
         }
@@ -227,8 +244,8 @@ public class GameMenuControllers {
         return map[row][col];
     }
 
-    public boolean isAvailableTileForMineral(Tile tile){
-        if(tile.getItem() != null){
+    public boolean isAvailableTileForMineral(Tile tile) {
+        if (tile.getItem() != null) {
             return false;
         }
         return true;
@@ -247,15 +264,15 @@ public class GameMenuControllers {
     }
 
     public void putRandomMineral(Farm farm, int numberOfRandom) {
-        Tile[][] tiles = getPlaceByName(farm.getPlaces(),"Quarry").getPlaceTiles();
+        Tile[][] tiles = getPlaceByName(farm.getPlaces(), "Quarry").getPlaceTiles();
         ArrayList<Item> minerals = new ArrayList<>();
         for (MineralTypes type : MineralTypes.values()) {
-            minerals.add(new Mineral(type,1));
+            minerals.add(new Mineral(type, 1));
         }
-        for(int i = 0; i < numberOfRandom; i++){
+        for (int i = 0; i < numberOfRandom; i++) {
             Tile randomTile = getRandomTile(tiles);
-            Mineral mineral = (Mineral)getRandomItem(minerals);
-            if(!isAvailableTileForMineral(randomTile)){
+            Mineral mineral = (Mineral) getRandomItem(minerals);
+            if (!isAvailableTileForMineral(randomTile)) {
                 continue;
             }
             randomTile.setItem(mineral);
@@ -267,24 +284,24 @@ public class GameMenuControllers {
             for (int width = position.getY(); width < position.getY() + placewidth; width++) {
                 Tile tile = game.getGameMap().getMap()[height][width];
                 tile.setPlace(place);
-                place.getPlaceTiles()[height - position.getX()][width -position.getY()] = tile;
+                place.getPlaceTiles()[height - position.getX()][width - position.getY()] = tile;
             }
         }
     }
 
-    public boolean isAvailableForPlant(Tile tile){
+    public boolean isAvailableForPlant(Tile tile) {
         return tile.getItem() == null && tile.getPlace() == null && tile.getTileType() != TileType.Wall;
     }
 
     public void putRandomForagingPlanet(Farm farm, int numberOfRandom) {
         ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream).filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Item> planets = new ArrayList<>();
-        for(ForagingCropType foragingCropType: ForagingCropType.values()) {
-            if(foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
+        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
+            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
                 planets.add(new Crop(foragingCropType, 1));
         }
         //TODO Add foraging tree (either here or in the foraging seed)
-        for(int i = 0; i < numberOfRandom; i++){
+        for (int i = 0; i < numberOfRandom; i++) {
             Item randomItem = getRandomItem(planets);
             Tile tile = getRandomTileArrayList(tiles);
             if (tile != null && randomItem != null) tile.setItem(randomItem);
