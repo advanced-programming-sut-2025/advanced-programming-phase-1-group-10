@@ -17,7 +17,9 @@ import java.util.Queue;
 public class GameController {
     public Result showEnergy() {
         final double energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
-        return new Result(true, "Player Energy: " + (int)energy);
+        String result;
+        if(energy == Double.MAX_VALUE) result = "Infinite"; else result = Double.toString((int)energy);
+        return new Result(true, "Player Energy: " + result);
     }
 
     public Result showInventory() {
@@ -298,6 +300,7 @@ public class GameController {
             double stepCost = (1 + (turnChanged ? 10.0 : 0)) / 20.0;
 
             if (stepCost > energy) {
+                //TODO Next turn and set faint on
                 return new Result(false, "You are faint!");
             }
 

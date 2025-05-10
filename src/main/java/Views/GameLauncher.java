@@ -1,7 +1,9 @@
 package Views;
 
+import Controllers.CheatCodeControllers;
 import Controllers.GameController;
 import Models.App;
+import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.Commands.GameMenuCommands;
 import Models.Position;
@@ -14,6 +16,8 @@ import java.util.regex.Matcher;
 public class GameLauncher implements AppMenu{
 
     GameController controller = new GameController();
+    CheatCodeControllers cheatCodeController = new CheatCodeControllers();
+
     @Override
     public void checkCommand(Scanner scanner) {
         String input = scanner.nextLine().trim();
@@ -48,8 +52,11 @@ public class GameLauncher implements AppMenu{
             )));
         } else if((matcher = GameCommands.SHOW_ENERGY.getMatcher(input)) != null){
             System.out.println(controller.showEnergy());
-        }
-        else{
+        } else if((matcher = CheatCodeCommands.SET_ENERGY.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.setEnergy(matcher.group("value")));
+        } else if ((matcher = CheatCodeCommands.SET_ENERGY_UNLIMITED.getMatcher(input)) != null) {
+            System.out.println(cheatCodeController.setUnlimitedEnergy());
+        } else{
             System.out.println("invalid command.");
         }
 

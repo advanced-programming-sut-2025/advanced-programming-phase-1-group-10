@@ -14,12 +14,12 @@ public class CheatCodeControllers {
         if(energyInt <= 0) {
             return new Result(false, "Invalid energy value");
         }
-        App.getInstance().getCurrentGame().getCurrentPlayer().setEnergy(energyInt);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().setEnergyAmount(energyInt);
         return new Result(true, "Player Energy set to " + energyInt);
     }
 
     public Result setUnlimitedEnergy() {
-        App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().setEnergyAmount(Integer.MAX_VALUE);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().setEnergyAmount(Double.MAX_VALUE);
         return new Result(true, "Player Energy set to unlimited energy");
     }
 
