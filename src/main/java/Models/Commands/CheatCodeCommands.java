@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 public enum CheatCodeCommands implements Commands {
 
     SET_ENERGY("^energy set -v (?<value>[\\S]+)$"),
-    SET_ENERGY_UNLIMITED("^energy unlimited$")
+    SET_ENERGY_UNLIMITED("^energy unlimited$"),
+    SET_ANIMAL_FRIENDSHIP("^cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>[\\S]+)\\s+-c\\s+(?<amount>\\d+)$")
     ;
 
     private final String pattern;

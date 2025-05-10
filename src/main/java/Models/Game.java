@@ -1,6 +1,7 @@
 package Models;
 
 
+import Models.Animal.Animal;
 import Models.DateTime.DateTime;
 import Models.DateTime.Season;
 import Models.NPC.NPC;
@@ -10,6 +11,7 @@ import Models.PlayerStuff.Player;
 import Models.Weather.Weather;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Game {
 
@@ -19,6 +21,7 @@ public class Game {
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final ArrayList<Store> stores = new ArrayList<>();
+    private HashMap<String , Animal> animals = new HashMap<>();
 
 
     private final Map gameMap;
@@ -91,5 +94,9 @@ public class Game {
             }
         }
         return null;
+    }
+
+    public HashMap<String, Animal> getAnimals() {
+        return animals;
     }
 }

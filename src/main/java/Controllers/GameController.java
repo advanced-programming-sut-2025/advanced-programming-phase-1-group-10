@@ -142,7 +142,44 @@ public class GameController {
             barn.setAnimalCount(barn.getAnimalCount() + 1);
 
         App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-        return new Result(false, "a new " + animalType + " named " + "has been bought.");
+        App.getInstance().getCurrentGame().getAnimals().put(name,animal);
+        return new Result(true, "a new " + animalType + " named " + "has been bought.");
+    }
+
+    public Result petAnimals(String name){
+        //TODO check the player is near animal
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+        if(animal == null){
+            return new Result(false, "there is no animal with this name.");
+        }
+        animal.pet();
+        return new Result(true,"you pet " + animal.getName() + ".");
+    }
+
+    public Result showAnimals(){
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().isEmpty()){
+            return new Result(false,"you don't have any animals.");
+        }
+        StringBuilder animals = new StringBuilder();
+        for(Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()){
+            animals.append("animal name : ".toUpperCase());
+            animals.append(animal.getName());
+            animals.append("|");
+            animals.append("ANIMAL FRIENDSHIP : ");
+            animals.append(animal.getFriendShip());
+            animals.append("|");
+            if(animal.isFed())
+                animals.append("the animal has been fed.");
+            else
+                animals.append("the animal has not been fed.");
+            animals.append("|");
+            if(animal.isPetted())
+                animals.append("the animal has been petted.");
+            else
+                animals.append("the animal has not been petted.");
+            animals.append("\n");
+        }
+        return new Result(true, animals.toString());
     }
 
     public Place getPlaceByType(String placeType) {
@@ -415,5 +452,4 @@ public class GameController {
 
         return new Result(true, sb.toString());
     }
-
 }

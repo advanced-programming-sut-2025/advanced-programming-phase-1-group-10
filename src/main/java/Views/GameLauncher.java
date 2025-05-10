@@ -56,7 +56,21 @@ public class GameLauncher implements AppMenu{
             System.out.println(cheatCodeController.setEnergy(matcher.group("value")));
         } else if ((matcher = CheatCodeCommands.SET_ENERGY_UNLIMITED.getMatcher(input)) != null) {
             System.out.println(cheatCodeController.setUnlimitedEnergy());
-        } else{
+        } else if((matcher = GameCommands.BUY_ANIMAL.getMatcher(input)) != null){
+            String animal = matcher.group("animal");
+            String name = matcher.group("name");
+            System.out.println(controller.buyAnimal(animal,name).message());
+        } else if((matcher = GameCommands.PET_ANIMAL.getMatcher(input)) != null){
+            String name = matcher.group("name");
+            System.out.println(controller.petAnimals(name).message());
+        } else if((matcher = CheatCodeCommands.SET_ANIMAL_FRIENDSHIP.getMatcher(input)) != null){
+            String name = matcher.group("animalName");
+            String amount = matcher.group("amount");
+            System.out.println(cheatCodeController.setAnimalFriendShip(name,amount));
+        } else if((matcher = GameCommands.ANIMLAS.getMatcher(input)) != null){
+            System.out.println(controller.showAnimals().message());
+        }
+        else{
             System.out.println("invalid command.");
         }
 
