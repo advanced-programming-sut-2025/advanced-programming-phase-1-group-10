@@ -8,6 +8,8 @@ import Models.Place.*;
 import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.ForagingCropType;
+import Models.Planets.Tree;
+import Models.Planets.TreeType;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
@@ -111,15 +113,17 @@ public class GameMenuControllers {
         }
         for (int height = 0; height < Farm.farmHeight; height++) {
             for (int width = 0; width < Farm.farmWidth; width++) {
-                if (height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
-                    farm.getTiles()[height][width].setTileType(TileType.Wall);
+                if ((height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1)) {
+                    if (!( (width > 29 && width < 35) || (width > 126 && width < 132) )){
+                        farm.getTiles()[height][width].setTileType(TileType.Wall);
+                    }
                 }
 
             }
         }
         //Create lake, lake data:
-        final int lakeHeight = 3;
-        final int lakeWidth = 6;
+        final int lakeHeight = 4;
+        final int lakeWidth = 12;
         final Position lakeBasePositon = new Position(10, 40);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
@@ -160,14 +164,16 @@ public class GameMenuControllers {
         for (int height = 0; height < Farm.farmHeight; height++) {
             for (int width = 0; width < Farm.farmWidth; width++) {
                 if (height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
-                    farm.getTiles()[height][width].setTileType(TileType.Wall);
+                    if (!( (width > 29 && width < 35) || (width > 126 && width < 132) )){
+                        farm.getTiles()[height][width].setTileType(TileType.Wall);
+                    }
                 }
 
             }
         }
         //Create lake, lake data:
-        final int lakeHeight = 2;
-        final int lakeWidth = 4;
+        final int lakeHeight = 5;
+        final int lakeWidth = 15;
         final Position lakeBasePositon = new Position(16, 24);
         final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
         farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
@@ -300,7 +306,13 @@ public class GameMenuControllers {
             if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
                 planets.add(new Crop(foragingCropType, 1));
         }
-        //TODO Add foraging tree (either here or in the foraging seed)
+
+        for(TreeType treeType : TreeType.values()) {
+            if(treeType.isForaging()){
+                planets.add(new Tree(treeType));
+            }
+        }
+
         for (int i = 0; i < numberOfRandom; i++) {
             Item randomItem = getRandomItem(planets);
             Tile tile = getRandomTileArrayList(tiles);
