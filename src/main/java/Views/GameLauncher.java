@@ -46,6 +46,8 @@ public class GameLauncher implements AppMenu{
                Integer.parseInt(matcher.group("x")),
                Integer.parseInt(matcher.group("y"))
             )));
+        } else if((matcher = GameCommands.SHOW_ENERGY.getMatcher(input)) != null){
+            System.out.println(controller.showEnergy());
         }
         else{
             System.out.println("invalid command.");

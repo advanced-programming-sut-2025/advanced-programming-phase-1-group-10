@@ -16,8 +16,8 @@ import java.util.Queue;
 
 public class GameController {
     public Result showEnergy() {
-        final int energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
-        return new Result(true, "Player Energy: " + energy);
+        final double energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
+        return new Result(true, "Player Energy: " + (int)energy);
     }
 
     public Result showInventory() {
@@ -217,8 +217,8 @@ public class GameController {
             return new Result(false, "Tile not found!");
         } else if (!isTileAvailableForWalk(finalPosition)) {
             return new Result(false, "Something else is placed on this tile!");
-        } else if(tile.getFarm() != App.getInstance().getCurrentGame().getCurrentPlayer().getFarm()){
-            return new Result(false, "You cannot walk to the other players's farm!");
+        } else if (tile.getFarm() != null && tile.getFarm() != App.getInstance().getCurrentGame().getCurrentPlayer().getFarm()) {
+            return new Result(false, "You cannot walk to the other player's farm!");
         }
 
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
@@ -273,45 +273,38 @@ public class GameController {
             step = parent[step.getX()][step.getY()];
         }
 
-        // Begin walking with energy
-        int energy = player.getEnergy().getEnergyAmount();
+        // Begin walking with energy (step-by-step)
+        double energy = player.getEnergy().getEnergyAmount();
         Position previous = startPosition;
         Integer lastDirection = null;
         int turnCount = 0;
-        int movedTiles = 0;
 
         for (Position current : path) {
-            // Determine direction
             int dxMove = current.getX() - previous.getX();
             int dyMove = current.getY() - previous.getY();
+
             int currentDirection;
             if (dxMove == -1) currentDirection = 0;
             else if (dxMove == 1) currentDirection = 1;
             else if (dyMove == -1) currentDirection = 2;
             else currentDirection = 3;
 
-            if (lastDirection != null && currentDirection != lastDirection) {
+            boolean turnChanged = (lastDirection != null && currentDirection != lastDirection);
+            if (turnChanged) {
                 turnCount++;
             }
-
             lastDirection = currentDirection;
-            movedTiles++;
 
-            // Calculate total energy cost so far
-            double totalCost = (movedTiles + 10.0 * turnCount) / 20.0;
-            int requiredEnergy = (int) Math.ceil(totalCost);
+            double stepCost = (1 + (turnChanged ? 10.0 : 0)) / 20.0;
 
-            if (requiredEnergy > player.getEnergy().getEnergyAmount()) {
-                // Energy not enough for this step — stop here
-                player.setEnergy(energy); // update with energy used so far
+            if (stepCost > energy) {
                 return new Result(false, "You are faint!");
             }
 
-            // Deduct energy progressively
-            energy = player.getEnergy().getEnergyAmount() - requiredEnergy;
-            player.setEnergy(energy);
+            energy -= stepCost;
+            player.getEnergy().setEnergyAmount(energy);
 
-            // Move player on map
+            // Move player
             getTileByPosition(previous).setPerson(null);
             getTileByPosition(current).setPerson(player);
             player.setPosition(current);
@@ -321,6 +314,7 @@ public class GameController {
 
         return new Result(true, "Player moved successfully.");
     }
+
 
     public boolean isTileAvailableForWalk(Position position) {
         Tile tile = getTileByPosition(position);

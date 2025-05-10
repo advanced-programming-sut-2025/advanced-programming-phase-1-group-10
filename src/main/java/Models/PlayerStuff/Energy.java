@@ -2,32 +2,32 @@ package Models.PlayerStuff;
 
 public class Energy {
     public static int MAX_ENERGY_AMOUNT = 200;
-    int energyAmount;
+    private double energyAmount;
 
-    public Energy(int energy) {
+    public Energy(double energy) {
         this.energyAmount = energy;
     }
 
-    public int getEnergyAmount() {
+    public double getEnergyAmount() {
         return energyAmount;
     }
 
-    public void setEnergyAmount(int energyAmount) {
+    public void setEnergyAmount(double energyAmount) {
         this.energyAmount = energyAmount;
     }
 
-    public boolean isFainted(int amount){
+    public boolean isFainted(double amount){
         return this.energyAmount - amount <= 0;
     }
 
-    public void decreaseEnergy(int amount){
+    public void decreaseEnergy(double amount){
         this.energyAmount -= amount;
         if(this.energyAmount < 0){
             this.energyAmount = 0;
         }
     }
 
-    public void increaseEnergy(int amount){
+    public void increaseEnergy(double amount){
         this.energyAmount += amount;
         if(this.energyAmount > 200){
             this.energyAmount = 200;
