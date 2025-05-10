@@ -1,12 +1,12 @@
 package Controllers;
 
+import Models.*;
 import Models.Animal.Animal;
-import Models.App;
 import Models.Crafting.CraftingType;
-import Models.Item;
+import Models.Place.Barn;
+import Models.Place.Coop;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
-import Models.Result;
 import Models.Tools.Tool;
 
 import java.util.ArrayList;
@@ -169,4 +169,43 @@ public class GameController {
         return null;
     }
 
+    public Result createCoop(Position coopPosition, Game game){
+        Coop newCoop = new Coop(coopPosition,3,3);
+        if(!isPositionInPlayerFarm(coopPosition,App.getInstance().getCurrentGame().getCurrentPlayer())){
+            return new Result(false, "this position is not in your farm.");
+        }
+        if(!GameMenuControllers.setUpPlace(game,3,3,coopPosition,newCoop)){
+            return new Result(false,"can not build coop in this place.");
+        }
+        // TODO check the minerals amount of player to build coop
+        return new Result(true, "coop build successfully.");
+    }
+
+    public Result createBarn(Position barnPosition, Game game){
+        Barn newBarn = new Barn(barnPosition,3,3);
+        if(!isPositionInPlayerFarm(barnPosition,App.getInstance().getCurrentGame().getCurrentPlayer())){
+            return new Result(false, "this position is not in your farm.");
+        }
+        if(!GameMenuControllers.setUpPlace(game,3,3,barnPosition, newBarn)){
+            return new Result(false,"can not build coop in this place.");
+        }
+        // TODO check the minerals amount of player to build barn
+        return new Result(true, "barn build successfully.");
+    }
+
+    public boolean isPositionInPlayerFarm(Position position, Player player) {
+        if (player.getFarm() == null) {
+            return false;
+        }
+
+        Farm farm = player.getFarm();
+        Position farmPosition = farm.getPosition();
+        boolean isInXRange = position.getX() >= farmPosition.getX() &&
+                position.getX() < farmPosition.getX() + Farm.farmHeight;
+
+        boolean isInYRange = position.getY() >= farmPosition.getY() &&
+                position.getY() < farmPosition.getY() + Farm.farmWidth;
+
+        return isInXRange && isInYRange;
+    }
 }

@@ -83,4 +83,13 @@ public class Game {
     public void setNextDayWeather(Weather nextDayWeather) {
         this.nextDayWeather = nextDayWeather;
     }
+
+    public Player getPlayerByName(String name){
+        for(Player player : players){
+            if(player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
 }

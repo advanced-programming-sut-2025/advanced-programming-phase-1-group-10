@@ -32,6 +32,7 @@ public class GameMenuControllers {
         }
 
         App.getInstance().setCurrentGame(game);
+        App.getInstance().getCurrentGame().setCurrentPlayer(game.getPlayerByName(username1));
         setUpCity(game);
         setUpNPCs(game);
 
@@ -285,15 +286,15 @@ public class GameMenuControllers {
         }
     }
 
-    public static void setUpPlace(Game game, int placeheight, int placewidth, Position position, Place place) {
-        for (int height = position.getX(); height < position.getX() + placeheight; height++) {
-            for (int width = position.getY(); width < position.getY() + placewidth; width++) {
-                Tile tile = game.getGameMap().getMap()[height][width];
-                tile.setPlace(place);
-                place.getPlaceTiles()[height - position.getX()][width - position.getY()] = tile;
-            }
-        }
-    }
+//    public static void setUpPlace(Game game, int placeheight, int placewidth, Position position, Place place) {
+//        for (int height = position.getX(); height < position.getX() + placeheight; height++) {
+//            for (int width = position.getY(); width < position.getY() + placewidth; width++) {
+//                Tile tile = game.getGameMap().getMap()[height][width];
+//                tile.setPlace(place);
+//                place.getPlaceTiles()[height - position.getX()][width - position.getY()] = tile;
+//            }
+//        }
+//    }
 
     public boolean isAvailableForPlant(Tile tile) {
         return tile.getItem() == null && tile.getPlace() == null && tile.getTileType() != TileType.Wall;
@@ -320,4 +321,30 @@ public class GameMenuControllers {
         }
     }
 
+    public static boolean setUpPlace(Game game, int placeHeight, int placeWidth, Position position, Place place) {
+        if (position.getX() < 0 || position.getY() < 0 ||
+                position.getX() + placeHeight > Map.mapHeight ||
+                position.getY() + placeWidth > Map.mapWidth) {
+            return false;
+        }
+
+        for (int height = position.getX(); height < position.getX() + placeHeight; height++) {
+            for (int width = position.getY(); width < position.getY() + placeWidth; width++) {
+                Tile tile = game.getGameMap().getMap()[height][width];
+                if (tile.getPlace() != null || tile.getTileType() == TileType.Wall) {
+                    return false;
+                }
+            }
+        }
+
+        for (int height = position.getX(); height < position.getX() + placeHeight; height++) {
+            for (int width = position.getY(); width < position.getY() + placeWidth; width++) {
+                Tile tile = game.getGameMap().getMap()[height][width];
+                tile.setPlace(place);
+                place.getPlaceTiles()[height - position.getX()][width - position.getY()] = tile;
+            }
+        }
+
+        return true;
+    }
 }
