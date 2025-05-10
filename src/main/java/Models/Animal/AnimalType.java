@@ -22,4 +22,16 @@ public enum AnimalType {
         this.enclosures = enclosures;
         this.price = price;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public Maintenance getEnclosures() {
+        return enclosures;
+    }
+
+    public int getPrice() {
+        return price;
+    }
 }

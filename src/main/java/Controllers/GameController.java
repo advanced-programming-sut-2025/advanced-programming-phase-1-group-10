@@ -5,6 +5,10 @@ import Models.*;
 import Models.Crafting.CraftingType;
 import Models.Place.Barn;
 import Models.Place.Coop;
+import Models.Place.Place;
+import Models.Place.Store.CarpenterShop;
+import Models.Place.Store.MarrineRanchStore;
+import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.Tool;
@@ -93,6 +97,12 @@ public class GameController {
     }
 
     public Result buyAnimal(String animalType, String name) {
+        Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
+        Tile playerTile = getTileByPosition(playerPosition);
+        if(!(playerTile.getPlace() instanceof MarrineRanchStore)){
+            return new Result(false, "you have to be inside marnie's ranch to buy animals.");
+        }
+
         Animal animal = Animal.animalFactory(animalType, name);
         if (animal == null) {
             return new Result(false, "invalid animal type!");
@@ -104,11 +114,51 @@ public class GameController {
             }
         }
 
+        Place place = getPlaceByType(animal.getAnimalType().getEnclosures().toString());
+        if(place == null){
+            return new Result(false,"you don't have " + animal.getAnimalType().getEnclosures().toString() + "in your farm.");
+        }
+
+        Coop coop = null;
+        Barn barn = null;
+        if(place instanceof Coop) {
+            coop = (Coop) place;
+            if(coop.getAnimalCount() == coop.getCapacity()){
+                return new Result(false, "not enough coop space to by this animal.");
+            }
+        }
+        else {
+            barn = (Barn) place;
+            if(barn.getAnimalCount() == barn.getCapacity()) {
+                return new Result(false, "not enough barn space to by this animal.");
+            }
+        }
+
         //TODO palce animal in map
-        //TODO check capacity of coob
+
+        if(place instanceof Coop)
+            coop.setAnimalCount(coop.getAnimalCount() + 1);
+        else
+            barn.setAnimalCount(barn.getAnimalCount() + 1);
 
         App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
         return new Result(false, "a new " + animalType + " named " + "has been bought.");
+    }
+
+    public Place getPlaceByType(String placeType) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if (currentPlayer.getFarm() == null) {
+            return null;
+        }
+
+        Farm playerFarm = currentPlayer.getFarm();
+        for (Place place : playerFarm.getPlaces()) {
+            if (place.getClass().getSimpleName().equalsIgnoreCase(placeType)) {
+                return place;
+            }
+        }
+        return null;
     }
 
 
@@ -151,7 +201,7 @@ public class GameController {
                     availableCraftings.add(craftingtype);
                 }
             }
-            if (!requiredRecipe.equals(null)) {
+            if (requiredRecipe != null) {
                 for (Recipe recipe : recipes) {
                     if (requiredRecipe.equals(recipe.getName()))
                         availableCraftings.add(craftingtype);
@@ -174,6 +224,11 @@ public class GameController {
     }
 
     public Result createCoop(Position coopPosition, Game game) {
+        Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
+        Tile playerTile = getTileByPosition(playerPosition);
+        if(!(playerTile.getPlace() instanceof CarpenterShop)){
+            return new Result(false, "you should go to Carpenter shop first!");
+        }
         Coop newCoop = new Coop(coopPosition, 3, 3);
         if (!isPositionInPlayerFarm(coopPosition, App.getInstance().getCurrentGame().getCurrentPlayer())) {
             return new Result(false, "this position is not in your farm.");
@@ -182,18 +237,25 @@ public class GameController {
             return new Result(false, "can not build coop in this place.");
         }
         // TODO check the minerals amount of player to build coop
+        App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getPlaces().add(newCoop);
         return new Result(true, "coop build successfully.");
     }
 
     public Result createBarn(Position barnPosition, Game game) {
+        Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
+        Tile playerTile = getTileByPosition(playerPosition);
+        if(!(playerTile.getPlace() instanceof CarpenterShop)){
+            return new Result(false, "you should go to Carpenter shop first!");
+        }
         Barn newBarn = new Barn(barnPosition, 3, 3);
         if (!isPositionInPlayerFarm(barnPosition, App.getInstance().getCurrentGame().getCurrentPlayer())) {
             return new Result(false, "this position is not in your farm.");
         }
         if (!GameMenuControllers.setUpPlace(game, 3, 3, barnPosition, newBarn)) {
-            return new Result(false, "can not build coop in this place.");
+            return new Result(false, "can not build barn in this place.");
         }
         // TODO check the minerals amount of player to build barn
+        App.getInstance().getCurrentGame().getCurrentPlayer().getFarm().getPlaces().add(newBarn);
         return new Result(true, "barn build successfully.");
     }
 

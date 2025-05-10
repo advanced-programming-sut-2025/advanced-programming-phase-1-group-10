@@ -38,8 +38,9 @@ public enum GameCommands implements Commands {
     CRAFTING_SHOW_RECIPES("^crafting show recipes$"),
     CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)"),
 
-    // animals
+    // Animals Commands
     BUILD_MAINTENANCE("^build\\s+-a\\s+(?<buildingName>[^\\s]+)\\s+-l\\s+(?<x>\\d+)\\s*,\\s*(?<y>\\d+)$"),
+    BUY_ANIMAL("^buy\\s+animal\\s+-a\\s+(?<animal>[^\\s]+)\\s+-n\\s+(?<name>[^\\s]+)$")
     ;
 
     private final String pattern;
