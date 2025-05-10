@@ -5,6 +5,12 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
+    //Map print commands
+    PRINT_MAP("^print map$"),
+
+    //Move commands
+    WALK("^walk -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
+
     //Time Commands
     SHOW_TIME("^time$"),
     SHOW_DATE("^date$"),

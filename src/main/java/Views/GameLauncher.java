@@ -37,8 +37,19 @@ public class GameLauncher implements AppMenu{
             else if(name.equalsIgnoreCase("barn")){
                 result = controller.createBarn(position,App.getInstance().getCurrentGame());
             }
-            System.out.println(result.message());
-        } else
+            System.out.println(result);
+        }
+        else if((matcher = GameCommands.PRINT_MAP.getMatcher(input)) != null){
+            System.out.println(controller.printMap());
+        } else if((matcher = GameCommands.WALK.getMatcher(input)) != null){
+            System.out.println(controller.walkPlayer(new Position(
+               Integer.parseInt(matcher.group("x")),
+               Integer.parseInt(matcher.group("y"))
+            )));
+        }
+        else{
             System.out.println("invalid command.");
+        }
+
     }
 }

@@ -59,12 +59,6 @@ public class GameMenu implements AppMenu {
                 }
                 App.getInstance().setCurrentMenu(Menu.GameLauncher);
                 System.out.println("All players have chosen their farms. Game starts!");
-                for (Tile[] tiles : App.getInstance().getCurrentGame().getGameMap().getMap()) {
-                    for (Tile tile : tiles) {
-                        System.out.print(tile.getTile());
-                    }
-                    System.out.println();
-                }
             }
         } else {
             System.out.println("Invalid command.");
