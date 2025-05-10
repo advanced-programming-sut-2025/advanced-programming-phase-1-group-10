@@ -4,6 +4,7 @@ import Models.*;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.Place.*;
+import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.ForagingCropType;
 import Models.PlayerStuff.Player;
@@ -28,6 +29,7 @@ public class GameMenuControllers {
         }
 
         App.getInstance().setCurrentGame(game);
+        setUpCity(game);
 
         return new Result(true, "Game created.");
     }
@@ -38,6 +40,23 @@ public class GameMenuControllers {
         return App.getInstance().getUsers().stream().anyMatch(user -> user.getUsername().equals(username));
     }
 
+    public void setUpCity(Game game){
+        game.getStores().addAll(Arrays.asList(
+                new BlackSmith(new Position(58,12),4,6,new Seller("Clint","1",new Position(54,12)),9,16),
+                new CarpenterShop(new Position(61,43),4,16,new Seller("Robin","4",new Position(62,45)),9,20),
+                new JojaMart(new Position(53,10),4,20, new Seller("Morris","2",new Position(59,16)), 9,23),
+                new FishStore(new Position(65,17),5,8,new Seller("Willy","5",new Position(66,19)),9,17),
+                new PierreGeneralStore(new Position(52,37),4,5,new Seller("Pierrre","3",new Position(53,39)),9,17),
+                new StardropSaloon(new Position(67,46),3,12,new Seller("Gus","7",new Position(68,48)),12,24),
+                new MarrineRanchStore(new Position(53,56),4,12, new Seller("Marnie","6",new Position(54,65)),9,16)
+        ));
+        for(Store store : game.getStores()){
+            setUpPlace(game,store.getHeight(),store.getWidth(),store.getPosition(),store);
+            getTileByPosition(store.getSeller().getPosition()).setPerson(store.getSeller());
+        }
+
+
+    }
 
 
     public Farm createFarm(String num, Position position, Game game) {
@@ -182,15 +201,6 @@ public class GameMenuControllers {
         return house;
     }
 
-    private static void setUpPlace(Game game, int placeheight, int placewidth, Position position, Place place) {
-        for (int height = position.getX(); height < position.getX() + placeheight; height++) {
-            for (int width = position.getY(); width < position.getY() + placewidth; width++) {
-                Tile tile = game.getGameMap().getMap()[height][width];
-                tile.setPlace(place);
-                place.getPlaceTiles()[height - position.getX()][width -position.getY()] = tile;
-            }
-        }
-    }
 
     public Place getPlaceByName(ArrayList<Place> places, String name) {
         for (Place place : places) {
@@ -252,16 +262,26 @@ public class GameMenuControllers {
         }
     }
 
+    public static void setUpPlace(Game game, int placeheight, int placewidth, Position position, Place place) {
+        for (int height = position.getX(); height < position.getX() + placeheight; height++) {
+            for (int width = position.getY(); width < position.getY() + placewidth; width++) {
+                Tile tile = game.getGameMap().getMap()[height][width];
+                tile.setPlace(place);
+                place.getPlaceTiles()[height - position.getX()][width -position.getY()] = tile;
+            }
+        }
+    }
+
     public boolean isAvailableForPlant(Tile tile){
-        //TODO Maybe type of tile should be added.
-        return tile.getItem() == null && tile.getPlace() == null;
+        return tile.getItem() == null && tile.getPlace() == null && tile.getTileType() != TileType.Wall;
     }
 
     public void putRandomForagingPlanet(Farm farm, int numberOfRandom) {
         ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream).filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Item> planets = new ArrayList<>();
         for(ForagingCropType foragingCropType: ForagingCropType.values()) {
-            planets.add(new Crop(foragingCropType, 1));
+            if(foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
+                planets.add(new Crop(foragingCropType, 1));
         }
         //TODO Add foraging tree (either here or in the foraging seed)
         for(int i = 0; i < numberOfRandom; i++){

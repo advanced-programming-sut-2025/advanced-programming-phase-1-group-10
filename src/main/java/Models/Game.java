@@ -3,6 +3,7 @@ package Models;
 
 import Models.DateTime.DateTime;
 import Models.DateTime.Season;
+import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Weather.Weather;
 
@@ -14,6 +15,8 @@ public class Game {
 
     private DateTime gameTime;
     private final ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Store> stores = new ArrayList<Store>();
+
     private Map gameMap;
 
     private Player currentPlayer;
@@ -55,5 +58,9 @@ public class Game {
 
     public Map getGameMap() {
         return gameMap;
+    }
+
+    public ArrayList<Store> getStores() {
+        return stores;
     }
 }

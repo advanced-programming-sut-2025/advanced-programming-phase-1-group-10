@@ -45,7 +45,7 @@ public class GameMenu implements AppMenu {
                             player.setPosition(new Position(0,0));
                             player.getPosition().setX(playerPostion.getX() - 1);
                             player.getPosition().setY(playerPostion.getY() - 1);
-                            controller.getTileByPosition(player.getPosition()).setPlayer(player);
+                            controller.getTileByPosition(player.getPosition()).setPerson(player);
                             controller.putRandomMineral(farm,4);
                             controller.putRandomForagingPlanet(farm,20);
                             //Give farm to player
@@ -61,7 +61,7 @@ public class GameMenu implements AppMenu {
                 System.out.println("All players have chosen their farms. Game starts!");
                 for (Tile[] tiles : App.getInstance().getCurrentGame().getGameMap().getMap()) {
                     for (Tile tile : tiles) {
-                        tile.printTile();
+                        System.out.print(tile.getTile());
                     }
                     System.out.println();
                 }

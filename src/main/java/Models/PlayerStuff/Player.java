@@ -142,4 +142,9 @@ public class Player implements Person {
     public void setPosition(Position position) {
         this.position = position;
     }
+
+    @Override
+    public String getSymbol() {
+        return "P";
+    }
 }

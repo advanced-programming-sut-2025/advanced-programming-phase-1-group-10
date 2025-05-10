@@ -26,6 +26,4 @@ public class Map {
     public Tile[][] getMap() {
         return map;
     }
-
-
 }
