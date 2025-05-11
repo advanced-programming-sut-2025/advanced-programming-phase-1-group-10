@@ -2,13 +2,10 @@ package Views;
 
 import Controllers.CheatCodeControllers;
 import Controllers.GameController;
-import Models.App;
+import Models.*;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.Commands.GameMenuCommands;
-import Models.Position;
-import Models.Result;
-import Models.Tile;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -71,6 +68,16 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.showAnimals().message());
         } else if((matcher = GameCommands.SHOW_INVENTORY.getMatcher(input)) != null){
             System.out.println(controller.showInventory());
+        } else if((matcher = GameCommands.EQUIP_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.equipTool(matcher.group("toolName")));
+        } else if((matcher = GameCommands.SHOW_CURRENT_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.showCurrentTool());
+        } else if((matcher = GameCommands.SHOW_AVALIABLE_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.showAvaliableTools());
+        } else if((matcher = GameCommands.TOOL_USE.getMatcher(input)) != null){
+            System.out.println(controller.useTool(
+                    matcher.group("direction")
+            ));
         }
         else{
             System.out.println("invalid command.");

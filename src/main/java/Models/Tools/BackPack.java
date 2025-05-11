@@ -24,6 +24,12 @@ public class BackPack {
 
     public boolean addItem(Item item) {
         if (items.size() < backpackType.getCapacity()) {
+            for(Item it : items){
+                if(it.getName().equals(item.getName())){
+                    it.setNumber(item.getNumber() + item.getNumber());
+                    return true;
+                }
+            }
             items.add(item);
             return true;
         } else {

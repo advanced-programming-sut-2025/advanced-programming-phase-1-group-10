@@ -151,6 +151,22 @@ public class Player implements Person {
         this.position = position;
     }
 
+    public void setMiningAbility(int miningAbility) {
+        this.miningAbility = miningAbility;
+    }
+
+    public void setFarmingAbility(int farmingAbility) {
+        this.farmingAbility = farmingAbility;
+    }
+
+    public void setForagingAbility(int foragingAbility) {
+        this.foragingAbility = foragingAbility;
+    }
+
+    public void setFishingAbility(int fishingAbility) {
+        this.fishingAbility = fishingAbility;
+    }
+
     @Override
     public String getSymbol() {
         return "P";

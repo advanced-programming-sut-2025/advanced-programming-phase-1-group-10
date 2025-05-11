@@ -14,7 +14,6 @@ public class Tile {
     private Item item;
 
     private boolean plow;
-    private boolean iswalkable;
 
     private Seed plantedSeed;
 
@@ -58,6 +57,14 @@ public class Tile {
         this.item = item;
     }
 
+    public boolean getisPlow() {
+        return plow;
+    }
+
+    public void setPlow(boolean plow) {
+        this.plow = plow;
+    }
+
     public String getTile() {
         if (this.person != null) {
             return this.person.getSymbol();
@@ -65,6 +72,8 @@ public class Tile {
             return (item.getSymbol());
         } else if (this.getTileType() == TileType.Wall) {
             return "X";
+        } else if(this.getisPlow()) {
+            return "0";
         } else if (this.place != null) {
             return place.getSymbol();
         } else {

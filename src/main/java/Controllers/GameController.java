@@ -16,6 +16,8 @@ import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.BackPack;
+import Models.Tools.Hoe;
+import Models.Tools.Pickaxe;
 import Models.Tools.Tool;
 
 import java.util.ArrayList;
@@ -27,14 +29,19 @@ public class GameController {
     public Result showEnergy() {
         final double energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
         String result;
-        if(energy == Double.MAX_VALUE) result = "Infinite"; else result = Double.toString((int)energy);
+        if (energy == Double.MAX_VALUE) result = "Infinite";
+        else result = Double.toString((int) energy);
         return new Result(true, "Player Energy: " + result);
     }
 
     public Result showInventory() {
         StringBuilder message = new StringBuilder();
         for (Item item : App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()) {
-            message.append(item.getName()).append(": ").append(item.getNumber()).append("\n");
+            if (item.getNumber() == 1) {
+                message.append(item.getName()).append("\n");
+            } else {
+                message.append(item.getName()).append(" ").append(item.getNumber()).append("X ").append("\n");
+            }
         }
         return new Result(true, message.toString());
     }
@@ -95,7 +102,7 @@ public class GameController {
         List<Item> items = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems();
         for (Item item : items) {
             if (item instanceof Tool) {
-                message.append(item.getName()).append(" ");
+                message.append(item.getName()).append("\n");
             }
         }
         return new Result(true, message.toString());
@@ -104,7 +111,7 @@ public class GameController {
     public Result buyAnimal(String animalType, String name) {
         Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
         Tile playerTile = getTileByPosition(playerPosition);
-        if(!(playerTile.getPlace() instanceof MarrineRanchStore)){
+        if (!(playerTile.getPlace() instanceof MarrineRanchStore)) {
             return new Result(false, "you have to be inside marnie's ranch to buy animals.");
         }
 
@@ -120,65 +127,64 @@ public class GameController {
         }
 
         Place place = getPlaceByType(animal.getAnimalType().getEnclosures().toString());
-        if(place == null){
-            return new Result(false,"you don't have " + animal.getAnimalType().getEnclosures().toString() + "in your farm.");
+        if (place == null) {
+            return new Result(false, "you don't have " + animal.getAnimalType().getEnclosures().toString() + "in your farm.");
         }
 
         Coop coop = null;
         Barn barn = null;
-        if(place instanceof Coop) {
+        if (place instanceof Coop) {
             coop = (Coop) place;
-            if(coop.getAnimalCount() == coop.getCapacity()){
+            if (coop.getAnimalCount() == coop.getCapacity()) {
                 return new Result(false, "not enough coop space to by this animal.");
             }
-        }
-        else {
+        } else {
             barn = (Barn) place;
-            if(barn.getAnimalCount() == barn.getCapacity()) {
+            if (barn.getAnimalCount() == barn.getCapacity()) {
                 return new Result(false, "not enough barn space to by this animal.");
             }
         }
 
         //TODO palce animal in map
 
-        if(place instanceof Coop)
+        if (place instanceof Coop)
             coop.setAnimalCount(coop.getAnimalCount() + 1);
         else
             barn.setAnimalCount(barn.getAnimalCount() + 1);
 
         App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-        App.getInstance().getCurrentGame().getAnimals().put(name,animal);
+        App.getInstance().getCurrentGame().getAnimals().put(name, animal);
         return new Result(true, "a new " + animalType + " named " + "has been bought.");
     }
 
-    public Result petAnimals(String name){
+    public Result petAnimals(String name) {
         //TODO check the player is near animal
         Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
-        if(animal == null){
+        if (animal == null) {
             return new Result(false, "there is no animal with this name.");
         }
         animal.pet();
-        return new Result(true,"you pet " + animal.getName() + ".");
+        return new Result(true, "you pet " + animal.getName() + ".");
     }
 
-    public Result showAnimals(){
-        if(App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().isEmpty()){
-            return new Result(false,"you don't have any animals.");
+    public Result showAnimals() {
+        if (App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().isEmpty()) {
+            return new Result(false, "you don't have any animals.");
         }
         StringBuilder animals = new StringBuilder();
-        for(Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()){
+        for (Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
             animals.append("animal name : ".toUpperCase());
             animals.append(animal.getName());
             animals.append("|");
             animals.append("ANIMAL FRIENDSHIP : ");
             animals.append(animal.getFriendShip());
             animals.append("|");
-            if(animal.isFed())
+            if (animal.isFed())
                 animals.append("the animal has been fed.");
             else
                 animals.append("the animal has not been fed.");
             animals.append("|");
-            if(animal.isPetted())
+            if (animal.isPetted())
                 animals.append("the animal has been petted.");
             else
                 animals.append("the animal has not been petted.");
@@ -209,7 +215,7 @@ public class GameController {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         Place place = getTileByPosition(player.getPosition()).getPlace();
 
-        if(place instanceof House) {
+        if (place instanceof House) {
             ArrayList<CraftingType> availableCraftings = new ArrayList<>();
 
             int miningLevel = player.getMiningAbility();
@@ -225,7 +231,7 @@ public class GameController {
             }
 
             for (CraftingType craftingtype : CraftingType.values()) {
-                if(isCraftingAvailable(craftingtype, miningLevel, farmingLevel, foragingLevel, recipes))
+                if (isCraftingAvailable(craftingtype, miningLevel, farmingLevel, foragingLevel, recipes))
                     availableCraftings.add(craftingtype);
             }
 
@@ -243,12 +249,12 @@ public class GameController {
 
     public Result craftingCraft(String itemName) {
 
-        Player player =  App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         ArrayList<Item> items = player.getInventory().getBackPack().getItems();
         BackPack backPack = player.getInventory().getBackPack();
         Place place = getTileByPosition(player.getPosition()).getPlace();
 
-        if(place instanceof House) {
+        if (place instanceof House) {
             ArrayList<Recipe> recipes = new ArrayList<>();
             for (Item item : items) {
                 if (item instanceof Recipe) {
@@ -330,16 +336,16 @@ public class GameController {
         return false;
     }
 
-    public static CraftingType findCraftingName(String itemName){
+    public static CraftingType findCraftingName(String itemName) {
         for (CraftingType craftingType : CraftingType.values()) {
-            if(itemName.equals(craftingType.getName())){
+            if (itemName.equals(craftingType.getName())) {
                 return craftingType;
             }
         }
         return null;
     }
 
-    public int inventoryFreeSpace(){
+    public int inventoryFreeSpace() {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         ArrayList<Item> items = player.getInventory().getBackPack().getItems();
         int capacity = player.getInventory().getBackPack().getBackpackType().getCapacity();
@@ -350,7 +356,7 @@ public class GameController {
     public Result createCoop(Position coopPosition, Game game) {
         Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
         Tile playerTile = getTileByPosition(playerPosition);
-        if(!(playerTile.getPlace() instanceof CarpenterShop)){
+        if (!(playerTile.getPlace() instanceof CarpenterShop)) {
             return new Result(false, "you should go to Carpenter shop first!");
         }
         Coop newCoop = new Coop(coopPosition, 3, 3);
@@ -368,7 +374,7 @@ public class GameController {
     public Result createBarn(Position barnPosition, Game game) {
         Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
         Tile playerTile = getTileByPosition(playerPosition);
-        if(!(playerTile.getPlace() instanceof CarpenterShop)){
+        if (!(playerTile.getPlace() instanceof CarpenterShop)) {
             return new Result(false, "you should go to Carpenter shop first!");
         }
         Barn newBarn = new Barn(barnPosition, 3, 3);
@@ -539,4 +545,90 @@ public class GameController {
 
         return new Result(true, sb.toString());
     }
+
+    public Item getItemInInventory(String itemName) {
+        for(Item it: App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()){
+            if(it.getName().equals(itemName)){
+                return it;
+            }
+        }
+        return null;
+    }
+
+    public Tile getTileByDirection(String direction) {
+        int x = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getX();
+        int y = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getY();
+        switch (direction) {
+            case "up":
+                return getTileByPosition(new Position(x - 1,y));
+            case "down":
+                return getTileByPosition(new Position(x + 1 ,y));
+            case "left":
+                return getTileByPosition(new Position(x,y - 1));
+            case "right":
+                return getTileByPosition(new Position(x,y + 1));
+            case "up-left":
+                return getTileByPosition(new Position(x - 1,y - 1));
+            case "up-right":
+                return getTileByPosition(new Position(x - 1,y + 1));
+            case "down-left":
+                return getTileByPosition(new Position(x + 1,y - 1));
+            case "down-right":
+                return getTileByPosition(new Position(x + 1,y + 1));
+            default:
+                return null;
+        }
+    }
+
+    public boolean checkTileForHoe(Tile tile) {
+        if(tile == null){
+            return false;
+        } else if(tile.getItem() != null){
+            return false;
+        } else if(tile.getFarm() == null){
+            return false;
+        } else if(tile.getTileType() == TileType.Wall){
+            return false;
+        } else if(tile.getPerson() != null){
+            return false;
+        } else if(tile.getPlace() != null && !tile.getPlace().equals(getPlaceByType("Greenhouse"))){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkTileForPickAxe(Tile tile) {
+        if(tile == null){
+            return false;
+        } else if(tile.getTileType() == TileType.Wall){
+            return false;
+        } else if(tile.getPerson() != null){
+            return false;
+        } else if(tile.getFarm() == null){
+            return false;
+        } else if(tile.getPlace() != null && !tile.getPlace().equals(getPlaceByType("Greenhouse")) && !tile.getPlace().equals(getPlaceByType("Quarry"))){
+            return false;
+        }
+        return true;
+    }
+
+    public Result useTool(String direction) {
+        Tool tool = App.getInstance().getCurrentGame().getCurrentPlayer().getCurrentTool();
+        Tile tile = getTileByDirection(direction);
+        if(tool == null){
+            return new Result(false, "Equip a tool before you use.!");
+        } else if(tile == null){
+            return new Result(false, "Invalid Tile!");
+        } else if(tool instanceof Hoe && checkTileForHoe(tile)){
+            tool.use(tile);
+            return new Result(true, "You used a hoe.");
+        } else if(tool instanceof Pickaxe && checkTileForPickAxe(tile)){
+            tool.use(tile);
+            return new Result(true, "You used a pickaxe.");
+        }
+        return new Result(false, "Incorrect Usage!");
+    }
+
+
+
 }
