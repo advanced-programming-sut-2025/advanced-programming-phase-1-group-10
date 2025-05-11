@@ -1,5 +1,6 @@
 package Models.Animal;
 
+import Models.Place.Place;
 import Models.Position;
 
 import java.util.ArrayList;
@@ -70,6 +71,15 @@ public class Animal {
 
     public boolean isPetted() {
         return petted;
+    }
+
+    public void pet() {
+        petted = true;
+        friendShip += 15;
+    }
+
+    public void setFriendShip(int friendShip) {
+        this.friendShip = friendShip;
     }
 
     public boolean isFed() {

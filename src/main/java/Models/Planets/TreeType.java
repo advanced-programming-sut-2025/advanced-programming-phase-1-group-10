@@ -8,36 +8,34 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum TreeType{
-    APRICOT_TREE("Apricot",FruitType.APRICOT),
-    CHERRY_TREE("Cherry",FruitType.CHERRY),
-    BANANA_TREE("Banana",FruitType.BANANA),
-    MANGO_TREE("Mango",FruitType.MANGO),
-    ORANGE_TREE("Orange",FruitType.ORANGE),
-    PEACH_TREE("Peach",FruitType.PEACH),
-    APPLE_TREE("Apple",FruitType.APPLE),
-    POMEGRANATE_TREE("Pomegranate",FruitType.POMEGRANATE),
-    OAK_TREE("Oak Tree",FruitType.OAK_RESIN),
-    MAPLE_TREE("Maple",FruitType.MAPLE_SYRUP),
-    PINE_TREE("Pine",FruitType.PINE_TAR),
-    MAHOGANY_TREE("Mahogany",FruitType.SAP),
-    MUSHROOM_TREE("Mushroom",FruitType.COMMON_MUSHROOM),
-    MYSTIC_TREE("Mystic",FruitType.MYSTIC_SYRUP),
+    APRICOT_TREE("Apricot",FruitType.APRICOT,false),
+    CHERRY_TREE("Cherry",FruitType.CHERRY,false),
+    BANANA_TREE("Banana",FruitType.BANANA,false),
+    MANGO_TREE("Mango",FruitType.MANGO,false),
+    ORANGE_TREE("Orange",FruitType.ORANGE,false),
+    PEACH_TREE("Peach",FruitType.PEACH,false),
+    APPLE_TREE("Apple",FruitType.APPLE,false),
+    POMEGRANATE_TREE("Pomegranate",FruitType.POMEGRANATE,false),
+    OAK_TREE("Oak Tree",FruitType.OAK_RESIN,true),
+    MAPLE_TREE("Maple",FruitType.MAPLE_SYRUP,true),
+    PINE_TREE("Pine",FruitType.PINE_TAR,true),
+    MAHOGANY_TREE("Mahogany",FruitType.SAP,true),
+    MUSHROOM_TREE("Mushroom",FruitType.COMMON_MUSHROOM,true),
+    MYSTIC_TREE("Mystic",FruitType.MYSTIC_SYRUP,false),
     ;
-    private String name;
+    private final String name;
     private final ArrayList<Integer> items = new ArrayList<>(Arrays.asList(7, 7, 7, 7));
-    private FruitType fruitType;
+    private final FruitType fruitType;
+    private final boolean isForaging;
 
-    TreeType(String name, FruitType fruitType) {
+    TreeType(String name, FruitType fruitType, boolean isForaging) {
         this.name = name;
         this.fruitType = fruitType;
+        this.isForaging = isForaging;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public ArrayList<Integer> getItems() {
@@ -48,7 +46,7 @@ public enum TreeType{
         return fruitType;
     }
 
-    public void setFruitType(FruitType fruitType) {
-        this.fruitType = fruitType;
+    public boolean isForaging() {
+        return isForaging;
     }
 }

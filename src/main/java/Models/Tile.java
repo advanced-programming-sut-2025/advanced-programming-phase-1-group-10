@@ -2,11 +2,10 @@ package Models;
 
 import Models.Place.Place;
 import Models.Planets.Seed;
-import Models.PlayerStuff.Player;
 
 public class Tile {
 
-    private Player player;
+    private Person person;
     private Farm farm;
     private Place place;
 
@@ -43,12 +42,12 @@ public class Tile {
         this.tileType = tileType;
     }
 
-    public Player getPlayer() {
-        return player;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public Item getItem() {
@@ -59,17 +58,17 @@ public class Tile {
         this.item = item;
     }
 
-    public void printTile() {
-        if (this.player != null) {
-            System.out.print("P");
+    public String getTile() {
+        if (this.person != null) {
+            return this.person.getSymbol();
         } else if(this.item != null) {
-            System.out.print(item.getSymbol());
+            return (item.getSymbol());
         } else if (this.getTileType() == TileType.Wall) {
-            System.out.print("X");
-        } else if (this.place == null) {
-            System.out.print(" ");
+            return "X";
+        } else if (this.place != null) {
+            return place.getSymbol();
         } else {
-            System.out.print(this.place.getSymbol());
+            return " ";
         }
     }
 

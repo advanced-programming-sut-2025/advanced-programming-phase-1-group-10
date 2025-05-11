@@ -15,6 +15,7 @@ public class Coop extends Place{
     public int getCapacity() {
         return capacity;
     }
+
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
@@ -22,6 +23,7 @@ public class Coop extends Place{
     public boolean isBig() {
         return Big;
     }
+
     public void setBig() {
         Big = true;
         this.capacity = 8;
@@ -30,8 +32,22 @@ public class Coop extends Place{
     public boolean isDeluxe() {
         return Deluxe;
     }
+
     public void setDeluxe() {
         Deluxe = true;
         this.capacity = 12;
+    }
+
+    public int getAnimalCount() {
+        return animalCount;
+    }
+
+    public void setAnimalCount(int animalCount) {
+        this.animalCount = animalCount;
+    }
+
+    @Override
+    public String getSymbol() {
+        return "C";
     }
 }

@@ -5,6 +5,12 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
+    //Map print commands
+    PRINT_MAP("^print map$"),
+
+    //Move commands
+    WALK("^walk -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
+
     //Time Commands
     SHOW_TIME("^time$"),
     SHOW_DATE("^date$"),
@@ -30,7 +36,13 @@ public enum GameCommands implements Commands {
 
     //Crafting Commands
     CRAFTING_SHOW_RECIPES("^crafting show recipes$"),
-    CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)")
+    CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)"),
+
+    // Animals Commands
+    BUILD_MAINTENANCE("^build\\s+-a\\s+(?<buildingName>[^\\s]+)\\s+-l\\s+(?<x>\\d+)\\s*,\\s*(?<y>\\d+)$"),
+    BUY_ANIMAL("^buy\\s+animal\\s+-a\\s+(?<animal>[^\\s]+)\\s+-n\\s+(?<name>[^\\s]+)$"),
+    PET_ANIMAL("^pet\\s+-n\\s+(?<name>[^\\s]+)"),
+    ANIMLAS("animals");
     ;
 
     private final String pattern;

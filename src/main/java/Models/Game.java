@@ -1,20 +1,30 @@
 package Models;
 
 
+import Models.Animal.Animal;
 import Models.DateTime.DateTime;
 import Models.DateTime.Season;
+import Models.NPC.NPC;
+import Models.Place.NpcHosue;
+import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Weather.Weather;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Game {
 
-    private String gameOwner;
+    private final String gameOwner;
 
-    private DateTime gameTime;
+    private final DateTime gameTime;
     private final ArrayList<Player> players = new ArrayList<>();
-    private Map gameMap;
+    private final ArrayList<NPC> npcs = new ArrayList<>();
+    private final ArrayList<Store> stores = new ArrayList<>();
+    private HashMap<String , Animal> animals = new HashMap<>();
+
+
+    private final Map gameMap;
 
     private Player currentPlayer;
 
@@ -55,5 +65,38 @@ public class Game {
 
     public Map getGameMap() {
         return gameMap;
+    }
+
+    public ArrayList<Store> getStores() {
+        return stores;
+    }
+
+    public String getGameOwner() {
+        return gameOwner;
+    }
+
+    public ArrayList<NPC> getNpcs() {
+        return npcs;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
+    }
+
+    public void setNextDayWeather(Weather nextDayWeather) {
+        this.nextDayWeather = nextDayWeather;
+    }
+
+    public Player getPlayerByName(String name){
+        for(Player player : players){
+            if(player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public HashMap<String, Animal> getAnimals() {
+        return animals;
     }
 }

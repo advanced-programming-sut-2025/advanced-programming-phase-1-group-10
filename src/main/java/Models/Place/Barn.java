@@ -45,4 +45,9 @@ public class Barn extends Place{
     public void setAnimalCount(int animalCount) {
         this.animalCount = animalCount;
     }
+
+    @Override
+    public String getSymbol() {
+        return "B";
+    }
 }
