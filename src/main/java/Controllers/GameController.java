@@ -1,8 +1,12 @@
 package Controllers;
 
+import Models.*;
 import Models.Animal.Animal;
+import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.CraftingType;
+import Models.Place.House;
+import Models.Place.Place;
 import Models.Place.Barn;
 import Models.Place.Coop;
 import Models.Place.Place;
@@ -11,6 +15,7 @@ import Models.Place.Store.MarrineRanchStore;
 import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
+import Models.Tools.BackPack;
 import Models.Tools.Tool;
 
 import java.util.ArrayList;
@@ -200,64 +205,146 @@ public class GameController {
 
 
     public Result craftingShowRecipes() {
-        ArrayList<CraftingType> availableCraftings = new ArrayList<>();
 
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        int miningLevel = player.getMiningAbility();
-        int farmingLevel = player.getFarmingAbility();
-        int foragingLevel = player.getForagingAbility();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
 
-        ArrayList<Item> items = player.getInventory().getBackPack().getItems();
-        ArrayList<Recipe> recipes = new ArrayList<>();
-        for (Item item : items) {
-            if (item instanceof Recipe) {
-                recipes.add((Recipe) item);
-            }
-        }
+        if(place instanceof House) {
+            ArrayList<CraftingType> availableCraftings = new ArrayList<>();
 
-        for (CraftingType craftingtype : CraftingType.values()) {
-            String abilityType = craftingtype.getAbilityType();
-            int abilityLevel = craftingtype.getAbilityLevel();
-            String requiredRecipe = craftingtype.getRequiredRecipe();
+            int miningLevel = player.getMiningAbility();
+            int farmingLevel = player.getFarmingAbility();
+            int foragingLevel = player.getForagingAbility();
 
-            if (abilityType.equals(null) && requiredRecipe.equals(null)) {
-                availableCraftings.add(craftingtype);
+            ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+            ArrayList<Recipe> recipes = new ArrayList<>();
+            for (Item item : items) {
+                if (item instanceof Recipe) {
+                    recipes.add((Recipe) item);
+                }
             }
-            if (abilityType.equals("mining")) {
-                if (abilityLevel <= miningLevel) {
+
+            for (CraftingType craftingtype : CraftingType.values()) {
+                if(isCraftingAvailable(craftingtype, miningLevel, farmingLevel, foragingLevel, recipes))
                     availableCraftings.add(craftingtype);
-                }
-            }
-            if (abilityType.equals("farming")) {
-                if (abilityLevel <= farmingLevel) {
-                    availableCraftings.add(craftingtype);
-                }
-            }
-            if (abilityType.equals("foraging")) {
-                if (abilityLevel <= foragingLevel) {
-                    availableCraftings.add(craftingtype);
-                }
-            }
-            if (requiredRecipe != null) {
-                for (Recipe recipe : recipes) {
-                    if (requiredRecipe.equals(recipe.getName()))
-                        availableCraftings.add(craftingtype);
-                }
             }
 
             StringBuilder massage = new StringBuilder();
+            massage.append("available craftings: ").append("\n");
             for (CraftingType availableCrafting : availableCraftings) {
-                massage.append(availableCrafting).append("\n");
+                massage.append(availableCrafting.getName()).append("\n");
             }
             String finalMassage = massage.toString();
 
             return new Result(true, finalMassage);
         }
-        return new Result(false, "no crafting found.");
+        return new Result(false, "you should be at house.");
     }
 
     public Result craftingCraft(String itemName) {
+
+        Player player =  App.getInstance().getCurrentGame().getCurrentPlayer();
+        ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+        BackPack backPack = player.getInventory().getBackPack();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+
+        if(place instanceof House) {
+            ArrayList<Recipe> recipes = new ArrayList<>();
+            for (Item item : items) {
+                if (item instanceof Recipe) {
+                    recipes.add((Recipe) item);
+                }
+            }
+
+            CraftingType craftingType = findCraftingName(itemName);
+            if (craftingType == null) {
+                return new Result(false, "there is no such crafting");
+            }
+            if (!isCraftingAvailable(craftingType, player.getMiningAbility(), player.getFarmingAbility(), player.getForagingAbility(), recipes)) {
+                return new Result(false, "you don't know the recipe");
+            }
+            if (inventoryFreeSpace() == 0) {
+                return new Result(false, "your inventory is full.");
+            }
+            for (Item ingredient : craftingType.getIngredients()) {
+                int ingredientInventory = backPack.getItemNumber(ingredient);
+                int ingredientNeed = ingredient.getNumber();
+
+                if (ingredientNeed > ingredientInventory) {
+                    return new Result(false, "you don't have enough ingredients.");
+                }
+            }
+
+            for (Item ingredient : craftingType.getIngredients()) {
+                int ingredientInventory = backPack.getItemNumber(ingredient);
+                int ingredientNeed = ingredient.getNumber();
+
+                if (ingredientNeed < ingredientInventory) {
+                    backPack.setItemNumber(ingredient, ingredientInventory - ingredientNeed);
+                }
+                if (ingredientNeed == ingredientInventory) {
+                    backPack.removeItem(ingredient);
+                }
+
+                //TODO Update Energy
+
+                Crafting crafting = new Crafting(craftingType, 1);
+                backPack.addItem(crafting);
+                return new Result(true, "your crafting has been added.");
+
+            }
+        }
+        return new Result(false, "you should be at house.");
+    }
+
+    public Boolean isCraftingAvailable(CraftingType craftingtype, int miningLevel, int farmingLevel, int foragingLevel, ArrayList<Recipe> recipes) {
+
+        String abilityType = craftingtype.getAbilityType();
+        int abilityLevel = craftingtype.getAbilityLevel();
+        String requiredRecipe = craftingtype.getRequiredRecipe();
+
+        if (abilityType.equals(null) && requiredRecipe.equals(null)) {
+            return true;
+        }
+        if (abilityType.equals("mining")) {
+            if (abilityLevel <= miningLevel) {
+                return true;
+            }
+        }
+        if (abilityType.equals("farming")) {
+            if (abilityLevel <= farmingLevel) {
+                return true;
+            }
+        }
+        if (abilityType.equals("foraging")) {
+            if (abilityLevel <= foragingLevel) {
+                return true;
+            }
+        }
+        if (!requiredRecipe.equals(null)) {
+            for (Recipe recipe : recipes) {
+                if (requiredRecipe.equals(recipe.getName()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static CraftingType findCraftingName(String itemName){
+        for (CraftingType craftingType : CraftingType.values()) {
+            if(itemName.equals(craftingType.getName())){
+                return craftingType;
+            }
+        }
         return null;
+    }
+
+    public int inventoryFreeSpace(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+        int capacity = player.getInventory().getBackPack().getBackpackType().getCapacity();
+
+        return capacity - items.size();
     }
 
     public Result createCoop(Position coopPosition, Game game) {

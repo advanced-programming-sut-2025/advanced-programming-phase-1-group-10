@@ -21,4 +21,46 @@ public class BackPack {
     public void setBackpackType(BackpackType backpackType) {
         this.backpackType = backpackType;
     }
+
+    public boolean addItem(Item item) {
+        if (items.size() < backpackType.getCapacity()) {
+            items.add(item);
+            return true;
+        } else {
+            //Backpack is full
+            return false;
+        }
+    }
+
+    public boolean removeItem(Item item) {
+        if (items.contains(item)) {
+            items.remove(item);
+            return true;
+        } else {
+            //Item not found in backpack
+            return false;
+        }
+    }
+
+    public boolean setItemNumber(Item item, int number) {
+        for (Item i : items) {
+            if (i.equals(item)) {
+                i.setNumber(number);
+                return true;
+            }
+        }
+        //Item not found in backpack
+        return false;
+    }
+
+    public int getItemNumber(Item item) {
+        for (Item i : items) {
+            if (i.equals(item)) {
+                return i.getNumber();
+            }
+        }
+        //Item not found in backpack
+        return -1;
+    }
+
 }
