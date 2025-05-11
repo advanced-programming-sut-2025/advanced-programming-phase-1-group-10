@@ -1,5 +1,6 @@
 package Models;
 
+import Models.Animal.Animal;
 import Models.Place.Place;
 import Models.Planets.Seed;
 
@@ -8,6 +9,7 @@ public class Tile {
     private Person person;
     private Farm farm;
     private Place place;
+    private Animal animal;
 
     private Position position;
     private TileType tileType;
@@ -74,11 +76,21 @@ public class Tile {
         this.watered = watered;
     }
 
+    public Animal getAnimal() {
+        return animal;
+    }
+
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
+    }
+
     public String getTile() {
         if (this.person != null) {
             return this.person.getSymbol();
         } else if(this.item != null) {
             return (item.getSymbol());
+        } else if (this.getAnimal() != null) {
+            return "*";
         } else if (this.getTileType() == TileType.Wall) {
             return "X";
         } else if(this.getisPlow()) {

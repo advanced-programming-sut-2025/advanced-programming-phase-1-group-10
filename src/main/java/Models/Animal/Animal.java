@@ -82,6 +82,10 @@ public class Animal {
         this.friendShip = friendShip;
     }
 
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     public boolean isFed() {
         return fed;
     }
