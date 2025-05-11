@@ -69,6 +69,8 @@ public class GameLauncher implements AppMenu{
             System.out.println(cheatCodeController.setAnimalFriendShip(name,amount));
         } else if((matcher = GameCommands.ANIMLAS.getMatcher(input)) != null){
             System.out.println(controller.showAnimals().message());
+        } else if((matcher = GameCommands.SHOW_INVENTORY.getMatcher(input)) != null){
+            System.out.println(controller.showInventory());
         }
         else{
             System.out.println("invalid command.");
