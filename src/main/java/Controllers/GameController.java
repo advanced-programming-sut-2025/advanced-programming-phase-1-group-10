@@ -178,13 +178,16 @@ public class GameController {
     }
 
     public Result petAnimals(String name) {
-        //TODO check the player is near animal
         Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
         if (animal == null) {
             return new Result(false, "there is no animal with this name.");
         }
+        if (!isPlayerAdjacentToTile(animal.getPosition(), null)) {
+            return new Result(false, "you are not close enough to pet this animal.");
+        }
+
         animal.pet();
-        return new Result(true, "you pet " + animal.getName() + ".");
+        return new Result(true, "you pet " + animal.getName() + " (a " + animal.getAnimalType().getType() + ")" + ".");
     }
 
     public Result showAnimals() {
@@ -211,6 +214,74 @@ public class GameController {
             animals.append("\n");
         }
         return new Result(true, animals.toString());
+    }
+
+    public Result shepherdAnimals(String name, Position position) {
+        if (!App.getInstance().getCurrentGame().getWeather().getName().equalsIgnoreCase("sunny")) {
+            return new Result(false, "the animal can move only in SUNNY weather");
+        }
+
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+        if (animal == null) {
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        Tile destinationTile = getTileByPosition(position);
+        if (destinationTile == null) {
+            return new Result(false, "invalid destination position.");
+        }
+
+        if (destinationTile.getPerson() != null || destinationTile.getItem() != null ||
+                destinationTile.getAnimal() != null || destinationTile.getTileType() == TileType.Wall) {
+            return new Result(false, "the destination tile is occupied.");
+        }
+        Tile currentTile = getTileByPosition(animal.getPosition());
+        if (currentTile != null) {
+            currentTile.setAnimal(null);
+        }
+
+        animal.setPosition(position);
+        destinationTile.setAnimal(animal);
+
+        return new Result(true, "you successfully moved " + animal.getName() + " (a " + animal.getAnimalType().getType() + ")" + " to the new location.");
+    }
+
+    public Result feedAnimalWithHay(String name){
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+
+        if(animal == null){
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        if(!isPlayerAdjacentToTile(animal.getPosition(),App.getInstance().getCurrentGame().getCurrentPlayer())){
+            return new Result(false, "you are not close enough to pet this animal.");
+        }
+
+        animal.feed();
+        return new Result(true, animal.getName() + " (a " +
+                            animal.getAnimalType().getType() + ") " +
+                        "fed with hay.");
+    }
+
+    public Result sellAnimal(String name){
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+
+        if(animal == null){
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        if(!App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().contains(animal)){
+            return new Result(false, "you can't sell this animal.");
+        }
+
+        Tile animalTile = getTileByPosition(animal.getPosition());
+        App.getInstance().getCurrentGame().getAnimals().remove(name);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().remove(animal);
+        if(animalTile != null){
+            animalTile.setAnimal(null);
+        }
+        App.getInstance().getCurrentGame().getCurrentPlayer().addGold(animal.getPrice());
+        return new Result(true, animal.getName() + " has been sold with price : " + animal.getPrice() + ".");
     }
 
     public boolean placeAnimal(Game game, Position position, Animal animal) {
@@ -287,6 +358,18 @@ public class GameController {
         return null;
     }
 
+    public boolean isPlayerAdjacentToTile(Position targetPosition, Player player) {
+        if (player == null) {
+            player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        }
+
+        Position playerPosition = player.getPosition();
+
+        int dx = Math.abs(playerPosition.getX() - targetPosition.getX());
+        int dy = Math.abs(playerPosition.getY() - targetPosition.getY());
+
+        return dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0);
+    }
 
     public Result craftingShowRecipes() {
 

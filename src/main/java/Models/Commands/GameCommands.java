@@ -43,7 +43,10 @@ public enum GameCommands implements Commands {
     BUILD_MAINTENANCE("^build\\s+-a\\s+(?<buildingName>[^\\s]+)\\s+-l\\s+(?<x>\\d+)\\s*,\\s*(?<y>\\d+)$"),
     BUY_ANIMAL("^buy\\s+animal\\s+-a\\s+(?<animal>[^\\s]+)\\s+-n\\s+(?<name>[^\\s]+)$"),
     PET_ANIMAL("^pet\\s+-n\\s+(?<name>[^\\s]+)"),
-    ANIMLAS("animals");
+    ANIMLAS("animals"),
+    SHEPHERD_ANIMAL("^shepherd\\s+animals\\s+-n\\s+(?<name>[^\\s]+)\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
+    FEED_ANIMAL_WITH_HAY("^feed\\s+hay\\s+-n\\s+(?<name>[^\\s]+)$"),
+    SELL_ANIMAL("^sell\\s+animal\\s+-n\\s+(?<name>[^\\s]+)$")
     ;
 
     private final String pattern;
