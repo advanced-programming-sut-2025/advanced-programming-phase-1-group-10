@@ -5,10 +5,8 @@ import Models.Animal.Animal;
 import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.CraftingType;
-import Models.Place.House;
-import Models.Place.Place;
-import Models.Place.Barn;
-import Models.Place.Coop;
+import Models.Map;
+import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
@@ -17,11 +15,9 @@ import Models.Planets.Tree;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
+import Models.Weather.Weather;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class GameController {
     public Result showEnergy() {
@@ -369,6 +365,58 @@ public class GameController {
         int dy = Math.abs(playerPosition.getY() - targetPosition.getY());
 
         return dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0);
+    }
+
+    public Result fishing(String fishingPole){
+        if(!isPlayerNearLake()){
+            return new Result(false, "you should be near the lake.");
+        }
+
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        ArrayList<Item> items = currentPlayer.getInventory().getBackPack().getItems();
+        boolean hasFishingPole = false;
+        for (Item item : items) {
+            if (item instanceof FishingPole) {
+                hasFishingPole = true;
+            }
+        }
+        if(!hasFishingPole){
+            return new Result(false, "you don't have fishingpole in your Inventory.");
+        }
+
+        Random random = new Random();
+        double R = random.nextDouble();
+        double M ;
+        Weather weather = App.getInstance().getCurrentGame().getWeather();
+        switch (weather){
+            case SUNNY -> M = 1.5;
+            case RAIN -> M = 1.2;
+            case STORM -> M = 1;
+            default -> M = 1 ;
+        }
+        // TODO complete this method
+        return new Result(false, "");
+    }
+
+    public boolean isPlayerNearLake() {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Position playerPos = currentPlayer.getPosition();
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                Position adjacentPos = new Position(playerPos.getX() + dx, playerPos.getY() + dy);
+                Tile adjacentTile = getTileByPosition(adjacentPos);
+
+                if (adjacentTile != null && adjacentTile.getPlace() != null &&
+                        adjacentTile.getPlace() instanceof Lake) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public Result craftingShowRecipes() {
