@@ -1,8 +1,14 @@
 package Models.Tools;
 
-public class Axe extends Tool {
+import Models.App;
+import Models.Planets.Fruit;
+import Models.Planets.Tree;
+import Models.PlayerStuff.Player;
+import Models.Tile;
 
-    private final String name = "Axe";
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Axe extends Tool {
 
     public Axe(Quality quality, int energyUsage) {
         super(quality, energyUsage);
@@ -10,6 +16,27 @@ public class Axe extends Tool {
 
     @Override
     public String getName() {
-        return name;
+        return "Axe";
+    }
+
+    @Override
+    public void use(Tile tile) {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        boolean isUsed = false;
+
+        if(tile.getItem() instanceof Tree) {
+            player.getInventory().getBackPack().addItem(new Fruit(((Tree) tile.getItem()).getTreeType().getFruitType(), ThreadLocalRandom.current().nextInt(1,3)));
+            player.setForagingAbility(player.getForagingAbility() + 10);
+            tile.setItem(null);
+            isUsed = true;
+            //TODO ADD WOOD
+        }
+
+        int energyCost = getEnergyUsage() - getQuality().getValue();
+        player.getEnergy().setEnergyAmount(
+                player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
+        );
+
+
     }
 }

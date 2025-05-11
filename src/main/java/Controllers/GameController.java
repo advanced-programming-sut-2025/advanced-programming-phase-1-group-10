@@ -13,12 +13,10 @@ import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
 import Models.Place.Store.Store;
+import Models.Planets.Tree;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
-import Models.Tools.BackPack;
-import Models.Tools.Hoe;
-import Models.Tools.Pickaxe;
-import Models.Tools.Tool;
+import Models.Tools.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -580,38 +578,6 @@ public class GameController {
         }
     }
 
-    public boolean checkTileForHoe(Tile tile) {
-        if(tile == null){
-            return false;
-        } else if(tile.getItem() != null){
-            return false;
-        } else if(tile.getFarm() == null){
-            return false;
-        } else if(tile.getTileType() == TileType.Wall){
-            return false;
-        } else if(tile.getPerson() != null){
-            return false;
-        } else if(tile.getPlace() != null && !tile.getPlace().equals(getPlaceByType("Greenhouse"))){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean checkTileForPickAxe(Tile tile) {
-        if(tile == null){
-            return false;
-        } else if(tile.getTileType() == TileType.Wall){
-            return false;
-        } else if(tile.getPerson() != null){
-            return false;
-        } else if(tile.getFarm() == null){
-            return false;
-        } else if(tile.getPlace() != null && !tile.getPlace().equals(getPlaceByType("Greenhouse")) && !tile.getPlace().equals(getPlaceByType("Quarry"))){
-            return false;
-        }
-        return true;
-    }
-
     public Result useTool(String direction) {
         Tool tool = App.getInstance().getCurrentGame().getCurrentPlayer().getCurrentTool();
         Tile tile = getTileByDirection(direction);
@@ -619,12 +585,15 @@ public class GameController {
             return new Result(false, "Equip a tool before you use.!");
         } else if(tile == null){
             return new Result(false, "Invalid Tile!");
-        } else if(tool instanceof Hoe && checkTileForHoe(tile)){
+        } else if(tool instanceof Hoe){
             tool.use(tile);
-            return new Result(true, "You used a hoe.");
-        } else if(tool instanceof Pickaxe && checkTileForPickAxe(tile)){
+            return new Result(true, "You used the Hoe.");
+        } else if(tool instanceof Pickaxe){
             tool.use(tile);
-            return new Result(true, "You used a pickaxe.");
+            return new Result(true, "You used the Pickaxe.");
+        } else if(tool instanceof Axe){
+            tool.use(tile);
+            return new Result(true, "You used the Axe.");
         }
         return new Result(false, "Incorrect Usage!");
     }

@@ -167,6 +167,30 @@ public class Player implements Person {
         this.fishingAbility = fishingAbility;
     }
 
+    private int calculateLevel(int xp) {
+        int level = 0;
+        while (level < 4 && xp >= 50 + level * 100) {
+            level++;
+        }
+        return level;
+    }
+
+    public int getMiningLevel() {
+        return calculateLevel(miningAbility);
+    }
+
+    public int getFarmingLevel() {
+        return calculateLevel(farmingAbility);
+    }
+
+    public int getForagingLevel() {
+        return calculateLevel(foragingAbility);
+    }
+
+    public int getFishingLevel() {
+        return calculateLevel(fishingAbility);
+    }
+
     @Override
     public String getSymbol() {
         return "P";

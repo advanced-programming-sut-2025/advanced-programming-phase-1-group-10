@@ -8,7 +8,7 @@ public class Tree implements Item {
     private int numberOfTree = 1;
 
     public Tree(TreeType treeType) {
-        treeType = treeType;
+        this.treeType = treeType;
     }
 
     @Override
@@ -31,4 +31,9 @@ public class Tree implements Item {
     public void setNumber(int number) {
         numberOfTree = number;
     }
+
+    public TreeType getTreeType() {
+        return treeType;
+    }
+
 }

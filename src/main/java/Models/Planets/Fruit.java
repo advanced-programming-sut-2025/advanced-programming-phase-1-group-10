@@ -6,6 +6,10 @@ public class Fruit implements Item {
     private FruitType fruitType;
     private int numberOfFruit;
 
+    public Fruit(FruitType fruitType, int numberOfFruit) {
+        this.fruitType = fruitType;
+        this.numberOfFruit = numberOfFruit;
+    }
 
     @Override
     public String getName() {
