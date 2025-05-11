@@ -594,10 +594,11 @@ public class GameController {
         } else if(tool instanceof Axe){
             tool.use(tile);
             return new Result(true, "You used the Axe.");
+        } else if(tool instanceof WateringCan){
+            tool.use(tile);
+            return new Result(true, "You used the WateringCan.");
         }
         return new Result(false, "Incorrect Usage!");
     }
-
-
 
 }

@@ -14,6 +14,7 @@ public class Tile {
     private Item item;
 
     private boolean plow;
+    private boolean watered;
 
     private Seed plantedSeed;
 
@@ -63,6 +64,14 @@ public class Tile {
 
     public void setPlow(boolean plow) {
         this.plow = plow;
+    }
+
+    public boolean isWatered() {
+        return watered;
+    }
+
+    public void setWatered(boolean watered) {
+        this.watered = watered;
     }
 
     public String getTile() {
