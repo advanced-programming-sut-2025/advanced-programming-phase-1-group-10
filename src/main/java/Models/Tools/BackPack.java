@@ -4,13 +4,11 @@ import Models.Item;
 
 import java.util.ArrayList;
 
-public class BackPack extends Tool {
+public class BackPack {
 
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();
-    public BackPack() {
-        super();
-    }
+
 
     public BackpackType getBackpackType() {
         return backpackType;

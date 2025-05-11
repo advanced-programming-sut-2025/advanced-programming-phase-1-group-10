@@ -2,8 +2,8 @@ package Models.Tools;
 
 public class Hoe extends Tool {
 
-    public Hoe() {
-        super();
+    public Hoe(Quality quality, int energyUsage) {
+        super(quality, energyUsage);
     }
 
     private final String name = "Hoe";

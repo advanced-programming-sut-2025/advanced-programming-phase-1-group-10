@@ -7,10 +7,11 @@ import Models.Item;
 import Models.Person;
 import Models.Position;
 import Models.Recipe.Recipe;
-import Models.Tools.Tool;
+import Models.Tools.*;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player implements Person {
 
@@ -43,8 +44,15 @@ public class Player implements Person {
         this.name = name;
         this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
         this.isFainted = false;
+        this.inventory = new Inventory();
+        this.inventory.getBackPack().getItems().addAll(Arrays.asList(
+                new Hoe(Quality.STARTER,5),
+                new Pickaxe(Quality.STARTER,5),
+                new Axe(Quality.STARTER,5),
+                new WateringCan(Quality.STARTER,5),
+                new Seythe(Quality.STARTER,2)
+        ));
         //this.position = new Position();
-        //TODO Add starting items for player
     }
 
     public void setEnergy(int energyAmount) {

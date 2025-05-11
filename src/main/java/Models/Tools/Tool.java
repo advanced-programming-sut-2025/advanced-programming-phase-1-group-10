@@ -7,6 +7,11 @@ public class Tool implements Item {
     private int energyUsage;
     private Quality quality;
 
+    public Tool(Quality quality, int energyUsage) {
+        this.quality = quality;
+        this.energyUsage = energyUsage;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -46,4 +51,7 @@ public class Tool implements Item {
     public void setQuality(Quality quality) {
         this.quality = quality;
     }
+
+
+
 }
