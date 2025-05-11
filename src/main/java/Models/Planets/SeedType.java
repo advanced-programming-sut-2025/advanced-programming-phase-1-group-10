@@ -44,6 +44,10 @@ public enum SeedType {
     POWDERMELON_SEED("Powdermelon seed",Season.WINTER),
     ANCIENT_SEED("Ancient seed", null),
     MIXED_SEED("Mixed seed", null),
+    ACORN("Acron", null),
+    MAPLE_SEED("Maple seed", null),
+    PINE_CONE("Pine cone", null),
+    MAHOGANY_SEED("Mahogany seed", null)
     ;
     private final String name;
     private final Season season;

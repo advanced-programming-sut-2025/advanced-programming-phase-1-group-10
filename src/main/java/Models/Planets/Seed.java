@@ -6,6 +6,10 @@ public class Seed implements Item {
     private SeedType seedType;
     private int numberOfSeed;
 
+    public Seed(SeedType seedType, int numberOfSeed) {
+        this.seedType = seedType;
+        this.numberOfSeed = numberOfSeed;
+    }
 
     @Override
     public String getName() {

@@ -11,4 +11,8 @@ public enum BackpackType {
     BackpackType(int capacity) {
         this.capacity = capacity;
     }
+
+    public int getCapacity() {
+        return capacity;
+    }
 }

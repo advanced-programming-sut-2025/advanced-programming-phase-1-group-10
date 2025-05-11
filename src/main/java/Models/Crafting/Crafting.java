@@ -7,6 +7,11 @@ public class Crafting implements Item {
     private CraftingType craftingType;
     private int numberOfCrafting;
 
+    public Crafting(CraftingType craftingType, int numberOfCrafting) {
+        this.craftingType = craftingType;
+        this.numberOfCrafting = numberOfCrafting;
+    }
+
     @Override
     public String getName(){
         return craftingType.getName();
