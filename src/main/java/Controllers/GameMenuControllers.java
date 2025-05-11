@@ -7,6 +7,7 @@ import Models.NPC.*;
 import Models.Place.*;
 import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
+import Models.Planets.Crop.CropType;
 import Models.Planets.Crop.ForagingCropType;
 import Models.Planets.Tree;
 import Models.Planets.TreeType;
@@ -15,6 +16,7 @@ import Models.PlayerStuff.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class GameMenuControllers {
@@ -278,6 +280,14 @@ public class GameMenuControllers {
         }
         for (int i = 0; i < numberOfRandom; i++) {
             Tile randomTile = getRandomTile(tiles);
+            Mineral mineral = new Mineral(MineralTypes.STONE,1);
+            if (!isAvailableTileForMineral(randomTile)) {
+                continue;
+            }
+            randomTile.setItem(mineral);
+        }
+        for (int i = 0; i < numberOfRandom; i++) {
+            Tile randomTile = getRandomTile(tiles);
             Mineral mineral = (Mineral) getRandomItem(minerals);
             if (!isAvailableTileForMineral(randomTile)) {
                 continue;
@@ -319,6 +329,19 @@ public class GameMenuControllers {
             Tile tile = getRandomTileArrayList(tiles);
             if (tile != null && randomItem != null) tile.setItem(randomItem);
         }
+
+        ArrayList<Item> fiberAndMushroom = new ArrayList<>(Arrays.asList(
+                new Crop(ForagingCropType.FIBER, ThreadLocalRandom.current().nextInt(0,2)),
+                new Crop(ForagingCropType.COMMON_MUSHROOM, 1)
+        ));
+
+        for (int i = 0; i < 2 * numberOfRandom; i++) {
+            Item randomItem = getRandomItem(fiberAndMushroom);
+            Tile tile = getRandomTileArrayList(tiles);
+            if (tile != null && randomItem != null) tile.setItem(randomItem);
+        }
+
+
     }
 
     public static boolean setUpPlace(Game game, int placeHeight, int placeWidth, Position position, Place place) {
