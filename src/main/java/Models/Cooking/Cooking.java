@@ -7,6 +7,11 @@ public class Cooking implements Item {
     private CookingType cookingType;
     private int numberOfCooking;
 
+    public Cooking(CookingType cookingType, int numberOfCooking){
+        this.cookingType = cookingType;
+        this.numberOfCooking = numberOfCooking;
+    }
+
 
     @Override
     public String getName() {

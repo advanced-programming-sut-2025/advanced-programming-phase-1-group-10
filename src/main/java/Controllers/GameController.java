@@ -2,6 +2,7 @@ package Controllers;
 
 import Models.*;
 import Models.Animal.Animal;
+import Models.Cooking.CookingType;
 import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.CraftingType;
@@ -346,6 +347,84 @@ public class GameController {
 
         return capacity - items.size();
     }
+
+
+    public Result cookingShowRecipes() {
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+
+        if(place instanceof House) {
+            ArrayList<CookingType> availableCookings = new ArrayList<>();
+
+            int miningLevel = player.getMiningAbility();
+            int farmingLevel = player.getFarmingAbility();
+            int foragingLevel = player.getForagingAbility();
+            int fishingLevel = player.getFishingAbility();
+
+            ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+            ArrayList<Recipe> recipes = new ArrayList<>();
+            for (Item item : items) {
+                if (item instanceof Recipe) {
+                    recipes.add((Recipe) item);
+                }
+            }
+
+            for (CookingType cookingType : CookingType.values()) {
+                if(isCookingAvailable(cookingType, miningLevel, farmingLevel, foragingLevel,fishingLevel, recipes))
+                    availableCookings.add(cookingType);
+            }
+
+            StringBuilder massage = new StringBuilder();
+            massage.append("available cookings: ").append("\n");
+            for (CookingType availableCooking : availableCookings) {
+                massage.append(availableCooking.getName()).append("\n");
+            }
+            String finalMassage = massage.toString();
+
+            return new Result(true, finalMassage);
+        }
+        return new Result(false, "you should be at house.");
+    }
+
+    public Boolean isCookingAvailable(CookingType cookingtype, int miningLevel, int farmingLevel, int foragingLevel, int fishingLevel, ArrayList<Recipe> recipes) {
+
+        String abilityType = cookingtype.getAbilityType();
+        int abilityLevel = cookingtype.getAbilityLevel();
+        String requiredRecipe = cookingtype.getRequiredRecipe();
+
+        if (abilityType.equals(null) && requiredRecipe.equals(null)) {
+            return true;
+        }
+        if (abilityType.equals("mining")) {
+            if (abilityLevel <= miningLevel) {
+                return true;
+            }
+        }
+        if (abilityType.equals("farming")) {
+            if (abilityLevel <= farmingLevel) {
+                return true;
+            }
+        }
+        if (abilityType.equals("foraging")) {
+            if (abilityLevel <= foragingLevel) {
+                return true;
+            }
+        }
+        if(abilityType.equals("fishing")){
+            if (abilityLevel <= fishingLevel) {
+                return true;
+            }
+        }
+        if (!requiredRecipe.equals(null)) {
+            for (Recipe recipe : recipes) {
+                if (requiredRecipe.equals(recipe.getName()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
 
     public Result createCoop(Position coopPosition, Game game) {
         Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();

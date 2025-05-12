@@ -7,6 +7,11 @@ public class Fish implements Item {
     private FishType fishType;
     private int numberOfFish;
 
+    public Fish(FishType fishType, int numberOfFish) {
+        this.fishType = fishType;
+        this.numberOfFish = numberOfFish;
+    }
+
     @Override
     public String getName() {
         return fishType.getName();
