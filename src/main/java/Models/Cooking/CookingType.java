@@ -1,71 +1,167 @@
 package Models.Cooking;
 
+import Models.Animal.AnimalProduct;
+import Models.Animal.AnimalProductType;
+import Models.Animal.Fish;
+import Models.Animal.FishType;
+import Models.Artisan.ArtisanProduct;
+import Models.Artisan.ArtisanProductType;
 import Models.Item;
+import Models.Planets.Crop.Crop;
+import Models.Planets.Crop.CropTypeNormal;
+import Models.Planets.Crop.ForagingCropType;
+import Models.Planets.Fruit;
+import Models.Planets.FruitType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public enum CookingType {
+    FRIED_EGG("Fried Egg", 50, null, 0, null, 35, new Item[]{
+            new AnimalProduct(AnimalProductType.EGG, 1)
+    }),
 
-    FRIED_EGG("Fried egg", "1 egg", 50, "", "Starter", 35),
-    BAKED_FISH("Baked Fish", "1 Sardine + 1 Salmon + 1 wheat", 75, "", "Starter", 100),
-    SALAD("Salad", "1 leek + 1 dandelion", 113, "", "Starter", 110),
-    OMLELET("Olmelet", "1 egg + 1 milk", 100, "", "Stardrop Saloon", 125),
-    PUMPKIN_PIE("pumpkin pie", "1 pumpking + 1 wheat flour + 1 milk + 1 sugar", 225, "", "Stardrop Saloon", 385),
-    SPAGHETTI("spaghetti", "1 wheat flour + 1 tomato", 75, "", "Stardrop Saloon", 120),
-    PIZZA("pizza", "1 wheat flour + 1 tomato + 1 cheese", 150, "", "Stardrop Saloon", 300),
-    TORTILLA("Tortilla", "1 corn", 50, "", "Stardrop Saloon", 50),
-    MAKI_ROLL("Maki Roll", "1 any fish + 1 rice + 1 fiber", 100, "", "Stardrop Saloon", 220),
-    TRIPLE_SHOT_ESPRESSO("Triple Shot Espresso", "3 coffee", 200, "Max Energy + 100 (5 hours)", "Stardrop Saloon", 450),
-    COOKIE("Cookie", "1 wheat flour + 1 sugar + 1 egg", 90, "", "Stardrop Saloon", 140),
-    HASH_BROWNS("hash browns", "1 potato + 1 oil", 90, "Farming (5 hours)", "Stardrop Saloon", 120),
-    PANCAKES("pancakes", "1 wheat flour + 1 egg", 90, "Foraging (11 hours)", "Stardrop Saloon", 80),
-    FRUIT_SALAD("fruit salad", "1 blueberry + 1 melon + 1 apricot", 263, "", "Stardrop Saloon", 450),
-    RED_PLATE("red plate", "1 red cabbage + 1 radish", 240, "Max Energy +50 (3 hours)", "Stardrop Saloon", 400),
-    BREAD("bread", "1 wheat flour", 50, "", "Stardrop Saloon", 60),
-    SALMON_DINNER("salmon dinner", "1 salmon + 1 Amaranth + 1 Kale", 125, "", "Leah reward", 300),
-    VEGETABLE_MEDLEY("vegetable medley", "1 tomato + 1 beet", 165, "", "Foraging Level 2", 120),
-    FARMERS_LUNCH("farmer's lunch", "1 omelet + 1 parsnip", 200, "Farming (5 hours)", "Farming level 1", 150),
-    SURVIVAL_BURGER("survival burger", "1 bread + 1 carrot + 1 eggplant", 125, "Foraging (5 hours)", "Foraging level 3", 180),
-    DISH_O_THE_SEA("dish O' the Sea", "2 sardines + 1 hash browns", 150, "Fishing (5 hours)", "Fishing level 2", 220),
-    SEAFORM_PUDDING("seaform Pudding", "1 Flounder + 1 midnight carp", 175, "Fishing (10 hours)", "Fishing level 3", 300),
-    MINERS_TREAT("miner's treat", "2 carrot + 1 suger + 1 milk", 125, "Mining (5 hours)", "Mining level 1", 200);
+    BAKED_FISH("Baked Fish", 75, null, 0, null, 100, new Item[]{
+            new Fish(FishType.SARDINE, 1),
+            new Fish(FishType.SALMON, 1),
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1)
+    }),
 
+    SALAD("Salad", 113, null, 0, null, 110, new Item[]{
+            new Crop(ForagingCropType.LEEK, 1),
+            new Crop(ForagingCropType.DANDELION, 1)
+    }),
+
+    OMELET("Omelet", 100, null, 0, "Omelet Recipe", 125, new Item[]{
+            new AnimalProduct(AnimalProductType.EGG, 1),
+            new AnimalProduct(AnimalProductType.COW_MILK, 1)
+    }),
+
+    PUMPKIN_PIE("Pumpkin Pie", 225, null, 0, "Pumpkin Pie Recipe", 385, new Item[]{
+            new Crop(CropTypeNormal.PUMPKIN, 1),
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new AnimalProduct(AnimalProductType.COW_MILK, 1),
+            new Crop(CropTypeNormal.SUMMER_SQUASH, 1)
+    }),
+
+    SPAGHETTI("Spaghetti", 75, null, 0, "Spaghetti Recipe", 120, new Item[]{
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new Crop(CropTypeNormal.TOMATO, 1)
+    }),
+
+    PIZZA("Pizza", 150, null, 0, "Pizza Recipe", 300, new Item[]{
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new Crop(CropTypeNormal.TOMATO, 1),
+            new ArtisanProduct(ArtisanProductType.CHEESE, 1)
+    }),
+
+    TORTILLA("Tortilla", 50, null, 0, "Tortilla Recipe", 50, new Item[]{
+            new Crop(CropTypeNormal.CORN, 1)
+    }),
+
+    MAKI_ROLL("Maki Roll", 100, null, 0, "Maki Roll Recipe", 220, new Item[]{
+            new Fish(FishType.SALMON, 1),
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new Crop(CropTypeNormal.SUNFLOWER, 1)
+    }),
+
+    TRIPLE_SHOT_ESPRESSO("Triple Shot Espresso", 200,null, 0, "Triple Shot Espresso Recipe", 450, new Item[]{
+            new ArtisanProduct(ArtisanProductType.COFFEE, 3)
+    }),
+
+    COOKIE("Cookie", 90, null, 0, "Cookie Recipe", 140, new Item[]{
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new Crop(CropTypeNormal.SUMMER_SQUASH, 1),
+            new AnimalProduct(AnimalProductType.EGG, 1)
+    }),
+
+    HASH_BROWNS("Hash Browns", 90, null, 0, "Hashbrowns Recipe", 120, new Item[]{
+            new Crop(CropTypeNormal.POTATO, 1),
+            new ArtisanProduct(ArtisanProductType.OIL, 1)
+    }),
+
+    PANCAKES("Pancakes", 90, null, 0, "Pancakes Recipe", 80, new Item[]{
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1),
+            new AnimalProduct(AnimalProductType.EGG, 1)
+    }),
+
+    FRUIT_SALAD("Fruit Salad", 263, null, 0, "Fruit Salad Recipe", 450, new Item[]{
+            new Crop(CropTypeNormal.BLUEBERRY, 1),
+            new Crop(CropTypeNormal.MELON, 1),
+            new Fruit(FruitType.APRICOT, 1)
+    }),
+
+    RED_PLATE("Red Plate", 240, null, 0, "Red Plate Recipe", 400, new Item[]{
+            new Crop(CropTypeNormal.RED_CABBAGE, 1),
+            new Crop(CropTypeNormal.RADISH, 1)
+    }),
+
+    BREAD("Bread", 50, null, 0, "Bread Recipe", 60, new Item[]{
+            new Crop(CropTypeNormal.UNMILLED_RICE, 1)
+    }),
+
+    SALMON_DINNER("Salmon Dinner", 125, null, 0, "Salmon Dinner Recipe", 300, new Item[]{
+            new Fish(FishType.SALMON, 1),
+            new Crop(CropTypeNormal.AMARANTH, 1),
+            new Crop(CropTypeNormal.KALE, 1)
+    }),
+
+    VEGETABLE_MEDLEY("Vegetable Medley", 165, "Foraging" , 2,null, 120, new Item[]{
+            new Crop(CropTypeNormal.TOMATO, 1),
+            new Crop(CropTypeNormal.BEET, 1)
+    }),
+
+    FARMERS_LUNCH("Farmer's Lunch", 200, "Farming",1,null, 150, new Item[]{
+            new Cooking(CookingType.OMELET, 1),
+            new Crop(CropTypeNormal.PARSNIP, 1)
+    }),
+
+    SURVIVAL_BURGER("Survival Burger", 125, "Foraging",3,null, 180, new Item[]{
+            new Cooking(CookingType.BREAD, 1),
+            new Crop(CropTypeNormal.CARROT, 1),
+            new Crop(CropTypeNormal.EGGPLANT, 1)
+    }),
+
+    DISH_O_THE_SEA("Dish O' The Sea", 150, "Fishing",2,null, 220, new Item[]{
+            new Fish(FishType.SARDINE, 2),
+            new Cooking(CookingType.HASH_BROWNS, 1)
+    }),
+
+    SEAFOAM_PUDDING("Seafoam Pudding", 175, "Fishing", 3,null, 300, new Item[]{
+            new Fish(FishType.FLOUNDER, 1),
+            new Fish(FishType.MIDNIGHT_CARP, 1)
+    }),
+
+    MINERS_TREAT("Miner's Treat", 125, "Mining" ,1,null, 200, new Item[]{
+            new Crop(CropTypeNormal.CARROT, 2),
+            new Crop(CropTypeNormal.SUMMER_SQUASH, 1),
+            new AnimalProduct(AnimalProductType.COW_MILK, 1)
+    });
 
     private final String name;
-    private final String ingredient;
     private final int energy;
-    private final String buff;
-    private final String source;
+    private final String abilityType;
+    private final int abilityLevel;
+    private final String requiredRecipe;
     private final int price;
+    private final ArrayList<Item> ingredients;
 
-    CookingType(String name, String ingredient, int energy, String buff, String source, int price) {
+    CookingType(String name, int energy, String abilityType, int abilityLevel, String requiredRecipe,int price , Item[] items) {
         this.name = name;
-        this.ingredient = ingredient;
         this.energy = energy;
-        this.buff = buff;
-        this.source = source;
+        this.abilityType = abilityType;
+        this.abilityLevel = abilityLevel;
+        this.requiredRecipe = requiredRecipe;
         this.price = price;
+        this.ingredients = new ArrayList<>(Arrays.asList(items));
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getIngredient() {
-        return ingredient;
-    }
-
-    public int getEnergy() {
-        return energy;
-    }
-
-    public String getBuff() {
-        return buff;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public int getPrice() {
-        return price;
-    }
+    public String getName() { return name; }
+    public int getEnergy() { return energy; }
+    public String getAbilityType() { return abilityType; }
+    public int getAbilityLevel() { return abilityLevel; }
+    public String getRequiredRecipe() { return requiredRecipe; }
+    public int getPrice() { return price; }
+    public List<Item> getIngredients() { return new ArrayList<>(ingredients); }
 }

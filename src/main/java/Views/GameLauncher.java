@@ -110,6 +110,10 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.SHOW_NPC_FRIENDSHIP.getMatcher(input)) != null){
             System.out.println(controller.showNPClist());
+        } else if((matcher = GameCommands.FISHING_POLE.getMatcher(input)) != null){
+            System.out.println(controller.fishing(
+                    matcher.group("fishingpole")
+            ));
         } else if((matcher = GameCommands.SHOW_FRINEDSHIP.getMatcher(input)) != null){
             System.out.println(controller.showFriendship());
         } else if((matcher = GameCommands.TALK_TO_PLAYER.getMatcher(input)) != null){

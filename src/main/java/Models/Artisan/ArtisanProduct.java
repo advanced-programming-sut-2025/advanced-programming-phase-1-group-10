@@ -2,14 +2,19 @@ package Models.Artisan;
 
 import Models.Item;
 
-public class Artisan implements Item {
+public class ArtisanProduct implements Item {
 
-    private ArtisanType artisanType;
+    private ArtisanProductType artisanProductType;
     private int numberOfArtisan;
+
+    public ArtisanProduct(ArtisanProductType artisanProductType, int numberOfArtisan) {
+        this.artisanProductType = artisanProductType;
+        this.numberOfArtisan = numberOfArtisan;
+    }
 
     @Override
     public String getName() {
-        return artisanType.getName();
+        return artisanProductType.getName();
     }
 
     @Override

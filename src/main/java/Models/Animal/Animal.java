@@ -1,6 +1,5 @@
 package Models.Animal;
 
-import Models.Place.Place;
 import Models.Position;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.ArrayList;
 public class Animal {
 
     private AnimalType animalType ;
-    private final ArrayList<AnimalProducts> animalProductTypes = new ArrayList<>();
+    private final ArrayList<AnimalProductType> animalProductTypes = new ArrayList<>();
     private String name ;
     private int friendShip;
 
@@ -23,28 +22,28 @@ public class Animal {
         this.friendShip = 0;
         switch (animalType) {
             case CHICKEN -> {
-                this.animalProductTypes.add(AnimalProducts.EGG);
-                this.animalProductTypes.add(AnimalProducts.LARGE_EGG);
+                this.animalProductTypes.add(AnimalProductType.EGG);
+                this.animalProductTypes.add(AnimalProductType.LARGE_EGG);
             }
             case DUCK -> {
-                this.animalProductTypes.add(AnimalProducts.DUCK_EGG);
-                this.animalProductTypes.add(AnimalProducts.DUCK_FEATHER);
+                this.animalProductTypes.add(AnimalProductType.DUCK_EGG);
+                this.animalProductTypes.add(AnimalProductType.DUCK_FEATHER);
             }
             case RABBIT -> {
-                this.animalProductTypes.add(AnimalProducts.RABBIT_WOOL);
-                this.animalProductTypes.add(AnimalProducts.RABBIT_LEG);
+                this.animalProductTypes.add(AnimalProductType.RABBIT_WOOL);
+                this.animalProductTypes.add(AnimalProductType.RABBIT_LEG);
             }
-            case DINOSAUR -> this.animalProductTypes.add(AnimalProducts.DINOSAUR_EGG);
+            case DINOSAUR -> this.animalProductTypes.add(AnimalProductType.DINOSAUR_EGG);
             case COW -> {
-                this.animalProductTypes.add(AnimalProducts.COW_MILK);
-                this.animalProductTypes.add(AnimalProducts.COW_LARGE_MILK);
+                this.animalProductTypes.add(AnimalProductType.COW_MILK);
+                this.animalProductTypes.add(AnimalProductType.COW_LARGE_MILK);
             }
             case GOAT -> {
-                this.animalProductTypes.add(AnimalProducts.GOAT_MILK);
-                this.animalProductTypes.add(AnimalProducts.GOAT_LARGE_MILK);
+                this.animalProductTypes.add(AnimalProductType.GOAT_MILK);
+                this.animalProductTypes.add(AnimalProductType.GOAT_LARGE_MILK);
             }
-            case SHEEP -> this.animalProductTypes.add(AnimalProducts.SHEEP_WOOL);
-            case PIG -> this.animalProductTypes.add(AnimalProducts.TRUFFLE);
+            case SHEEP -> this.animalProductTypes.add(AnimalProductType.SHEEP_WOOL);
+            case PIG -> this.animalProductTypes.add(AnimalProductType.TRUFFLE);
         }
     }
 
@@ -52,7 +51,7 @@ public class Animal {
         return animalType;
     }
 
-    public ArrayList<AnimalProducts> getAnimalProductTypes() {
+    public ArrayList<AnimalProductType> getAnimalProductTypes() {
         return animalProductTypes;
     }
 
