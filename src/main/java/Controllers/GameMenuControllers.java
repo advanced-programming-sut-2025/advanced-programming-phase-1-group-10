@@ -375,7 +375,7 @@ public class GameMenuControllers {
 
     public void setUpFriendShip(Player player) {
         for(Player p: App.getInstance().getCurrentGame().getPlayers()){
-            if(!p.getName().equals(player.getName())) player.getFriendships().add(new Friendship(p,0,0));
+            if(!p.getName().equals(player.getName())) player.getFriendships().add(new Friendship(p,0));
         }
     }
 

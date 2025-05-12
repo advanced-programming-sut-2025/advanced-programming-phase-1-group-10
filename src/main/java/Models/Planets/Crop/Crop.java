@@ -30,4 +30,9 @@ public class Crop implements Item {
     public void setNumber(int number) {
         numberOfCrop = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Crop(cropType, number);
+    }
 }

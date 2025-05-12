@@ -30,4 +30,9 @@ public class Fruit implements Item {
     public void setNumber(int number) {
         numberOfFruit = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Fruit(fruitType, number);
+    }
 }

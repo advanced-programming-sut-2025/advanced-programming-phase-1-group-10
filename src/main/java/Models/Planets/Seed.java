@@ -30,4 +30,9 @@ public class Seed implements Item {
     public void setNumber(int number){
         numberOfSeed = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Seed(seedType, number);
+    }
 }

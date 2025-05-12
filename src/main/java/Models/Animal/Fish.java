@@ -31,4 +31,9 @@ public class Fish implements Item {
     public void setNumber(int number) {
         numberOfFish = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Fish(fishType, number);
+    }
 }

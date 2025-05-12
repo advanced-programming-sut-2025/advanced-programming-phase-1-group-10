@@ -32,5 +32,10 @@ public class Crafting implements Item {
         numberOfCrafting = number;
     }
 
+    @Override
+    public Item copyItem(int number) {
+        return new Crafting(craftingType, number);
+    }
+
 
 }

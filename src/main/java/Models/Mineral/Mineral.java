@@ -33,5 +33,10 @@ public class Mineral implements Item {
         numberOfMineral = number;
     }
 
+    @Override
+    public Item copyItem(int number) {
+        return new Mineral(mineralType, number);
+    }
+
 
 }

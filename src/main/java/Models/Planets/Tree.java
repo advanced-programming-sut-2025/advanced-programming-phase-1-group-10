@@ -32,6 +32,11 @@ public class Tree implements Item {
         numberOfTree = number;
     }
 
+    @Override
+    public Item copyItem(int number) {
+        return new Tree(treeType);
+    }
+
     public TreeType getTreeType() {
         return treeType;
     }

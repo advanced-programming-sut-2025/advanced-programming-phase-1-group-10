@@ -4,7 +4,7 @@ import Models.Item;
 
 import java.util.ArrayList;
 
-public class BackPack {
+public class BackPack{
 
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();

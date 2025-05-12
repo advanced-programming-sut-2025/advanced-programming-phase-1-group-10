@@ -9,6 +9,9 @@ public enum GameCommands implements Commands {
     SHOW_FRINEDSHIP("^friendships$"),
     TALK_TO_PLAYER("^talk -u (?<username>[\\S]+) -m (?<message>[\\S ]+)$"),
     TALK_HISTORY("^talk history -u (?<username>[\\S]+)$"),
+    SEND_GIFT("gift -u (?<username>[\\S]+) -i (?<item>[\\S ]+) -a (?<amount>[\\S]+)"),
+    SHOW_GIFT_LIST("gift list"),
+    RATE_GIFT("^gift rate -i (?<giftNumber>[\\S]+) -r (?<rate>[\\S]+)$"),
 
     //Map print commands
     PRINT_MAP("^print map$"),

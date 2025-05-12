@@ -32,6 +32,10 @@ public class Bar implements Item {
         numberOfBar = number;
     }
 
+    @Override
+    public Item copyItem(int number) {
+        return new Bar(barType, number);
+    }
 
 
 }

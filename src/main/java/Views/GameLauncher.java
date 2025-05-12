@@ -14,7 +14,8 @@ public class GameLauncher implements AppMenu{
     GameController controller = new GameController();
     CheatCodeControllers cheatCodeController = new CheatCodeControllers();
 
-    //TODO Notify players about new messages sent to 'em and move it to HistoryArray
+    //TODO Notify players about new messages sent to 'em and move it to HistoryArray.
+    //TODO Notify players about the gifts that are recievecd.
 
     @Override
     public void checkCommand(Scanner scanner) {
@@ -123,6 +124,19 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.TALK_HISTORY.getMatcher(input)) != null){
             System.out.println(controller.talkHistory(matcher.group("username")));
+        } else if((matcher = GameCommands.SEND_GIFT.getMatcher(input)) != null){
+            System.out.println(controller.sendGiftToPlayer(
+                    matcher.group("username").trim(),
+                    matcher.group("item").trim(),
+                    matcher.group("amount").trim()
+            ));
+        } else if((matcher = GameCommands.SHOW_GIFT_LIST.getMatcher(input)) != null){
+            System.out.println(controller.showRecievedGifts());
+        } else if((matcher = GameCommands.RATE_GIFT.getMatcher(input)) != null){
+            System.out.println(controller.rateGift(
+                    matcher.group("giftNumber"),
+                    matcher.group("rate")
+            ));
         }
         else{
             System.out.println("invalid command.");

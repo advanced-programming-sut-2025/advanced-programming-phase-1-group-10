@@ -6,9 +6,9 @@ import Models.Animal.Fish;
 import Models.Animal.FishType;
 import Models.Crafting.Crafting;
 import Models.*;
-import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
 import Models.FriendShip.Friendship;
+import Models.FriendShip.Gift;
 import Models.FriendShip.Message;
 import Models.NPC.NPC;
 import Models.Place.Barn;
@@ -25,7 +25,6 @@ import Models.Recipe.Recipe;
 import Models.Tools.*;
 import Models.Weather.Weather;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1153,5 +1152,103 @@ public class GameController {
         return new Result(true, result.toString().trim());
     }
 
+    public Result sendGiftToPlayer(String playerName, String itemName, String amount) {
+        int amountInt = Integer.parseInt(amount);
+
+        Player receiver = getNearbyPerson(playerName, Player.class);
+        if (receiver == null) {
+            return new Result(false, "Player not found!");
+        }
+
+
+
+        Player sender = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Item senderItem = null;
+
+        if(getFriendship(sender,receiver).getLevel() < 1){
+            return new Result(false , "Friendship level is lower than 1.");
+        }
+
+        for (Item it : sender.getInventory().getBackPack().getItems()) {
+            if (it.getName().equals(itemName)) {
+                if (it.getNumber() < amountInt) {
+                    return new Result(false, "You don't have enough items to gift.");
+                }
+                senderItem = it;
+                break;
+            }
+        }
+
+        if (senderItem == null) {
+            return new Result(false, "You don't have this item to gift.");
+        }
+
+        // Create a copy of the item with the amount to gift
+        Item itemToGift = senderItem.copyItem(amountInt);
+
+        // Add the item to the receiver's inventory
+        if (!receiver.getInventory().getBackPack().addItem(itemToGift)) {
+            return new Result(false, "Receiver's backpack is full.");
+        }
+
+        // Deduct from sender's inventory
+        senderItem.setNumber(senderItem.getNumber() - amountInt);
+
+        Gift gift = new Gift(sender,receiver ,itemToGift);
+
+        receiver.getRecievedGifts().add(gift);
+
+
+        getFriendship(sender,receiver).getGiftHistory().add(gift);
+        getFriendship(receiver,sender).getGiftHistory().add(gift);
+
+        return new Result(true, "You gave the player a gift.");
+    }
+
+    public Result showRecievedGifts() {
+        StringBuilder result = new StringBuilder();
+        int index = 0;
+        for (Gift gift : App.getInstance().getCurrentGame().getCurrentPlayer().getRecievedGifts()) {
+                result.append(index + 1)
+                        .append(" - Sender: ").append(gift.getSender().getName())
+                        .append(" | Item: ").append(gift.getItem().getName())
+                        .append(" | Rate: ").append(gift.getRate())
+                        .append("\n");
+                index++;
+        }
+        if (index == 0) {
+            return new Result(true, "No rated gifts received yet.");
+        }
+
+        return new Result(true, result.toString());
+    }
+
+    public Result rateGift(String index,String rate) {
+        int indexInt = Integer.parseInt(index);
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().getRecievedGifts().size() < indexInt){
+            return new Result(false, "Invalid index");
+        }
+        //zero-index based
+        Gift gift = App.getInstance().getCurrentGame().getCurrentPlayer().getRecievedGifts().get(indexInt--);
+
+        if(gift.getRate() != 0){
+            return new Result(false, "You already rate this gift");
+        }
+
+        double rateInt  = Double.parseDouble(rate);
+        if(rateInt < 1 || rateInt > 5){
+            return new Result(false, "Invalid rate");
+        }
+        gift.setRate(rateInt);
+        int friendShipXP = (int)((rateInt - 3) * 30 + 15);
+        addXpToPlayers(gift.getSender(), friendShipXP);
+        return new Result(true,"Gift rated successfully.");
+    }
+
+    public Result showGiftHistory() {
+        StringBuilder result = new StringBuilder();
+        //TODO foreach in friendship object gifthistory
+        return null;
+    }
 
 }

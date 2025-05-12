@@ -31,4 +31,9 @@ public class ArtisanProduct implements Item {
     public void setNumber(int number) {
         numberOfArtisan = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new ArtisanProduct(artisanProductType, number);
+    }
 }

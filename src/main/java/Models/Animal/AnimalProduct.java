@@ -28,6 +28,11 @@ public class AnimalProduct implements Item {
     }
 
     @Override
+    public Item copyItem(int number) {
+        return new AnimalProduct(animalProductType, number);
+    }
+
+    @Override
     public int getNumber() {
         return this.numberOfCooking;
     }
