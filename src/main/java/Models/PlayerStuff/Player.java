@@ -1,11 +1,8 @@
 package Models.PlayerStuff;
 
 
+import Models.*;
 import Models.Animal.Animal;
-import Models.Farm;
-import Models.Item;
-import Models.Person;
-import Models.Position;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
 
@@ -22,6 +19,7 @@ public class Player implements Person {
     private Farm farm;
 
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
+    private ArrayList<NPCRelation> npcRelations = new ArrayList<>();
 
     private int gold;
     private int wood;
@@ -191,8 +189,19 @@ public class Player implements Person {
         return calculateLevel(fishingAbility);
     }
 
+    public ArrayList<NPCRelation> getNpcRelations() {
+        return npcRelations;
+    }
+
+    public void setNpcRelations(ArrayList<NPCRelation> npcRelations) {
+        this.npcRelations = npcRelations;
+    }
+
     @Override
     public String getSymbol() {
         return "P";
     }
+
+
+
 }

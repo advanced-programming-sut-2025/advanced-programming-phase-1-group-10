@@ -78,6 +78,21 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.useTool(
                     matcher.group("direction")
             ));
+        } else if((matcher =  GameCommands.PRINT_PART_OF_MAP.getMatcher(input)) != null){
+            System.out.println(controller.parintPartialMap(
+                    matcher.group("x"),
+                    matcher.group("y"),
+                    matcher.group("size")
+            ));
+        } else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
+            System.out.println(controller.meetNPC(matcher.group("npcName")));
+        } else if((matcher = GameCommands.GIFT_NPC.getMatcher(input)) != null){
+            System.out.println(controller.sendGift(
+                    matcher.group("npcName"),
+                    matcher.group("item")
+            ));
+        } else if((matcher = GameCommands.SHOW_NPC_FRIENDSHIP.getMatcher(input)) != null){
+            System.out.println(controller.showNPClist());
         }
         else{
             System.out.println("invalid command.");

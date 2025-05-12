@@ -1,19 +1,17 @@
 package Controllers;
 
-import Models.*;
 import Models.Animal.Animal;
-import Models.Crafting.Crafting;
 import Models.*;
+import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
-import Models.Place.House;
-import Models.Place.Place;
+import Models.FriendShip.Gift;
+import Models.NPC.NPC;
 import Models.Place.Barn;
 import Models.Place.Coop;
+import Models.Place.House;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
-import Models.Place.Store.Store;
-import Models.Planets.Tree;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
@@ -545,8 +543,8 @@ public class GameController {
     }
 
     public Item getItemInInventory(String itemName) {
-        for(Item it: App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()){
-            if(it.getName().equals(itemName)){
+        for (Item it : App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().getItems()) {
+            if (it.getName().equals(itemName)) {
                 return it;
             }
         }
@@ -558,21 +556,21 @@ public class GameController {
         int y = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getY();
         switch (direction) {
             case "up":
-                return getTileByPosition(new Position(x - 1,y));
+                return getTileByPosition(new Position(x - 1, y));
             case "down":
-                return getTileByPosition(new Position(x + 1 ,y));
+                return getTileByPosition(new Position(x + 1, y));
             case "left":
-                return getTileByPosition(new Position(x,y - 1));
+                return getTileByPosition(new Position(x, y - 1));
             case "right":
-                return getTileByPosition(new Position(x,y + 1));
+                return getTileByPosition(new Position(x, y + 1));
             case "up-left":
-                return getTileByPosition(new Position(x - 1,y - 1));
+                return getTileByPosition(new Position(x - 1, y - 1));
             case "up-right":
-                return getTileByPosition(new Position(x - 1,y + 1));
+                return getTileByPosition(new Position(x - 1, y + 1));
             case "down-left":
-                return getTileByPosition(new Position(x + 1,y - 1));
+                return getTileByPosition(new Position(x + 1, y - 1));
             case "down-right":
-                return getTileByPosition(new Position(x + 1,y + 1));
+                return getTileByPosition(new Position(x + 1, y + 1));
             default:
                 return null;
         }
@@ -581,24 +579,149 @@ public class GameController {
     public Result useTool(String direction) {
         Tool tool = App.getInstance().getCurrentGame().getCurrentPlayer().getCurrentTool();
         Tile tile = getTileByDirection(direction);
-        if(tool == null){
+        if (tool == null) {
             return new Result(false, "Equip a tool before you use.!");
-        } else if(tile == null){
+        } else if (tile == null) {
             return new Result(false, "Invalid Tile!");
-        } else if(tool instanceof Hoe){
+        } else if (tool instanceof Hoe) {
             tool.use(tile);
             return new Result(true, "You used the Hoe.");
-        } else if(tool instanceof Pickaxe){
+        } else if (tool instanceof Pickaxe) {
             tool.use(tile);
             return new Result(true, "You used the Pickaxe.");
-        } else if(tool instanceof Axe){
+        } else if (tool instanceof Axe) {
             tool.use(tile);
             return new Result(true, "You used the Axe.");
-        } else if(tool instanceof WateringCan){
+        } else if (tool instanceof WateringCan) {
             tool.use(tile);
             return new Result(true, "You used the WateringCan.");
         }
         return new Result(false, "Incorrect Usage!");
     }
+
+    public Result parintPartialMap(String x, String y, String size) {
+        Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
+        StringBuilder result = new StringBuilder();
+
+        try {
+            int startX = Integer.parseInt(x);
+            int startY = Integer.parseInt(y);
+            int s = Integer.parseInt(size);
+
+            int rows = map.length;
+            int cols = map[0].length;
+
+            // Check if the requested area is within bounds
+            if (startX < 0 || startY < 0 || startY + s > rows || startX + s > cols) {
+                return new Result(false, "Requested area is out of bounds.");
+            }
+
+            // Loop through the map and print the partial region
+            for (int i = startY; i < startY + s; i++) {  // row loop (y)
+                for (int j = startX; j < startX + s; j++) {  // column loop (x)
+                    result.append(map[i][j] != null ? map[i][j].getTile() : " ");
+                }
+                result.append("\n");
+            }
+
+            return new Result(true, result.toString());
+
+        } catch (NumberFormatException e) {
+            return new Result(false, "Invalid number format: " + e.getMessage());
+        } catch (Exception e) {
+            return new Result(false, "Error while printing partial map: " + e.getMessage());
+        }
+    }
+
+    public NPC getNearbyNPC(String name) {
+        Position position = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
+        Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
+        int mapWidth = map.length;
+        int mapHeight = map[0].length;
+
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int i = 0; i < dx.length; i++) {
+            int newX = position.getX() + dx[i];
+            int newY = position.getY() + dy[i];
+
+            if (newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) {
+                Person person = map[newX][newY].getPerson();
+                if (person instanceof NPC && person.getName().equals(name)) {
+                    return (NPC) person;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public NPCRelation getNPCRealtion(NPC npc) {
+        return App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().stream().filter(npcRelation -> npcRelation.getNpc().equals(npc)).findFirst().orElse(null);
+    }
+
+    public Result meetNPC(String name) {
+        NPC npc = getNearbyNPC(name);
+        if (npc == null) {
+            return new Result(false, "NPC not found!");
+        }
+        NPCRelation relation = getNPCRealtion(npc);
+        String message = npc.talk();
+        if (relation == null) {
+            relation = new NPCRelation(npc, 0, false, false);
+            App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().add(relation);
+
+        }
+        if(!relation.isIstalkedToday()){
+            relation.setRelationPoint(relation.getRelationPoint() + 20);
+            relation.setIstalkedToday(true);
+        }
+        return new Result(true,message);
+    }
+
+    public Result sendGift(String name, String itemName) {
+        NPC npc = getNearbyNPC(name);
+
+        if (npc == null) {
+            return new Result(false, "NPC not found!");
+        }
+
+        NPCRelation relation = getNPCRealtion(npc);
+        if (relation == null) {
+            return new Result(false, "Talk to the NPC before giving a gift!");
+        }
+
+        if(getItemInInventory(itemName) instanceof Tool){
+            return new Result(true, "You canont gift Tools!");
+        }
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        boolean removed = player.getInventory().getBackPack().removeItemNumber(itemName, 1);
+        if (!removed) {
+            return new Result(false, "Item not found!");
+        }
+
+        boolean isFavorite = npc.getFavoriteItems().stream().anyMatch(favItem -> favItem.getName().equals(itemName));
+
+        if (isFavorite) {
+            relation.setRelationPoint(relation.getRelationPoint() + 200);
+            return new Result(true, "You gave the NPC a favorite item!");
+        } else {
+            relation.setRelationPoint(relation.getRelationPoint() + 50);
+            return new Result(true, "You gave the NPC a non-favorite item.");
+        }
+    }
+
+    public Result showNPClist(){
+        StringBuilder message = new StringBuilder();
+        for(NPCRelation relation : App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations()){
+            message.append(relation.getNpc().getName()).append(" XP:").append(relation.getRelationPoint()).append(" LEVEL:").append(relation.getFrinendShipLevel());
+        }
+        return new Result(true,message.toString());
+    }
+
+
 
 }

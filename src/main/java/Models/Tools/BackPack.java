@@ -48,6 +48,16 @@ public class BackPack {
         }
     }
 
+    public boolean removeItemNumber(String name, int number) {
+        for(Item it : items){
+            if(it.getName().equals(name)){
+                if(it.getNumber() <= number) items.remove(it); else it.setNumber(it.getNumber() - number);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean setItemNumber(Item item, int number) {
         for (Item i : items) {
             if (i.equals(item)) {

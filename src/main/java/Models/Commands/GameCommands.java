@@ -7,6 +7,7 @@ public enum GameCommands implements Commands {
 
     //Map print commands
     PRINT_MAP("^print map$"),
+    PRINT_PART_OF_MAP("^print map -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)>\\s*-s\\s*(?<size>\\d+)$"),
 
     //Move commands
     WALK("^walk -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
@@ -38,6 +39,11 @@ public enum GameCommands implements Commands {
     //Crafting Commands
     CRAFTING_SHOW_RECIPES("^crafting show recipes$"),
     CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)"),
+
+    //NPC Commands
+    MEET_NPC("^meet NPC (?<npcName>[\\S]+)$"),
+    GIFT_NPC("^gift NPC (?<npcName>[\\S]+) -i (?<item>[\\S]+)$"),
+    SHOW_NPC_FRIENDSHIP("^friendship NPC list$"),
 
     // Animals Commands
     BUILD_MAINTENANCE("^build\\s+-a\\s+(?<buildingName>[^\\s]+)\\s+-l\\s+(?<x>\\d+)\\s*,\\s*(?<y>\\d+)$"),
