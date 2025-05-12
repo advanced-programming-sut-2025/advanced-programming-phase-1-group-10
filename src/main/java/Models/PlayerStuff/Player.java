@@ -3,6 +3,7 @@ package Models.PlayerStuff;
 
 import Models.*;
 import Models.Animal.Animal;
+import Models.FriendShip.Friendship;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
 
@@ -20,6 +21,7 @@ public class Player implements Person {
 
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
     private ArrayList<NPCRelation> npcRelations = new ArrayList<>();
+    private ArrayList<Friendship> friendships = new ArrayList<>();
 
     private int gold = 0;
     private int wood;
@@ -195,6 +197,10 @@ public class Player implements Person {
 
     public ArrayList<NPCRelation> getNpcRelations() {
         return npcRelations;
+    }
+
+    public ArrayList<Friendship> getFriendships() {
+        return friendships;
     }
 
     public void setNpcRelations(ArrayList<NPCRelation> npcRelations) {

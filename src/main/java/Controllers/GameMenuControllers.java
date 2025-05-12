@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.*;
+import Models.FriendShip.Friendship;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.NPC.*;
@@ -335,6 +336,7 @@ public class GameMenuControllers {
                 new Crop(ForagingCropType.COMMON_MUSHROOM, 1)
         ));
 
+        //2/3 of items are common mushroom and fiber
         for (int i = 0; i < 2 * numberOfRandom; i++) {
             Item randomItem = getRandomItem(fiberAndMushroom);
             Tile tile = getRandomTileArrayList(tiles);
@@ -370,4 +372,12 @@ public class GameMenuControllers {
 
         return true;
     }
+
+    public void setUpFriendShip(Player player) {
+        for(Player p: App.getInstance().getCurrentGame().getPlayers()){
+            if(!p.getName().equals(player.getName())) player.getFriendships().add(new Friendship(p,0,0));
+        }
+    }
+
+
 }
