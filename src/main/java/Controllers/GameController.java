@@ -1,25 +1,19 @@
 package Controllers;
 
 import Models.Animal.Animal;
-<<<<<<< Updated upstream
 import Models.Cooking.CookingType;
-=======
 import Models.Animal.Fish;
 import Models.Animal.FishType;
 import Models.Crafting.Crafting;
->>>>>>> Stashed changes
 import Models.*;
 import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
-<<<<<<< Updated upstream
 import Models.FriendShip.Gift;
 import Models.NPC.NPC;
 import Models.Place.Barn;
 import Models.Place.Coop;
 import Models.Place.House;
-=======
 import Models.DateTime.Season;
->>>>>>> Stashed changes
 import Models.Map;
 import Models.Place.*;
 import Models.Place.Place;
@@ -439,7 +433,7 @@ public class GameController {
             FishType caughtFish = seasonalFishes.get(random.nextInt(seasonalFishes.size()));
             caughtFishes.add(caughtFish);
 
-            Fish fish = new Fish(caughtFish);
+            Fish fish = new Fish(caughtFish, 1);
             fish.setNumber(fish.getNumber() + 1);
             added = currentPlayer.getInventory().getBackPack().addItem(fish);
 
