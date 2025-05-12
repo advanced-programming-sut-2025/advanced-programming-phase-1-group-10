@@ -5,6 +5,8 @@ import Controllers.GameController;
 import Models.*;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
+import Models.DateTime.DateTimeManager;
+import Models.Weather.WeatherManagement;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -136,7 +138,6 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.rateGift(
                     matcher.group("giftNumber"),
                     matcher.group("rate")
-            ));
         }
         else{
             System.out.println("invalid command.");

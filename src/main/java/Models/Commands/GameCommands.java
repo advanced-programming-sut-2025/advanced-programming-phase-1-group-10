@@ -24,7 +24,7 @@ public enum GameCommands implements Commands {
     SHOW_TIME("^time$"),
     SHOW_DATE("^date$"),
     SHOW_DATETIME("^datetime$"),
-    SHOE_DAY_OF_WEEK("^dayOfWeek$"),
+    SHOW_DAY_OF_WEEK("^dayOfWeek$"),
 
     //Weather Commands
     SHOW_WEATHER("^weather$"),
@@ -66,7 +66,8 @@ public enum GameCommands implements Commands {
     SHEPHERD_ANIMAL("^shepherd\\s+animals\\s+-n\\s+(?<name>[^\\s]+)\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
     FEED_ANIMAL_WITH_HAY("^feed\\s+hay\\s+-n\\s+(?<name>[^\\s]+)$"),
     SELL_ANIMAL("^sell\\s+animal\\s+-n\\s+(?<name>[^\\s]+)$"),
-    FISHING_POLE("^fishing\\s+-p\\s+(?<fishingpole>.+)$")
+    FISHING_POLE("^fishing\\s+-p\\s+(?<fishingpole>.+)$"),
+    COLLECT_PRODUCTS("^collect\\s+produce\\s+-n\\s+(?<name>[^\\s]+)$")
     ;
 
     private final String pattern;

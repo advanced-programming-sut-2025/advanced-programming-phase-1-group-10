@@ -1,10 +1,8 @@
 package Controllers;
 
-import Models.Animal.Animal;
+import Models.Animal.*;
 import Models.Cooking.Cooking;
 import Models.Cooking.CookingType;
-import Models.Animal.Fish;
-import Models.Animal.FishType;
 import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.CraftingType;
@@ -30,6 +28,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GameController {
+
+    private final Random random = new Random();
+
     public Result showEnergy() {
         final double energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
         String result;
@@ -348,6 +349,38 @@ public class GameController {
         return true;
     }
 
+    public Result collectAnimalProducts(String name){
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+
+        if(animal == null){
+            return new Result(false, "there is not animal with this name.");
+        }
+
+        if(!App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().contains(animal)){
+            return new Result(false, "you don't have this animal.");
+        }
+
+        if(!isPlayerAdjacentToTile(animal.getPosition(),App.getInstance().getCurrentGame().getCurrentPlayer())){
+            return new Result(false, "you are not enough close to this animal.");
+        }
+
+        if(animal.getCurrentProduct() == null) {
+            return new Result(false, "no product is available for this animal!");
+        }
+
+        if(animal.getAnimalType().equals(AnimalType.COW) || animal.getAnimalType().equals(AnimalType.GOAT)) {
+            return new Result(false, "you have to use milk pail to collect these products.");
+        }
+
+        if(animal.getAnimalType().equals(AnimalType.SHEEP)) {
+            return new Result(false, "you have to use shear to collect this product.");
+        }
+
+        App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(animal.getCurrentProduct());
+        animal.setCurrentProduct(null);
+        return new Result(true, "produce " + animal.getCurrentProduct().getName() + "added to Inventory.");
+    }
+
     public Place getPlaceByType(String placeType) {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
 
@@ -395,7 +428,6 @@ public class GameController {
             return new Result(false, "you don't have fishingpole in your Inventory.");
         }
 
-        Random random = new Random();
         double R = random.nextDouble();
         double M ;
         Weather weather = App.getInstance().getCurrentGame().getWeather();
