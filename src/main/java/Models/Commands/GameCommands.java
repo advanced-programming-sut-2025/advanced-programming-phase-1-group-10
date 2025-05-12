@@ -40,6 +40,11 @@ public enum GameCommands implements Commands {
     CRAFTING_SHOW_RECIPES("^crafting show recipes$"),
     CRAFTING_CRAFT("crafting craft (?<itemName>[\\S ]+)"),
 
+    //Cooking Commands
+    COOKING_SHOW_RECIPES("^cooking show recipes$"),
+    COOKING_REFRIGERATOR("cooking refrigerator (?<action>put|pick) (?<item>[\\S ]+)"),
+    COOKING_PREPARE("cooking prepare (?<recipeName>[\\S ]+)"),
+
     //NPC Commands
     MEET_NPC("^meet NPC (?<npcName>[\\S]+)$"),
     GIFT_NPC("^gift NPC (?<npcName>[\\S]+) -i (?<item>[\\S]+)$"),

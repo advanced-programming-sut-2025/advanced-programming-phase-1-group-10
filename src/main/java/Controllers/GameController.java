@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.Animal.Animal;
+import Models.Cooking.Cooking;
 import Models.Cooking.CookingType;
 import Models.*;
 import Models.Crafting.Crafting;
@@ -642,6 +643,126 @@ public class GameController {
         return false;
     }
 
+    public Result cookingRefrigerator(String action, String itemName){
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+
+        if(place instanceof House) {
+            if(action.equals("put")){
+                Item puttingItem = getItemInInventory(itemName);
+                if(puttingItem == null) {
+                    return new Result(false, "you dont have the item you want to put");
+                }
+                Refrigerator refrigerator = player.getInventory().getRefrigerator();
+                if(refrigerator.getCapacity()==refrigerator.getItems().size() && !refrigerator.getItems().contains(puttingItem)) {
+                    return new Result(false,"refrigrator is full");
+                }
+
+                //TODO check is it eatable?
+
+                BackPack backPack = player.getInventory().getBackPack();
+                backPack.removeItem(puttingItem);
+                refrigerator.addItem(puttingItem);
+                return new Result(true,"refrigerator has been added");
+            }
+            else if(action.equals("pick")){
+                Item pickingItem = getItemInInventory(itemName);
+                if(pickingItem == null) {
+                    return new Result(false,"there is not the item you want to pick");
+                }
+                BackPack backPack = player.getInventory().getBackPack();
+                if(inventoryFreeSpace()==0 && !backPack.getItems().contains(pickingItem)) {
+                    return new Result(false,"backpack is full");
+                }
+                Refrigerator refrigerator = player.getInventory().getRefrigerator();
+                refrigerator.removeItem(pickingItem);
+                backPack.addItem(pickingItem);
+                return new Result(true,"backpack has been added");
+            }
+        }
+        return new Result(false, "you should be at house.");
+    }
+
+    public Result cookingPrepare(String itemName) {
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        ArrayList<Item> items = player.getInventory().getBackPack().getItems();
+        ArrayList<Item> itemsRefrigrator = player.getInventory().getRefrigerator().getItems();
+        BackPack backPack = player.getInventory().getBackPack();
+        Refrigerator refrigerator =  player.getInventory().getRefrigerator();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+
+        if (place instanceof House) {
+            ArrayList<Recipe> recipes = new ArrayList<>();
+            for (Item item : items) {
+                if (item instanceof Recipe) {
+                    recipes.add((Recipe) item);
+                }
+            }
+
+            CookingType cookingType = findCookingName(itemName);
+            if (cookingType == null) {
+                return new Result(false, "there is no such cooking");
+            }
+            if (!isCookingAvailable(cookingType, player.getMiningAbility(), player.getFarmingAbility(), player.getForagingAbility(), player.getFishingLevel(), recipes)) {
+                return new Result(false, "you don't know the recipe");
+            }
+            if (inventoryFreeSpace() == 0) {
+                return new Result(false, "your inventory is full.");
+            }
+            for (Item ingredient : cookingType.getIngredients()) {
+                int ingredientBackpack = backPack.getItemNumber(ingredient);
+                int ingredientRefrigrator =  refrigerator.getItemNumber(ingredient);
+                int ingredientInventory = ingredientBackpack + ingredientRefrigrator;
+                int ingredientNeed = ingredient.getNumber();
+
+                if (ingredientNeed > ingredientInventory) {
+                    return new Result(false, "you don't have enough ingredients.");
+                }
+            }
+
+            for (Item ingredient : cookingType.getIngredients()) {
+                int ingredientBackpack = backPack.getItemNumber(ingredient);
+                int ingredientRefrigrator =  refrigerator.getItemNumber(ingredient);
+                int ingredientInventory = ingredientBackpack + ingredientRefrigrator;
+                int ingredientNeed = ingredient.getNumber();
+
+
+                if(ingredientNeed < ingredientBackpack){
+                    backPack.setItemNumber(ingredient, ingredientBackpack - ingredientNeed);
+                }
+                else if(ingredientNeed== ingredientBackpack){
+                    backPack.removeItem(ingredient);
+                }
+                else if (ingredientNeed > ingredientBackpack && ingredientNeed < ingredientInventory) {
+                    backPack.removeItem(ingredient);
+                    refrigerator.setItemNumber(ingredient, ingredientInventory - ingredientNeed);
+                }
+                else if (ingredientNeed == ingredientInventory) {
+                    backPack.removeItem(ingredient);
+                    refrigerator.removeItem(ingredient);
+                }
+
+                //TODO Update Energy
+
+                Cooking cooking = new Cooking(cookingType, 1);
+                backPack.addItem(cooking);
+                return new Result(true, "your cooking has been added.");
+
+            }
+        }
+        return new Result(false, "you should be at house.");
+    }
+
+    public static CookingType findCookingName(String itemName) {
+        for (CookingType cookingType : CookingType.values()) {
+            if (itemName.equals(cookingType.getName())) {
+                return cookingType;
+            }
+        }
+        return null;
+    }
 
     public Result createCoop(Position coopPosition, Game game) {
         Position playerPosition = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();

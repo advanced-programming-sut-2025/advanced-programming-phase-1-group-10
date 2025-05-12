@@ -4,26 +4,25 @@ import Models.Item;
 
 import java.util.ArrayList;
 
-public class BackPack {
+public class Refrigerator {
 
-    private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();
+    private final int capacity;
 
-
-    public BackpackType getBackpackType() {
-        return backpackType;
+    public Refrigerator(int capacity){
+        this.capacity = capacity;
     }
 
     public ArrayList<Item> getItems() {
         return items;
     }
 
-    public void setBackpackType(BackpackType backpackType) {
-        this.backpackType = backpackType;
+    public int getCapacity() {
+        return capacity;
     }
 
     public boolean addItem(Item item) {
-        if (items.size() < backpackType.getCapacity()) {
+        if (items.size() < capacity) {
             for(Item it : items){
                 if(it.getName().equals(item.getName())){
                     it.setNumber(it.getNumber() + item.getNumber());
@@ -32,7 +31,7 @@ public class BackPack {
             }
             items.add(item);
             return true;
-        } else if(items.size() == backpackType.getCapacity()) {
+        }else if (items.size()==capacity){
             for(Item it : items){
                 if(it.getName().equals(item.getName())){
                     it.setNumber(it.getNumber() + item.getNumber());
@@ -40,8 +39,7 @@ public class BackPack {
                 }
             }
             return false;
-        }
-        else {
+        } else {
             //Backpack is full
             return false;
         }
@@ -52,7 +50,7 @@ public class BackPack {
             items.remove(item);
             return true;
         } else {
-            //Item not found in backpack
+            //Item not found
             return false;
         }
     }
@@ -87,5 +85,4 @@ public class BackPack {
         //Item not found in backpack
         return 0;
     }
-
 }
