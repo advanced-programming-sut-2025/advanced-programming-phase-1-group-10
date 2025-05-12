@@ -1,13 +1,54 @@
 package Models.Tools;
 
+import Models.App;
+import Models.Item;
+import Models.Mineral.Mineral;
+import Models.PlayerStuff.Player;
+import Models.Tile;
+
 public class Pickaxe extends Tool {
-    public Pickaxe() {
-        super();
+    public Pickaxe(Quality quality, int energyUsage) {
+        super(quality, energyUsage);
     }
-    private final String name = "Pickaxe";
 
     @Override
     public String getName() {
-        return name;
+        return "Pickaxe";
+    }
+
+    @Override
+    public void use(Tile tile) {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        boolean isUsed = false;
+
+        Item item = tile.getItem();
+
+        if (item instanceof Mineral) {
+            player.getInventory().getBackPack().addItem(item);
+
+            if (player.getMiningLevel() >= 2) {
+                player.getInventory().getBackPack().addItem(item);
+            }
+
+            player.setMiningAbility(player.getMiningAbility() + 10);
+
+            tile.setItem(null);
+            isUsed = true;
+        }
+
+        if (tile.getisPlow()) {
+            tile.setPlow(false);
+            isUsed = true;
+        }
+
+        if (tile.getItem() != null) {
+            tile.setItem(null);
+            isUsed = true;
+        }
+
+        int energyCost = getEnergyUsage() - getQuality().getValue();
+        player.getEnergy().setEnergyAmount(
+                player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
+        );
     }
 }

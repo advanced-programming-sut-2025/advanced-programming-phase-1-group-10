@@ -19,6 +19,7 @@ public enum MineralTypes {
     GOLD("Gold","A precious ore that can be smelted into bars.",25,true),
     IRIDIUM("Iridium","An exotic ore with many curious properties. Can be smelted into bars.",100,true),
     COAL("Coal","A combustible rock that is useful for crafting and smelting.",15,true),
+    STONE("Stone","A useless mineral for useless things",1,true),
     ;
 
     private final String name;

@@ -5,6 +5,7 @@ import Models.Item;
 
 public enum ForagingCropType implements CropType {
 
+    FIBER("Fiber",null, 10,0),
     COMMON_MUSHROOM("Common Mushroom", null, 40, 38),
     DAFFODIL("Daffodil", Season.SPRING, 30, 0),
     DANDELION("Dandelion", Season.SPRING, 40, 25),
@@ -28,6 +29,7 @@ public enum ForagingCropType implements CropType {
     HOLLY("Holly", Season.WINTER, 80, -37),
     SNOW_YAM("Snow Yam", Season.WINTER, 100, 30),
     WINTER_ROOT("WINTER Root", Season.WINTER, 70, 25);
+
 
     private final String name;
     private final Season season;

@@ -1,11 +1,18 @@
 package Models.Tools;
 
 import Models.Item;
+import Models.Result;
+import Models.Tile;
 
-public class Tool implements Item {
+public abstract class Tool implements Item {
     private String name;
     private int energyUsage;
     private Quality quality;
+
+    public Tool(Quality quality, int energyUsage) {
+        this.quality = quality;
+        this.energyUsage = energyUsage;
+    }
 
     @Override
     public String getName() {
@@ -32,7 +39,7 @@ public class Tool implements Item {
     }
 
     public int getEnergyUsage() {
-        return energyUsage;
+        return energyUsage - quality.getValue();
     }
 
     public void setEnergyUsage(int energyUsage) {
@@ -46,4 +53,9 @@ public class Tool implements Item {
     public void setQuality(Quality quality) {
         this.quality = quality;
     }
+
+    public void use(Tile tile) {
+
+    }
+
 }

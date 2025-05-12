@@ -47,7 +47,7 @@ public class GameMenu implements AppMenu {
                             player.getPosition().setY(playerPostion.getY() - 1);
                             controller.getTileByPosition(player.getPosition()).setPerson(player);
                             controller.putRandomMineral(farm,4);
-                            controller.putRandomForagingPlanet(farm,20);
+                            controller.putRandomForagingPlanet(farm,10);
                             //Give farm to player
                             player.setFarm(farm);
                             System.out.println("Farm created for " + player.getName() + " with map type " + mapNumber);

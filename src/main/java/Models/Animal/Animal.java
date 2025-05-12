@@ -16,7 +16,6 @@ public class Animal {
     private boolean petted = false;
     private boolean fed = false;
 
-
     public Animal(AnimalType animalType, String name) {
         this.animalType = animalType;
         this.name = name;
@@ -77,8 +76,21 @@ public class Animal {
         friendShip += 15;
     }
 
+    public void feed(){
+        fed = true;
+        friendShip += 8;
+    }
+
     public void setFriendShip(int friendShip) {
         this.friendShip = friendShip;
+    }
+
+    public int getPrice() {
+        return (int) (animalType.getPrice() * (((double) friendShip /1000) + 0.3));
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public boolean isFed() {

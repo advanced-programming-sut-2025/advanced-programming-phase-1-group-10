@@ -4,13 +4,11 @@ import Models.Item;
 
 import java.util.ArrayList;
 
-public class BackPack extends Tool {
+public class BackPack {
 
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();
-    public BackPack() {
-        super();
-    }
+
 
     public BackpackType getBackpackType() {
         return backpackType;
@@ -26,6 +24,12 @@ public class BackPack extends Tool {
 
     public boolean addItem(Item item) {
         if (items.size() < backpackType.getCapacity()) {
+            for(Item it : items){
+                if(it.getName().equals(item.getName())){
+                    it.setNumber(item.getNumber() + item.getNumber());
+                    return true;
+                }
+            }
             items.add(item);
             return true;
         } else {
@@ -42,6 +46,16 @@ public class BackPack extends Tool {
             //Item not found in backpack
             return false;
         }
+    }
+
+    public boolean removeItemNumber(String name, int number) {
+        for(Item it : items){
+            if(it.getName().equals(name)){
+                if(it.getNumber() <= number) items.remove(it); else it.setNumber(it.getNumber() - number);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean setItemNumber(Item item, int number) {

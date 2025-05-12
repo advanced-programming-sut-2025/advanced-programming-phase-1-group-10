@@ -1,16 +1,14 @@
 package Models.PlayerStuff;
 
 
+import Models.*;
 import Models.Animal.Animal;
-import Models.Farm;
-import Models.Item;
-import Models.Person;
-import Models.Position;
 import Models.Recipe.Recipe;
-import Models.Tools.Tool;
+import Models.Tools.*;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player implements Person {
 
@@ -21,8 +19,9 @@ public class Player implements Person {
     private Farm farm;
 
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
+    private ArrayList<NPCRelation> npcRelations = new ArrayList<>();
 
-    private int gold;
+    private int gold = 0;
     private int wood;
     private Energy energy;
     private boolean isFainted;
@@ -43,8 +42,15 @@ public class Player implements Person {
         this.name = name;
         this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
         this.isFainted = false;
+        this.inventory = new Inventory();
+        this.inventory.getBackPack().getItems().addAll(Arrays.asList(
+                new Hoe(Quality.STARTER,5),
+                new Pickaxe(Quality.STARTER,5),
+                new Axe(Quality.STARTER,5),
+                new WateringCan(Quality.STARTER,5),
+                new Seythe(Quality.STARTER,2)
+        ));
         //this.position = new Position();
-        //TODO Add starting items for player
     }
 
     public void setEnergy(int energyAmount) {
@@ -143,8 +149,63 @@ public class Player implements Person {
         this.position = position;
     }
 
+    public void setMiningAbility(int miningAbility) {
+        this.miningAbility = miningAbility;
+    }
+
+    public void setFarmingAbility(int farmingAbility) {
+        this.farmingAbility = farmingAbility;
+    }
+
+    public void setForagingAbility(int foragingAbility) {
+        this.foragingAbility = foragingAbility;
+    }
+
+    public void setFishingAbility(int fishingAbility) {
+        this.fishingAbility = fishingAbility;
+    }
+
+    public void addGold(int amount){
+        gold += amount;
+    }
+
+    private int calculateLevel(int xp) {
+        int level = 0;
+        while (level < 4 && xp >= 50 + level * 100) {
+            level++;
+        }
+        return level;
+    }
+
+    public int getMiningLevel() {
+        return calculateLevel(miningAbility);
+    }
+
+    public int getFarmingLevel() {
+        return calculateLevel(farmingAbility);
+    }
+
+    public int getForagingLevel() {
+        return calculateLevel(foragingAbility);
+    }
+
+    public int getFishingLevel() {
+        return calculateLevel(fishingAbility);
+    }
+
+    public ArrayList<NPCRelation> getNpcRelations() {
+        return npcRelations;
+    }
+
+    public void setNpcRelations(ArrayList<NPCRelation> npcRelations) {
+        this.npcRelations = npcRelations;
+    }
+
     @Override
     public String getSymbol() {
         return "P";
     }
+
+
+
 }

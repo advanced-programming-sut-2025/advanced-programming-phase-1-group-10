@@ -1,9 +1,10 @@
 package Models.Tools;
 
 public class TrashCan extends Tool {
-    public TrashCan() {
-        super();
+    public TrashCan(Quality quality, int energyUsage) {
+        super(quality, energyUsage);
     }
+
     private final String name = "Trash Can";
 
     @Override

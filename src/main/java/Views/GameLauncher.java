@@ -2,13 +2,10 @@ package Views;
 
 import Controllers.CheatCodeControllers;
 import Controllers.GameController;
-import Models.App;
+import Models.*;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.Commands.GameMenuCommands;
-import Models.Position;
-import Models.Result;
-import Models.Tile;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -69,10 +66,52 @@ public class GameLauncher implements AppMenu{
             System.out.println(cheatCodeController.setAnimalFriendShip(name,amount));
         } else if((matcher = GameCommands.ANIMLAS.getMatcher(input)) != null){
             System.out.println(controller.showAnimals().message());
+        } else if((matcher = GameCommands.SHOW_INVENTORY.getMatcher(input)) != null){
+            System.out.println(controller.showInventory());
+        } else if((matcher = GameCommands.EQUIP_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.equipTool(matcher.group("toolName")));
+        } else if((matcher = GameCommands.SHOW_CURRENT_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.showCurrentTool());
+        } else if((matcher = GameCommands.SHOW_AVALIABLE_TOOL.getMatcher(input)) != null){
+            System.out.println(controller.showAvaliableTools());
+        } else if((matcher = GameCommands.TOOL_USE.getMatcher(input)) != null){
+            System.out.println(controller.useTool(
+                    matcher.group("direction")
+            ));
+        } else if((matcher = GameCommands.SHEPHERD_ANIMAL.getMatcher(input)) != null){
+            String name = matcher.group("name");
+            String x = matcher.group("x");
+            String y = matcher.group("y");
+            int X = Integer.parseInt(x);
+            int Y = Integer.parseInt(y);
+            Position position = new Position(X,Y);
+            System.out.println(controller.shepherdAnimals(name,position));
+        } else if((matcher = GameCommands.FEED_ANIMAL_WITH_HAY.getMatcher(input)) != null){
+            System.out.println(controller.feedAnimalWithHay(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.SELL_ANIMAL.getMatcher(input)) != null){
+            System.out.println(controller.sellAnimal(
+                    matcher.group("name")
+            ));
+        } else if((matcher =  GameCommands.PRINT_PART_OF_MAP.getMatcher(input)) != null){
+            System.out.println(controller.parintPartialMap(
+                    matcher.group("x"),
+                    matcher.group("y"),
+                    matcher.group("size")
+            ));
+        } else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
+            System.out.println(controller.meetNPC(matcher.group("npcName")));
+        } else if((matcher = GameCommands.GIFT_NPC.getMatcher(input)) != null){
+            System.out.println(controller.sendGift(
+                    matcher.group("npcName"),
+                    matcher.group("item")
+            ));
+        } else if((matcher = GameCommands.SHOW_NPC_FRIENDSHIP.getMatcher(input)) != null){
+            System.out.println(controller.showNPClist());
         }
         else{
             System.out.println("invalid command.");
         }
-
     }
 }
