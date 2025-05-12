@@ -94,6 +94,7 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.sellAnimal(
                     matcher.group("name")
             ));
+<<<<<<< Updated upstream
         } else if((matcher =  GameCommands.PRINT_PART_OF_MAP.getMatcher(input)) != null){
             System.out.println(controller.parintPartialMap(
                     matcher.group("x"),
@@ -109,6 +110,12 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.SHOW_NPC_FRIENDSHIP.getMatcher(input)) != null){
             System.out.println(controller.showNPClist());
+=======
+        } else if((matcher = GameCommands.FISHING_POLE.getMatcher(input)) != null){
+            System.out.println(controller.fishing(
+                    matcher.group("fishingpole")
+            ));
+>>>>>>> Stashed changes
         }
         else{
             System.out.println("invalid command.");

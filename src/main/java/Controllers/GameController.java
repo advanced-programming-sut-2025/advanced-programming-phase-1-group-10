@@ -1,15 +1,25 @@
 package Controllers;
 
 import Models.Animal.Animal;
+<<<<<<< Updated upstream
 import Models.Cooking.CookingType;
+=======
+import Models.Animal.Fish;
+import Models.Animal.FishType;
+import Models.Crafting.Crafting;
+>>>>>>> Stashed changes
 import Models.*;
 import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
+<<<<<<< Updated upstream
 import Models.FriendShip.Gift;
 import Models.NPC.NPC;
 import Models.Place.Barn;
 import Models.Place.Coop;
 import Models.Place.House;
+=======
+import Models.DateTime.Season;
+>>>>>>> Stashed changes
 import Models.Map;
 import Models.Place.*;
 import Models.Place.Place;
@@ -21,6 +31,7 @@ import Models.Tools.*;
 import Models.Weather.Weather;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameController {
     public Result showEnergy() {
@@ -383,6 +394,7 @@ public class GameController {
                 hasFishingPole = true;
             }
         }
+
         if(!hasFishingPole){
             return new Result(false, "you don't have fishingpole in your Inventory.");
         }
@@ -397,8 +409,75 @@ public class GameController {
             case STORM -> M = 1;
             default -> M = 1 ;
         }
-        // TODO complete this method
-        return new Result(false, "");
+
+        double calculatedFishes = R * M * (App.getInstance().getCurrentGame().getCurrentPlayer().getFishingAbility() + 2);
+        int numberOfFishes = (int) Math.min(Math.max(calculatedFishes, 1), 6);
+
+        Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+
+        int fishingAbilityLevel = currentPlayer.getFishingLevel();
+
+        List<FishType> seasonalFishes = Arrays.stream(FishType.values())
+                .filter(fish -> fish.getSeason() == currentSeason)
+                .filter(fish -> {
+                    boolean isLegendary = fish == FishType.LEGEND || fish == FishType.GLACIERFISH ||
+                            fish == FishType.ANGLER || fish == FishType.CRIMSONFISH;
+
+                    return !(isLegendary && fishingAbilityLevel < 4);
+                })
+                .collect(Collectors.toList());
+
+        if (seasonalFishes.isEmpty()) {
+            return new Result(false, "there are no fish to catch in this season.");
+        }
+
+        List<FishType> caughtFishes = new ArrayList<>();
+        StringBuilder resultMessage = new StringBuilder("You caught " + numberOfFishes + " fish:\n");
+
+        boolean added = false ;
+        for (int i = 0; i < numberOfFishes; i++) {
+            FishType caughtFish = seasonalFishes.get(random.nextInt(seasonalFishes.size()));
+            caughtFishes.add(caughtFish);
+
+            Fish fish = new Fish(caughtFish);
+            fish.setNumber(fish.getNumber() + 1);
+            added = currentPlayer.getInventory().getBackPack().addItem(fish);
+
+            if (added) {
+                resultMessage.append("- ").append(caughtFish.getName())
+                        .append("\n");
+            } else {
+                resultMessage.append("- ").append(caughtFish.getName())
+                        .append(" (couldn't add to inventory - inventory is full)\n");
+            }
+        }
+
+        double pole;
+        switch (fishingPole){
+            case "Training Rod" :
+                pole = 0.1;
+                break;
+            case "Bamboo Pole" :
+                pole = 0.5;
+                break;
+            case "Fiberglass Rod" :
+                pole = 0.9;
+                break;
+            case "Iridium Rod" :
+                pole = 1.2;
+                break;
+            default:
+                pole = 1.0;
+        }
+
+        double calculateQuality = (R * (App.getInstance().getCurrentGame().getCurrentPlayer().getFishingAbility() + 2)
+                * pole) / (7 - M);
+        String formattedQuality = String.format("%.2f", calculateQuality);
+        if(added)
+            resultMessage.append("Quality of fishes : ").append(formattedQuality);
+
+        App.getInstance().getCurrentGame().getCurrentPlayer().setFishingAbility(currentPlayer.getFishingAbility() + 5);
+        return new Result(true,resultMessage.toString());
     }
 
     public boolean isPlayerNearLake() {
