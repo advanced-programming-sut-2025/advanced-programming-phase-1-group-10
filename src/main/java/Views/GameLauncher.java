@@ -78,6 +78,22 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.useTool(
                     matcher.group("direction")
             ));
+        } else if((matcher = GameCommands.SHEPHERD_ANIMAL.getMatcher(input)) != null){
+            String name = matcher.group("name");
+            String x = matcher.group("x");
+            String y = matcher.group("y");
+            int X = Integer.parseInt(x);
+            int Y = Integer.parseInt(y);
+            Position position = new Position(X,Y);
+            System.out.println(controller.shepherdAnimals(name,position));
+        } else if((matcher = GameCommands.FEED_ANIMAL_WITH_HAY.getMatcher(input)) != null){
+            System.out.println(controller.feedAnimalWithHay(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.SELL_ANIMAL.getMatcher(input)) != null){
+            System.out.println(controller.sellAnimal(
+                    matcher.group("name")
+            ));
         } else if((matcher =  GameCommands.PRINT_PART_OF_MAP.getMatcher(input)) != null){
             System.out.println(controller.parintPartialMap(
                     matcher.group("x"),
@@ -97,6 +113,5 @@ public class GameLauncher implements AppMenu{
         else{
             System.out.println("invalid command.");
         }
-
     }
 }

@@ -9,17 +9,17 @@ import Models.NPC.NPC;
 import Models.Place.Barn;
 import Models.Place.Coop;
 import Models.Place.House;
+import Models.Map;
+import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
+import Models.Weather.Weather;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class GameController {
     public Result showEnergy() {
@@ -141,26 +141,51 @@ public class GameController {
             }
         }
 
-        //TODO palce animal in map
 
-        if (place instanceof Coop)
-            coop.setAnimalCount(coop.getAnimalCount() + 1);
-        else
-            barn.setAnimalCount(barn.getAnimalCount() + 1);
+        Place enclosure = getPlaceByType(animal.getAnimalType().getEnclosures().toString());
+        Position enclosurePos = enclosure.getPosition();
+        int enclosureHeight = 0;
+        int enclosureWidth = 0;
 
-        App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-        App.getInstance().getCurrentGame().getAnimals().put(name, animal);
-        return new Result(true, "a new " + animalType + " named " + "has been bought.");
+        if (enclosure instanceof Coop) {
+            enclosureHeight = 3;
+            enclosureWidth = 4;
+        } else if (enclosure instanceof Barn) {
+            enclosureHeight = 3;
+            enclosureWidth = 4;
+        }
+
+        for (int i = 0; i < enclosureHeight; i++) {
+            for (int j = 0; j < enclosureWidth; j++) {
+                Position pos = new Position(enclosurePos.getX() + i, enclosurePos.getY() + j);
+                if (placeAnimal(App.getInstance().getCurrentGame(), pos, animal)) {
+                    if (place instanceof Coop)
+                        coop.setAnimalCount(coop.getAnimalCount() + 1);
+                    else
+                        barn.setAnimalCount(barn.getAnimalCount() + 1);
+
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+                    App.getInstance().getCurrentGame().getAnimals().put(name, animal);
+                    return new Result(true, "a new " + animalType + " named " + name + " has been bought and placed in your " +
+                            animal.getAnimalType().getEnclosures().toString() + ".");
+                }
+            }
+        }
+
+        return new Result(false, "not enough coop space to by this animal.");
     }
 
     public Result petAnimals(String name) {
-        //TODO check the player is near animal
         Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
         if (animal == null) {
             return new Result(false, "there is no animal with this name.");
         }
+        if (!isPlayerAdjacentToTile(animal.getPosition(), null)) {
+            return new Result(false, "you are not close enough to pet this animal.");
+        }
+
         animal.pet();
-        return new Result(true, "you pet " + animal.getName() + ".");
+        return new Result(true, "you pet " + animal.getName() + " (a " + animal.getAnimalType().getType() + ")" + ".");
     }
 
     public Result showAnimals() {
@@ -171,15 +196,15 @@ public class GameController {
         for (Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
             animals.append("animal name : ".toUpperCase());
             animals.append(animal.getName());
-            animals.append("|");
+            animals.append(" | ");
             animals.append("ANIMAL FRIENDSHIP : ");
             animals.append(animal.getFriendShip());
-            animals.append("|");
+            animals.append(" | ");
             if (animal.isFed())
                 animals.append("the animal has been fed.");
             else
                 animals.append("the animal has not been fed.");
-            animals.append("|");
+            animals.append(" | ");
             if (animal.isPetted())
                 animals.append("the animal has been petted.");
             else
@@ -187,6 +212,132 @@ public class GameController {
             animals.append("\n");
         }
         return new Result(true, animals.toString());
+    }
+
+    public Result shepherdAnimals(String name, Position position) {
+        if (!App.getInstance().getCurrentGame().getWeather().getName().equalsIgnoreCase("sunny")) {
+            return new Result(false, "the animal can move only in SUNNY weather");
+        }
+
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+        if (animal == null) {
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        Tile destinationTile = getTileByPosition(position);
+        if (destinationTile == null) {
+            return new Result(false, "invalid destination position.");
+        }
+
+        if (destinationTile.getPerson() != null || destinationTile.getItem() != null ||
+                destinationTile.getAnimal() != null || destinationTile.getTileType() == TileType.Wall) {
+            return new Result(false, "the destination tile is occupied.");
+        }
+        Tile currentTile = getTileByPosition(animal.getPosition());
+        if (currentTile != null) {
+            currentTile.setAnimal(null);
+        }
+
+        animal.setPosition(position);
+        destinationTile.setAnimal(animal);
+
+        return new Result(true, "you successfully moved " + animal.getName() + " (a " + animal.getAnimalType().getType() + ")" + " to the new location.");
+    }
+
+    public Result feedAnimalWithHay(String name){
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+
+        if(animal == null){
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        if(!isPlayerAdjacentToTile(animal.getPosition(),App.getInstance().getCurrentGame().getCurrentPlayer())){
+            return new Result(false, "you are not close enough to pet this animal.");
+        }
+
+        animal.feed();
+        return new Result(true, animal.getName() + " (a " +
+                            animal.getAnimalType().getType() + ") " +
+                        "fed with hay.");
+    }
+
+    public Result sellAnimal(String name){
+        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+
+        if(animal == null){
+            return new Result(false, "there is no animal with this name.");
+        }
+
+        if(!App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().contains(animal)){
+            return new Result(false, "you can't sell this animal.");
+        }
+
+        Tile animalTile = getTileByPosition(animal.getPosition());
+        App.getInstance().getCurrentGame().getAnimals().remove(name);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().remove(animal);
+        if(animalTile != null){
+            animalTile.setAnimal(null);
+        }
+        App.getInstance().getCurrentGame().getCurrentPlayer().addGold(animal.getPrice());
+        return new Result(true, animal.getName() + " has been sold with price : " + animal.getPrice() + ".");
+    }
+
+    public boolean placeAnimal(Game game, Position position, Animal animal) {
+        if (position.getX() < 0 || position.getY() < 0 ||
+                position.getX() >= Map.mapHeight ||
+                position.getY() >= Map.mapWidth) {
+            return false;
+        }
+
+        if (!isPositionInPlayerFarm(position, App.getInstance().getCurrentGame().getCurrentPlayer())) {
+            return false;
+        }
+
+        Tile tile = getTileByPosition(position);
+
+        if (tile.getPerson() != null || tile.getAnimal() != null ||
+                tile.getItem() != null || tile.getTileType() == TileType.Wall) {
+            return false;
+        }
+
+        Place enclosure = null;
+
+        if (animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("Coop")) {
+            enclosure = getPlaceByType("Coop");
+        } else if (animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("Barn")) {
+            enclosure = getPlaceByType("Barn");
+        }
+
+        if (enclosure == null) {
+            return false;
+        }
+
+        boolean isInEnclosure = false;
+        Position enclosurePos = enclosure.getPosition();
+        int enclosureHeight = 0;
+        int enclosureWidth = 0;
+
+        if (enclosure instanceof Coop) {
+            enclosureHeight = 3;
+            enclosureWidth = 4;
+        } else if (enclosure instanceof Barn) {
+            enclosureHeight = 3;
+            enclosureWidth = 4;
+        }
+
+        isInEnclosure = position.getX() >= enclosurePos.getX() &&
+                position.getX() < enclosurePos.getX() + enclosureHeight &&
+                position.getY() >= enclosurePos.getY() &&
+                position.getY() < enclosurePos.getY() + enclosureWidth;
+
+        if (!isInEnclosure) {
+            return false;
+        }
+
+        animal.setPosition(position);
+        tile.setAnimal(animal);
+
+        return true;
     }
 
     public Place getPlaceByType(String placeType) {
@@ -205,6 +356,70 @@ public class GameController {
         return null;
     }
 
+    public boolean isPlayerAdjacentToTile(Position targetPosition, Player player) {
+        if (player == null) {
+            player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        }
+
+        Position playerPosition = player.getPosition();
+
+        int dx = Math.abs(playerPosition.getX() - targetPosition.getX());
+        int dy = Math.abs(playerPosition.getY() - targetPosition.getY());
+
+        return dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0);
+    }
+
+    public Result fishing(String fishingPole){
+        if(!isPlayerNearLake()){
+            return new Result(false, "you should be near the lake.");
+        }
+
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        ArrayList<Item> items = currentPlayer.getInventory().getBackPack().getItems();
+        boolean hasFishingPole = false;
+        for (Item item : items) {
+            if (item instanceof FishingPole) {
+                hasFishingPole = true;
+            }
+        }
+        if(!hasFishingPole){
+            return new Result(false, "you don't have fishingpole in your Inventory.");
+        }
+
+        Random random = new Random();
+        double R = random.nextDouble();
+        double M ;
+        Weather weather = App.getInstance().getCurrentGame().getWeather();
+        switch (weather){
+            case SUNNY -> M = 1.5;
+            case RAIN -> M = 1.2;
+            case STORM -> M = 1;
+            default -> M = 1 ;
+        }
+        // TODO complete this method
+        return new Result(false, "");
+    }
+
+    public boolean isPlayerNearLake() {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Position playerPos = currentPlayer.getPosition();
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                Position adjacentPos = new Position(playerPos.getX() + dx, playerPos.getY() + dy);
+                Tile adjacentTile = getTileByPosition(adjacentPos);
+
+                if (adjacentTile != null && adjacentTile.getPlace() != null &&
+                        adjacentTile.getPlace() instanceof Lake) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public Result craftingShowRecipes() {
 
@@ -355,11 +570,11 @@ public class GameController {
         if (!(playerTile.getPlace() instanceof CarpenterShop)) {
             return new Result(false, "you should go to Carpenter shop first!");
         }
-        Coop newCoop = new Coop(coopPosition, 3, 3);
+        Coop newCoop = new Coop(coopPosition, 3, 4);
         if (!isPositionInPlayerFarm(coopPosition, App.getInstance().getCurrentGame().getCurrentPlayer())) {
             return new Result(false, "this position is not in your farm.");
         }
-        if (!GameMenuControllers.setUpPlace(game, 3, 3, coopPosition, newCoop)) {
+        if (!GameMenuControllers.setUpPlace(game, 3, 4, coopPosition, newCoop)) {
             return new Result(false, "can not build coop in this place.");
         }
         // TODO check the minerals amount of player to build coop
@@ -373,11 +588,11 @@ public class GameController {
         if (!(playerTile.getPlace() instanceof CarpenterShop)) {
             return new Result(false, "you should go to Carpenter shop first!");
         }
-        Barn newBarn = new Barn(barnPosition, 3, 3);
+        Barn newBarn = new Barn(barnPosition, 3, 4);
         if (!isPositionInPlayerFarm(barnPosition, App.getInstance().getCurrentGame().getCurrentPlayer())) {
             return new Result(false, "this position is not in your farm.");
         }
-        if (!GameMenuControllers.setUpPlace(game, 3, 3, barnPosition, newBarn)) {
+        if (!GameMenuControllers.setUpPlace(game, 3, 4, barnPosition, newBarn)) {
             return new Result(false, "can not build barn in this place.");
         }
         // TODO check the minerals amount of player to build barn

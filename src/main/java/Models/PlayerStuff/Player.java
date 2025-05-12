@@ -21,7 +21,7 @@ public class Player implements Person {
     private ArrayList<Animal> playerAnimals = new ArrayList<>();
     private ArrayList<NPCRelation> npcRelations = new ArrayList<>();
 
-    private int gold;
+    private int gold = 0;
     private int wood;
     private Energy energy;
     private boolean isFainted;
@@ -163,6 +163,10 @@ public class Player implements Person {
 
     public void setFishingAbility(int fishingAbility) {
         this.fishingAbility = fishingAbility;
+    }
+
+    public void addGold(int amount){
+        gold += amount;
     }
 
     private int calculateLevel(int xp) {
