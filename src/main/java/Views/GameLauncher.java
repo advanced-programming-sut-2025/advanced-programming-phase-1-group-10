@@ -138,6 +138,31 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.rateGift(
                     matcher.group("giftNumber"),
                     matcher.group("rate")
+            ));
+        } else if((matcher = GameCommands.SHOW_TIME.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameTime(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DATETIME.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameDateTime(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DATE.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameDate(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DAY_OF_WEEK.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showDayOfWeek(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_WEATHER.getMatcher(input)) != null){
+            System.out.println(WeatherManagement.showWeather());
+        } else if((matcher = GameCommands.SHOW_WEATHER_FORECAST.getMatcher(input)) != null){
+            System.out.println(WeatherManagement.showWeatherForecast());
+        } else if((matcher = GameCommands.COLLECT_PRODUCTS.getMatcher(input)) != null){
+            System.out.println(controller.collectAnimalProducts(
+                    matcher.group("name")
+            ));
         }
         else{
             System.out.println("invalid command.");
