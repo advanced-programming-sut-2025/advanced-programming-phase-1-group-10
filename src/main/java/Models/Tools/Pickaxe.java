@@ -24,15 +24,16 @@ public class Pickaxe extends Tool {
         Item item = tile.getItem();
 
         if (item instanceof Mineral) {
-            player.getInventory().getBackPack().addItem(item);
+
 
             if (player.getMiningLevel() >= 2) {
                 player.getInventory().getBackPack().addItem(item);
             }
 
             player.setMiningAbility(player.getMiningAbility() + 10);
-
-            tile.setItem(null);
+            if(player.getInventory().getBackPack().addItem(item)){
+                tile.setItem(null);
+            }
             isUsed = true;
         }
 

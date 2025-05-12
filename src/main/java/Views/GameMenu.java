@@ -50,6 +50,8 @@ public class GameMenu implements AppMenu {
                             controller.putRandomForagingPlanet(farm,10);
                             //Give farm to player
                             player.setFarm(farm);
+                            //Set up Realation with players
+                            controller.setUpFriendShip(player);
                             System.out.println("Farm created for " + player.getName() + " with map type " + mapNumber);
                             break;
                         } else {

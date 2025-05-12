@@ -3,14 +3,19 @@ package Controllers;
 import Models.Animal.Animal;
 import Models.Cooking.Cooking;
 import Models.Cooking.CookingType;
+import Models.Animal.Fish;
+import Models.Animal.FishType;
+import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
-import Models.FriendShip.Gift;
+import Models.FriendShip.Friendship;
+import Models.FriendShip.Message;
 import Models.NPC.NPC;
 import Models.Place.Barn;
 import Models.Place.Coop;
 import Models.Place.House;
+import Models.DateTime.Season;
 import Models.Map;
 import Models.Place.*;
 import Models.Place.Place;
@@ -21,7 +26,9 @@ import Models.Recipe.Recipe;
 import Models.Tools.*;
 import Models.Weather.Weather;
 
+import javax.swing.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameController {
     public Result showEnergy() {
@@ -384,6 +391,7 @@ public class GameController {
                 hasFishingPole = true;
             }
         }
+
         if(!hasFishingPole){
             return new Result(false, "you don't have fishingpole in your Inventory.");
         }
@@ -398,8 +406,75 @@ public class GameController {
             case STORM -> M = 1;
             default -> M = 1 ;
         }
-        // TODO complete this method
-        return new Result(false, "");
+
+        double calculatedFishes = R * M * (App.getInstance().getCurrentGame().getCurrentPlayer().getFishingAbility() + 2);
+        int numberOfFishes = (int) Math.min(Math.max(calculatedFishes, 1), 6);
+
+        Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+
+        int fishingAbilityLevel = currentPlayer.getFishingLevel();
+
+        List<FishType> seasonalFishes = Arrays.stream(FishType.values())
+                .filter(fish -> fish.getSeason() == currentSeason)
+                .filter(fish -> {
+                    boolean isLegendary = fish == FishType.LEGEND || fish == FishType.GLACIERFISH ||
+                            fish == FishType.ANGLER || fish == FishType.CRIMSONFISH;
+
+                    return !(isLegendary && fishingAbilityLevel < 4);
+                })
+                .collect(Collectors.toList());
+
+        if (seasonalFishes.isEmpty()) {
+            return new Result(false, "there are no fish to catch in this season.");
+        }
+
+        List<FishType> caughtFishes = new ArrayList<>();
+        StringBuilder resultMessage = new StringBuilder("You caught " + numberOfFishes + " fish:\n");
+
+        boolean added = false ;
+        for (int i = 0; i < numberOfFishes; i++) {
+            FishType caughtFish = seasonalFishes.get(random.nextInt(seasonalFishes.size()));
+            caughtFishes.add(caughtFish);
+
+            Fish fish = new Fish(caughtFish, 1);
+            fish.setNumber(fish.getNumber() + 1);
+            added = currentPlayer.getInventory().getBackPack().addItem(fish);
+
+            if (added) {
+                resultMessage.append("- ").append(caughtFish.getName())
+                        .append("\n");
+            } else {
+                resultMessage.append("- ").append(caughtFish.getName())
+                        .append(" (couldn't add to inventory - inventory is full)\n");
+            }
+        }
+
+        double pole;
+        switch (fishingPole){
+            case "Training Rod" :
+                pole = 0.1;
+                break;
+            case "Bamboo Pole" :
+                pole = 0.5;
+                break;
+            case "Fiberglass Rod" :
+                pole = 0.9;
+                break;
+            case "Iridium Rod" :
+                pole = 1.2;
+                break;
+            default:
+                pole = 1.0;
+        }
+
+        double calculateQuality = (R * (App.getInstance().getCurrentGame().getCurrentPlayer().getFishingAbility() + 2)
+                * pole) / (7 - M);
+        String formattedQuality = String.format("%.2f", calculateQuality);
+        if(added)
+            resultMessage.append("Quality of fishes : ").append(formattedQuality);
+
+        App.getInstance().getCurrentGame().getCurrentPlayer().setFishingAbility(currentPlayer.getFishingAbility() + 5);
+        return new Result(true,resultMessage.toString());
     }
 
     public boolean isPlayerNearLake() {
@@ -1048,7 +1123,7 @@ public class GameController {
         }
     }
 
-    public NPC getNearbyNPC(String name) {
+    public <T extends Person> T getNearbyPerson(String name, Class<T> type) {
         Position position = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition();
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
         int mapWidth = map.length;
@@ -1063,8 +1138,8 @@ public class GameController {
 
             if (newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight) {
                 Person person = map[newX][newY].getPerson();
-                if (person instanceof NPC && person.getName().equals(name)) {
-                    return (NPC) person;
+                if (type.isInstance(person) && person.getName().equals(name)) {
+                    return type.cast(person);
                 }
             }
         }
@@ -1072,12 +1147,13 @@ public class GameController {
         return null;
     }
 
+
     public NPCRelation getNPCRealtion(NPC npc) {
         return App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().stream().filter(npcRelation -> npcRelation.getNpc().equals(npc)).findFirst().orElse(null);
     }
 
     public Result meetNPC(String name) {
-        NPC npc = getNearbyNPC(name);
+        NPC npc = getNearbyPerson(name, NPC.class);
         if (npc == null) {
             return new Result(false, "NPC not found!");
         }
@@ -1096,7 +1172,7 @@ public class GameController {
     }
 
     public Result sendGift(String name, String itemName) {
-        NPC npc = getNearbyNPC(name);
+        NPC npc = getNearbyPerson(name, NPC.class);
 
         if (npc == null) {
             return new Result(false, "NPC not found!");
@@ -1137,6 +1213,66 @@ public class GameController {
         return new Result(true,message.toString());
     }
 
+    public Result showFriendship(){
+        StringBuilder message = new StringBuilder();
+        for(Friendship fs: App.getInstance().getCurrentGame().getCurrentPlayer().getFriendships()){
+            message.append(fs.getPlayer().getName()).append(": " ).append(" XP: ").append(fs.getXp()).append(" Level: ").append(fs.getLevel()).append("\n");
+        }
+        return new Result(true,message.toString());
+    }
+
+    public Player getPlayerByName(String name){
+        return App.getInstance().getCurrentGame().getPlayers().stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public Friendship getFriendship(Player player, Player goal){
+        return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
+    }
+
+    public void addXpToPlayers(Player player, int xp){
+        //Add xp to eneterd player and current player;
+        Friendship f1 = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player);
+        f1.setXp(f1.getXp() + xp);
+        Friendship f2 = getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer());
+        f2.setXp(f2.getXp() + xp);
+    }
+
+    public Result talkToPlayer(String name, String message) {
+        Player player = getNearbyPerson(name, Player.class);
+        if (player == null) {
+            return new Result(false, "Player not found!");
+        }
+        //Add friendship XP And Send Message
+        addXpToPlayers(player,20);
+        Message messageObj = new Message(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message);
+        getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer()).getMessages().add(messageObj);
+        getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessages().add(messageObj);
+        return new Result(true,"Message sent to " + player.getName() + " successfully!");
+    }
+
+    public Result talkHistory(String name) {
+        StringBuilder result = new StringBuilder();
+        Player player = getPlayerByName(name);
+
+        if (player == null) {
+            return new Result(false, "Player not found!");
+        }
+
+        Friendship friendship = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(), player);
+        if (friendship == null || friendship.getMessages() == null) {
+            return new Result(false, "No conversation history found.");
+        }
+
+        for (Message message : friendship.getMessages()) {
+            if (message.getSender().getName().equals(player.getName())) {
+                result.append(player.getName()).append(": ").append(message.getMessage()).append("\n");
+            } else {
+                result.append("You: ").append(message.getMessage()).append("\n");
+            }
+        }
+
+        return new Result(true, result.toString().trim());
+    }
 
 
 }

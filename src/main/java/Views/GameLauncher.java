@@ -5,7 +5,6 @@ import Controllers.GameController;
 import Models.*;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
-import Models.Commands.GameMenuCommands;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -14,6 +13,8 @@ public class GameLauncher implements AppMenu{
 
     GameController controller = new GameController();
     CheatCodeControllers cheatCodeController = new CheatCodeControllers();
+
+    //TODO Notify players about new messages sent to 'em and move it to HistoryArray
 
     @Override
     public void checkCommand(Scanner scanner) {
@@ -109,6 +110,19 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.SHOW_NPC_FRIENDSHIP.getMatcher(input)) != null){
             System.out.println(controller.showNPClist());
+        } else if((matcher = GameCommands.FISHING_POLE.getMatcher(input)) != null){
+            System.out.println(controller.fishing(
+                    matcher.group("fishingpole")
+            ));
+        } else if((matcher = GameCommands.SHOW_FRINEDSHIP.getMatcher(input)) != null){
+            System.out.println(controller.showFriendship());
+        } else if((matcher = GameCommands.TALK_TO_PLAYER.getMatcher(input)) != null){
+            System.out.println(controller.talkToPlayer(
+                    matcher.group("username"),
+                    matcher.group("message")
+            ));
+        } else if((matcher = GameCommands.TALK_HISTORY.getMatcher(input)) != null){
+            System.out.println(controller.talkHistory(matcher.group("username")));
         }
         else{
             System.out.println("invalid command.");

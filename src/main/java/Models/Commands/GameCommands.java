@@ -5,6 +5,11 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
+    //Frinedship
+    SHOW_FRINEDSHIP("^friendships$"),
+    TALK_TO_PLAYER("^talk -u (?<username>[\\S]+) -m (?<message>[\\S ]+)$"),
+    TALK_HISTORY("^talk history -u (?<username>[\\S]+)$"),
+
     //Map print commands
     PRINT_MAP("^print map$"),
     PRINT_PART_OF_MAP("^print map -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)>\\s*-s\\s*(?<size>\\d+)$"),
