@@ -15,6 +15,7 @@ public enum GameCommands implements Commands {
     GIFT_HISTORY("^gift history -u (?<username>[\\S]+)$"),
     HUG_EACH_OHTER("^hug -u (?<username>[\\S]+)$"),
     GIVE_FLOWER("^flower -u (?<username>[\\S]+)$"),
+    ASK_MARRIAGE("^ask marriage -u (?<username>[\\S]+)$"),
 
     //Map print commands
     PRINT_MAP("^print map$"),

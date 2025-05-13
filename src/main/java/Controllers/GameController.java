@@ -19,12 +19,14 @@ import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
+import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
 import Models.Weather.Weather;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GameController {
@@ -928,7 +930,9 @@ public class GameController {
             return new Result(false, "Tile not found!");
         } else if (!isTileAvailableForWalk(finalPosition)) {
             return new Result(false, "Something else is placed on this tile!");
-        } else if (tile.getFarm() != null && tile.getFarm() != App.getInstance().getCurrentGame().getCurrentPlayer().getFarm()) {
+        } else if (tile.getFarm() != null
+                && (tile.getFarm() != App.getInstance().getCurrentGame().getCurrentPlayer().getFarm() ||
+                (App.getInstance().getCurrentGame().getCurrentPlayer().getCouple() != null && App.getInstance().getCurrentGame().getCurrentPlayer().getCouple().getFarm() != tile.getFarm()))) {
             return new Result(false, "You cannot walk to the other player's farm!");
         }
 
@@ -1275,6 +1279,9 @@ public class GameController {
         }
         //Add friendship XP And Send Message
         addXpToPlayers(player,20);
+        if(player.getCouple().getName().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())){
+            addXpToPlayers(player,30);
+        }
         Message messageObj = new Message(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message);
         getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer()).getMessages().add(messageObj);
         getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessages().add(messageObj);
@@ -1483,5 +1490,74 @@ public class GameController {
 
         return new Result(true, "You gave " + player2.getName() + " a flower! What's next?");
     }
+
+    public Result askMarriage(String username, Scanner scanner){
+        Player sender = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player reciever = getNearbyPerson(username, Player.class);
+
+        if(reciever.getGender() != Gender.Male){
+            return new Result(false, "Only a male can ask for marriage!");
+        }
+
+        if (reciever == null) {
+            return new Result(false, "Player not found nearby!");
+        }
+
+        if(reciever.getGender() == sender.getGender()){
+            return new Result(false, "Fuck you American dog");
+        }
+
+        if(sender.getCouple() != null || reciever.getCouple() != null){
+            return new Result(false, "People cannot marry more than once idiot!");
+        }
+
+        Friendship fs1 = getFriendship(sender, reciever);
+        Friendship fs2 = getFriendship(reciever, sender);
+
+        if (fs1.getLevel() != 3 || fs2.getLevel() != 3){
+            return new Result(false, "In this friendship level, marriage is not allowed!");
+        }
+
+
+        Item ring = null;
+        //TODO check ring name or maybe it's even an object.
+        for(Item item: sender.getInventory().getBackPack().getItems()){
+            if(item.getName().equals("ring")){
+                ring = item;
+            }
+        }
+        if(ring == null){
+            return new Result(false, "No ring found!");
+        }
+
+        boolean isAccepted = getMarraigeResponse(scanner);
+        if(isAccepted){
+            sender.setCouple(reciever);
+            reciever.setCouple(sender);
+            sender.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
+            reciever.getInventory().getBackPack().addItem(ring);
+            fs1.setMarried(true); fs2.setMarried(true);
+            return new Result(true, "You married!");
+        } else {
+            fs1.setXp(-fs1.getXp());
+            fs2.setXp(-fs2.getXp());
+            return new Result(true, "Inshallah next time!");
+        }
+
+
+
+    }
+
+    private boolean getMarraigeResponse(Scanner scanner) {
+        String regex = "^respond -(?<response>accept|reject)$";
+        while(true){
+            System.out.println("Wait for response:");
+            String command = scanner.nextLine();
+            if(command.matches(regex)){
+                return Pattern.compile(regex).matcher(command).group("response").equals("accept");
+            }
+        }
+    }
+
 
 }

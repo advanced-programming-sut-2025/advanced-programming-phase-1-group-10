@@ -23,6 +23,7 @@ public class Friendship {
     private final ArrayList<Gift> giftHistory = new ArrayList<>();
 
     private boolean isFlowerGiven;
+    private boolean isMarried;
 
     public Player getPlayer() {
         return player;
@@ -39,7 +40,7 @@ public class Friendship {
     public int getLevel() {
         int xp = this.getXp();
 
-        if (xp >= 1000) {
+        if (isMarried) {
             return 4;
         } else if (xp > 600 && isFlowerGiven) {
             return 3;
@@ -71,6 +72,14 @@ public class Friendship {
 
     public void setFlowerGiven(boolean flowerGiven) {
         isFlowerGiven = flowerGiven;
+    }
+
+    public boolean isMarried() {
+        return isMarried;
+    }
+
+    public void setMarried(boolean married) {
+        isMarried = married;
     }
 }
 

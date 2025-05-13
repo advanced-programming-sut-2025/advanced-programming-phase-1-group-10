@@ -11,10 +11,12 @@ import Models.Tools.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Person {
 
     private String name;
+    private Gender gender;
 
     private Position position;
 
@@ -38,6 +40,7 @@ public class Player implements Person {
     private int foragingAbility;
     private int fishingAbility;
 
+
     private ArrayList<TradeRequest> acceptedTradeRequests;
 
     private Trading trading;
@@ -54,6 +57,7 @@ public class Player implements Person {
                 new WateringCan(Quality.STARTER,5),
                 new Seythe(Quality.STARTER,2)
         ));
+        this.gender = ThreadLocalRandom.current().nextBoolean() ? Gender.Male : Gender.Female;
         //this.position = new Position();
     }
 
@@ -91,6 +95,10 @@ public class Player implements Person {
 
     public Player getCouple() {
         return couple;
+    }
+
+    public void setCouple(Player couple) {
+        this.couple = couple;
     }
 
     public Tool getCurrentTool() {
@@ -214,8 +222,15 @@ public class Player implements Person {
         return "P";
     }
 
-
     public ArrayList<Gift> getRecievedGifts() {
         return recievedGifts;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }
