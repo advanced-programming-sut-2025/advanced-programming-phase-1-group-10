@@ -18,6 +18,7 @@ public class GameLauncher implements AppMenu{
 
     //TODO Notify players about new messages sent to 'em and move it to HistoryArray.
     //TODO Notify players about the gifts that are recievecd.
+    //TODO Notify players about new trade sended.
 
     @Override
     public void checkCommand(Scanner scanner) {
@@ -175,6 +176,32 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.giveFlower(
                     matcher.group("username")
             ));
+        } else if((matcher = GameCommands.START_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.startTrade());
+        } else if((matcher = GameCommands.TRADE_OFFER.getMatcher(input)) != null){
+            System.out.println(controller.tradeOffer(
+                    matcher.group("username"),
+                    matcher.group("item").trim(),
+                    matcher.group("amount"),
+                    matcher.group("price")
+            ));
+        } else if((matcher = GameCommands.TRADE_REQUEST.getMatcher(input)) != null){
+            System.out.println(controller.tradeRequest(
+               matcher.group("username"),
+               matcher.group("item").trim(),
+               matcher.group("amount"),
+               matcher.group("targetItem").trim(),
+               matcher.group("targetAmount")
+            ));
+        } else if((matcher = GameCommands.LIST_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.listTrade());
+        } else if ((matcher = GameCommands.RESPOND_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.responseTrade(
+                    matcher.group("state"),
+                    matcher.group("id")
+            ));
+        } else if((matcher = GameCommands.TRADE_HISTORY.getMatcher(input)) != null){
+            System.out.println(controller.tradeHistory());
         }
         else{
             System.out.println("invalid command.");

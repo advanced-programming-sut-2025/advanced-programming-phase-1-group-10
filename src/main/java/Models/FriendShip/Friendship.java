@@ -3,6 +3,7 @@ package Models.FriendShip;
 
 
 import Models.PlayerStuff.Player;
+import Models.PlayerStuff.TradeRequest;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class Friendship {
     private final ArrayList<Message> messages = new ArrayList<>();
     private final ArrayList<Message> messageHistory = new ArrayList<>();
     private final ArrayList<Gift> giftHistory = new ArrayList<>();
+    private final ArrayList<TradeRequest> tradeRequestHistory = new ArrayList<>();
 
     private boolean isFlowerGiven;
     private boolean isMarried;
@@ -80,6 +82,10 @@ public class Friendship {
 
     public void setMarried(boolean married) {
         isMarried = married;
+    }
+
+    public ArrayList<TradeRequest> getTradeRequestHistory() {
+        return tradeRequestHistory;
     }
 }
 

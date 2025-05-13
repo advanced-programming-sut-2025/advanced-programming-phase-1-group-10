@@ -21,6 +21,7 @@ import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
 import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
+import Models.PlayerStuff.TradeRequest;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
 import Models.Weather.Weather;
@@ -1557,6 +1558,191 @@ public class GameController {
                 return Pattern.compile(regex).matcher(command).group("response").equals("accept");
             }
         }
+    }
+
+    public Result startTrade(){
+        StringBuilder result = new StringBuilder();
+        result.append("Welcome to TradeMenu! List of players:").append("\n");
+        for(Player p: App.getInstance().getCurrentGame().getPlayers()){
+            result.append(p.getName()).append("\n");
+        }
+        return new Result(true, result.toString());
+    }
+
+    public Result tradeOffer(String username, String itemName, String amount, String price){
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player target = getPlayerByName(username);
+        int amountInt;
+        int priceInt;
+        try {
+            amountInt = Integer.parseInt(amount);
+            priceInt = Integer.parseInt(price);
+        } catch (NumberFormatException e) {
+            return new Result(false, "Amount must be an integer");
+        }
+        if(target == null){
+            return new Result(false, "Player not found!");
+        }
+        Item item = null;
+        for(Item it: currentPlayer.getInventory().getBackPack().getItems()){
+            if(it.getName().equals(itemName)){
+                item = it;
+                if(it.getNumber() < amountInt){
+                    return new Result(false, "You do not have enough items in your inventory!");
+                }
+            }
+        }
+        if(item == null){
+            return new Result(false, "Item not found in your inventory!");
+        }
+
+        target.getTradeRequests().add(new TradeRequest(currentPlayer,target,item.copyItem(amountInt),priceInt));
+
+        return new Result(true, "Trade Offer sent!");
+    }
+
+    public Result tradeRequest(String username, String itemName, String amount, String targetItem, String targetAmount){
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player target = getPlayerByName(username);
+        int amountInt;
+        int targetAmountInt;
+        try {
+            amountInt = Integer.parseInt(amount);
+            targetAmountInt = Integer.parseInt(targetAmount);
+        } catch (NumberFormatException e) {
+            return new Result(false, "Amount must be an integer");
+        }
+        if(target == null){
+            return new Result(false, "Player not found!");
+        }
+        Item item = null;
+        for(Item it: currentPlayer.getInventory().getBackPack().getItems()){
+            if(it.getName().equals(itemName)){
+                item = it;
+                if(it.getNumber() < amountInt){
+                    return new Result(false, "You do not have enough items in your inventory!");
+                }
+            }
+        }
+        if(item == null){
+            return new Result(false, "Item not found in your inventory!");
+        }
+
+        target.getTradeRequests().add(new TradeRequest(currentPlayer,target,item.copyItem(amountInt),targetItem,targetAmountInt));
+
+        return new Result(true, "Trade Reequest sent!");
+    }
+
+    public Result listTrade() {
+        StringBuilder result = new StringBuilder();
+        List<TradeRequest> tradeRequests = App.getInstance().getCurrentGame().getCurrentPlayer().getTradeRequests();
+
+        if (tradeRequests.isEmpty()) {
+            return new Result(true, "No trade requests.");
+        }
+
+        for (TradeRequest tr : tradeRequests) {
+            result.append(tr.getSender().getName())
+                    .append(" | Item: ")
+                    .append(tr.getSendItem().getName())
+                    .append(" | Number: ")
+                    .append(tr.getSendItem().getNumber())
+                    .append(" | Condition: ")
+                    .append(tr.getTargetItemName() == null
+                            ? tr.getPrice() + " Gold"
+                            : tr.getTargetItemName() + " | Number: " + tr.getTargetAmount())
+                    .append("\n");
+        }
+
+        return new Result(true, result.toString().trim());
+    }
+
+    public Result responseTrade(String response, String id) {
+        int idInt;
+        try {
+            idInt = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            return new Result(false, "ID must be an integer");
+        }
+
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        List<TradeRequest> requests = currentPlayer.getTradeRequests();
+
+        if (idInt < 1 || idInt > requests.size()) {
+            return new Result(false, "Invalid ID range");
+        }
+
+        TradeRequest tr = requests.get(idInt - 1);
+        Player sender = (Player) tr.getSender();
+        Player receiver = (Player) tr.getReceiver();
+        Friendship fs1 = getFriendship(sender, receiver);
+        Friendship fs2 = getFriendship(receiver, sender);
+
+        if (response.equalsIgnoreCase("accept")) {
+            if (tr.getTargetItemName() == null) {
+                // Gold trade
+                sender.getInventory().getBackPack().removeItemNumber(tr.getSendItem().getName(), tr.getSendItem().getNumber());
+                sender.setGold(sender.getGold() + tr.getPrice());
+                receiver.getInventory().getBackPack().addItem(tr.getSendItem());
+            } else {
+                // Item-for-item trade
+                sender.getInventory().getBackPack().removeItemNumber(tr.getSendItem().getName(), tr.getSendItem().getNumber());
+                Item addedItem = null;
+
+                for (Item it : receiver.getInventory().getBackPack().getItems()) {
+                    if (it.getName().equals(tr.getTargetItemName())) {
+                        if (it.getNumber() < tr.getTargetAmount()) {
+                            return new Result(false, "Not enough item to trade!");
+                        }
+                        it.setNumber(it.getNumber() - tr.getTargetAmount());
+                        addedItem = it.copyItem(tr.getTargetAmount());
+                        break;
+                    }
+                }
+
+                if (addedItem == null) {
+                    return new Result(false, "Item not found in inventory.");
+                }
+
+                sender.getInventory().getBackPack().addItem(addedItem);
+                receiver.getInventory().getBackPack().addItem(tr.getSendItem());
+            }
+
+            tr.setAccepted(true);
+            tr.setAnswered(true);
+            fs1.getTradeRequestHistory().add(tr);
+            fs2.getTradeRequestHistory().add(tr);
+            requests.remove(tr);
+
+            addXpToPlayers(currentPlayer, 30);
+            addXpToPlayers(receiver, 30);
+
+            return new Result(true, "Trade accepted!");
+        } else {
+            // Rejected
+            tr.setAccepted(false);
+            tr.setAnswered(true);
+            fs1.getTradeRequestHistory().add(tr);
+            fs2.getTradeRequestHistory().add(tr);
+            requests.remove(tr);
+
+            addXpToPlayers(currentPlayer, -30);
+            addXpToPlayers(receiver, -30);
+
+            return new Result(true, "Trade rejected.");
+        }
+    }
+
+    public Result tradeHistory(){
+        StringBuilder result = new StringBuilder();
+        for(TradeRequest tr: App.getInstance().getCurrentGame().getCurrentPlayer().getTradeRequests()) {
+            result.append("Sender: ")
+                    .append(tr.getSendItem().getName())
+                    .append(" | Item: ")
+                    .append(tr.getSendItem().getName())
+                    .append(tr.isAccepted() ? " (accepted)" : " (rejected)");
+        }
+        return new Result(true, result.toString().trim());
     }
 
 

@@ -5,6 +5,14 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
+    //Trading
+    START_TRADE("^start trade$"),
+    TRADE_OFFER("^trade -u (?<username>[\\S]+) -t offer -i (?<item>[\\S ]+) -a (?<amount>[\\S ]+) -p (?<price>[\\S]+)$"),
+    TRADE_REQUEST("^trade -u (?<username>[\\S]+) -t request -i (?<item>[\\S ]+) -a (?<amount>[\\S]+) -ti (?<targetItem>[\\S ]+) -ta (?<targetAmount>[\\S]+)$"),
+    LIST_TRADE("^trade list$"),
+    RESPOND_TRADE("trade response -(?<state>accept|reject) -i (?<id>[\\S]+)"),
+    TRADE_HISTORY("^$trade history"),
+
     //Frinedship
     SHOW_FRINEDSHIP("^friendships$"),
     TALK_TO_PLAYER("^talk -u (?<username>[\\S]+) -m (?<message>[\\S ]+)$"),
