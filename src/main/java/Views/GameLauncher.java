@@ -137,6 +137,18 @@ public class GameLauncher implements AppMenu{
                     matcher.group("giftNumber"),
                     matcher.group("rate")
             ));
+        } else if((matcher = GameCommands.GIFT_HISTORY.getMatcher(input)) != null){
+            System.out.println(controller.showGiftHistory(
+                    matcher.group("username")
+            ));
+        } else if((matcher = GameCommands.HUG_EACH_OHTER.getMatcher(input)) != null){
+            System.out.println(controller.hugEachOther(
+                    matcher.group("username")
+            ));
+        } else if((matcher = GameCommands.GIVE_FLOWER.getMatcher(input)) != null){
+            System.out.println(controller.giveFlower(
+                    matcher.group("username")
+            ));
         }
         else{
             System.out.println("invalid command.");

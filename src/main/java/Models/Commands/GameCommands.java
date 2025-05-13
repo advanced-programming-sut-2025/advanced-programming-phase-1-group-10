@@ -12,6 +12,9 @@ public enum GameCommands implements Commands {
     SEND_GIFT("gift -u (?<username>[\\S]+) -i (?<item>[\\S ]+) -a (?<amount>[\\S]+)"),
     SHOW_GIFT_LIST("gift list"),
     RATE_GIFT("^gift rate -i (?<giftNumber>[\\S]+) -r (?<rate>[\\S]+)$"),
+    GIFT_HISTORY("^gift history -u (?<username>[\\S]+)$"),
+    HUG_EACH_OHTER("^hug -u (?<username>[\\S]+)$"),
+    GIVE_FLOWER("^flower -u (?<username>[\\S]+)$"),
 
     //Map print commands
     PRINT_MAP("^print map$"),

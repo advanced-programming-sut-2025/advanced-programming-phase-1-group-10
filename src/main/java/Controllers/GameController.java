@@ -1229,7 +1229,7 @@ public class GameController {
     }
 
     public void addXpToPlayers(Player player, int xp){
-        //Add xp to eneterd player and current player;
+        // Add XP to the entered player and the current player
         Friendship f1 = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player);
         f1.setXp(f1.getXp() + xp);
         Friendship f2 = getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer());
@@ -1366,10 +1366,90 @@ public class GameController {
         return new Result(true,"Gift rated successfully.");
     }
 
-    public Result showGiftHistory() {
+    public Result showGiftHistory(String name) {
+        Player player = getPlayerByName(name);
+        if (player == null) {
+            return new Result(false, "Player not found!");
+        }
+
+        Friendship fs = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(), player);
+        if (fs == null) {
+            return new Result(false, "No friendship found between the players!");
+        }
+
+        if (fs.getGiftHistory().isEmpty()) {
+            return new Result(true, "No gifts exchanged yet.");
+        }
+
         StringBuilder result = new StringBuilder();
-        //TODO foreach in friendship object gifthistory
-        return null;
+        for (Gift gift : fs.getGiftHistory()) {
+            result.append("Sender: ").append(gift.getSender().getName())
+                    .append(" | Receiver: ").append(gift.getReceiver().getName())
+                    .append(" | Item: ").append(gift.getItem().getName())
+                    .append(" | Rate: ").append(gift.getRate()).append("\n");
+        }
+
+        return new Result(true, result.toString());
+    }
+
+    public Result hugEachOther(String username) {
+        Player player1 = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player player2 = getNearbyPerson(username, Player.class);
+
+        if (player2 == null) {
+            return new Result(false, "Player not found nearby!");
+        }
+
+        Friendship fs = getFriendship(player1, player2);
+
+        if (fs.getLevel() < 2) {
+            return new Result(false, "Your friendship level is too low to hug this player.");
+        }
+
+        addXpToPlayers(player2, fs.getXp());
+
+        return new Result(true, "You gave " + player2.getName() + " a warm hug!");
+    }
+
+    public Result giveFlower(String username) {
+        Player player1 = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player player2 = getNearbyPerson(username, Player.class);
+
+        if (player2 == null) {
+            return new Result(false, "Player not found nearby!");
+        }
+
+        Item flower = null;
+        for (Item item : player1.getInventory().getBackPack().getItems()) {
+//            if (item instanceof Flower) {
+//                flower = item;
+//                break;
+//            }
+        }
+
+        if (flower == null) {
+            return new Result(false, "No flower found in your backpack!");
+        }
+
+        Friendship f1 = getFriendship(player1, player2);
+        Friendship f2 = getFriendship(player2, player1);
+
+        if(f1.getLevel() < 2 || f2.getLevel() < 2){
+            return new Result(false, "Friendship level is not enough to gift a flower!");
+        }
+
+
+        if (!player2.getInventory().getBackPack().addItem(flower.copyItem(1))) {
+            return new Result(false, "Player's inventory is full!");
+        }
+
+        player1.getInventory().getBackPack().removeItemNumber(flower.getName(), 1);
+
+
+        f1.setFlowerGiven(true);
+        f2.setFlowerGiven(true);
+
+        return new Result(true, "You gave " + player2.getName() + " a flower! What's next?");
     }
 
 }

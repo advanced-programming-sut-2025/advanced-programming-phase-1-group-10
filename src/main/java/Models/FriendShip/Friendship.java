@@ -22,6 +22,8 @@ public class Friendship {
     private final ArrayList<Message> messageHistory = new ArrayList<>();
     private final ArrayList<Gift> giftHistory = new ArrayList<>();
 
+    private boolean isFlowerGiven;
+
     public Player getPlayer() {
         return player;
     }
@@ -39,11 +41,11 @@ public class Friendship {
 
         if (xp >= 1000) {
             return 4;
-        } else if (xp >= 600) {
+        } else if (xp > 600 && isFlowerGiven) {
             return 3;
-        } else if (xp >= 300) {
+        } else if (xp > 300) {
             return 2;
-        } else if (xp >= 100) {
+        } else if (xp > 100) {
             return 1;
         } else {
             return 0;
@@ -61,6 +63,14 @@ public class Friendship {
 
     public ArrayList<Gift> getGiftHistory() {
         return giftHistory;
+    }
+
+    public boolean isFlowerGiven() {
+        return isFlowerGiven;
+    }
+
+    public void setFlowerGiven(boolean flowerGiven) {
+        isFlowerGiven = flowerGiven;
     }
 }
 
