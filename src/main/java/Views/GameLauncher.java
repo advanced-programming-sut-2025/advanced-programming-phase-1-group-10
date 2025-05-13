@@ -175,6 +175,20 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.giveFlower(
                     matcher.group("username")
             ));
+        } else if((matcher = GameCommands.CRAFT_INFO.getMatcher(input)) != null){
+            System.out.println(controller.craftInfo(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.PLANT.getMatcher(input)) != null){
+            System.out.println(controller.plant(
+                    matcher.group("seed"),
+                    matcher.group("direction")
+            ));
+        } else if((matcher = GameCommands.SHOW_PLANT.getMatcher(input)) != null){
+            System.out.println(controller.showPlant(
+                    matcher.group("x"),
+                    matcher.group("y")
+            ));
         }
         else{
             System.out.println("invalid command.");

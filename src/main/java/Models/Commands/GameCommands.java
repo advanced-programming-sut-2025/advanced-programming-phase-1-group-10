@@ -71,7 +71,12 @@ public enum GameCommands implements Commands {
     FEED_ANIMAL_WITH_HAY("^feed\\s+hay\\s+-n\\s+(?<name>[^\\s]+)$"),
     SELL_ANIMAL("^sell\\s+animal\\s+-n\\s+(?<name>[^\\s]+)$"),
     FISHING_POLE("^fishing\\s+-p\\s+(?<fishingpole>.+)$"),
-    COLLECT_PRODUCTS("^collect\\s+produce\\s+-n\\s+(?<name>[^\\s]+)$")
+    COLLECT_PRODUCTS("^collect\\s+produce\\s+-n\\s+(?<name>[^\\s]+)$"),
+
+    //Farming Commands
+    CRAFT_INFO("^craftinfo\\s+-n\\s+(?<name>.+)$"),
+    PLANT("^plant\\s+-s\\s+(?<seed>.+)\\s+-d\\s+(?<direction>.+)$"),
+    SHOW_PLANT("^showplant\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$")
     ;
 
     private final String pattern;

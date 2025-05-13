@@ -84,6 +84,14 @@ public class Tile {
         this.animal = animal;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPlantedSeed(Seed plantedSeed) {
+        this.plantedSeed = plantedSeed;
+    }
+
     public String getTile() {
         if (this.person != null) {
             return this.person.getSymbol();
