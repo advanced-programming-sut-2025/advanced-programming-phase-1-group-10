@@ -10,6 +10,7 @@ public class Animal {
     private final ArrayList<AnimalProductType> animalProductTypes = new ArrayList<>();
     private String name ;
     private int friendShip;
+    private AnimalProduct currentProduct;
 
     private Position position;
 
@@ -79,6 +80,49 @@ public class Animal {
     public void feed(){
         fed = true;
         friendShip += 8;
+    }
+
+    public ProductQuality calculateQuality() {
+        double random = Math.random();
+        double quality = ((double) friendShip /1000) * (0.5 + 0.5 * random);
+
+        if(quality <= 0.5) {
+            return ProductQuality.NORMAL;
+        }
+        else if(quality <= 0.7) {
+            return ProductQuality.SILVER;
+        }
+        else if(quality <= 0.9) {
+            return ProductQuality.GOLD;
+        }
+        else {
+            return ProductQuality.IRIDIUM;
+        }
+    }
+
+    public void produce() {
+        if(friendShip > 100 && animalProductTypes.size() > 1) {
+            double random = 0.5 + Math.random();
+            double probability = (friendShip + 150 * random) / 1500;
+
+            if(probability > 0.5) {
+                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality());
+            }
+            else {
+                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality());
+            }
+        }
+        else {
+            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality());
+        }
+    }
+
+    public AnimalProduct getCurrentProduct() {
+        return currentProduct;
+    }
+
+    public void setCurrentProduct(AnimalProduct currentProduct) {
+        this.currentProduct = currentProduct;
     }
 
     public void setFriendShip(int friendShip) {
