@@ -20,7 +20,6 @@ import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
 import Models.Planets.Crop.Crop;
-import Models.Planets.Crop.CropType;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.Seed;
 import Models.Planets.SeedType;
@@ -1124,7 +1123,7 @@ public class GameController {
             tool.use(tile);
             return new Result(true, "You used the Axe.");
         } else if (tool instanceof WateringCan) {
-            tool.use(tile);
+            useWateringCan(direction);
             return new Result(true, "You used the WateringCan.");
         }
         return new Result(false, "Incorrect Usage!");
@@ -1688,6 +1687,81 @@ public class GameController {
         }
     }
 
+    public Result fertilize(String fertilizerName, String direction) {
+        Item fertilizerItem = getItemInInventory(fertilizerName);
+        if (!(fertilizerItem instanceof Fertilizer)) {
+            return new Result(false, "You don't have this fertilizer in your inventory.");
+        }
+
+        Tile targetTile = getTileByDirection(direction);
+        if (targetTile == null) {
+            return new Result(false, "Invalid direction.");
+        }
+
+        if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop)) {
+            return new Result(false, "There is no plant on this tile.");
+        }
+
+        if (targetTile.isFertilizer()) {
+            return new Result(false, "This tile is already fertilized.");
+        }
+
+        targetTile.setFertilizer(true);
+        BackPack backPack =  App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack();
+        int fertilizerNumber = fertilizerItem.getNumber();
+        backPack.setItemNumber(fertilizerItem, fertilizerNumber - 1);
+        if(fertilizerNumber - 1 == 0)
+            backPack.removeItem(fertilizerItem);
+
+        // TODO check the effect of fertilizer in time and watering
+
+        return new Result(true, fertilizerName + " applied to the plant.");
+    }
+
+    public Result howMuchWater() {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Item wateringCan = getItemInInventory("Watering Can");
+
+        if (wateringCan == null) {
+            return new Result(false, "You don't have a watering can in your inventory.");
+        }
+        else{
+            return new Result(true, "you have " + ((WateringCan) wateringCan).getWater() + " water int your watering can.");
+        }
+    }
+
+    public void useWateringCan(String direction) {
+        WateringCan wateringCan = (WateringCan) getItemInInventory("Watering Can");
+        if (wateringCan == null) {
+            new Result(false, "You don't have a Watering Can in your inventory.");
+            return;
+        }
+
+        Tile targetTile = getTileByDirection(direction);
+        if (targetTile == null) {
+            new Result(false, "Invalid direction.");
+            return;
+        }
+
+        // check the buttom condition
+        if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop) || !(targetTile.getItem() instanceof Seed)) {
+            new Result(false, "There is no plant on this tile to water.");
+            return;
+        }
+
+        if (wateringCan.getWater() <= 0) {
+            new Result(false, "Your Watering Can is empty. Refill it at a water source.");
+            return;
+        }
+
+        Crop crop = (Crop) targetTile.getItem();
+        targetTile.setWatered(true);
+        wateringCan.use(targetTile);
+
+        // TODO check the effect of fertilizer in time and watering
+
+        new Result(true, "You watered the plant.");
+    }
 
     public Result startTrade(){
         StringBuilder result = new StringBuilder();

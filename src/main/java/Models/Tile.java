@@ -17,6 +17,7 @@ public class Tile {
 
     private boolean plow;
     private boolean watered;
+    private boolean fertilizer;
 
     private Seed plantedSeed;
 
@@ -90,6 +91,14 @@ public class Tile {
 
     public void setPlantedSeed(Seed plantedSeed) {
         this.plantedSeed = plantedSeed;
+    }
+
+    public boolean isFertilizer() {
+        return fertilizer;
+    }
+
+    public void setFertilizer(boolean fertilizer) {
+        this.fertilizer = fertilizer;
     }
 
     public String getTile() {
