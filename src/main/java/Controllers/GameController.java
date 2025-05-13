@@ -19,6 +19,11 @@ import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
+import Models.Planets.Crop.Crop;
+import Models.Planets.Crop.CropType;
+import Models.Planets.Crop.CropTypeNormal;
+import Models.Planets.Seed;
+import Models.Planets.SeedType;
 import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
 import Models.PlayerStuff.TradeRequest;
@@ -1559,6 +1564,130 @@ public class GameController {
             }
         }
     }
+
+    public Result craftInfo(String name){
+        CropTypeNormal craft = CropTypeNormal.getCropTypeByName(name);
+
+        if(craft == null){
+            return new Result(false, "there is no craft with this name.");
+        }
+
+        StringBuilder info = new StringBuilder();
+        info.append("Name: ");
+        info.append(craft.getName());
+        info.append("\n");
+        info.append("Source: ");
+        info.append(craft.getSource());
+        info.append("\n");
+        info.append("Stage: ");
+        for(int i : craft.getCropTypes()){
+            info.append(i);
+            info.append(" ");
+        }
+        info.append("\n");
+        info.append("Total Harvest Time: ");
+        info.append(craft.getTotalHarvestTime());
+        info.append("\n");
+        info.append("One Time: ");
+        info.append(craft.isOneTime());
+        info.append("\n");
+        info.append("Regrowth Time: ");
+        info.append(craft.getRegrowthTime() != -1 ? craft.getRegrowthTime() : "-");
+        info.append("\n");
+        info.append("Base Sell Price: ");
+        info.append(craft.getBaseSellPrice());
+        info.append("\n");
+        info.append("Is Edible: ");
+        info.append(craft.isEdible());
+        info.append("\n");
+        info.append("Base Energy: ");
+        info.append(craft.getEnergy() != -1 ? craft.getEnergy() : "-");
+        info.append("\n");
+        info.append("Season: ");
+        for(Season season : craft.getSeasons()){
+            info.append(season.getName());
+            info.append("   ");
+        }
+        info.append("\n");
+        info.append("Can Become Giant: ");
+        info.append(craft.isCanBecomeGiant());
+
+        return new Result(true, info.toString());
+    }
+
+    public Result plant(String seedName, String direction) {
+        SeedType seedType = SeedType.getSeedByName(seedName);
+        if(seedType == null){
+            return new Result(false, "seed name incorrect.");
+        }
+
+        Item seedItem = getItemInInventory(seedName);
+        if (!(seedItem instanceof Seed)) {
+            return new Result(false, "You don't have this seed in your inventory.");
+        }
+
+        Tile targetTile = getTileByDirection(direction);
+        if (targetTile == null) {
+            return new Result(false, "Invalid direction.");
+        }
+
+        if (!targetTile.getisPlow()) {
+            return new Result(false, "This tile needs to be plowed first.");
+        }
+
+        if (targetTile.getItem() != null) {
+            return new Result(false, "There is already something planted on this tile.");
+        }
+
+        CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(seedName);
+        Crop crop = new Crop(cropType, 1);
+        targetTile.setItem(crop);
+        targetTile.setPlantedSeed((Seed) seedItem);
+
+        BackPack backPack =  App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack();
+        int seedNumber = seedItem.getNumber();
+        backPack.setItemNumber(seedItem, seedNumber - 1);
+        if(seedNumber -1 == 0)
+            backPack.removeItem(seedItem);
+
+        return new Result(true, seedName + " planted successfully.");
+    }
+
+    public Result showPlant(String x, String y) {
+        try {
+            int xCoord = Integer.parseInt(x);
+            int yCoord = Integer.parseInt(y);
+
+            if (xCoord < 0 || xCoord >= Map.mapWidth || yCoord < 0 || yCoord >= Map.mapHeight) {
+                return new Result(false, "Invalid coordinates.");
+            }
+
+            Tile targetTile = getTileByPosition(new Position(xCoord, yCoord));
+            if (targetTile == null) {
+                return new Result(false, "Tile not found.");
+            }
+
+            if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop)) {
+                return new Result(false, "No plant found at this location.");
+            }
+
+            Crop crop = (Crop) targetTile.getItem();
+            CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(crop.getName());
+
+            StringBuilder result = new StringBuilder();
+            result.append("Plant: ").append(crop.getName()).append("\n");
+            //result.append("Time Remaining Until Harvest: ").append(calculateHarvestTime(cropType, targetTile)).append("\n");
+            result.append("Is Watered Today: ").append(targetTile.isWatered()).append("\n");
+//            result.append("Quality: ").append(determineQuality(crop)).append("\n");
+//            result.append("Fertilized: ").append(isFertilized(targetTile)).append("\n");
+
+            return new Result(true, result.toString());
+
+        } catch (NumberFormatException e) {
+            return new Result(false, "Invalid number format for coordinates.");
+        }
+    }
+
 
     public Result startTrade(){
         StringBuilder result = new StringBuilder();

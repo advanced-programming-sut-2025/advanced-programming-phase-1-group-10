@@ -122,4 +122,13 @@ public enum CropTypeNormal implements CropType {
     public boolean isCanBecomeGiant() {
         return canBecomeGiant;
     }
+
+    public static CropTypeNormal getCropTypeByName(String name){
+        for(CropTypeNormal cropTypeNormal : CropTypeNormal.values()){
+            if(cropTypeNormal.name.equalsIgnoreCase(name)){
+                return cropTypeNormal;
+            }
+        }
+        return null;
+    }
 }
