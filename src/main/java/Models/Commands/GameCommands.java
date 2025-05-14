@@ -84,7 +84,9 @@ public enum GameCommands implements Commands {
     //Farming Commands
     CRAFT_INFO("^craftinfo\\s+-n\\s+(?<name>.+)$"),
     PLANT("^plant\\s+-s\\s+(?<seed>.+)\\s+-d\\s+(?<direction>.+)$"),
-    SHOW_PLANT("^showplant\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$")
+    SHOW_PLANT("^showplant\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
+    FERTILIZER("^fertilize\\s+-f\\s+(?<fertilizer>.+)\\s+-d\\s+(?<direction>.+)$"),
+    HOW_MACH_WATER("^how much water$"),
     ;
 
     private final String pattern;
