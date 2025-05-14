@@ -26,6 +26,9 @@ public class MainMenuControllers {
     }
 
     public Result logout(){
+        if (App.getInstance().getCurrentUser() == null) {
+            return new Result(false, "you should login first!");
+        }
         App.getInstance().setCurrentUser(null);
         App.getInstance().setCurrentMenu(Menu.LoginMenu);
         return new Result(true, "you logged out successfully! you are now in LOGIN/REGISTER Menu!");

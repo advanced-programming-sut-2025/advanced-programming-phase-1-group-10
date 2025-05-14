@@ -64,6 +64,7 @@ public class RegisterManuController {
         App.getInstance().addUser(newuser);
         newuser.setEmail(email);
         App.getInstance().setCurrentUser(newuser);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "user registered successfully!");
     }
 
@@ -205,6 +206,7 @@ public class RegisterManuController {
         userQuestion.put(number,questionWithAnswer);
         App.getInstance().getCurrentUser().setPickQuestion(userQuestion);
         App.getInstance().getCurrentUser().setPickQuestionNumber(number);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "you chose question number " + number + " with answer: " + answer + ".");
     }
 
@@ -219,9 +221,9 @@ public class RegisterManuController {
         }
 
         boolean stayLoggedIn = !stayLoggedInStr.isEmpty();
-        //TODO stay logged in method
-        App.getInstance().getCurrentUser().setStayLoggedIn(stayLoggedIn);
+        user.setStayLoggedIn(stayLoggedIn);
         App.getInstance().setCurrentUser(user);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "the user with username " + "(" + username + ") " + "logged in successfully!");
     }
 
@@ -258,6 +260,7 @@ public class RegisterManuController {
                 return new Result(false, passwordResult.toString());
             }
             else{
+                App.getInstance().getCurrentUser().setPassword(newPassword);
                 return new Result(true, "your password changed successfully! NEW PASSWORD: " + newPassword);
             }
         }

@@ -14,7 +14,7 @@ public class User {
     private String email;
     private int pickQuestionNumber;
     private Map<Integer, Map<String, String>> pickQuestion ;
-    private boolean stayLoggedIn = true;
+    private boolean stayLoggedIn = false;
 
 
     public User(String nickname, String password, String username, Gender gender) {

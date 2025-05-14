@@ -3,14 +3,17 @@ package Models;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class App {
 
     private static App instance;
+    private ArrayList<User> users = new ArrayList<>();
 
     private App() {
         games = new ArrayList<>();
-        users = new ArrayList<>();
+        SaveData.ensureFileExists();
+        users = SaveData.loadUsersFromFile();
     }
 
     public static App getInstance() {
@@ -21,7 +24,7 @@ public class App {
     }
 
     private Menu currentMenu = Menu.LoginMenu;
-    private final ArrayList<User> users;
+    //private final ArrayList<User> users;
     private final ArrayList<Game> games;
 
     private User currentUser;
