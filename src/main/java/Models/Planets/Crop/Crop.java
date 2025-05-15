@@ -18,7 +18,7 @@ public class Crop implements Item {
 
     @Override
     public String getSymbol() {
-        return "M";
+        return "Cr";
     }
 
     @Override

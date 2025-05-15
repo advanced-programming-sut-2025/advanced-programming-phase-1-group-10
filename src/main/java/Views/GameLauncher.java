@@ -223,6 +223,8 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.HOW_MACH_WATER.getMatcher(input)) != null){
             System.out.println(controller.howMuchWater());
+        } else if((matcher = GameCommands.HELP_READING_MAP.getMatcher(input)) != null){
+            System.out.println(controller.helpReadingMap());
         }
         else{
             System.out.println("invalid command.");

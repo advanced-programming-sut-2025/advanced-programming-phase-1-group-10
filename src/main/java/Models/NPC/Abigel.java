@@ -16,7 +16,7 @@ public class Abigel extends NPC {
 
     @Override
     public String getSymbol() {
-        return "A";
+        return "Ab";
     }
 
     @Override

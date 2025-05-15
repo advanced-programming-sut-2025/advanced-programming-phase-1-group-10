@@ -16,7 +16,7 @@ public class Sebastian extends NPC {
 
     @Override
     public String getSymbol() {
-        return "S";
+        return "Se";
     }
 
     @Override

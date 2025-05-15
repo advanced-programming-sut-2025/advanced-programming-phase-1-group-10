@@ -48,6 +48,6 @@ public class Coop extends Place{
 
     @Override
     public String getSymbol() {
-        return "C";
+        return "CC";
     }
 }

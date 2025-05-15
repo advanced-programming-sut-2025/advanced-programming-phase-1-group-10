@@ -20,7 +20,7 @@ public class Cooking implements Item {
 
     @Override
     public String getSymbol() {
-        return "c";
+        return "Co";
     }
 
     @Override

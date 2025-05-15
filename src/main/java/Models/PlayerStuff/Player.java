@@ -199,7 +199,7 @@ public class Player implements Person {
 
     @Override
     public String getSymbol() {
-        return "P";
+        return "Pl";
     }
 
     public ArrayList<Gift> getRecievedGifts() {

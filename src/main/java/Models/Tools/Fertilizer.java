@@ -17,7 +17,7 @@ public class Fertilizer implements Item {
 
     @Override
     public String getSymbol() {
-        return "";
+        return "Fe";
     }
 
     @Override

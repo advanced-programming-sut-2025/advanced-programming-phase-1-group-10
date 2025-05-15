@@ -28,6 +28,7 @@ public enum GameCommands implements Commands {
     //Map print commands
     PRINT_MAP("^print map$"),
     PRINT_PART_OF_MAP("^print map -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)>\\s*-s\\s*(?<size>\\d+)$"),
+    HELP_READING_MAP("^help reading map$"),
 
     //Move commands
     WALK("^walk -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),

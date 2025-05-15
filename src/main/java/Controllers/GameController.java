@@ -1948,5 +1948,35 @@ public class GameController {
         return new Result(true, result.toString().trim());
     }
 
+    public Result helpReadingMap(){
+        StringBuilder result = new StringBuilder();
+        result.append("Map Places:\n");
+        result.append("House: Red").append("\n");
+        result.append("GreenHouse: Green").append("\n");
+        result.append("Lake: Blue").append("\n");
+        result.append("Quarry: Black").append("\n");
+        result.append("Stores: Orange").append("\n");
+        result.append("NPC Houses: Purple").append("\n");
+        result.append("Barn: Yellow").append("\n");
+        result.append("Coop: Purple").append("\n");
+        result.append("\nPlayer: Pl\n").append("\n");
+        result.append("Map Objects:").append("\n");
+        result.append("Animals: An").append("\n");
+        result.append("Artesian: Ar").append("\n");
+        result.append("Bars: Ba").append("\n");
+        result.append("Cooking: Co").append("\n");
+        result.append("Crafting: Cr").append("\n");
+        result.append("Minerals: Mi").append("\n");
+        result.append("Fruits: Fr").append("\n");
+        result.append("Seeds: Se").append("\n");
+        result.append("Tree: Tr").append("\n");
+        result.append("Crops: Cr").append("\n");
+        result.append("Tools: To").append("\n");
+        result.append("NPC: First two letters of their names").append("\n");
+
+        return new Result(true, result.toString());
+
+    }
+
 
 }

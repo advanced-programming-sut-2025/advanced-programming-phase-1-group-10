@@ -12,6 +12,6 @@ public class GreenHouse extends Place {
 
     @Override
     public String getSymbol() {
-        return "G";
+        return "GG";
     }
 }

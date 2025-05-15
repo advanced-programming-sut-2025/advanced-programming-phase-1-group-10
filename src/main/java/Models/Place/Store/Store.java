@@ -26,7 +26,7 @@ public class Store extends Place {
 
     @Override
     public String getSymbol() {
-        return "-";
+        return "--";
     }
 
     public int getCloseHour() {

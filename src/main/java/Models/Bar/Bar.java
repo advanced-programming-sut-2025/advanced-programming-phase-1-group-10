@@ -19,7 +19,7 @@ public class Bar implements Item {
 
     @Override
     public String getSymbol() {
-        return "b";
+        return "Ba";
     }
 
     @Override

@@ -16,7 +16,7 @@ public class Lia extends NPC {
 
     @Override
     public String getSymbol() {
-        return "L";
+        return "Li";
     }
 
     @Override

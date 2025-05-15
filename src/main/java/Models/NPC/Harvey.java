@@ -16,7 +16,7 @@ public class Harvey extends NPC {
 
     @Override
     public String getSymbol() {
-        return "H";
+        return "Ha";
     }
 
     @Override

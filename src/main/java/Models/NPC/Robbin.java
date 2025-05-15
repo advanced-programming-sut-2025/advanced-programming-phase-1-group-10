@@ -16,7 +16,7 @@ public class Robbin extends NPC {
 
     @Override
     public String getSymbol() {
-        return "R";
+        return "Ro";
     }
 
     @Override

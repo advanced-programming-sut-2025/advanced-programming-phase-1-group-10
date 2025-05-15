@@ -44,7 +44,7 @@ public class AnimalProduct implements Item {
 
     @Override
     public String getSymbol() {
-        return "u";
+        return "Ap";
     }
 
     @Override

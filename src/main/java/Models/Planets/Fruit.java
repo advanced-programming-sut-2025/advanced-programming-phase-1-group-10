@@ -18,7 +18,7 @@ public class Fruit implements Item {
 
     @Override
     public String getSymbol() {
-        return "f";
+        return "Fr";
     }
 
     @Override

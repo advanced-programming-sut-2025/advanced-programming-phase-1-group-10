@@ -18,7 +18,7 @@ public class Tree implements Item {
 
     @Override
     public String getSymbol() {
-        return "T";
+        return "Tr";
     }
 
 

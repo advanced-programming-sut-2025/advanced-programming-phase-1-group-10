@@ -4,8 +4,8 @@ import Models.Position;
 
 public class NpcHosue extends Place {
 
-    private int houseHeight = 4;
-    private int houseWidth = 9;
+    private final int houseHeight = 4;
+    private final int houseWidth = 9;
 
     public NpcHosue(Position position, int height, int width) {
         super(position, height, width);
@@ -21,6 +21,6 @@ public class NpcHosue extends Place {
 
     @Override
     public String getSymbol() {
-        return "~";
+        return "~~";
     }
 }

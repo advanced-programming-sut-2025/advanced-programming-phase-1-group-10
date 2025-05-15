@@ -19,7 +19,7 @@ public class Crafting implements Item {
 
     @Override
     public String getSymbol() {
-        return "p";
+        return "Cr";
     }
 
     @Override

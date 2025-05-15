@@ -108,13 +108,13 @@ public class Tile {
         } else if (this.item != null) {
             ch = (item.getSymbol());
         } else if (this.getAnimal() != null) {
-            ch = "*";
+            ch = "An";
         } else if (this.getTileType() == TileType.Wall) {
-            ch = "X";
+            ch = "XX";
         } else if (this.getisPlow()) {
-            ch = "0";
+            ch = "69";
         } else {
-            ch = " ";
+            ch = "  ";
         }
         return getColoredText(ch);
     }
@@ -143,32 +143,32 @@ public class Tile {
         String style = "";
 
         switch (place.getSymbol()) {
-            case "H":
+            case "HH":
                 bgColor = RED_BACKGROUND;
                 break;
-            case "Q":
+            case "QQ":
                 bgColor = BLACK_BACKGROUND;
                 textColor = WHITE_TEXT;
                 break;
-            case "C":
+            case "CC":
                 bgColor = PURPLE_BACKGROUND;
                 break;
-            case " ":
+            case "  ":
                 bgColor = WHITE_BACKGROUND;
                 break;
-            case "W":
+            case "WW":
                 bgColor = BLUE_BACKGROUND;
                 break;
-            case "G":
+            case "GG":
                 bgColor = GREEN_BACKGROUND;
                 break;
-            case "B":
+            case "BB":
                 bgColor = YELLOW_BACKGROUND;
                 break;
-            case "~":
+            case "~~":
                 bgColor = PURPLE_BACKGROUND;
                 break;
-            case "-":
+            case "--":
                 bgColor = YELLOW_BACKGROUND;
                 break;
             default:
@@ -177,7 +177,7 @@ public class Tile {
         }
 
         // Special styling for player "P"
-        if (ch.equals("P")) {
+        if (ch.equals("Pl")) {
             style = BOLD;
             textColor = BRIGHT_YELLOW_TEXT;
         }

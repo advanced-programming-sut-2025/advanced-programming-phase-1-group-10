@@ -19,7 +19,7 @@ public class Fish implements Item {
 
     @Override
     public String getSymbol() {
-        return "";
+        return "Fi";
     }
 
     @Override

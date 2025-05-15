@@ -21,7 +21,7 @@ public abstract class Tool implements Item {
 
     @Override
     public String getSymbol() {
-        return "t";
+        return "To";
     }
 
     @Override

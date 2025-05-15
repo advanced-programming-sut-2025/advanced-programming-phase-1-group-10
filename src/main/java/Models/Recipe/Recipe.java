@@ -19,7 +19,7 @@ public class Recipe implements Item {
 
     @Override
     public String getSymbol() {
-        return "r";
+        return "Re";
     }
 
     @Override

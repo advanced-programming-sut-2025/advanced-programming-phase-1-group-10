@@ -19,7 +19,7 @@ public class ArtisanProduct implements Item {
 
     @Override
     public String getSymbol() {
-        return "a";
+        return "Ar";
     }
 
     @Override

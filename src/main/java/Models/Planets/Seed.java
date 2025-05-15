@@ -18,7 +18,7 @@ public class Seed implements Item {
 
     @Override
     public String getSymbol() {
-        return "s";
+        return "Se";
     }
 
     @Override
