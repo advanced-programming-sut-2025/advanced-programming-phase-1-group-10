@@ -31,7 +31,6 @@ public class MainMenu implements AppMenu {
     private void HandleEnterMenu(Matcher matcher){
         String menuName = matcher.group("menuname");
         Result result = controller.enterMenu(menuName);
-
         System.out.println(result.message());
     }
 

@@ -105,7 +105,10 @@ public class GameLauncher implements AppMenu{
                     matcher.group("y"),
                     matcher.group("size")
             ));
-        } else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
+        } else if((matcher = GameCommands.PRODUCES.getMatcher(input)) != null){
+            System.out.println(controller.showAnimalProducts().message());
+        }
+        else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
             System.out.println(controller.meetNPC(matcher.group("npcName")));
         } else if((matcher = GameCommands.GIFT_NPC.getMatcher(input)) != null){
             System.out.println(controller.sendGift(
@@ -225,8 +228,7 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.howMuchWater());
         } else if((matcher = GameCommands.HELP_READING_MAP.getMatcher(input)) != null){
             System.out.println(controller.helpReadingMap());
-        }
-        else{
+        } else{
             System.out.println("invalid command.");
         }
     }

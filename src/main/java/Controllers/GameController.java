@@ -388,6 +388,20 @@ public class GameController {
         return new Result(true, "produce " + animal.getCurrentProduct().getName() + "added to Inventory.");
     }
 
+    public Result showAnimalProducts() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Available animal products: \n");
+        for(Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
+            if(animal.getCurrentProduct() != null) {
+                sb.append(animal.getName()).append("    ");
+                sb.append(animal.getCurrentProduct().getName()).append("  quality: ");
+                sb.append(animal.getCurrentProduct().getProductQuality()).append("\n");
+            }
+        }
+
+        return new Result(true, sb.toString());
+    }
+
     public Place getPlaceByType(String placeType) {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
 
@@ -1638,7 +1652,19 @@ public class GameController {
             return new Result(false, "There is already something planted on this tile.");
         }
 
-        CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(seedName);
+        CropTypeNormal cropType;
+        if (seedName.equalsIgnoreCase("Mixed seed")) {
+            Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+            List<SeedType> seasonalSeeds = Arrays.stream(SeedType.values())
+                    .filter(seed -> seed.getSeason() == currentSeason)
+                    .collect(Collectors.toList());
+
+            SeedType randomSeed = seasonalSeeds.get(random.nextInt(seasonalSeeds.size()));
+            cropType = CropTypeNormal.getCropTypeByName(randomSeed.getName());
+        } else {
+            cropType = CropTypeNormal.getCropTypeByName(seedName);
+        }
+
         Crop crop = new Crop(cropType, 1);
         targetTile.setItem(crop);
         targetTile.setPlantedSeed((Seed) seedItem);
@@ -1646,7 +1672,7 @@ public class GameController {
         BackPack backPack =  App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack();
         int seedNumber = seedItem.getNumber();
         backPack.setItemNumber(seedItem, seedNumber - 1);
-        if(seedNumber -1 == 0)
+        if(seedNumber - 1 == 0)
             backPack.removeItem(seedItem);
 
         return new Result(true, seedName + " planted successfully.");

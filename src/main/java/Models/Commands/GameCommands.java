@@ -81,6 +81,7 @@ public enum GameCommands implements Commands {
     SELL_ANIMAL("^sell\\s+animal\\s+-n\\s+(?<name>[^\\s]+)$"),
     FISHING_POLE("^fishing\\s+-p\\s+(?<fishingpole>.+)$"),
     COLLECT_PRODUCTS("^collect\\s+produce\\s+-n\\s+(?<name>[^\\s]+)$"),
+    PRODUCES("^produces$"),
 
     //Farming Commands
     CRAFT_INFO("^craftinfo\\s+-n\\s+(?<name>.+)$"),
