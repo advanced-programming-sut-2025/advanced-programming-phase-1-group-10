@@ -2,7 +2,17 @@ package Controllers;
 
 import Models.Animal.Animal;
 import Models.App;
+import Models.Mineral.Mineral;
+import Models.Mineral.MineralTypes;
+import Models.Place.GreenHouse;
+import Models.Planets.Crop.Crop;
+import Models.Planets.Tree;
+import Models.Position;
 import Models.Result;
+import Models.Tile;
+
+import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CheatCodeControllers {
     public Result setEnergy(String energy) {
@@ -38,4 +48,29 @@ public class CheatCodeControllers {
         animal.setFriendShip(Amount);
         return new Result(true,"Animal friendship set to " + Amount);
     }
+
+    public Result  thorTile(Position point){
+        Tile tile;
+        try {
+            tile = App.getInstance().getCurrentGame().getGameMap().getMap()[point.getX()][point.getY()];
+        } catch (Exception exception) {
+            return new Result(false, "There is not tile with this point.");
+        }
+
+        if(tile.getPlace() instanceof GreenHouse){
+            return new Result(true,"Greenhouse is safe from thunder");
+        }
+
+        if(tile.getItem() instanceof Tree || tile.getItem() instanceof Crop){
+            tile.setItem(new Mineral(MineralTypes.COAL, ThreadLocalRandom.current().nextInt(1,3)));
+        } else if(tile.getItem() instanceof Mineral){
+
+        } else{
+            tile.setItem(null);
+        }
+        return new Result(true,"The God of Thunder showed his might.");
+
+    }
+
+
 }

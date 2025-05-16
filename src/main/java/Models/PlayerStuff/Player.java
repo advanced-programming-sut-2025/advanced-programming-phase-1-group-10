@@ -31,7 +31,6 @@ public class Player implements Person {
 
 
     private int gold = 0;
-    private int wood;
     private final Energy energy;
     private boolean isFainted;
     private Player couple;
@@ -79,10 +78,6 @@ public class Player implements Person {
 
     public int getGold() {
         return gold;
-    }
-
-    public int getWood() {
-        return wood;
     }
 
     public Player getCouple() {

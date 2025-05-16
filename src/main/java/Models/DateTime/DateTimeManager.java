@@ -32,7 +32,7 @@ public class DateTimeManager {
 
     public static Result showDayOfWeek(Game game) {
         String[] weekdays = {"Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        return new Result(true,"Day of week: " + weekdays[game.getGameTime().getDay() % weekdays.length]);
+        return new Result(true,"Day of week: " + weekdays[(game.getGameTime().getDay() - 1) % weekdays.length]);
     }
 
     public static Result showSeason(Game game) {

@@ -5,6 +5,11 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
+
+    //Time handling commands
+    NEXT_TURN("^next turn$"),
+
+
     //Trading
     START_TRADE("^start trade$"),
     TRADE_OFFER("^trade -u (?<username>[\\S]+) -t offer -i (?<item>[\\S ]+) -a (?<amount>[\\S ]+) -p (?<price>[\\S]+)$"),
@@ -30,6 +35,9 @@ public enum GameCommands implements Commands {
     PRINT_PART_OF_MAP("^print map -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)>\\s*-s\\s*(?<size>\\d+)$"),
     HELP_READING_MAP("^help reading map$"),
 
+    //Exit Game command
+    EXIT_GAME("^exit game$"),
+
     //Move commands
     WALK("^walk -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
 
@@ -37,7 +45,8 @@ public enum GameCommands implements Commands {
     SHOW_TIME("^time$"),
     SHOW_DATE("^date$"),
     SHOW_DATETIME("^datetime$"),
-    SHOW_DAY_OF_WEEK("^dayOfWeek$"),
+    SHOW_DAY_OF_WEEK("^day of the week$"),
+    SHOW_SEASON("^season$"),
 
     //Weather Commands
     SHOW_WEATHER("^weather$"),

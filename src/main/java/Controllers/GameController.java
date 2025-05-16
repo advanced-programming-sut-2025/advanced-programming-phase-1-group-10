@@ -953,6 +953,8 @@ public class GameController {
                 && (tile.getFarm() != App.getInstance().getCurrentGame().getCurrentPlayer().getFarm() ||
                 (App.getInstance().getCurrentGame().getCurrentPlayer().getCouple() != null && App.getInstance().getCurrentGame().getCurrentPlayer().getCouple().getFarm() != tile.getFarm()))) {
             return new Result(false, "You cannot walk to the other player's farm!");
+        } else if(tile.getPlace() instanceof GreenHouse && !((GreenHouse) tile.getPlace()).isFixed()) {
+            return new Result(false, "Greenhouse is not build!");
         }
 
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
@@ -1032,7 +1034,7 @@ public class GameController {
             double stepCost = (1 + (turnChanged ? 10.0 : 0)) / 20.0;
 
             if (stepCost > energy) {
-                //TODO Next turn and set faint on
+                player.setFainted(true);
                 return new Result(false, "You are faint!");
             }
 
@@ -2001,8 +2003,49 @@ public class GameController {
         result.append("NPC: First two letters of their names").append("\n");
 
         return new Result(true, result.toString());
-
     }
 
+    public Result exitGame(){
+        if(!App.getInstance().getCurrentGame().getGameOwner().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())) {
+            return new Result(false, "Only the owner of the game can exit the game!");
+        }
+        App.getInstance().setCurrentGame(null);
+        App.getInstance().setCurrentMenu(Menu.GameMenu);
+        return new Result(true, "Game exited successfully! You are now in the Game Menu");
+    }
+
+    public Result nextTurn() {
+        int playerIndex = App.getInstance().getCurrentGame().getPlayers().indexOf(App.getInstance().getCurrentGame().getCurrentPlayer());
+        switch (playerIndex) {
+            case 0: App.getInstance().getCurrentGame().setCurrentPlayer(App.getInstance().getCurrentGame().getPlayers().get(1)); break;
+            case 1: App.getInstance().getCurrentGame().setCurrentPlayer(App.getInstance().getCurrentGame().getPlayers().get(2)); break;
+            case 2: App.getInstance().getCurrentGame().setCurrentPlayer(App.getInstance().getCurrentGame().getPlayers().get(3)); break;
+            case 3: App.getInstance().getCurrentGame().setCurrentPlayer(App.getInstance().getCurrentGame().getPlayers().get(0));
+            App.getInstance().getCurrentGame().getGameTime().nextHour();
+            break;
+        }
+        return new Result(true, "Turn of " + App.getInstance().getCurrentGame().getCurrentPlayer().getName());
+    }
+
+    public Result fixGreenhouse(){
+        GreenHouse greenHouse = (GreenHouse) getPlaceByType("Greenhouse");
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if(player.getGold() < 1000){
+            return new Result(false, "not enough money");
+        }
+        Item wood = null;
+        for(Item it: player.getInventory().getBackPack().getItems()){
+            if(it.getName().equals("wood")){
+                wood = it;
+            }
+        }
+        if(wood == null || wood.getNumber() < 500){
+            return new Result(false, "not enough wood");
+        }
+        greenHouse.setFixed(true);
+        player.setGold(player.getGold() - 1000);
+        wood.setNumber(wood.getNumber() - 500);
+        return new Result(true, "You fixed greenhouse and ready for usage!");
+    }
 
 }

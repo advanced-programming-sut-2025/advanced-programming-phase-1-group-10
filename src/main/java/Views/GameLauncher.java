@@ -25,6 +25,16 @@ public class GameLauncher implements AppMenu{
         String input = scanner.nextLine().trim();
         Matcher matcher;
 
+
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount() <=0){
+            App.getInstance().getCurrentGame().getCurrentPlayer().setFainted(true);
+        }
+
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().isFainted() && !input.matches(GameCommands.NEXT_TURN.getPattern())){
+            System.out.println("You are faint and can't do anything, please write (next turn)");
+            return;
+        }
+
         if((matcher = GameCommands.BUILD_MAINTENANCE.getMatcher(input)) != null){
             String name = matcher.group("buildingName");
             if(!name.equalsIgnoreCase("coop") && !name.equalsIgnoreCase("barn")){
@@ -228,7 +238,20 @@ public class GameLauncher implements AppMenu{
             System.out.println(controller.howMuchWater());
         } else if((matcher = GameCommands.HELP_READING_MAP.getMatcher(input)) != null){
             System.out.println(controller.helpReadingMap());
-        } else{
+        } else if((matcher = GameCommands.SHOW_SEASON.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showSeason(App.getInstance().getCurrentGame()));
+        } else if((matcher = GameCommands.EXIT_GAME.getMatcher(input)) != null){
+            System.out.println(controller.exitGame());
+        } else if((matcher = GameCommands.NEXT_TURN.getMatcher(input)) != null){
+            System.out.println(controller.nextTurn());
+        } else if((matcher = CheatCodeCommands.THOR_TILE.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.thorTile(new Position(
+                    Integer.parseInt(matcher.group("x")),
+                    Integer.parseInt(matcher.group("y"))
+                    )
+            ));
+        }
+        else{
             System.out.println("invalid command.");
         }
     }
