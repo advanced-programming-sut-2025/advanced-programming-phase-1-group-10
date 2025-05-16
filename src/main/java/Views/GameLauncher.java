@@ -250,6 +250,10 @@ public class GameLauncher implements AppMenu{
                     Integer.parseInt(matcher.group("y"))
                     )
             ));
+        } else if((matcher = CheatCodeCommands.CHEAT_HOUR.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.advanceHour(Integer.parseInt(matcher.group("x"))));
+        } else if((matcher = CheatCodeCommands.CHEAT_DAY.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.advanceDay(Integer.parseInt(matcher.group("x"))));
         }
         else{
             System.out.println("invalid command.");

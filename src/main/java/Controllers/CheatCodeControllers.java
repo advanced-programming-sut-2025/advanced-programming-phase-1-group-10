@@ -2,6 +2,8 @@ package Controllers;
 
 import Models.Animal.Animal;
 import Models.App;
+import Models.DateTime.DateTime;
+import Models.DateTime.DateTimeManager;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.Place.GreenHouse;
@@ -13,6 +15,7 @@ import Models.Tile;
 
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 public class CheatCodeControllers {
     public Result setEnergy(String energy) {
@@ -71,6 +74,13 @@ public class CheatCodeControllers {
         return new Result(true,"The God of Thunder showed his might.");
 
     }
+    public Result advanceHour(int x) {
+        IntStream.range(0, x).forEach(i -> App.getInstance().getCurrentGame().getGameTime().nextHour());
+        return new Result(true, "Time advanced successfully.");
+    }
 
-
+    public Result advanceDay(int x) {
+        IntStream.range(0, x).forEach(i -> App.getInstance().getCurrentGame().getGameTime().nextDay());
+        return new Result(true, "Date advanced successfully.");
+    }
 }

@@ -1,5 +1,7 @@
 package Models.DateTime;
 
+import Controllers.GameController;
+
 public class DateTime {
 
     Season season;
@@ -22,6 +24,7 @@ public class DateTime {
             day = 1;
             nextMonth();
         }
+        (new GameController()).handleNextDay();
     }
 
     public void nextMonth(){

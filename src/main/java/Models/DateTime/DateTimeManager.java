@@ -1,6 +1,10 @@
 package Models.DateTime;
 
+import Controllers.GameController;
+import Models.App;
 import Models.Game;
+import Models.PlayerStuff.Player;
+import Models.Position;
 import Models.Result;
 
 public class DateTimeManager {
@@ -38,7 +42,5 @@ public class DateTimeManager {
     public static Result showSeason(Game game) {
         return new Result(true, "Season: " + game.getGameTime().getSeason().getName());
     }
-
-
 
 }

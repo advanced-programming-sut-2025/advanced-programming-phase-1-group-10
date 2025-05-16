@@ -2048,4 +2048,29 @@ public class GameController {
         return new Result(true, "You fixed greenhouse and ready for usage!");
     }
 
+    public void handleNextDay() {
+        Game game = App.getInstance().getCurrentGame();
+        GameMenuControllers setRandoms = new GameMenuControllers();
+        for(Player player: game.getPlayers()) {
+            //Set Player to their house
+            game.setCurrentPlayer(player);
+            walkPlayer(getPlaceByType("House").getPosition());
+            //Set Player Energy
+            if(player.isFainted()){
+                player.setFainted(false);
+                player.getEnergy().setEnergyAmount(100);
+            } else {
+                player.getEnergy().setEnergyAmount(200);
+            }
+            //put random crops
+            setRandoms.putRandomMineral(player.getFarm(),3);
+            setRandoms.putRandomForagingPlanet(player.getFarm(),3);
+        }
+        //Handle Weather
+        game.setWeather(game.getNextDayWeather());
+        game.setNextDayWeather(Weather.values()[random.nextInt(Weather.values().length)]);
+        //Set Player to current player
+        game.setCurrentPlayer(game.getPlayers().get(0));
+    }
+
 }
