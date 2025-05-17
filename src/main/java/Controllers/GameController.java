@@ -1642,6 +1642,12 @@ public class GameController {
         return new Result(true, info.toString());
     }
 
+    public Result plow(Position position){
+        Tile tile = getTileByPosition(position);
+        tile.setPlow(true);
+        return new Result(true, "tile plowed successfully.");
+    }
+
     public Result plant(String seedName, String direction) {
         SeedType seedType = SeedType.getSeedByName(seedName);
         if(seedType == null){

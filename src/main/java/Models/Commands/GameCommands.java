@@ -96,6 +96,7 @@ public enum GameCommands implements Commands {
     PRODUCES("^produces$"),
 
     //Farming Commands
+    PLOW("^plow\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
     CRAFT_INFO("^craftinfo\\s+-n\\s+(?<name>.+)$"),
     PLANT("^plant\\s+-s\\s+(?<seed>.+)\\s+-d\\s+(?<direction>.+)$"),
     SHOW_PLANT("^showplant\\s+-l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),

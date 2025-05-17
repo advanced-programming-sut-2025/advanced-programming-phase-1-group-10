@@ -270,6 +270,11 @@ public class GameLauncher implements AppMenu{
                     matcher.group("index").trim(),
                     matcher.group("name").trim()
             ));
+        } else if((matcher = GameCommands.PLOW.getMatcher(input)) != null){
+            int x = Integer.parseInt(matcher.group("x"));
+            int y = Integer.parseInt(matcher.group("y"));
+            Position position = new Position(x,y);
+            System.out.println(controller.plow(position));
         }
         else{
             System.out.println("invalid command.");
