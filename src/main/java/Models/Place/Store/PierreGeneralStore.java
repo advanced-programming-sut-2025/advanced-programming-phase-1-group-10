@@ -14,6 +14,7 @@ public class PierreGeneralStore extends Store {
 
     public PierreGeneralStore(Position position, int height, int width, Seller seller, int openHour, int closeHour) {
         super(position, height, width, seller, openHour, closeHour);
+        initializeProducts();
     }
 
     public void initializeProducts() {

@@ -10,6 +10,7 @@ public class CarpenterShop extends Store {
 
     public CarpenterShop(Position position, int height, int width, Seller seller, int openHour, int closeHour) {
         super(position, height, width, seller, openHour, closeHour);
+        initializeProducts();
     }
 
     private void initializeProducts() {

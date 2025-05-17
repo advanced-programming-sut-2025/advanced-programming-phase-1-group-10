@@ -13,6 +13,7 @@ public class MarrineRanchStore extends Store {
 
     public MarrineRanchStore(Position position, int height, int width, Seller seller, int openHour, int closeHour) {
         super(position, height, width, seller, openHour, closeHour);
+        initializeProducts();
     }
 
     private void initializeProducts() {
