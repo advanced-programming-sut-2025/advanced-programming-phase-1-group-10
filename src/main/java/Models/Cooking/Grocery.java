@@ -32,4 +32,9 @@ public class Grocery implements Item {
     public void setNumber(int number) {
             numberOfGrocery = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Grocery(groceryType, number);
+    }
 }

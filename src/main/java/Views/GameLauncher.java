@@ -7,8 +7,6 @@ import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.DateTime.DateTimeManager;
 import Models.Weather.WeatherManagement;
-import com.google.gson.internal.bind.util.ISO8601Utils;
-
 import java.util.Scanner;
 import java.util.regex.Matcher;
 
@@ -275,6 +273,10 @@ public class GameLauncher implements AppMenu{
             int y = Integer.parseInt(matcher.group("y"));
             Position position = new Position(x,y);
             System.out.println(controller.plow(position));
+        } else if((matcher = CheatCodeCommands.ADD_MONEY.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.addMoney(
+                    matcher.group("count")
+            ));
         }
         else{
             System.out.println("invalid command.");

@@ -985,6 +985,8 @@ public class GameController {
             return new Result(false, "You cannot walk to the other player's farm!");
         } else if(tile.getPlace() instanceof GreenHouse && !((GreenHouse) tile.getPlace()).isFixed()) {
             return new Result(false, "Greenhouse is not build!");
+        } else if((tile.getPlace() instanceof  Lake)){
+            return new Result(false, "You cannot walk on water.");
         }
 
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
@@ -994,7 +996,7 @@ public class GameController {
         int rows = map.length;
         int cols = map[0].length;
 
-        int[] dx = {-1, 1, 0, 0}; // up, down, left, right
+        int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
 
         boolean[][] visited = new boolean[rows][cols];
@@ -1324,6 +1326,8 @@ public class GameController {
         Friendship f2 = getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer());
         f2.setXp(f2.getXp() + xp);
     }
+
+
 
     public Result talkToPlayer(String name, String message) {
         Player player = getNearbyPerson(name, Player.class);
@@ -2013,6 +2017,9 @@ public class GameController {
         if (response.equalsIgnoreCase("accept")) {
             if (tr.getTargetItemName() == null) {
                 // Gold trade
+                if(receiver.getGold() < tr.getPrice()){
+                    return new Result(false,"You don't have enough money!");
+                }
                 sender.getInventory().getBackPack().removeItemNumber(tr.getSendItem().getName(), tr.getSendItem().getNumber());
                 sender.setGold(sender.getGold() + tr.getPrice());
                 receiver.getInventory().getBackPack().addItem(tr.getSendItem());
@@ -2038,6 +2045,7 @@ public class GameController {
 
                 sender.getInventory().getBackPack().addItem(addedItem);
                 receiver.getInventory().getBackPack().addItem(tr.getSendItem());
+
             }
 
             tr.setAccepted(true);
@@ -2046,8 +2054,7 @@ public class GameController {
             fs2.getTradeRequestHistory().add(tr);
             requests.remove(tr);
 
-            addXpToPlayers(currentPlayer, 30);
-            addXpToPlayers(receiver, 30);
+            addXpToPlayers(sender, 30);
 
             return new Result(true, "Trade accepted!");
         } else {
@@ -2058,8 +2065,7 @@ public class GameController {
             fs2.getTradeRequestHistory().add(tr);
             requests.remove(tr);
 
-            addXpToPlayers(currentPlayer, -30);
-            addXpToPlayers(receiver, -30);
+            addXpToPlayers(sender, -30);
 
             return new Result(true, "Trade rejected.");
         }
@@ -2069,7 +2075,7 @@ public class GameController {
         StringBuilder result = new StringBuilder();
         for(TradeRequest tr: App.getInstance().getCurrentGame().getCurrentPlayer().getTradeRequests()) {
             result.append("Sender: ")
-                    .append(tr.getSendItem().getName())
+                    .append(tr.getSender().getName())
                     .append(" | Item: ")
                     .append(tr.getSendItem().getName())
                     .append(tr.isAccepted() ? " (accepted)" : " (rejected)");
@@ -2232,6 +2238,7 @@ public class GameController {
         }
 
         handleTreeProduction();
+        crownAttacking();
 
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
@@ -2379,6 +2386,7 @@ public class GameController {
         if(npcRelation == null){
             return new Result(false, "You have to talk to a NPC first");
         }
+        int friendshipModifere = npcRelation.getFrinendShipLevel() >= 2 ? 2 : 1;
         Quest quest = npc.getQuests().get(--indexInt);
         if(quest.isCompleted()){
             return new Result(false, "This quest Already completed");
@@ -2394,9 +2402,10 @@ public class GameController {
         }
         player.getInventory().getBackPack().removeItemNumber(item.getName(), quest.getGivenItems().getNumber());
         if(quest.getItemAward() != null){
+            quest.getItemAward().setNumber(quest.getGivenItems().getNumber() * friendshipModifere);
             player.getInventory().getBackPack().addItem(quest.getItemAward());
         }
-        player.setGold(player.getGold() + quest.getGoldAward());
+        player.setGold(player.getGold() + quest.getGoldAward() * friendshipModifere);
         quest.setCompleted(true);
         return new Result(true, "Quest Completed!");
     }
@@ -2428,6 +2437,31 @@ public class GameController {
             }
         }
         tile.setWatered(false);
+    }
+
+    public void crownAttacking(){
+        for(Player player: App.getInstance().getCurrentGame().getPlayers()){
+            Farm farm = player.getFarm();
+            final ArrayList<Tile> targetTiles = new ArrayList<>();
+            for(Tile[] tiles: farm.getTiles()){
+                for(Tile tile: tiles){
+                    if(tile.getPlace() == null && tile.getItem() != null && (tile.getItem() instanceof Tree || tile.getItem() instanceof Crop)){
+                        targetTiles.add(tile);
+                    }
+                }
+            }
+            if(targetTiles.size() >= 16){
+                if(ThreadLocalRandom.current().nextBoolean()){
+                    Tile targetTile = targetTiles.get(ThreadLocalRandom.current().nextInt(targetTiles.size()));
+                    if(targetTile.getItem() instanceof Crop){
+                        targetTile.setItem(null);
+                    }
+                    if(targetTile.getItem() instanceof Tree){
+                        ((Tree)targetTile.getItem()).setFruits(new ArrayList<>());
+                    }
+                }
+            }
+        }
     }
 
 }

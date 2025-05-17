@@ -11,6 +11,7 @@ public enum CheatCodeCommands implements Commands {
     CHEAT_DAY( "^cheat advance date (?<x>[\\S]+)d$"),
 
     CHANGE_NEXT_DAY_WEATHER("^cheat weather set (?<Type>[\\S]+)$"),
+    ADD_MONEY("^cheat add (?<count>[\\S]+) dollars$"),
 
 
     SET_ENERGY("^energy set -v (?<value>[\\S]+)$"),

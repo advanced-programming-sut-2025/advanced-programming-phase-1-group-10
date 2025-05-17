@@ -32,7 +32,7 @@ public class DateTime {
 
     public void nextMonth(){
         month += 1;
-        if(month > 12) {
+        if(month > 4) {
             month = 1;
             nextYear();
         }
@@ -40,15 +40,16 @@ public class DateTime {
     }
 
     public void nextYear(){
+        this.month = 1;
         year += 1;
     }
 
     public void updateSeason(){
-        if(month >= 1 && month <= 3) {
+        if(month == 1) {
             season = Season.SPRING;
-        } else if(month >= 4 && month <= 6) {
+        } else if(month == 2) {
             season = Season.SUMMER;
-        } else if(month >= 7 && month <= 9) {
+        } else if(month == 3) {
             season = Season.FALL;
         } else {
             season = Season.WINTER;

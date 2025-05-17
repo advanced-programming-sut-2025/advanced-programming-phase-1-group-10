@@ -101,4 +101,15 @@ public class CheatCodeControllers {
         App.getInstance().getCurrentGame().setNextDayWeather(weather);
         return new Result(true, "Next day weather set to " + type);
     }
+
+    public Result addMoney(String count) {
+        int money;
+        try {
+            money = Integer.parseInt(count);
+        } catch (Exception exception) {
+            return new Result(false, "Invalid money value");
+        }
+        App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().getCurrentGame().getCurrentPlayer().getGold() + money);
+        return new Result(true, "Money added successfully.");
+    }
 }

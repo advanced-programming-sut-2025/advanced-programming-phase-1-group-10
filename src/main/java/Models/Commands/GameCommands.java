@@ -17,7 +17,7 @@ public enum GameCommands implements Commands {
     TRADE_REQUEST("^trade -u (?<username>[\\S]+) -t request -i (?<item>[\\S ]+) -a (?<amount>[\\S]+) -ti (?<targetItem>[\\S ]+) -ta (?<targetAmount>[\\S]+)$"),
     LIST_TRADE("^trade list$"),
     RESPOND_TRADE("trade response -(?<state>accept|reject) -i (?<id>[\\S]+)"),
-    TRADE_HISTORY("^$trade history"),
+    TRADE_HISTORY("^trade history$"),
 
     //Frinedship
     SHOW_FRINEDSHIP("^friendships$"),
