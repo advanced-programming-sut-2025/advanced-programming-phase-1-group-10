@@ -1171,6 +1171,9 @@ public class GameController {
         } else if (tool instanceof WateringCan) {
             useWateringCan(direction);
             return new Result(true, "You used the WateringCan.");
+        } else if(tool instanceof Seythe) {
+            harvestWithScythe(tile);
+            return new Result(true, "You harvest success fully");
         }
         return new Result(false, "Incorrect Usage!");
     }
@@ -1765,6 +1768,20 @@ public class GameController {
         } catch (NumberFormatException e) {
             return new Result(false, "Invalid number format for coordinates.");
         }
+    }
+
+    public void harvestWithScythe(Tile tile) {
+        if (tile.getItem() instanceof Crop crop){
+            if(crop.isHarvestable()){
+                App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(crop);
+                tile.setItem(null);
+            }
+        }
+        else if (tile.getItem() instanceof Fruit fruit){
+            App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(fruit);
+            tile.setItem(null);
+        }
+
     }
 
     private int calculateHarvestTime(Crop crop, CropTypeNormal cropType, Tile tile) {
