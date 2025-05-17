@@ -254,6 +254,12 @@ public class GameLauncher implements AppMenu{
             System.out.println(cheatCodeController.advanceHour(Integer.parseInt(matcher.group("x"))));
         } else if((matcher = CheatCodeCommands.CHEAT_DAY.getMatcher(input)) != null){
             System.out.println(cheatCodeController.advanceDay(Integer.parseInt(matcher.group("x"))));
+        } else if((matcher = GameCommands.BUILD_GREENHOUSE.getMatcher(input)) != null){
+            System.out.println(controller.fixGreenhouse());
+        } else if((matcher = CheatCodeCommands.CHANGE_NEXT_DAY_WEATHER.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.changeWeather(
+                    matcher.group("Type").trim()
+            ));
         }
         else{
             System.out.println("invalid command.");

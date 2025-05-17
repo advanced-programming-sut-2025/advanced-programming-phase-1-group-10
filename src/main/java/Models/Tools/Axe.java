@@ -33,7 +33,7 @@ public class Axe extends Tool {
             //TODO ADD WOOD
         }
 
-        int energyCost = getEnergyUsage() - getQuality().getValue();
+        int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );

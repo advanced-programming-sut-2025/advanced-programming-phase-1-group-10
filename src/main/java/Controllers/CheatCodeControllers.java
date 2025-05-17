@@ -12,6 +12,7 @@ import Models.Planets.Tree;
 import Models.Position;
 import Models.Result;
 import Models.Tile;
+import Models.Weather.Weather;
 
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -82,5 +83,22 @@ public class CheatCodeControllers {
     public Result advanceDay(int x) {
         IntStream.range(0, x).forEach(i -> App.getInstance().getCurrentGame().getGameTime().nextDay());
         return new Result(true, "Date advanced successfully.");
+    }
+
+    public Result changeWeather(String type) {
+        Weather weather = null;
+        switch (type) {
+            case "Sunny" -> weather = Weather.SUNNY;
+            case "Rain" -> weather = Weather.RAIN;
+            case "Storm" -> weather = Weather.STORM;
+            case "Snow" -> weather = Weather.SNOW;
+            default -> {
+            }
+        }
+        if(weather == null){
+            return new Result(false, "There is no weather with this type.");
+        }
+        App.getInstance().getCurrentGame().setNextDayWeather(weather);
+        return new Result(true, "Next day weather set to " + type);
     }
 }

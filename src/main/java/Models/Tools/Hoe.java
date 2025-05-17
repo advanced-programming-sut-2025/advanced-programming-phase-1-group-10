@@ -19,9 +19,12 @@ public class Hoe extends Tool {
     @Override
     public void use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-        player.getEnergy().setEnergyAmount(player.getEnergy().getEnergyAmount() - (getEnergyUsage() - getQuality().getValue()));
+        int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         if(tile.getPlace() == null && tile.getItem() == null && tile.getFarm() != null && tile.getPerson() == null && tile.getTileType() == null){
             tile.setPlow(true);
         }
+        player.getEnergy().setEnergyAmount(
+                player.getEnergy().getEnergyAmount() - energyCost
+        );
     }
 }

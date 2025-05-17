@@ -31,6 +31,7 @@ import Models.Tools.*;
 import Models.Weather.Weather;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -2048,6 +2049,26 @@ public class GameController {
         return new Result(true, "You fixed greenhouse and ready for usage!");
     }
 
+    public void handleStorm(Game game){
+        Tile[][] map = game.getGameMap().getMap();
+        int rows = map.length;
+        int cols = map[0].length;
+        for(int i = 0; i < 50; i++){
+            int randomRow = ThreadLocalRandom.current().nextInt(rows);
+            int randomCol = ThreadLocalRandom.current().nextInt(cols);
+            Position position = new Position(randomRow, randomCol);
+            (new CheatCodeControllers()).thorTile(position);
+        }
+    }
+
+    public void setOrResetWatered(boolean state){
+        for(Tile[] tiles: App.getInstance().getCurrentGame().getGameMap().getMap()){
+            for(Tile tile: tiles){
+                tile.setWatered(state);
+            }
+        }
+    }
+
     public void handleNextDay() {
         Game game = App.getInstance().getCurrentGame();
         GameMenuControllers setRandoms = new GameMenuControllers();
@@ -2068,9 +2089,30 @@ public class GameController {
         }
         //Handle Weather
         game.setWeather(game.getNextDayWeather());
-        game.setNextDayWeather(Weather.values()[random.nextInt(Weather.values().length)]);
+        game.setNextDayWeather(chooseNextDayWeather().get(random.nextInt(chooseNextDayWeather().size())));
+        //Handle Weather
+        if (game.getWeather() == Weather.STORM) {
+            handleStorm(game);
+        } else if(game.getWeather() == Weather.RAIN){
+            setOrResetWatered(true);
+        } else {
+            setOrResetWatered(false);
+        }
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
+    }
+
+    private ArrayList<Weather> chooseNextDayWeather() {
+        switch (App.getInstance().getCurrentGame().getGameTime().getSeason()){
+            case SPRING, SUMMER, FALL -> {
+                return new ArrayList<Weather>(Arrays.asList(Weather.SUNNY,Weather.RAIN,Weather.STORM));
+            }
+            case WINTER -> {
+                return new ArrayList<Weather>(Arrays.asList(Weather.SUNNY,Weather.SNOW));
+            }
+        }
+        assert false;
+        return null;
     }
 
 }

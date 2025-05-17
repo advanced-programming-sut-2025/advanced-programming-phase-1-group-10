@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 public enum GameCommands implements Commands {
 
 
+    BUILD_GREENHOUSE("^greenhouse build$"),
+
     //Time handling commands
     NEXT_TURN("^next turn$"),
 

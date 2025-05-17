@@ -7,6 +7,12 @@ import java.util.regex.Pattern;
 
 public enum CheatCodeCommands implements Commands {
 
+    CHEAT_HOUR("^cheat advance time (?<x>[\\S]+)h$"),
+    CHEAT_DAY( "^cheat advance date (?<x>[\\S]+)d$"),
+
+    CHANGE_NEXT_DAY_WEATHER("^cheat weather set (?<Type>[\\S]+)$"),
+
+
     SET_ENERGY("^energy set -v (?<value>[\\S]+)$"),
     SET_ENERGY_UNLIMITED("^energy unlimited$"),
     SET_ANIMAL_FRIENDSHIP("^cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>[\\S]+)\\s+-c\\s+(?<amount>\\d+)$"),
