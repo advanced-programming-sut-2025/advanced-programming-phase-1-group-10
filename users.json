@@ -122,5 +122,22 @@
     "stayLoggedIn": false,
     "gold": 0,
     "games": 0
+  },
+  {
+    "nickname": "qwe",
+    "password": "JSdgjhhf@#42455",
+    "hashPassword": "73BRfbqRzxBrAHfitcJtSw\u003d\u003d:6OlLL5fLOfmEyUKzF3odPUSc6pvt2NJVf6zvj89CwEU\u003d",
+    "username": "oop",
+    "gender": "Male",
+    "email": "saagg@gmail.com",
+    "pickQuestionNumber": 10,
+    "pickQuestion": {
+      "10": {
+        "What is your favorite sport?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
   }
 ]
