@@ -24,12 +24,13 @@ public class MainMenu implements AppMenu {
         else if((matcher = MainMenuCommands.USER_LOGOUT.getMatcher(input)) != null){
             HandleLogout();
         }
+        else
+            System.out.println("invalid command!");
     }
 
     private void HandleEnterMenu(Matcher matcher){
         String menuName = matcher.group("menuname");
         Result result = controller.enterMenu(menuName);
-
         System.out.println(result.message());
     }
 

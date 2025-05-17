@@ -17,6 +17,7 @@ public class Tile {
 
     private boolean plow;
     private boolean watered;
+    private boolean fertilizer;
 
     private Seed plantedSeed;
 
@@ -84,23 +85,107 @@ public class Tile {
         this.animal = animal;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPlantedSeed(Seed plantedSeed) {
+        this.plantedSeed = plantedSeed;
+    }
+
+    public boolean isFertilizer() {
+        return fertilizer;
+    }
+
+    public void setFertilizer(boolean fertilizer) {
+        this.fertilizer = fertilizer;
+    }
+
     public String getTile() {
+        String ch;
         if (this.person != null) {
-            return this.person.getSymbol();
-        } else if(this.item != null) {
-            return (item.getSymbol());
+            ch = this.person.getSymbol();
+        } else if (this.item != null) {
+            ch = (item.getSymbol());
         } else if (this.getAnimal() != null) {
-            return "*";
+            ch = "An";
         } else if (this.getTileType() == TileType.Wall) {
-            return "X";
-        } else if(this.getisPlow()) {
-            return "0";
-        } else if (this.place != null) {
-            return place.getSymbol();
+            ch = "XX";
+        } else if (this.getisPlow()) {
+            ch = "69";
         } else {
-            return " ";
+            ch = "  ";
         }
+        return getColoredText(ch);
+    }
+
+    public static final String RESET = "\u001B[0m";
+    public static final String RED_BACKGROUND = "\u001B[41m";
+    public static final String GREEN_BACKGROUND = "\u001B[42m";
+    public static final String YELLOW_BACKGROUND = "\u001B[43m";
+    public static final String BLUE_BACKGROUND = "\u001B[44m";
+    public static final String PURPLE_BACKGROUND = "\u001B[45m";
+    public static final String WHITE_BACKGROUND = "\u001B[47m";
+    public static final String BLACK_BACKGROUND = "\u001B[40m";
+    public static final String BRIGHT_YELLOW_TEXT = "\u001B[93m"; // brighter than normal yellow
+
+
+    public static final String BLACK_TEXT = "\u001B[30m";
+    public static final String WHITE_TEXT = "\u001B[37m";
+
+    public static final String BOLD = "\u001B[1m";
+
+    public String getColoredText(String ch) {
+        if (place == null) return WHITE_BACKGROUND + BLACK_TEXT + ch + RESET;
+
+        String bgColor;
+        String textColor = BLACK_TEXT;
+        String style = "";
+
+        switch (place.getSymbol()) {
+            case "HH":
+                bgColor = RED_BACKGROUND;
+                break;
+            case "QQ":
+                bgColor = BLACK_BACKGROUND;
+                textColor = WHITE_TEXT;
+                break;
+            case "CC":
+                bgColor = PURPLE_BACKGROUND;
+                break;
+            case "  ":
+                bgColor = WHITE_BACKGROUND;
+                break;
+            case "WW":
+                bgColor = BLUE_BACKGROUND;
+                break;
+            case "GG":
+                bgColor = GREEN_BACKGROUND;
+                break;
+            case "BB":
+                bgColor = YELLOW_BACKGROUND;
+                break;
+            case "~~":
+                bgColor = PURPLE_BACKGROUND;
+                break;
+            case "--":
+                bgColor = YELLOW_BACKGROUND;
+                break;
+            default:
+                bgColor = BLACK_BACKGROUND;
+                textColor = WHITE_TEXT;
+        }
+
+        // Special styling for player "P"
+        if (ch.equals("Pl")) {
+            style = BOLD;
+            textColor = BRIGHT_YELLOW_TEXT;
+        }
+
+        return bgColor + textColor + style + ch + RESET;
     }
 
 }
+
+
 

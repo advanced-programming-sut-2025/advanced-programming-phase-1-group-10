@@ -19,7 +19,7 @@ public class ArtisanProduct implements Item {
 
     @Override
     public String getSymbol() {
-        return "a";
+        return "Ar";
     }
 
     @Override
@@ -30,5 +30,10 @@ public class ArtisanProduct implements Item {
     @Override
     public void setNumber(int number) {
         numberOfArtisan = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new ArtisanProduct(artisanProductType, number);
     }
 }

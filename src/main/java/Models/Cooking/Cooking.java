@@ -20,7 +20,7 @@ public class Cooking implements Item {
 
     @Override
     public String getSymbol() {
-        return "c";
+        return "Co";
     }
 
     @Override
@@ -31,5 +31,10 @@ public class Cooking implements Item {
     @Override
     public void setNumber(int number) {
         numberOfCooking = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Cooking(cookingType, number);
     }
 }

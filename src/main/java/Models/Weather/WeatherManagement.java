@@ -23,11 +23,11 @@ public class WeatherManagement {
 
     }
 
-    public Result showWeather() {
+    public static Result showWeather() {
         return new Result(true, "Game weather: " + App.getInstance().getCurrentGame().getWeather().getName());
     }
 
-    public Result showWeatherForecast() {
+    public static Result showWeatherForecast() {
         return new Result(true, "Weather forecast: " + App.getInstance().getCurrentGame().getNextDayWeather().getName());
     }
 

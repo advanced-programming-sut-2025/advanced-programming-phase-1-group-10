@@ -18,7 +18,7 @@ public class Seed implements Item {
 
     @Override
     public String getSymbol() {
-        return "s";
+        return "Se";
     }
 
     @Override
@@ -29,5 +29,10 @@ public class Seed implements Item {
     @Override
     public void setNumber(int number){
         numberOfSeed = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Seed(seedType, number);
     }
 }

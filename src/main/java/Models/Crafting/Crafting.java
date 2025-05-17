@@ -19,7 +19,7 @@ public class Crafting implements Item {
 
     @Override
     public String getSymbol() {
-        return "p";
+        return "Cr";
     }
 
     @Override
@@ -30,6 +30,11 @@ public class Crafting implements Item {
     @Override
     public void setNumber(int number) {
         numberOfCrafting = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Crafting(craftingType, number);
     }
 
 

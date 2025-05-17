@@ -21,7 +21,7 @@ public abstract class Tool implements Item {
 
     @Override
     public String getSymbol() {
-        return "t";
+        return "To";
     }
 
     @Override
@@ -32,6 +32,12 @@ public abstract class Tool implements Item {
     @Override
     public void setNumber(int number) {
         //Must not be coded, because number of tool is constant (one per player);
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        //Tool mustn't copy
+        return null;
     }
 
     public void setName(String name) {

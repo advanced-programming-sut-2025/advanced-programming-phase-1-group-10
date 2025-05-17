@@ -1,6 +1,7 @@
 package Models.Tools;
 
 import Models.App;
+import Models.Item;
 import Models.Planets.Fruit;
 import Models.Planets.Tree;
 import Models.PlayerStuff.Player;
@@ -32,7 +33,7 @@ public class Axe extends Tool {
             //TODO ADD WOOD
         }
 
-        int energyCost = getEnergyUsage() - getQuality().getValue();
+        int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );

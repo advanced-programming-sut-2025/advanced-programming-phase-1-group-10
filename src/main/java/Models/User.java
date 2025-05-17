@@ -14,8 +14,9 @@ public class User {
     private String email;
     private int pickQuestionNumber;
     private Map<Integer, Map<String, String>> pickQuestion ;
-    private boolean stayLoggedIn = true;
-
+    private boolean stayLoggedIn = false;
+    public int gold;
+    public int games ;
 
     public User(String nickname, String password, String username, Gender gender) {
         this.nickname = nickname;

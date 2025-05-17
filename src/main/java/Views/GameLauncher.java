@@ -5,6 +5,9 @@ import Controllers.GameController;
 import Models.*;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
+import Models.DateTime.DateTimeManager;
+import Models.Weather.WeatherManagement;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -14,12 +17,24 @@ public class GameLauncher implements AppMenu{
     GameController controller = new GameController();
     CheatCodeControllers cheatCodeController = new CheatCodeControllers();
 
-    //TODO Notify players about new messages sent to 'em and move it to HistoryArray
-
     @Override
     public void checkCommand(Scanner scanner) {
+
+        System.out.println(controller.notifyPlayer());
+
+
         String input = scanner.nextLine().trim();
         Matcher matcher;
+
+
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount() <=0){
+            App.getInstance().getCurrentGame().getCurrentPlayer().setFainted(true);
+        }
+
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().isFainted() && !input.matches(GameCommands.NEXT_TURN.getPattern())){
+            System.out.println("You are faint and can't do anything, please write (next turn)");
+            return;
+        }
 
         if((matcher = GameCommands.BUILD_MAINTENANCE.getMatcher(input)) != null){
             String name = matcher.group("buildingName");
@@ -101,7 +116,10 @@ public class GameLauncher implements AppMenu{
                     matcher.group("y"),
                     matcher.group("size")
             ));
-        } else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
+        } else if((matcher = GameCommands.PRODUCES.getMatcher(input)) != null){
+            System.out.println(controller.showAnimalProducts().message());
+        }
+        else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
             System.out.println(controller.meetNPC(matcher.group("npcName")));
         } else if((matcher = GameCommands.GIFT_NPC.getMatcher(input)) != null){
             System.out.println(controller.sendGift(
@@ -123,6 +141,140 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.TALK_HISTORY.getMatcher(input)) != null){
             System.out.println(controller.talkHistory(matcher.group("username")));
+        } else if((matcher = GameCommands.SEND_GIFT.getMatcher(input)) != null){
+            System.out.println(controller.sendGiftToPlayer(
+                    matcher.group("username").trim(),
+                    matcher.group("item").trim(),
+                    matcher.group("amount").trim()
+            ));
+        } else if((matcher = GameCommands.SHOW_GIFT_LIST.getMatcher(input)) != null){
+            System.out.println(controller.showRecievedGifts());
+        } else if((matcher = GameCommands.RATE_GIFT.getMatcher(input)) != null){
+            System.out.println(controller.rateGift(
+                    matcher.group("giftNumber"),
+                    matcher.group("rate")
+            ));
+        } else if((matcher = GameCommands.SHOW_TIME.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameTime(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DATETIME.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameDateTime(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DATE.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showGameDate(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_DAY_OF_WEEK.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showDayOfWeek(
+                    App.getInstance().getCurrentGame()
+            ));
+        } else if((matcher = GameCommands.SHOW_WEATHER.getMatcher(input)) != null){
+            System.out.println(WeatherManagement.showWeather());
+        } else if((matcher = GameCommands.SHOW_WEATHER_FORECAST.getMatcher(input)) != null){
+            System.out.println(WeatherManagement.showWeatherForecast());
+        } else if((matcher = GameCommands.COLLECT_PRODUCTS.getMatcher(input)) != null){
+            System.out.println(controller.collectAnimalProducts(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.GIFT_HISTORY.getMatcher(input)) != null){
+            System.out.println(controller.showGiftHistory(
+                    matcher.group("username")
+            ));
+        } else if((matcher = GameCommands.HUG_EACH_OHTER.getMatcher(input)) != null){
+            System.out.println(controller.hugEachOther(
+                    matcher.group("username")
+            ));
+        } else if((matcher = GameCommands.GIVE_FLOWER.getMatcher(input)) != null){
+            System.out.println(controller.giveFlower(
+                    matcher.group("username")
+            ));
+        } else if((matcher = GameCommands.CRAFT_INFO.getMatcher(input)) != null){
+            System.out.println(controller.craftInfo(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.PLANT.getMatcher(input)) != null){
+            System.out.println(controller.plant(
+                    matcher.group("seed"),
+                    matcher.group("direction")
+            ));
+        } else if((matcher = GameCommands.SHOW_PLANT.getMatcher(input)) != null){
+            System.out.println(controller.showPlant(
+                    matcher.group("x"),
+                    matcher.group("y")
+            ));
+        } else if((matcher = GameCommands.START_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.startTrade());
+        } else if((matcher = GameCommands.TRADE_OFFER.getMatcher(input)) != null){
+            System.out.println(controller.tradeOffer(
+                    matcher.group("username"),
+                    matcher.group("item").trim(),
+                    matcher.group("amount"),
+                    matcher.group("price")
+            ));
+        } else if((matcher = GameCommands.TRADE_REQUEST.getMatcher(input)) != null){
+            System.out.println(controller.tradeRequest(
+               matcher.group("username"),
+               matcher.group("item").trim(),
+               matcher.group("amount"),
+               matcher.group("targetItem").trim(),
+               matcher.group("targetAmount")
+            ));
+        } else if((matcher = GameCommands.LIST_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.listTrade());
+        } else if ((matcher = GameCommands.RESPOND_TRADE.getMatcher(input)) != null){
+            System.out.println(controller.responseTrade(
+                    matcher.group("state"),
+                    matcher.group("id")
+            ));
+        } else if((matcher = GameCommands.TRADE_HISTORY.getMatcher(input)) != null){
+            System.out.println(controller.tradeHistory());
+        } else if((matcher = GameCommands.FERTILIZER.getMatcher(input)) != null){
+            System.out.println(controller.fertilize(
+                    matcher.group("fertilizer"),
+                    matcher.group("direction")
+            ));
+        } else if((matcher = GameCommands.HOW_MACH_WATER.getMatcher(input)) != null){
+            System.out.println(controller.howMuchWater());
+        } else if((matcher = GameCommands.HELP_READING_MAP.getMatcher(input)) != null){
+            System.out.println(controller.helpReadingMap());
+        } else if((matcher = GameCommands.SHOW_SEASON.getMatcher(input)) != null){
+            System.out.println(DateTimeManager.showSeason(App.getInstance().getCurrentGame()));
+        } else if((matcher = GameCommands.EXIT_GAME.getMatcher(input)) != null){
+            System.out.println(controller.exitGame());
+        } else if((matcher = GameCommands.NEXT_TURN.getMatcher(input)) != null){
+            System.out.println(controller.nextTurn());
+        } else if((matcher = CheatCodeCommands.THOR_TILE.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.thorTile(new Position(
+                    Integer.parseInt(matcher.group("x")),
+                    Integer.parseInt(matcher.group("y"))
+                    )
+            ));
+        } else if((matcher = CheatCodeCommands.CHEAT_HOUR.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.advanceHour(Integer.parseInt(matcher.group("x"))));
+        } else if((matcher = CheatCodeCommands.CHEAT_DAY.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.advanceDay(Integer.parseInt(matcher.group("x"))));
+        } else if((matcher = GameCommands.BUILD_GREENHOUSE.getMatcher(input)) != null){
+            System.out.println(controller.fixGreenhouse());
+        } else if((matcher = CheatCodeCommands.CHANGE_NEXT_DAY_WEATHER.getMatcher(input)) != null){
+            System.out.println(cheatCodeController.changeWeather(
+                    matcher.group("Type").trim()
+            ));
+        } else if((matcher = GameCommands.LIST_QUESTS.getMatcher(input)) != null){
+            System.out.println(controller.listQuests(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.FINISH_QUEST.getMatcher(input)) != null){
+            System.out.println(controller.finishQuest(
+                    matcher.group("index").trim(),
+                    matcher.group("name").trim()
+            ));
+        } else if((matcher = GameCommands.PLOW.getMatcher(input)) != null){
+            int x = Integer.parseInt(matcher.group("x"));
+            int y = Integer.parseInt(matcher.group("y"));
+            Position position = new Position(x,y);
+            System.out.println(controller.plow(position));
         }
         else{
             System.out.println("invalid command.");

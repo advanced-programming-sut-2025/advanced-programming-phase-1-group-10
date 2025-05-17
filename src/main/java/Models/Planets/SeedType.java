@@ -64,4 +64,12 @@ public enum SeedType {
     public Season getSeason() {
         return season;
     }
+
+    public static SeedType getSeedByName(String name){
+        for(SeedType seedType : SeedType.values()){
+            if(seedType.name.equalsIgnoreCase(name))
+                return seedType;
+        }
+        return null;
+    }
 }

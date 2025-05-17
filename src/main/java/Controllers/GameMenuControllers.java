@@ -8,7 +8,6 @@ import Models.NPC.*;
 import Models.Place.*;
 import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
-import Models.Planets.Crop.CropType;
 import Models.Planets.Crop.ForagingCropType;
 import Models.Planets.Tree;
 import Models.Planets.TreeType;
@@ -27,6 +26,7 @@ public class GameMenuControllers {
         final ArrayList<String> names = new ArrayList<>(Arrays.asList(username1, username2, username3, username4));
         for (String name : names)
             if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
+
 
         Game game = new Game(username1);
 
@@ -49,13 +49,13 @@ public class GameMenuControllers {
 
     public void setUpCity(Game game) {
         game.getStores().addAll(Arrays.asList(
-                new BlackSmith(new Position(58, 12), 4, 6, new Seller("Clint", "1", new Position(54, 12)), 9, 16),
-                new CarpenterShop(new Position(61, 43), 4, 16, new Seller("Robin", "4", new Position(62, 45)), 9, 20),
-                new JojaMart(new Position(53, 10), 4, 20, new Seller("Morris", "2", new Position(59, 16)), 9, 23),
-                new FishStore(new Position(65, 17), 5, 8, new Seller("Willy", "5", new Position(66, 19)), 9, 17),
-                new PierreGeneralStore(new Position(52, 37), 4, 5, new Seller("Pierrre", "3", new Position(53, 39)), 9, 17),
-                new StardropSaloon(new Position(67, 46), 3, 12, new Seller("Gus", "7", new Position(68, 48)), 12, 24),
-                new MarrineRanchStore(new Position(53, 56), 4, 12, new Seller("Marnie", "6", new Position(54, 65)), 9, 16)
+                new BlackSmith(new Position(58, 12), 4, 6, new Seller("Clint", "11", new Position(54, 12)), 9, 16),
+                new CarpenterShop(new Position(61, 43), 4, 16, new Seller("Robin", "44", new Position(62, 45)), 9, 20),
+                new JojaMart(new Position(53, 10), 4, 20, new Seller("Morris", "22", new Position(59, 16)), 9, 23),
+                new FishStore(new Position(65, 17), 5, 8, new Seller("Willy", "55", new Position(66, 19)), 9, 17),
+                new PierreGeneralStore(new Position(52, 37), 4, 5, new Seller("Pierrre", "33", new Position(53, 39)), 9, 17),
+                new StardropSaloon(new Position(67, 46), 3, 12, new Seller("Gus", "77", new Position(68, 48)), 12, 24),
+                new MarrineRanchStore(new Position(53, 56), 4, 12, new Seller("Marnie", "66", new Position(54, 65)), 9, 16)
         ));
         for (Store store : game.getStores()) {
             setUpPlace(game, store.getHeight(), store.getWidth(), store.getPosition(), store);
@@ -375,7 +375,7 @@ public class GameMenuControllers {
 
     public void setUpFriendShip(Player player) {
         for(Player p: App.getInstance().getCurrentGame().getPlayers()){
-            if(!p.getName().equals(player.getName())) player.getFriendships().add(new Friendship(p,0,0));
+            if(!p.equals(player)) player.getFriendships().add(new Friendship(p,0));
         }
     }
 

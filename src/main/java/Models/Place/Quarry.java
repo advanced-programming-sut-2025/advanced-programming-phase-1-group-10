@@ -10,7 +10,7 @@ public class Quarry extends Place {
 
     @Override
     public String getSymbol() {
-        return "Q";
+        return "QQ";
     }
 
     @Override

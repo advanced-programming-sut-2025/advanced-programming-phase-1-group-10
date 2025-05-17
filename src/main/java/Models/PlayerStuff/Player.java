@@ -4,41 +4,44 @@ package Models.PlayerStuff;
 import Models.*;
 import Models.Animal.Animal;
 import Models.FriendShip.Friendship;
+import Models.FriendShip.Gift;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Person {
 
     private String name;
+    private Gender gender;
 
     private Position position;
 
     private Farm farm;
 
-    private ArrayList<Animal> playerAnimals = new ArrayList<>();
-    private ArrayList<NPCRelation> npcRelations = new ArrayList<>();
-    private ArrayList<Friendship> friendships = new ArrayList<>();
+    private final ArrayList<Animal> playerAnimals = new ArrayList<>();
+    private final ArrayList<NPCRelation> npcRelations = new ArrayList<>();
+    private final ArrayList<Friendship> friendships = new ArrayList<>();
+    private final ArrayList<Gift>  recievedGifts = new ArrayList<>();
+    private final ArrayList<TradeRequest> tradeRequests = new ArrayList<>();
+
+
 
     private int gold = 0;
-    private int wood;
-    private Energy energy;
+    private final Energy energy;
     private boolean isFainted;
     private Player couple;
     private Tool currentTool;
-    private Inventory inventory;
+    private final Inventory inventory;
 
     private int miningAbility;
     private int farmingAbility;
     private int foragingAbility;
     private int fishingAbility;
 
-    private ArrayList<TradeRequest> acceptedTradeRequests;
-
-    private Trading trading;
 
     public Player(String name) {
         this.name = name;
@@ -52,8 +55,11 @@ public class Player implements Person {
                 new WateringCan(Quality.STARTER,5),
                 new Seythe(Quality.STARTER,2)
         ));
+        this.gender = ThreadLocalRandom.current().nextBoolean() ? Gender.Male : Gender.Female;
         //this.position = new Position();
     }
+
+
 
     public void setEnergy(int energyAmount) {
         //Faint process implements here.
@@ -63,13 +69,6 @@ public class Player implements Person {
         return energy;
     }
 
-    public void talkPerson(Person person) {
-        //Increase friendship amount.
-    }
-
-    public void sendGift(Item gift, Person person) {
-        //Send gift to a Person
-    }
 
     public String getName() {
         return name;
@@ -83,12 +82,12 @@ public class Player implements Person {
         return gold;
     }
 
-    public int getWood() {
-        return wood;
-    }
-
     public Player getCouple() {
         return couple;
+    }
+
+    public void setCouple(Player couple) {
+        this.couple = couple;
     }
 
     public Tool getCurrentTool() {
@@ -121,14 +120,6 @@ public class Player implements Person {
 
     public int getFishingAbility() {
         return fishingAbility;
-    }
-
-    public ArrayList<TradeRequest> getAcceptedTradeRequests() {
-        return acceptedTradeRequests;
-    }
-
-    public Trading getTrading() {
-        return trading;
     }
 
     public ArrayList<Animal> getPlayerAnimals() {
@@ -203,15 +194,28 @@ public class Player implements Person {
         return friendships;
     }
 
-    public void setNpcRelations(ArrayList<NPCRelation> npcRelations) {
-        this.npcRelations = npcRelations;
-    }
-
     @Override
     public String getSymbol() {
-        return "P";
+        return "Pl";
     }
 
+    public ArrayList<Gift> getRecievedGifts() {
+        return recievedGifts;
+    }
 
+    public Gender getGender() {
+        return gender;
+    }
 
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public ArrayList<TradeRequest> getTradeRequests() {
+        return tradeRequests;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
 }

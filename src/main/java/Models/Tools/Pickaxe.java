@@ -47,7 +47,7 @@ public class Pickaxe extends Tool {
             isUsed = true;
         }
 
-        int energyCost = getEnergyUsage() - getQuality().getValue();
+        int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );

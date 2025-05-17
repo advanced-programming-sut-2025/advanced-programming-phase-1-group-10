@@ -20,7 +20,7 @@ public class Mineral implements Item {
 
     @Override
     public String getSymbol() {
-        return "o";
+        return "Mi";
     }
 
     @Override
@@ -31,6 +31,11 @@ public class Mineral implements Item {
     @Override
     public void setNumber(int number) {
         numberOfMineral = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Mineral(mineralType, number);
     }
 
 

@@ -3,6 +3,7 @@ package Models.FriendShip;
 
 
 import Models.PlayerStuff.Player;
+import Models.PlayerStuff.TradeRequest;
 
 import java.util.ArrayList;
 
@@ -10,21 +11,21 @@ import java.util.ArrayList;
 public class Friendship {
 
 
-    public Friendship(Player player, int xp, int level) {
+    public Friendship(Player player, int xp) {
         this.player = player;
         this.xp = xp;
-        this.level = level;
-
     }
 
     private final Player player;
     private int xp ;
-    private int level;
 
     private final ArrayList<Message> messages = new ArrayList<>();
     private final ArrayList<Message> messageHistory = new ArrayList<>();
-    private final ArrayList<Gift> gifts = new ArrayList<>();
-    private final ArrayList<Integer> givenGifts = new ArrayList<>();
+    private final ArrayList<Gift> giftHistory = new ArrayList<>();
+    private final ArrayList<TradeRequest> tradeRequestHistory = new ArrayList<>();
+
+    private boolean isFlowerGiven;
+    private boolean isMarried;
 
     public Player getPlayer() {
         return player;
@@ -39,12 +40,21 @@ public class Friendship {
     }
 
     public int getLevel() {
-        return level;
+        int xp = this.getXp();
+
+        if (isMarried) {
+            return 4;
+        } else if (xp > 600 && isFlowerGiven) {
+            return 3;
+        } else if (xp > 300) {
+            return 2;
+        } else if (xp > 100) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
 
     public ArrayList<Message> getMessages() {
         return messages;
@@ -54,16 +64,29 @@ public class Friendship {
         return messageHistory;
     }
 
-    public ArrayList<Gift> getGifts() {
-        return gifts;
+    public ArrayList<Gift> getGiftHistory() {
+        return giftHistory;
     }
 
-    public ArrayList<Integer> getGivenGifts() {
-        return givenGifts;
+    public boolean isFlowerGiven() {
+        return isFlowerGiven;
     }
 
+    public void setFlowerGiven(boolean flowerGiven) {
+        isFlowerGiven = flowerGiven;
+    }
 
+    public boolean isMarried() {
+        return isMarried;
+    }
 
+    public void setMarried(boolean married) {
+        isMarried = married;
+    }
+
+    public ArrayList<TradeRequest> getTradeRequestHistory() {
+        return tradeRequestHistory;
+    }
 }
 
 

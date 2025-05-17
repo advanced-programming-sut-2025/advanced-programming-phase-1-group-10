@@ -19,7 +19,7 @@ public class Fish implements Item {
 
     @Override
     public String getSymbol() {
-        return "";
+        return "Fi";
     }
 
     @Override
@@ -30,5 +30,10 @@ public class Fish implements Item {
     @Override
     public void setNumber(int number) {
         numberOfFish = number;
+    }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Fish(fishType, number);
     }
 }

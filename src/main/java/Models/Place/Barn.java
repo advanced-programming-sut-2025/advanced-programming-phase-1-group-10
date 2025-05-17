@@ -48,7 +48,7 @@ public class Barn extends Place{
 
     @Override
     public String getSymbol() {
-        return "B";
+        return "BB";
     }
 
     @Override

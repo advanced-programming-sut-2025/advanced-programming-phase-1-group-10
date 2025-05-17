@@ -13,7 +13,6 @@ public enum Menu {
     GameMenu(new GameMenu()),
     ProfileMenu(new ProfileMenu()),
     MainMenu(new MainMenu()),
-    TradeMenu(new TradeMenu()),
     GameLauncher(new GameLauncher()),
     ExitMenu(new ExitMenu());
     ;

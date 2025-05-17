@@ -19,7 +19,7 @@ public class Recipe implements Item {
 
     @Override
     public String getSymbol() {
-        return "r";
+        return "Re";
     }
 
     @Override
@@ -31,4 +31,11 @@ public class Recipe implements Item {
     public void setNumber(int number) {
         numberOfRecipes = number;
     }
+
+    @Override
+    public Item copyItem(int number) {
+        return new Recipe(recipeType,number);
+    }
+
+
 }

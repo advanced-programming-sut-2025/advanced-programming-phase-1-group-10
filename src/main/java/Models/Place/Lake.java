@@ -11,7 +11,7 @@ public class Lake extends Place {
 
     @Override
     public String getSymbol() {
-        return "W";
+        return "WW";
     }
 
     @Override

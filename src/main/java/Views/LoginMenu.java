@@ -2,8 +2,10 @@ package Views;
 
 
 import Controllers.RegisterManuController;
+import Models.App;
 import Models.Commands.RegisterMenuCommands;
 import Models.Result;
+import Models.User;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -21,14 +23,14 @@ public class LoginMenu implements AppMenu {
         if((matcher = RegisterMenuCommands.SHOW_CURRENT_MENU.getMatcher(input)) != null){
             System.out.println("you are now in LoginMenu!");
         }
-        else if ((matcher = RegisterMenuCommands.REGISTER.getMatcher(input)) != null){
-            HandleRegister(matcher,scanner);
+        else if(input.equalsIgnoreCase("register")){
+            HandleRegister(scanner);
         }
         else if((matcher = RegisterMenuCommands.PICK_QUESTION.getMatcher(input)) != null){
             HandlePickQuestion(matcher);
         }
-        else if((matcher = RegisterMenuCommands.LOGIN.getMatcher(input)) != null){
-            HandleLogin(matcher);
+        else if(input.equalsIgnoreCase("login")){
+            HandleLogin(scanner);
         }
         else if((matcher = RegisterMenuCommands.MENU_EXIT.getMatcher(input)) != null){
             HandleExitGame();
@@ -43,50 +45,69 @@ public class LoginMenu implements AppMenu {
             System.out.println("invalid command!");
     }
 
-    private void HandleRegister(Matcher matcher, Scanner scanner){
-        String username = matcher.group("username");
-        String password = matcher.group("password");
-        String confirmPassword = matcher.group("passwordconfirm");
-        String nickname = matcher.group("nickname");
-        String email = matcher.group("email");
-        String gender = matcher.group("gender");
+    private void HandleRegister(Scanner scanner){
+        String username, password, confirmPassword, nickname, email, gender;
+        Result result;
+        boolean isUsernameTaken;
 
-        Result result = controller.register(username, password, confirmPassword, nickname, email, gender);
-        boolean isUsernameTaken = false;
+        System.out.print("Enter username: ");
+        username = scanner.nextLine().trim();
+        System.out.print("Enter nickname: ");
+        nickname = scanner.nextLine().trim();
+        System.out.print("Enter email: ");
+        email = scanner.nextLine().trim();
+        System.out.print("Enter gender (male or female): ");
+        gender = scanner.nextLine().trim();
 
-        if (!result.state() && result.message().contains("username already taken! Here are some suggestions:")) {
-            System.out.println(result.message());
-            System.out.print("Do you want to use one of these suggestions? (Enter the username): \n");
-            String userInput = scanner.nextLine();
-             result = controller.register(userInput, password, confirmPassword, nickname, email, gender);
-             System.out.println(result.message());
-             isUsernameTaken = true;
-        }
-        if (!result.state() && result.message().contains("Generated random password:")) {
-            System.out.println(result.message());
-            String userInput;
-            String generatedPassword;
+        do {
+            System.out.print("Enter password (or 'random' for a generated password): ");
+            password = scanner.nextLine().trim();
+            confirmPassword = password;
 
-            do {
-                System.out.print("Your choice (yes or no) : ");
-                userInput = scanner.nextLine().trim();
+            if (password.equalsIgnoreCase("random")) {
+                boolean passwordChosen = false;
+                while (!passwordChosen) {
+                    password = RegisterManuController.generateStrongPassword(12);
+                    System.out.println("Generated random password: " + password);
+                    System.out.print("Use this generated password? (yes or no): ");
+                    String userInput = scanner.nextLine().trim();
 
-                if (userInput.equalsIgnoreCase("yes")) {
-                    generatedPassword = result.message().split(":")[1].trim().split("\n")[0];
-                    result = controller.register(username, generatedPassword,generatedPassword, nickname, email, gender);
-                    System.out.println(result.message());
-                    break;
-                } else if (userInput.equalsIgnoreCase("no")) {
-                    result = controller.register(username, "random", "random", nickname, email, gender);
-                    System.out.println(result.message());
-                } else {
-                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    if (userInput.equalsIgnoreCase("yes")) {
+                        confirmPassword = password;
+                        passwordChosen = true;
+                    } else if (userInput.equalsIgnoreCase("no")) {
+                        continue;
+                    } else {
+                        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    }
                 }
-            } while (!userInput.equalsIgnoreCase("yes"));
-        }
-        else if(!isUsernameTaken){
-            System.out.println(result.message());
-        }
+            }
+            else {
+                System.out.print("Confirm password: ");
+                confirmPassword = scanner.nextLine().trim();
+            }
+
+            result = controller.register(username, password, confirmPassword, nickname, email, gender);
+            isUsernameTaken = false;
+
+            if (!result.state() && result.message().contains("username already taken!")) {
+                System.out.println(result.message());
+                System.out.print("Do you want to use one of these suggestions? (Enter the username, or 'no' to try another username): ");
+                String userInput = scanner.nextLine().trim();
+
+                if (userInput.equalsIgnoreCase("no")) {
+                    System.out.print("Enter a new username: ");
+                    username = scanner.nextLine().trim();
+                    isUsernameTaken = true;
+                } else {
+                    result = controller.register(userInput, password, confirmPassword, nickname, email, gender);
+                    System.out.println(result.message());
+                }
+            } else {
+                System.out.println(result.message());
+            }
+        } while (isUsernameTaken);
+
         if(result.state()){
             System.out.println(controller.showSecurityQuestions());
         }
@@ -113,13 +134,27 @@ public class LoginMenu implements AppMenu {
         System.out.println(result.message());
     }
 
-    private void HandleLogin(Matcher matcher){
-        String username = matcher.group("username");
-        String password = matcher.group("password");
-        String stayLoggedInStr = Optional.ofNullable(matcher.group("stayLoggedIn")).orElse("default_value");
-
-        Result result = controller.login(username,password,stayLoggedInStr);
-        System.out.println(result.message());
+    private void HandleLogin(Scanner scanner){
+        System.out.print("Enter username : ");
+        String userName = scanner.nextLine().trim();
+        User user = App.getInstance().getUserByUserName(userName);
+        if(user == null){
+            System.out.println("no user with this username exist!");
+        }
+        else {
+            if(user.isStayLoggedIn()){
+                System.out.println(controller.login(userName,user.getPassword(),"true").message());
+            }
+            else {
+                System.out.print("Enter password : ");
+                String password = scanner.nextLine().trim();
+                System.out.print ("do you want stay login (yes or no) ? : ");
+                String stay = scanner.nextLine().trim();
+                if(stay.equalsIgnoreCase("yes"))
+                    System.out.println(controller.login(userName,password,"true"));
+                else System.out.println(controller.login(userName,password,""));
+            }
+        }
     }
 
     private void HandleForgotPassword(Matcher matcher , Scanner scanner){

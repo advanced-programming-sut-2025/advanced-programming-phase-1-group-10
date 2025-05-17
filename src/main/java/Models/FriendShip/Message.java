@@ -10,11 +10,11 @@ public class Message {
     private String message;
     private boolean isNotified;
 
-    public Message(Player sender, Player receiver, String message) {
+    public Message(Player sender, Player receiver, String message, boolean isNotified) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        this.isNotified = false;
+        this.isNotified = isNotified;
     }
 
     public Player getSender() {

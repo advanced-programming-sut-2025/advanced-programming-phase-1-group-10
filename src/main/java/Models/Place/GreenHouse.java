@@ -10,9 +10,19 @@ public class GreenHouse extends Place {
         super(position, height, width);
     }
 
+    private boolean isFixed = false;
+
     @Override
     public String getSymbol() {
-        return "G";
+        return "GG";
+    }
+
+    public boolean isFixed() {
+        return isFixed;
+    }
+
+    public void setFixed(boolean fixed) {
+        isFixed = fixed;
     }
 
     @Override
