@@ -2,6 +2,7 @@ package Views;
 
 import Controllers.ProfileMenuControllers;
 import Models.Commands.ProfileMenuCommands;
+import Models.Commands.RegisterMenuCommands;
 import Models.Result;
 
 import java.util.Scanner;
@@ -28,6 +29,8 @@ public class ProfileMenu implements AppMenu {
         }
         else if((matcher = ProfileMenuCommands.USER_INFO.getMatcher(input)) != null){
             HandleUserInfo();
+        } else if((matcher = RegisterMenuCommands.MENU_ENTER.getMatcher(input)) != null){
+            HandleEnterMenu(matcher);
         }
         else
             System.out.println("invalid command");
@@ -70,6 +73,13 @@ public class ProfileMenu implements AppMenu {
         String email = matcher.group("email");
 
         Result result = controllers.changeEmail(email);
+        System.out.println(result.message());
+    }
+
+    private void HandleEnterMenu(Matcher matcher){
+        String menuName = matcher.group("menuname");
+
+        Result result = controllers.enterMenu(menuName);
         System.out.println(result.message());
     }
 

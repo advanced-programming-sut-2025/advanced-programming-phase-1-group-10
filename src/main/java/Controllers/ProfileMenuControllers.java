@@ -2,6 +2,7 @@ package Controllers;
 
 import Models.App;
 import Models.Commands.ProfileMenuCommands;
+import Models.Menu;
 import Models.Result;
 import Models.User;
 
@@ -178,8 +179,21 @@ public class ProfileMenuControllers {
         info.append("\n");
         info.append("NICKNAME : ");
         info.append(currentUser.getNickname());
-        //info.append("\n");
-        // TODO add max coins && add count of gamesPlayed
+        info.append("\n");
+        info.append("golds : ");
+        info.append(App.getInstance().getCurrentUser().gold);
+        info.append("\n");
+        info.append("game played : ");
+        info.append(App.getInstance().getCurrentUser().games);
         return new Result(true, info.toString());
+    }
+
+    public Result enterMenu(String menuName){
+        if(menuName.equalsIgnoreCase("main menu")){
+            App.getInstance().setCurrentMenu(Menu.MainMenu);
+            return new Result(true, "you are now in MAIN MENU.");
+        }
+        else
+            return new Result(false, "you should go to MAIN MENU first.");
     }
 }

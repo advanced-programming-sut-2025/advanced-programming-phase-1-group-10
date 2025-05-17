@@ -7,7 +7,9 @@
     "email": "salam@gam.co",
     "pickQuestionNumber": 0,
     "pickQuestion": {},
-    "stayLoggedIn": true
+    "stayLoggedIn": true,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "ali",
@@ -21,7 +23,9 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": true
+    "stayLoggedIn": true,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "ali",
@@ -35,7 +39,9 @@
         "What was the name of your first school?": "salam"
       }
     },
-    "stayLoggedIn": true
+    "stayLoggedIn": true,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "salami",
@@ -49,7 +55,9 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": true
+    "stayLoggedIn": true,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "salam",
@@ -63,7 +71,9 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": true
+    "stayLoggedIn": true,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "salam",
@@ -77,7 +87,9 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": false
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "salam",
@@ -91,7 +103,9 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": false
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
   },
   {
     "nickname": "salam",
@@ -105,6 +119,8 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": false
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
   }
 ]

@@ -2062,6 +2062,11 @@ public class GameController {
         if(!App.getInstance().getCurrentGame().getGameOwner().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())) {
             return new Result(false, "Only the owner of the game can exit the game!");
         }
+        for(Player user : App.getInstance().getCurrentGame().getPlayers()){
+            User user1 = App.getInstance().getUserByUserName(user.getName());
+            user1.games += 1;
+            user1.gold += user.getGold();
+        }
         App.getInstance().setCurrentGame(null);
         App.getInstance().setCurrentMenu(Menu.GameMenu);
         return new Result(true, "Game exited successfully! You are now in the Game Menu");

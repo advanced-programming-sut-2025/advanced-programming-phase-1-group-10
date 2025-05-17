@@ -59,6 +59,8 @@ public class Player implements Person {
         //this.position = new Position();
     }
 
+
+
     public void setEnergy(int energyAmount) {
         //Faint process implements here.
     }
