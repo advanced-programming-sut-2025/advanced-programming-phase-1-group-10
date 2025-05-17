@@ -41,8 +41,8 @@ public class JojaMart extends Store {
         products.add(new ProductOffering("Item", new Seed(SeedType.TOMATO_SEED, 1), null, null, null, "Tomato seed", 62, 5));
         products.add(new ProductOffering("Item", new Seed(SeedType.PEPPER_SEED, 1), null, null, null, "Pepper seed", 50, 5));
         products.add(new ProductOffering("Item", new Seed(SeedType.WHEAT_SEED, 1), null, null, null, "Wheat seed", 12, 10));
-        products.add(new ProductOffering("Item", new Seed(SeedType.SUMMER_SQUASH_SEED, 1), null, null, null, "Summer squash seed", 10, 10));
-        products.add(new ProductOffering("Item", new Seed(SeedType.RADISH_SEED, 1), null, null, null, "Radish seed", 50, 5));
+        //products.add(new ProductOffering("Item", new Seed(SeedType.SUMMER_SQUASH_SEED, 1), null, null, null, "Summer squash seed", 10, 10));
+        //products.add(new ProductOffering("Item", new Seed(SeedType.RADISH_SEED, 1), null, null, null, "Radish seed", 50, 5));
         products.add(new ProductOffering("Item", new Seed(SeedType.MELON_SEED, 1), null, null, null, "Melon seed", 100, 5));
         products.add(new ProductOffering("Item", new Seed(SeedType.HOP_STARTER_SEED, 1), null, null, null, "Hop starter seed", 75, 5));
         products.add(new ProductOffering("Item", new Seed(SeedType.POPPY_SEED, 1), null, null, null, "Poppy seed", 125, 5));
