@@ -6,6 +6,7 @@ import Models.Cooking.CookingType;
 import Models.Crafting.Crafting;
 import Models.*;
 import Models.Crafting.CraftingType;
+import Models.DateTime.DateTime;
 import Models.FriendShip.Friendship;
 import Models.FriendShip.Gift;
 import Models.FriendShip.Message;
@@ -21,6 +22,8 @@ import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
 import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
+import Models.Planets.Crop.ForagingCropType;
+import Models.Planets.CropSeeds;
 import Models.Planets.Seed;
 import Models.Planets.SeedType;
 import Models.PlayerStuff.Gender;
@@ -386,6 +389,8 @@ public class GameController {
 
         App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(animal.getCurrentProduct());
         String produceName = animal.getCurrentProduct().getName();
+        App.getInstance().getCurrentGame().getCurrentPlayer().setFarmingAbility(
+                App.getInstance().getCurrentGame().getCurrentPlayer().getFarmingAbility() + 5);
         animal.setCurrentProduct(null);
         return new Result(true, "produce " + produceName + "added to Inventory.");
     }
@@ -1671,9 +1676,9 @@ public class GameController {
                     .collect(Collectors.toList());
 
             SeedType randomSeed = seasonalSeeds.get(random.nextInt(seasonalSeeds.size()));
-            cropType = CropTypeNormal.getCropTypeByName(randomSeed.getName());
+            cropType = CropSeeds.cropOfThisSeed(randomSeed);
         } else {
-            cropType = CropTypeNormal.getCropTypeByName(seedName);
+            cropType = CropSeeds.cropOfThisSeed(seedType);
         }
 
         Crop crop = new Crop(cropType, 1);
@@ -1703,24 +1708,68 @@ public class GameController {
                 return new Result(false, "Tile not found.");
             }
 
-            if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop)) {
+            if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop crop)) {
                 return new Result(false, "No plant found at this location.");
             }
 
-            Crop crop = (Crop) targetTile.getItem();
-            CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(crop.getName());
+            Crop crop1 = (Crop) targetTile.getItem();
+            CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(crop1.getName());
 
             StringBuilder result = new StringBuilder();
             result.append("Plant: ").append(crop.getName()).append("\n");
-            //result.append("Time Remaining Until Harvest: ").append(calculateHarvestTime(cropType, targetTile)).append("\n");
+            assert cropType != null;
+            if (cropType.getTotalHarvestTime() != 0){
+                result.append("Time Remaining Until Harvest: ").append(calculateHarvestTime(crop,cropType, targetTile)).append("\n");
+            }
+            else{
+                result.append("This Product does not need time to Harvest").append("\n");
+            }
             result.append("Is Watered Today: ").append(targetTile.isWatered()).append("\n");
-//            result.append("Quality: ").append(determineQuality(crop)).append("\n");
-//            result.append("Fertilized: ").append(isFertilized(targetTile)).append("\n");
+
+            //Show quality
+            result.append("Quality: ").append(determineQuality(crop)).append("\n");
+
+            result.append("Fertilized: ").append(targetTile.isFertilizer()).append("\n");
 
             return new Result(true, result.toString());
 
         } catch (NumberFormatException e) {
             return new Result(false, "Invalid number format for coordinates.");
+        }
+    }
+
+    private int calculateHarvestTime(Crop crop, CropTypeNormal cropType, Tile tile) {
+        DateTime lastWateredDate = crop.getLastWateredDate();
+        if (lastWateredDate == null) {
+            return cropType.getTotalHarvestTime();
+        }
+        Calendar lastWateredCalendar = Calendar.getInstance();
+        lastWateredCalendar.setTime(lastWateredDate.convertToDate());
+
+        Calendar currentCalendar = Calendar.getInstance();
+        DateTime gameTime = App.getInstance().getCurrentGame().getGameTime();
+        currentCalendar.set(gameTime.getYear(), gameTime.getMonth() - 1, gameTime.getDay());
+
+        int daysPassed = currentCalendar.get(Calendar.DAY_OF_YEAR) - lastWateredCalendar.get(Calendar.DAY_OF_YEAR);
+        int remainingTime = cropType.getTotalHarvestTime() - daysPassed;
+        if (remainingTime < 0) {
+            return 0;
+        }
+        return remainingTime;
+    }
+
+    private String determineQuality(Crop crop) {
+        double friendship = 500;
+        double qualityValue = (friendship / 1000) * (0.5 + 0.5 * random.nextDouble());
+
+        if (qualityValue < 0.5) {
+            return "Normal";
+        } else if (qualityValue < 0.7) {
+            return "Silver";
+        } else if (qualityValue < 0.9) {
+            return "Gold";
+        } else {
+            return "Iridium";
         }
     }
 
@@ -1749,8 +1798,6 @@ public class GameController {
         backPack.setItemNumber(fertilizerItem, fertilizerNumber - 1);
         if(fertilizerNumber - 1 == 0)
             backPack.removeItem(fertilizerItem);
-
-        // TODO check the effect of fertilizer in time and watering
 
         return new Result(true, fertilizerName + " applied to the plant.");
     }
@@ -1795,7 +1842,6 @@ public class GameController {
         targetTile.setWatered(true);
         wateringCan.use(targetTile);
 
-        // TODO check the effect of fertilizer in time and watering
 
         new Result(true, "You watered the plant.");
     }
@@ -2121,6 +2167,19 @@ public class GameController {
             Animal.updateAnimalState(animal);
         }
 
+        for (Tile[] tileRow : App.getInstance().getCurrentGame().getGameMap().getMap()) {
+            for (Tile tile : tileRow) {
+                if (tile.getItem() instanceof Crop) {
+                    Crop crop = (Crop) tile.getItem();
+                    CropTypeNormal cropType = CropTypeNormal.getCropTypeByName(crop.getName());
+
+                    if (cropType != null) {
+                        updateCropState(tile, crop, cropType);
+                    }
+                }
+            }
+        }
+
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
     }
@@ -2245,4 +2304,42 @@ public class GameController {
         quest.setCompleted(true);
         return new Result(true, "Quest Completed!");
     }
+    private void updateCropState(Tile tile, Crop crop, CropTypeNormal cropType) {
+        DateTime gameTime = App.getInstance().getCurrentGame().getGameTime();
+        boolean isWatered = tile.isWatered() || (App.getInstance().getCurrentGame().getWeather().getName().equals("RAIN"));
+
+        Calendar currentDate = Calendar.getInstance();
+        Calendar lastWateredDate = Calendar.getInstance();
+        lastWateredDate.setTime(crop.getLastWateredDate().convertToDate());
+
+        if (currentDate.get(Calendar.DAY_OF_YEAR) - lastWateredDate.get(Calendar.DAY_OF_YEAR) > 2) {
+            tile.setItem(null);
+            return;
+        }
+
+        // پیشرفت مرحله رشد محصول
+        int currentStageIndex = crop.getCurrentStageIndex();
+        ArrayList<Integer> stages = cropType.getCropTypes();
+        int totalHarvestTime = cropType.getTotalHarvestTime();
+        // اگر محصول به مرحله نهایی نرسیده باشد
+        if (currentStageIndex < stages.size() - 1) {
+            // افزایش مرحله رشد
+            crop.setCurrentStageIndex(currentStageIndex + 1);
+        } else {
+            // محصول آماده برداشت است
+            crop.setHarvestable(true);
+            // بررسی قابلیت برداشت چندباره
+            if (cropType.isOneTime()) {
+                // محصول یکباره است و بعد از برداشت از بین میرود
+                tile.setItem(null);
+            } else {
+                // محصول چندباره است و بعد از برداشت، بازه های برداشت را در نظر میگیریم
+                int regrowthTime = cropType.getRegrowthTime();
+                // محصول آماده برداشت است
+                crop.setHarvestable(true);
+            }
+        }
+        tile.setWatered(false);
+    }
+
 }

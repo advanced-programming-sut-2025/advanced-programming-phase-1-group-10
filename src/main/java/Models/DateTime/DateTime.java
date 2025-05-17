@@ -2,6 +2,9 @@ package Models.DateTime;
 
 import Controllers.GameController;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class DateTime {
 
     Season season;
@@ -89,5 +92,9 @@ public class DateTime {
         return season;
     }
 
-
+    public Date convertToDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(this.year, this.month - 1, this.day, this.hour, 0, 0);
+        return calendar.getTime();
+    }
 }

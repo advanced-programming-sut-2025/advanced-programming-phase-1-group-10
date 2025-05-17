@@ -52,9 +52,10 @@ public enum CropTypeNormal implements CropType {
     POWDERMELON("Powdermelon", SeedType.POWDERMELON_SEED, new ArrayList<>(Arrays.asList(1, 2, 1, 2, 1)), 7, true, -1, 60, true, 63, List.of(Season.WINTER), true),
     ANCIENT_FRUIT("Ancient Fruit", SeedType.ANCIENT_SEED, new ArrayList<>(Arrays.asList(2, 7, 7, 7, 5)), 28, false, 7, 550, false, -1, Arrays.asList(Season.SPRING,Season.SUMMER,Season.FALL), false);
 
+
     private final String name;
     private final SeedType source;
-    private final ArrayList<Integer> cropTypes;
+    private final ArrayList<Integer> stages;
     private final int totalHarvestTime;
     private final boolean oneTime;
     private final int regrowthTime;
@@ -64,10 +65,10 @@ public enum CropTypeNormal implements CropType {
     private final List<Season> seasons;
     private final boolean canBecomeGiant;
 
-    CropTypeNormal(String name, SeedType source, ArrayList<Integer> cropTypes, int totalHarvestTime, boolean oneTime, int regrowthTime, int baseSellPrice, boolean isEdible, int energy, List<Season> season, boolean canBecomeGiant) {
+    CropTypeNormal(String name, SeedType source, ArrayList<Integer> stages, int totalHarvestTime, boolean oneTime, int regrowthTime, int baseSellPrice, boolean isEdible, int energy, List<Season> season, boolean canBecomeGiant) {
         this.name = name;
         this.source = source;
-        this.cropTypes = cropTypes;
+        this.stages = stages;
         this.totalHarvestTime = totalHarvestTime;
         this.oneTime = oneTime;
         this.regrowthTime = regrowthTime;
@@ -88,7 +89,7 @@ public enum CropTypeNormal implements CropType {
     }
 
     public ArrayList<Integer> getCropTypes() {
-        return cropTypes;
+        return stages;
     }
 
     public int getTotalHarvestTime() {
