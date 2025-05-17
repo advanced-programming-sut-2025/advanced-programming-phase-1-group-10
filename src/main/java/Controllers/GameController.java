@@ -2317,25 +2317,17 @@ public class GameController {
             return;
         }
 
-        // پیشرفت مرحله رشد محصول
         int currentStageIndex = crop.getCurrentStageIndex();
         ArrayList<Integer> stages = cropType.getCropTypes();
         int totalHarvestTime = cropType.getTotalHarvestTime();
-        // اگر محصول به مرحله نهایی نرسیده باشد
         if (currentStageIndex < stages.size() - 1) {
-            // افزایش مرحله رشد
             crop.setCurrentStageIndex(currentStageIndex + 1);
         } else {
-            // محصول آماده برداشت است
             crop.setHarvestable(true);
-            // بررسی قابلیت برداشت چندباره
             if (cropType.isOneTime()) {
-                // محصول یکباره است و بعد از برداشت از بین میرود
                 tile.setItem(null);
             } else {
-                // محصول چندباره است و بعد از برداشت، بازه های برداشت را در نظر میگیریم
                 int regrowthTime = cropType.getRegrowthTime();
-                // محصول آماده برداشت است
                 crop.setHarvestable(true);
             }
         }
