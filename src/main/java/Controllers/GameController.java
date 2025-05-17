@@ -385,8 +385,9 @@ public class GameController {
         }
 
         App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(animal.getCurrentProduct());
+        String produceName = animal.getCurrentProduct().getName();
         animal.setCurrentProduct(null);
-        return new Result(true, "produce " + animal.getCurrentProduct().getName() + "added to Inventory.");
+        return new Result(true, "produce " + produceName + "added to Inventory.");
     }
 
     public Result showAnimalProducts() {
@@ -1063,7 +1064,7 @@ public class GameController {
     }
 
 
-    public Tile getTileByPosition(Position position) {
+    public static Tile getTileByPosition(Position position) {
         int x = position.getX();
         int y = position.getY();
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
@@ -2115,6 +2116,11 @@ public class GameController {
         } else {
             resetWatered();
         }
+
+        for (Animal animal : game.getAnimals().values()) {
+            Animal.updateAnimalState(animal);
+        }
+
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
     }

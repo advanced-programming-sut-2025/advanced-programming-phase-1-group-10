@@ -15,10 +15,11 @@ public class AnimalProduct implements Item {
         this.numberOfCooking = numberOfCooking;
     }
 
-    public AnimalProduct(AnimalProductType animalProductType, ProductQuality productQuality) {
+    public AnimalProduct(AnimalProductType animalProductType, ProductQuality productQuality,int numberOfCooking) {
         this.animalProductType = animalProductType;
         this.productQuality = productQuality;
         this.price = animalProductType.getPrice();
+        this.numberOfCooking = numberOfCooking;
     }
 
     public AnimalProductType getAnimalProductType() {

@@ -1,8 +1,15 @@
 package Models.Animal;
 
+import Models.App;
+import Models.DateTime.DateTime;
+import Models.Place.Barn;
+import Models.Place.Coop;
 import Models.Position;
+import Models.Tile;
 
 import java.util.ArrayList;
+
+import static Controllers.GameController.getTileByPosition;
 
 public class Animal {
 
@@ -106,14 +113,14 @@ public class Animal {
             double probability = (friendShip + 150 * random) / 1500;
 
             if(probability > 0.5) {
-                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality());
+                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(),1);
             }
             else {
-                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality());
+                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(),1);
             }
         }
         else {
-            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality());
+            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(),1);
         }
     }
 
@@ -148,5 +155,39 @@ public class Animal {
             }
         }
         return null;
+    }
+
+    public static void updateAnimalState(Animal animal){
+        DateTime dateAndTime = App.getInstance().getCurrentGame().getGameTime();
+        if(!animal.isFed()) {
+            animal.setFriendShip(animal.getFriendShip() - 20);
+        }
+        if(!animal.isPetted()) {
+            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip()/200) - 10);
+        }
+        if(!isCorrectEnclosure(animal)) {
+            animal.setFriendShip(animal.getFriendShip() - 20);
+        }
+
+        if(animal.isFed() && dateAndTime.getDay() % animal.getAnimalType().getPeriode() == 0) {
+            animal.produce();
+        }
+        else {
+            animal.setCurrentProduct(null);
+        }
+        animal.petted = false;
+        animal.fed = false;
+    }
+
+    private static boolean isCorrectEnclosure(Animal animal) {
+        Tile tile = getTileByPosition(animal.getPosition());
+        if(tile == null) return false;
+
+        if(animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("COOP"))
+            return tile.getPlace() instanceof Coop;
+        else if(animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("BARN"))
+            return tile.getPlace() instanceof Barn;
+
+        return false;
     }
 }
