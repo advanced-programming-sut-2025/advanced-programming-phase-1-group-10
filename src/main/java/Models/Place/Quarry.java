@@ -12,4 +12,9 @@ public class Quarry extends Place {
     public String getSymbol() {
         return "Q";
     }
+
+    @Override
+    public String getPlaceName() {
+        return "Quarry";
+    }
 }

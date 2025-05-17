@@ -21,6 +21,7 @@ import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
+import Models.Place.Store.Store;
 import Models.PlayerStuff.Player;
 import Models.Recipe.Recipe;
 import Models.Tools.*;
@@ -641,7 +642,6 @@ public class GameController {
         return capacity - items.size();
     }
 
-
     public Result cookingShowRecipes() {
 
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
@@ -837,6 +837,29 @@ public class GameController {
             }
         }
         return null;
+    }
+
+    public Result showAllProducts(){
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+        if(place instanceof Store) {
+            return new Result(true, ((Store) place).showProducts());
+        }
+
+        return new Result(false, "you must be in a store");
+
+    }
+
+    public Result showAllAvailableProducts(){
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Place place = getTileByPosition(player.getPosition()).getPlace();
+        if(place instanceof Store) {
+            return new Result(true, ((Store) place).showAvailableProducts());
+        }
+
+        return new Result(false, "you must be in a store");
+
     }
 
     public Result createCoop(Position coopPosition, Game game) {

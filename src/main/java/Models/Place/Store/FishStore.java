@@ -1,5 +1,7 @@
 package Models.Place.Store;
 
+import Models.Mineral.Mineral;
+import Models.Mineral.MineralTypes;
 import Models.Position;
 import Models.Seller;
 import Models.Tile;

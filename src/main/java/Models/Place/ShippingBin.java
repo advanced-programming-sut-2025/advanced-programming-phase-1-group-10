@@ -1,23 +1,20 @@
 package Models.Place;
 
-
 import Models.Position;
 
-public class GreenHouse extends Place {
+public class ShippingBin extends Place {
 
-
-    public GreenHouse(Position position, int height, int width) {
+    public ShippingBin(Position position, int height, int width) {
         super(position, height, width);
     }
 
     @Override
     public String getSymbol() {
-        return "G";
+        return "%";
     }
 
     @Override
     public String getPlaceName() {
-        return "GreenHouse";
+        return "Shipping Bin";
     }
-
 }

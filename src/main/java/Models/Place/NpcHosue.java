@@ -23,4 +23,9 @@ public class NpcHosue extends Place {
     public String getSymbol() {
         return "~";
     }
+
+    @Override
+    public String getPlaceName() {
+        return "NPCHouse";
+    }
 }

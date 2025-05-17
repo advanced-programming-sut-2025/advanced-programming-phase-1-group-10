@@ -18,6 +18,11 @@ public class Place {
         this.placeTiles = new Tile[height][width];
     }
 
+    private String placeName;
+
+    public String getPlaceName() {
+        return placeName;
+    }
 
     public Position getPosition() {
         return position;

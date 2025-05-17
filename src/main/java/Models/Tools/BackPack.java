@@ -1,6 +1,8 @@
 package Models.Tools;
 
 import Models.Item;
+import Models.PlayerStuff.Player;
+import Models.Seller;
 
 import java.util.ArrayList;
 
@@ -8,7 +10,6 @@ public class BackPack {
 
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<Item>();
-
 
     public BackpackType getBackpackType() {
         return backpackType;

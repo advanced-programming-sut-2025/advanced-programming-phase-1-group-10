@@ -50,4 +50,14 @@ public class Coop extends Place{
     public String getSymbol() {
         return "C";
     }
+
+    @Override
+    public String getPlaceName() {
+        if(isDeluxe())
+            return "Deluxe Coop";
+        if(isBig())
+            return "Big Coop";
+        return "Coop";
+    }
+
 }

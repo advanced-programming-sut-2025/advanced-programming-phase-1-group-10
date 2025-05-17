@@ -30,5 +30,11 @@ public enum RecipeType {
     public String getName() {
         return name;
     }
+    //My Life func
 
 }
+
+
+
+
+

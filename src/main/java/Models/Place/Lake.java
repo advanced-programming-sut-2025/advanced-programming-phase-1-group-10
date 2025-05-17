@@ -14,4 +14,9 @@ public class Lake extends Place {
         return "W";
     }
 
+    @Override
+    public String getPlaceName() {
+        return "Lake";
+    }
+
 }

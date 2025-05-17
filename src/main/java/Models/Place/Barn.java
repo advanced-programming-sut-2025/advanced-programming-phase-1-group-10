@@ -50,4 +50,14 @@ public class Barn extends Place{
     public String getSymbol() {
         return "B";
     }
+
+    @Override
+    public String getPlaceName() {
+        if(isDeluxe())
+            return "Deluxe Barn";
+        if(isBig())
+            return "Big Barn";
+        return "Barn";
+    }
+
 }

@@ -3,7 +3,7 @@ package Models.Tools;
 public enum BackpackType {
     STARTER(12),
     LARGE(24),
-    DELUXE(100),
+    DELUXE(Integer.MAX_VALUE),
     ;
 
     final int capacity;
