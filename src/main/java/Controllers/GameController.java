@@ -1221,10 +1221,9 @@ public class GameController {
             App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().add(relation);
 
         }
-        if(!relation.isIstalkedToday()){
-            relation.setRelationPoint(relation.getRelationPoint() + 20);
-            relation.setIstalkedToday(true);
-        }
+
+        relation.setRelationPoint(relation.getRelationPoint() + 20);
+
         return new Result(true,message);
     }
 
@@ -1301,12 +1300,14 @@ public class GameController {
         }
         //Add friendship XP And Send Message
         addXpToPlayers(player,20);
-        if(player.getCouple().getName().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())){
+        if(player.getCouple() != null && player.getCouple().getName().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())){
             addXpToPlayers(player,30);
         }
-        Message messageObj = new Message(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message);
+        Message messageObj = new Message(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message,true);
+
+
         getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer()).getMessages().add(messageObj);
-        getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessages().add(messageObj);
+        getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessageHistory().add(messageObj);
         return new Result(true,"Message sent to " + player.getName() + " successfully!");
     }
 
@@ -1319,11 +1320,11 @@ public class GameController {
         }
 
         Friendship friendship = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(), player);
-        if (friendship == null || friendship.getMessages() == null) {
+        if (friendship == null || friendship.getMessageHistory() == null) {
             return new Result(false, "No conversation history found.");
         }
 
-        for (Message message : friendship.getMessages()) {
+        for (Message message : friendship.getMessageHistory()) {
             if (message.getSender().getName().equals(player.getName())) {
                 result.append(player.getName()).append(": ").append(message.getMessage()).append("\n");
             } else {
@@ -1374,15 +1375,15 @@ public class GameController {
         }
 
         // Deduct from sender's inventory
-        senderItem.setNumber(senderItem.getNumber() - amountInt);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().removeItemNumber(itemToGift.getName(),amountInt);
 
-        Gift gift = new Gift(sender,receiver ,itemToGift);
+        Gift gift1 = new Gift(sender,receiver ,itemToGift,true);
+        Gift gift2 = new Gift(sender,receiver ,itemToGift,false);
 
-        receiver.getRecievedGifts().add(gift);
+        receiver.getRecievedGifts().add(gift2);
 
-
-        getFriendship(sender,receiver).getGiftHistory().add(gift);
-        getFriendship(receiver,sender).getGiftHistory().add(gift);
+        getFriendship(sender,receiver).getGiftHistory().add(gift1);
+        getFriendship(receiver,sender).getGiftHistory().add(gift2);
 
         return new Result(true, "You gave the player a gift.");
     }
@@ -1411,7 +1412,13 @@ public class GameController {
             return new Result(false, "Invalid index");
         }
         //zero-index based
-        Gift gift = App.getInstance().getCurrentGame().getCurrentPlayer().getRecievedGifts().get(indexInt--);
+        Gift gift = null;
+        try {
+            gift = App.getInstance().getCurrentGame().getCurrentPlayer().getRecievedGifts().get(--indexInt);
+        } catch (Exception e) {
+            return new Result(false, "Invalid Gift number");
+        }
+
 
         if(gift.getRate() != 0){
             return new Result(false, "You already rate this gift");
@@ -2053,7 +2060,7 @@ public class GameController {
         Tile[][] map = game.getGameMap().getMap();
         int rows = map.length;
         int cols = map[0].length;
-        for(int i = 0; i < 50; i++){
+        for(int i = 0; i < 500; i++){
             int randomRow = ThreadLocalRandom.current().nextInt(rows);
             int randomCol = ThreadLocalRandom.current().nextInt(cols);
             Position position = new Position(randomRow, randomCol);
@@ -2061,10 +2068,20 @@ public class GameController {
         }
     }
 
-    public void setOrResetWatered(boolean state){
+    public void setWatered(){
         for(Tile[] tiles: App.getInstance().getCurrentGame().getGameMap().getMap()){
             for(Tile tile: tiles){
-                tile.setWatered(state);
+                if(tile.getPlace() == null){
+                    tile.setWatered(true);
+                }
+            }
+        }
+    }
+
+    public void resetWatered(){
+        for(Tile[] tiles: App.getInstance().getCurrentGame().getGameMap().getMap()){
+            for(Tile tile: tiles){
+                tile.setWatered(false);
             }
         }
     }
@@ -2094,9 +2111,9 @@ public class GameController {
         if (game.getWeather() == Weather.STORM) {
             handleStorm(game);
         } else if(game.getWeather() == Weather.RAIN){
-            setOrResetWatered(true);
+            setWatered();
         } else {
-            setOrResetWatered(false);
+            resetWatered();
         }
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
@@ -2115,4 +2132,111 @@ public class GameController {
         return null;
     }
 
+    public Result notifyPlayer() {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        int numOfReceivedMessages = 0;
+        int numOfGiftRecieved = 0;
+        int numOfTradeRequests = 0;
+
+        for (Friendship fs : player.getFriendships()) {
+            Iterator<Message> iterator = fs.getMessages().iterator();
+            while (iterator.hasNext()) {
+                Message message = iterator.next();
+                numOfReceivedMessages++;
+                fs.getMessageHistory().add(message);
+                iterator.remove(); // safe removal
+            }
+
+            for (Gift gift : fs.getGiftHistory()) {
+                if (!gift.isNotified()) {
+                    numOfGiftRecieved++;
+                    gift.setNotified(true);
+                }
+            }
+        }
+
+        for (TradeRequest tradeRequest : player.getTradeRequests()) {
+            if (!tradeRequest.isNotified()) {
+                numOfTradeRequests++;
+                tradeRequest.setNotified(true);
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        if (numOfReceivedMessages > 0) {
+            result.append("You have received ").append(numOfReceivedMessages).append(" messages\n");
+        }
+        if (numOfGiftRecieved > 0) {
+            result.append("You have received ").append(numOfGiftRecieved).append(" gifts\n");
+        }
+        if (numOfTradeRequests > 0) {
+            result.append("You have received ").append(numOfTradeRequests).append(" trade requests\n");
+        }
+
+        return new Result(true, result.toString());
+    }
+
+    public Result listQuests(String name) {
+        NPC npc = getNearbyPerson(name,NPC.class);
+        if(npc == null){
+            return new Result(false, "NPC not found");
+        }
+        NPCRelation npcRelation = getNPCRealtion(npc);
+        if(npcRelation == null){
+            return new Result(false, "You have to talk to a NPC first");
+        }
+        StringBuilder result = new StringBuilder();
+        if(!npc.getQuests().get(0).isCompleted()){
+            result.append("1- ").append(npc.getQuests().get(0).getExplanation()).append("\n");
+        }
+        if(!npc.getQuests().get(1).isCompleted() && npcRelation.getFrinendShipLevel() >= 1){
+            result.append("2- ").append(npc.getQuests().get(1).getExplanation()).append("\n");
+        }
+
+        if(!npc.getQuests().get(2).isCompleted() && App.getInstance().getCurrentGame().getGameTime().getYear() > 2000){
+            result.append("3- ").append(npc.getQuests().get(2).getExplanation()).append("\n");
+        }
+        return new Result(true, result.toString());
+    }
+
+    public Result finishQuest(String index, String name) {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        int indexInt;
+        try {
+            indexInt = Integer.parseInt(index);
+        } catch (NumberFormatException e) {
+            return new Result(false, "Invalid index");
+        }
+        if(!(indexInt >= 1 && indexInt <= 3)){
+            return new Result(false, "Invalid index");
+        }
+        NPC npc = getNearbyPerson(name,NPC.class);
+        if(npc == null){
+            return new Result(false, "NPC not found");
+        }
+        NPCRelation npcRelation = getNPCRealtion(npc);
+        if(npcRelation == null){
+            return new Result(false, "You have to talk to a NPC first");
+        }
+        Quest quest = npc.getQuests().get(--indexInt);
+        if(quest.isCompleted()){
+            return new Result(false, "This quest Already completed");
+        }
+        Item item = null;
+        for(Item it: player.getInventory().getBackPack().getItems()){
+            if(it.getName().equals(quest.getGivenItems().getName())){
+                item = it;
+            }
+        }
+        if(item == null || item.getNumber() < quest.getGivenItems().getNumber()){
+            return new Result(false, "Not enough items to complete the quest");
+        }
+        player.getInventory().getBackPack().removeItemNumber(item.getName(), quest.getGivenItems().getNumber());
+        if(quest.getItemAward() != null){
+            player.getInventory().getBackPack().addItem(quest.getItemAward());
+        }
+        player.setGold(player.getGold() + quest.getGoldAward());
+        quest.setCompleted(true);
+        return new Result(true, "Quest Completed!");
+    }
 }

@@ -8,7 +8,6 @@ import Models.NPC.*;
 import Models.Place.*;
 import Models.Place.Store.*;
 import Models.Planets.Crop.Crop;
-import Models.Planets.Crop.CropType;
 import Models.Planets.Crop.ForagingCropType;
 import Models.Planets.Tree;
 import Models.Planets.TreeType;
@@ -27,6 +26,7 @@ public class GameMenuControllers {
         final ArrayList<String> names = new ArrayList<>(Arrays.asList(username1, username2, username3, username4));
         for (String name : names)
             if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
+
 
         Game game = new Game(username1);
 
@@ -375,7 +375,7 @@ public class GameMenuControllers {
 
     public void setUpFriendShip(Player player) {
         for(Player p: App.getInstance().getCurrentGame().getPlayers()){
-            if(!p.getName().equals(player.getName())) player.getFriendships().add(new Friendship(p,0));
+            if(!p.equals(player)) player.getFriendships().add(new Friendship(p,0));
         }
     }
 

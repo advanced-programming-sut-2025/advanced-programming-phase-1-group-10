@@ -1,10 +1,7 @@
 package Models.NPC;
 
-import Models.App;
-import Models.Item;
-import Models.Person;
+import Models.*;
 import Models.Place.NpcHosue;
-import Models.Position;
 
 import java.util.ArrayList;
 
@@ -15,6 +12,7 @@ public class NPC implements Person {
     private final NpcHosue hosue;
     //TODO Add this
     private final ArrayList<Item> favoriteItems;
+    private final ArrayList<Quest> quests = new ArrayList<>();
 
     public NPC(String name, Position position, NpcHosue hosue) {
         this.name = name;
@@ -60,4 +58,7 @@ public class NPC implements Person {
                 .anyMatch(npc -> npc.getNpc().getName().equals(npcName));
     }
 
+    public ArrayList<Quest> getQuests() {
+        return quests;
+    }
 }

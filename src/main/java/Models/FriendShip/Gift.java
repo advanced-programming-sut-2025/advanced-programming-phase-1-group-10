@@ -12,12 +12,12 @@ public class Gift {
     private Item item;
     private boolean isNotified;
 
-    public Gift(Player sender,Player receiver, Item item) {
+    public Gift(Player sender,Player receiver, Item item, boolean isNotified) {
         this.sender = sender;
         this.receiver = receiver;
         this.rate = 0;
         this.item = item;
-        this.isNotified = false;
+        this.isNotified = isNotified;
     }
 
     public Player getSender() {

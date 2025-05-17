@@ -7,6 +7,7 @@ import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.DateTime.DateTimeManager;
 import Models.Weather.WeatherManagement;
+import com.google.gson.internal.bind.util.ISO8601Utils;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -16,12 +17,12 @@ public class GameLauncher implements AppMenu{
     GameController controller = new GameController();
     CheatCodeControllers cheatCodeController = new CheatCodeControllers();
 
-    //TODO Notify players about new messages sent to 'em and move it to HistoryArray.
-    //TODO Notify players about the gifts that are recievecd.
-    //TODO Notify players about new trade sended.
-
     @Override
     public void checkCommand(Scanner scanner) {
+
+        System.out.println(controller.notifyPlayer());
+
+
         String input = scanner.nextLine().trim();
         Matcher matcher;
 
@@ -259,6 +260,15 @@ public class GameLauncher implements AppMenu{
         } else if((matcher = CheatCodeCommands.CHANGE_NEXT_DAY_WEATHER.getMatcher(input)) != null){
             System.out.println(cheatCodeController.changeWeather(
                     matcher.group("Type").trim()
+            ));
+        } else if((matcher = GameCommands.LIST_QUESTS.getMatcher(input)) != null){
+            System.out.println(controller.listQuests(
+                    matcher.group("name")
+            ));
+        } else if((matcher = GameCommands.FINISH_QUEST.getMatcher(input)) != null){
+            System.out.println(controller.finishQuest(
+                    matcher.group("index").trim(),
+                    matcher.group("name").trim()
             ));
         }
         else{

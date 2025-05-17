@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 public enum GameCommands implements Commands {
 
-
     BUILD_GREENHOUSE("^greenhouse build$"),
 
     //Time handling commands
@@ -81,6 +80,8 @@ public enum GameCommands implements Commands {
     MEET_NPC("^meet NPC (?<npcName>[\\S]+)$"),
     GIFT_NPC("^gift NPC (?<npcName>[\\S]+) -i (?<item>[\\S]+)$"),
     SHOW_NPC_FRIENDSHIP("^friendship NPC list$"),
+    LIST_QUESTS("^quests list -n (?<name>[\\S]+)$"),
+    FINISH_QUEST("^quests finish -i (?<index>[\\S]+) -n (?<name>[\\S]+)$"),
 
     // Animals Commands
     BUILD_MAINTENANCE("^build\\s+-a\\s+(?<buildingName>[^\\s]+)\\s+-l\\s+(?<x>\\d+)\\s*,\\s*(?<y>\\d+)$"),
