@@ -1,11 +1,16 @@
 package Models.Planets;
 
+import Models.DateTime.DateTime;
 import Models.Item;
+
+import java.util.ArrayList;
 
 public class Tree implements Item {
 
     private TreeType treeType;
     private int numberOfTree = 1;
+    private DateTime lastHarvestDate;
+    private ArrayList<Fruit> fruits = new ArrayList<>();
 
     public Tree(TreeType treeType) {
         this.treeType = treeType;
@@ -41,4 +46,19 @@ public class Tree implements Item {
         return treeType;
     }
 
+    public DateTime getLastHarvestDate() {
+        return lastHarvestDate;
+    }
+
+    public void setLastHarvestDate(DateTime lastHarvestDate) {
+        this.lastHarvestDate = lastHarvestDate;
+    }
+
+    public ArrayList<Fruit> getFruits() {
+        return fruits;
+    }
+
+    public void setFruits(ArrayList<Fruit> fruits) {
+        this.fruits = fruits;
+    }
 }

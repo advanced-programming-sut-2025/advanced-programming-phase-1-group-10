@@ -20,12 +20,10 @@ import Models.Place.*;
 import Models.Place.Place;
 import Models.Place.Store.CarpenterShop;
 import Models.Place.Store.MarrineRanchStore;
+import Models.Planets.*;
 import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.Crop.ForagingCropType;
-import Models.Planets.CropSeeds;
-import Models.Planets.Seed;
-import Models.Planets.SeedType;
 import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
 import Models.PlayerStuff.TradeRequest;
@@ -2180,8 +2178,53 @@ public class GameController {
             }
         }
 
+        handleTreeProduction();
+
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
+    }
+
+    private void handleTreeProduction() {
+        Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
+        DateTime gameTime = App.getInstance().getCurrentGame().getGameTime();
+
+        for (Tile[] tileRow : map) {
+            for (Tile tile : tileRow) {
+                if (tile.getItem() instanceof Tree) {
+                    Tree tree = (Tree) tile.getItem();
+                    produceTreeProducts(tile, tree, gameTime);
+                }
+            }
+        }
+    }
+
+    private void produceTreeProducts(Tile tile, Tree tree, DateTime gameTime) {
+        FruitType fruitType = tree.getTreeType().getFruitType();
+        if (fruitType == null)
+            return;
+
+        int harvestCycle = fruitType.getHarvestCycle();
+
+        Calendar lastHarvestCalendar = Calendar.getInstance();
+        if(tree.getLastHarvestDate() != null)
+            lastHarvestCalendar.setTime(tree.getLastHarvestDate().convertToDate());
+        else{
+            tree.setLastHarvestDate(gameTime);
+            return;
+        }
+
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.set(gameTime.getYear(), gameTime.getMonth() - 1, gameTime.getDay());
+
+        int daysPassed = currentCalendar.get(Calendar.DAY_OF_YEAR) - lastHarvestCalendar.get(Calendar.DAY_OF_YEAR);
+        if (daysPassed >= harvestCycle) {
+            if (Math.random() < 0.7) {
+                Fruit newFruit = new Fruit(tree.getTreeType().getFruitType(), 1);
+                tile.setItem(newFruit);
+                tree.getFruits().add(newFruit);
+                tree.setLastHarvestDate(gameTime);
+            }
+        }
     }
 
     private ArrayList<Weather> chooseNextDayWeather() {
