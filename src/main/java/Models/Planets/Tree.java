@@ -9,7 +9,6 @@ public class Tree implements Item {
 
     private TreeType treeType;
     private int numberOfTree = 1;
-    private DateTime lastHarvestDate;
     private ArrayList<Fruit> fruits = new ArrayList<>();
 
     public Tree(TreeType treeType) {
@@ -44,14 +43,6 @@ public class Tree implements Item {
 
     public TreeType getTreeType() {
         return treeType;
-    }
-
-    public DateTime getLastHarvestDate() {
-        return lastHarvestDate;
-    }
-
-    public void setLastHarvestDate(DateTime lastHarvestDate) {
-        this.lastHarvestDate = lastHarvestDate;
     }
 
     public ArrayList<Fruit> getFruits() {

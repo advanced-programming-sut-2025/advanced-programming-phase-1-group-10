@@ -1703,7 +1703,6 @@ public class GameController {
         if (targetTile.getItem() != null) {
             return new Result(false, "There is already something planted on this tile.");
         }
-
         CropTypeNormal cropType;
         if (seedName.equalsIgnoreCase("Mixed seed")) {
             Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
@@ -2246,44 +2245,26 @@ public class GameController {
 
     private void handleTreeProduction() {
         Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
-        DateTime gameTime = App.getInstance().getCurrentGame().getGameTime();
 
         for (Tile[] tileRow : map) {
             for (Tile tile : tileRow) {
                 if (tile.getItem() instanceof Tree) {
                     Tree tree = (Tree) tile.getItem();
-                    produceTreeProducts(tile, tree, gameTime);
+                    produceTreeProducts(tile,tree);
                 }
             }
         }
     }
 
-    private void produceTreeProducts(Tile tile, Tree tree, DateTime gameTime) {
+    private void produceTreeProducts(Tile tile, Tree tree) {
         FruitType fruitType = tree.getTreeType().getFruitType();
         if (fruitType == null)
             return;
 
-        int harvestCycle = fruitType.getHarvestCycle();
-
-        Calendar lastHarvestCalendar = Calendar.getInstance();
-        if(tree.getLastHarvestDate() != null)
-            lastHarvestCalendar.setTime(tree.getLastHarvestDate().convertToDate());
-        else{
-            tree.setLastHarvestDate(gameTime);
-            return;
-        }
-
-        Calendar currentCalendar = Calendar.getInstance();
-        currentCalendar.set(gameTime.getYear(), gameTime.getMonth() - 1, gameTime.getDay());
-
-        int daysPassed = currentCalendar.get(Calendar.DAY_OF_YEAR) - lastHarvestCalendar.get(Calendar.DAY_OF_YEAR);
-        if (daysPassed >= harvestCycle) {
-            if (Math.random() < 0.7) {
-                Fruit newFruit = new Fruit(tree.getTreeType().getFruitType(), 1);
-                tile.setItem(newFruit);
-                tree.getFruits().add(newFruit);
-                tree.setLastHarvestDate(gameTime);
-            }
+        if (Math.random() < 0.7) {
+            Fruit newFruit = new Fruit(tree.getTreeType().getFruitType(), 1);
+            tile.setItem(newFruit);
+            tree.getFruits().add(newFruit);
         }
     }
 
@@ -2409,30 +2390,31 @@ public class GameController {
         quest.setCompleted(true);
         return new Result(true, "Quest Completed!");
     }
+
     private void updateCropState(Tile tile, Crop crop, CropTypeNormal cropType) {
         DateTime gameTime = App.getInstance().getCurrentGame().getGameTime();
         boolean isWatered = tile.isWatered() || (App.getInstance().getCurrentGame().getWeather().getName().equals("RAIN"));
 
-        Calendar currentDate = Calendar.getInstance();
-        Calendar lastWateredDate = Calendar.getInstance();
-        lastWateredDate.setTime(crop.getLastWateredDate().convertToDate());
-
-        if (currentDate.get(Calendar.DAY_OF_YEAR) - lastWateredDate.get(Calendar.DAY_OF_YEAR) > 2) {
+        // If not watered, remove the crop
+        if (!isWatered) {
             tile.setItem(null);
             return;
         }
 
+        // Calculate the remaining harvest time
         int currentStageIndex = crop.getCurrentStageIndex();
-        ArrayList<Integer> stages = cropType.getCropTypes();
+        List<Integer> stages = cropType.getCropTypes();
         int totalHarvestTime = cropType.getTotalHarvestTime();
+
+        // check if last stage
         if (currentStageIndex < stages.size() - 1) {
             crop.setCurrentStageIndex(currentStageIndex + 1);
         } else {
+            // If harvestable set
             crop.setHarvestable(true);
             if (cropType.isOneTime()) {
                 tile.setItem(null);
             } else {
-                int regrowthTime = cropType.getRegrowthTime();
                 crop.setHarvestable(true);
             }
         }
