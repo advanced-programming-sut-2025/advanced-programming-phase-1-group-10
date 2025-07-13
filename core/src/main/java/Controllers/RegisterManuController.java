@@ -252,7 +252,7 @@ public class RegisterManuController {
     public Result changePassword(String newPassword, boolean isRandom){
         if(isRandom){
             App.getInstance().getCurrentUser().setPassword(newPassword);
-            return new Result(true, "your password changed successfully! NEW PASSWORD: " + newPassword);
+            return new Result(true, newPassword);
         }
         else {
             StringBuilder passwordResult = checkStrengthPassword(newPassword);
@@ -261,7 +261,7 @@ public class RegisterManuController {
             }
             else{
                 App.getInstance().getCurrentUser().setPassword(newPassword);
-                return new Result(true, "your password changed successfully! NEW PASSWORD: " + newPassword);
+                return new Result(true, newPassword);
             }
         }
     }

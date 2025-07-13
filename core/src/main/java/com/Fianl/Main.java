@@ -1,35 +1,82 @@
 package com.Fianl;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import Models.App;
+import Views.LoginMenuView;
+import Views.RegisterMenuView;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
     private SpriteBatch batch;
-    private Texture image;
+    private Skin skin;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+
+
+        try {
+            skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
+        } catch (Exception e) {
+            System.out.println("Error loading skin: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+
+
+        switchScreen(new LoginMenuView());
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+
+        Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+        super.render();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
+        if (skin != null) {
+            skin.dispose();
+        }
+
+
+        if (getScreen() != null) {
+            getScreen().dispose();
+        }
+    }
+
+    public void switchScreen(Screen newScreen) {
+
+        if (getScreen() != null && getScreen() != newScreen) {
+            getScreen().dispose();
+        }
+        setScreen(newScreen);
+    }
+
+    private static Main instance;
+
+    public Main() {
+        instance = this;
+    }
+
+    public static Main getInstance() {
+        return instance;
+    }
+
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    public Skin getSkin() {
+        return skin;
     }
 }

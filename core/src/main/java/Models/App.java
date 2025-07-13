@@ -20,7 +20,7 @@ public class App {
         return instance;
     }
 
-    private Menu currentMenu = Menu.LoginMenu;
+    private Menu currentMenu = Menu.LoginMenuView;
     //private final ArrayList<User> users;
     private final ArrayList<Game> games;
 
@@ -76,4 +76,3 @@ public class App {
         this.currentMenu = currentMenu;
     }
 }
-
