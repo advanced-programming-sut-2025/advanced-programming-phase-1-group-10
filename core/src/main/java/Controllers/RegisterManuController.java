@@ -261,6 +261,7 @@ public class RegisterManuController {
             }
             else{
                 App.getInstance().getCurrentUser().setPassword(newPassword);
+                SaveData.saveUsersToFile(App.getInstance().getUsers());
                 return new Result(true, newPassword);
             }
         }

@@ -382,10 +382,10 @@ public class RegisterMenuView implements Screen, AppMenu {
 
 
         final String[] suggestions = {
-            username + "123",
-            username + "456",
-            username + "_user",
-            "player_" + username
+            username + "94",
+            username + "53",
+            username + "78",
+            "player" + username
         };
 
         for (final String suggestion : suggestions) {

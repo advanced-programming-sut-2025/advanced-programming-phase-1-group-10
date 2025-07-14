@@ -47,7 +47,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
 
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("assets/backgrounds/farm1.png"));
+            backgroundTexture = new Texture(Gdx.files.internal("abackgrounds/farm1.png"));
         } catch (Exception e) {
             System.out.println("Background image not found: " + e.getMessage());
 
@@ -298,12 +298,18 @@ public class LoginMenuView implements Screen, AppMenu {
     private void showNewPasswordDialog(User user) {
         Dialog newPasswordDialog = new Dialog("Change Password", skin);
 
+        newPasswordDialog.setWidth(500);  // افزایش عرض دیالوگ
+
         Table passwordTable = new Table();
         passwordTable.pad(20);
 
+        // ایجاد یک لیبل با عرض ثابت و قابلیت شکستن متن
         Label questionLabel = new Label("Would you like a random password?", skin);
-        questionLabel.setWrap(true);
-        passwordTable.add(questionLabel).colspan(2).padBottom(20).row();
+        questionLabel.setWrap(true);  // فعال کردن شکستن متن
+        questionLabel.setWidth(400);  // تنظیم عرض ثابت برای لیبل
+
+        // افزودن لیبل به جدول با عرض مشخص
+        passwordTable.add(questionLabel).width(400).padBottom(20).row();
 
         Table buttonTable = new Table();
         TextButton yesButton = new TextButton("Yes", skin);
@@ -320,6 +326,7 @@ public class LoginMenuView implements Screen, AppMenu {
                 String randomPass = RegisterManuController.generateStrongPassword(10);
                 Result result = controller.changePassword(randomPass, true);
                 user.setPassword(result.message());
+                SaveData.saveUsersToFile(App.getInstance().getUsers());
                 showSuccessMessage("your password changed successfully! NEW PASSWORD: " + result.message());
                 newPasswordDialog.hide();
 
@@ -369,6 +376,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
                 if (result.state()) {
                     user.setPassword(result.message());
+                    SaveData.saveUsersToFile(App.getInstance().getUsers());
                     showSuccessMessage("your password changed successfully! NEW PASSWORD: " + result.message());
                     customPasswordDialog.hide();
 

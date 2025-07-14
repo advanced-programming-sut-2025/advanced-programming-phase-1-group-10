@@ -246,7 +246,7 @@
   },
   {
     "nickname": "djkdkjs",
-    "password": "vU2\\WuwTqv\\\\",
+    "password": "pB3QtJh\u003e\u003d/",
     "hashPassword": "IDHsPKlYsY8Kw5HFPwenGg\u003d\u003d:9SwotnmTq2/qFj56x1wHl5QywZ1z/wME5LPWQ5oBxr0\u003d",
     "username": "isal",
     "gender": "Female",
@@ -289,6 +289,23 @@
     "pickQuestion": {
       "3": {
         "What was the name of your first pet?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
+  },
+  {
+    "nickname": "sala,",
+    "password": "Gb2Hb\u003d$kw\u003d",
+    "hashPassword": "P2EXMHEzr6YE2d0F2HdsFw\u003d\u003d:QUzIX0pTDCp7Ms9PlSexE5sJtYSpOgaIhNefYX65HvQ\u003d",
+    "username": "playerpa",
+    "gender": "Female",
+    "email": "saal@sydj.co",
+    "pickQuestionNumber": 5,
+    "pickQuestion": {
+      "5": {
+        "What was the name of your first school?": "salam"
       }
     },
     "stayLoggedIn": false,
