@@ -277,11 +277,11 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "avatars/avatar1.png"
   },
   {
     "nickname": "sksk",
-    "password": "[vjZZ0m$u/dz",
     "hashPassword": "pusnhZSYc8tHvDegb+aP/A\u003d\u003d:lPI46WY153myM6artYbG6Az7YA9fEm3+MdUbdBByunE\u003d",
     "username": "lllll",
     "gender": "Female",

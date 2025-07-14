@@ -258,7 +258,7 @@ public class MainMenuView implements Screen, AppMenu {
         if (menuName.equalsIgnoreCase("login menu") || menuName.equalsIgnoreCase("signup menu")) {
             Main.getInstance().switchScreen(new LoginMenuView());
         } else if (menuName.equalsIgnoreCase("game menu")) {
-
+            Main.getInstance().switchScreen(new GameMenuView());
         } else if (menuName.equalsIgnoreCase("profile menu")) {
             Main.getInstance().switchScreen(new ProfileMenuView());
         }
