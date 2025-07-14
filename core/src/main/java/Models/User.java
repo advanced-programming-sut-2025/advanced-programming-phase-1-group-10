@@ -22,6 +22,8 @@ public class User {
     private boolean stayLoggedIn = false;
     public int gold;
     public int games ;
+    private String avatarPath;
+
 
     public User(String nickname, String password, String username, Gender gender) {
         this.password = password;
@@ -126,5 +128,13 @@ public class User {
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 }

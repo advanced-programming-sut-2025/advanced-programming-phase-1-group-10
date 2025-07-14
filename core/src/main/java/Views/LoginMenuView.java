@@ -101,12 +101,14 @@ public class LoginMenuView implements Screen, AppMenu {
 
         buttonTable.add(loginButton).width(150).padRight(20);
         buttonTable.add(registerButton).width(150);
+        TextButton backtoMainMenu = new TextButton("Back To MainMenu",skin);
 
         mainTable.add(buttonTable).colspan(2).padBottom(20).row();
 
 
         TextButton forgotPasswordButton = new TextButton("Forgot Password", skin);
-        mainTable.add(forgotPasswordButton).colspan(2).width(200).padBottom(30).row();
+        mainTable.add(forgotPasswordButton).colspan(2).width(200).padBottom(60).row();
+        mainTable.add(backtoMainMenu).colspan(2).width(200).padTop(20).row();
 
 
         messageLabel = new Label("", skin);
@@ -146,8 +148,15 @@ public class LoginMenuView implements Screen, AppMenu {
                 showForgotPasswordDialog();
             }
         });
-    }
 
+        backtoMainMenu.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.getInstance().setCurrentMenu(Menu.MainMenu);
+                Main.getInstance().switchScreen(new MainMenuView());
+            }
+        });
+    }
 
     private void showSuccessMessage(String message) {
         messageLabel.setText(message);
@@ -180,11 +189,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         if (result.state()) {
             showSuccessMessage(result.message());
-
-
-
-
-
+            // TODO go to game menu
 
 
         } else {
@@ -298,17 +303,15 @@ public class LoginMenuView implements Screen, AppMenu {
     private void showNewPasswordDialog(User user) {
         Dialog newPasswordDialog = new Dialog("Change Password", skin);
 
-        newPasswordDialog.setWidth(500);  // افزایش عرض دیالوگ
+        newPasswordDialog.setWidth(500);
 
         Table passwordTable = new Table();
         passwordTable.pad(20);
 
-        // ایجاد یک لیبل با عرض ثابت و قابلیت شکستن متن
         Label questionLabel = new Label("Would you like a random password?", skin);
-        questionLabel.setWrap(true);  // فعال کردن شکستن متن
-        questionLabel.setWidth(400);  // تنظیم عرض ثابت برای لیبل
+        questionLabel.setWrap(true);
+        questionLabel.setWidth(400);
 
-        // افزودن لیبل به جدول با عرض مشخص
         passwordTable.add(questionLabel).width(400).padBottom(20).row();
 
         Table buttonTable = new Table();

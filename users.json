@@ -233,16 +233,17 @@
   },
   {
     "nickname": "mmmm",
-    "password": "ASDFGasdfg1#",
+    "password": "ADSFShshsk123##",
     "hashPassword": "v/eFjofOqgfYzIdfTB7H2A\u003d\u003d:sBMxpKl2T+dEvbRsXTdJnaNmjXsKOR0bcNgTmNv2N2o\u003d",
-    "username": "lslaa",
+    "username": "salamkhoobi",
     "gender": "Male",
-    "email": "dkdk@sh.com",
+    "email": "ksakak@ak.coo",
     "pickQuestionNumber": 0,
     "pickQuestion": {},
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "avatars/avatar3.png"
   },
   {
     "nickname": "djkdkjs",
@@ -293,7 +294,8 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "avatars/avatar2.png"
   },
   {
     "nickname": "sala,",

@@ -2,6 +2,7 @@ package com.Fianl;
 
 import Models.App;
 import Views.LoginMenuView;
+import Views.MainMenuView;
 import Views.RegisterMenuView;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +29,7 @@ public class Main extends Game {
 
 
 
-        switchScreen(new LoginMenuView());
+        switchScreen(new MainMenuView());
     }
 
     @Override

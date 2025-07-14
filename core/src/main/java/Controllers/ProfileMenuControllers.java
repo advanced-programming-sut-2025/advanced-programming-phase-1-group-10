@@ -1,10 +1,7 @@
 package Controllers;
 
-import Models.App;
+import Models.*;
 import Models.Commands.ProfileMenuCommands;
-import Models.Menu;
-import Models.Result;
-import Models.User;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -37,6 +34,7 @@ public class ProfileMenuControllers {
             return new Result(false, "the new username is the same as the previous username!");
         }
         currentUser.setUsername(username);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "the username changed successfully to " + username + "!");
     }
 
@@ -91,6 +89,7 @@ public class ProfileMenuControllers {
         }
 
         currentUser.setEmail(email);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "the email changed successfully to " + email + "!");
     }
 
@@ -121,6 +120,7 @@ public class ProfileMenuControllers {
         }
 
         currentUser.setPassword(newPassword);
+        SaveData.saveUsersToFile(App.getInstance().getUsers());
         return new Result(true, "the password changed successfully to " + newPassword + "!");
     }
 
