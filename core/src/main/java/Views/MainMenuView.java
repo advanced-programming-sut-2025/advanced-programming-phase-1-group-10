@@ -127,7 +127,7 @@ public class MainMenuView implements Screen, AppMenu {
                     ))
                 ));
 
-                userInfoTable.add(avatarImage).size(80, 80).padRight(15);
+                userInfoTable.add(avatarImage).size(160, 160).padRight(30);
             }
 
 

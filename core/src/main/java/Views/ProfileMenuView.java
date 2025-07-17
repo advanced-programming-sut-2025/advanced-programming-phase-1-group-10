@@ -176,7 +176,7 @@ public class ProfileMenuView implements Screen, AppMenu {
                 )
             ));
 
-            contentTable.add(avatarImage).size(100, 100).colspan(2).padBottom(20).row();
+            contentTable.add(avatarImage).size(160, 160).colspan(2).padBottom(30).row();
         }
 
         TextButton changeAvatarButton = createAnimatedButton("Change Avatar", BUTTON_COLOR);

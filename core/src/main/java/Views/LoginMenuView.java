@@ -9,6 +9,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,106 +24,123 @@ public class LoginMenuView implements Screen, AppMenu {
     private RegisterManuController controller;
     private Stage stage;
     private Skin skin;
-    private Table mainTable;
+    private Table rootTable;
     private TextField usernameField, passwordField;
     private CheckBox stayLoggedInCheckbox;
     private Label messageLabel;
-    private ScrollPane scrollPane;
     private Texture backgroundTexture;
     private String forgotPasswordUsername;
+    private SpriteBatch backgroundBatch;
 
 
-    private final Color BACKGROUND_COLOR = new Color(0.93f, 0.89f, 0.8f, 1);
-    private final Color TITLE_COLOR = new Color(0.4f, 0.2f, 0.1f, 1);
-    private final Color BUTTON_COLOR = new Color(0.55f, 0.78f, 0.25f, 1);
-    private final Color ERROR_COLOR = new Color(0.8f, 0.2f, 0.2f, 1);
-    private final Color SUCCESS_COLOR = new Color(0.2f, 0.6f, 0.3f, 1);
+    private final Color TITLE_COLOR = new Color(0.2f, 0.1f, 0.05f, 1f);
+    private final Color TEXT_COLOR = new Color(0.1f, 0.05f, 0f, 1f);
+    private final Color BUTTON_COLOR_NORMAL = new Color(0.3f, 0.6f, 0.2f, 1f);
+    private final Color BUTTON_COLOR_HOVER = new Color(0.4f, 0.7f, 0.3f, 1f);
+    private final Color ERROR_COLOR = new Color(0.8f, 0.2f, 0.2f, 1f);
+    private final Color SUCCESS_COLOR = new Color(0.2f, 0.6f, 0.3f, 1f);
+    private final Color PANEL_BACKGROUND_COLOR = new Color(0.95f, 0.95f, 0.85f, 0.8f);
+
 
     public LoginMenuView() {
         controller = new RegisterManuController();
         stage = new Stage(new ScreenViewport());
-
+        backgroundBatch = new SpriteBatch();
 
         Main main = (Main)Gdx.app.getApplicationListener();
         skin = main.getSkin();
 
 
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("backgrounds/LoginMenu.png"));
-        } catch (Exception e) {
-            System.out.println("Background image not found: " + e.getMessage());
+            backgroundTexture = new Texture(Gdx.files.internal("assets/backgrounds/LoginMenu.png"));
 
+
+        } catch (Exception e) {
+            System.out.println("Background image not found or loaded incorrectly: " + e.getMessage());
+
+            backgroundTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGB888);
+            backgroundTexture.draw(new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGB888), 0, 0);
         }
 
         createUI();
-
 
         Gdx.input.setInputProcessor(stage);
     }
 
     private void createUI() {
+        rootTable = new Table();
+        rootTable.setFillParent(true);
 
-        mainTable = new Table();
-        mainTable.setFillParent(false);
-        mainTable.pad(50);
-//        mainTable.setBackground(skin.newDrawable("white", BACKGROUND_COLOR));
+
+
+        Table loginPanel = new Table(skin);
+
+        loginPanel.pad(40);
+        loginPanel.defaults().spaceBottom(15).align(Align.center);
 
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("default-font"), TITLE_COLOR);
-        Label titleLabel = new Label("Stardew Valley Login", titleStyle);
-
-        mainTable.add(titleLabel).colspan(2).pad(20).row();
-
-
-        mainTable.add().height(30).row();
+        Label titleLabel = new Label("Welcome to Stardew Valley!", titleStyle);
+        titleLabel.setFontScale(1.8f);
+        loginPanel.add(titleLabel).colspan(2).padBottom(80).row();
 
 
-        mainTable.add(new Label("Username:", skin)).align(Align.left).padRight(10);
+        Label usernameLabel = new Label("Username:", skin);
+        usernameLabel.setColor(TEXT_COLOR);
+        loginPanel.add(usernameLabel).align(Align.left);
         usernameField = new TextField("", skin);
-        mainTable.add(usernameField).width(250).padBottom(20).row();
+        usernameField.setMessageText("Enter your username");
+        loginPanel.add(usernameField).width(300).height(40).row();
 
 
-        mainTable.add(new Label("Password:", skin)).align(Align.left).padRight(10);
+        Label passwordLabel = new Label("Password:", skin);
+        passwordLabel.setColor(TEXT_COLOR);
+        loginPanel.add(passwordLabel).align(Align.left);
         passwordField = new TextField("", skin);
         passwordField.setPasswordCharacter('*');
         passwordField.setPasswordMode(true);
-        mainTable.add(passwordField).width(250).padBottom(20).row();
+        passwordField.setMessageText("Enter your password");
+        loginPanel.add(passwordField).width(300).height(40).row();
 
 
-        stayLoggedInCheckbox = new CheckBox(" Stay logged in", skin);
-        mainTable.add(stayLoggedInCheckbox).colspan(2).padBottom(30).row();
+        stayLoggedInCheckbox = new CheckBox(" Keep me logged in", skin);
+        stayLoggedInCheckbox.getLabel().setColor(TEXT_COLOR);
+        loginPanel.add(stayLoggedInCheckbox).colspan(2).align(Align.left).padBottom(25).row();
 
 
-        Table buttonTable = new Table();
+        Table buttonRow = new Table();
         TextButton loginButton = new TextButton("Login", skin);
+        styleButton(loginButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
+        buttonRow.add(loginButton).width(140).height(50).padRight(20);
+
         TextButton registerButton = new TextButton("Register", skin);
-
-        buttonTable.add(loginButton).width(150).padRight(20);
-        buttonTable.add(registerButton).width(150);
-        TextButton backtoMainMenu = new TextButton("Back To MainMenu",skin);
-
-        mainTable.add(buttonTable).colspan(2).padBottom(20).row();
+        styleButton(registerButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
+        buttonRow.add(registerButton).width(140).height(50);
+        loginPanel.add(buttonRow).colspan(2).padBottom(20).row();
 
 
-        TextButton forgotPasswordButton = new TextButton("Forgot Password", skin);
-        mainTable.add(forgotPasswordButton).colspan(2).width(200).padBottom(60).row();
-        mainTable.add(backtoMainMenu).colspan(2).width(200).padTop(20).row();
+        TextButton forgotPasswordButton = new TextButton("Forgot Password?", skin);
+        forgotPasswordButton.getLabel().setColor(TEXT_COLOR.cpy().mul(1.5f));
+        forgotPasswordButton.setStyle(skin.get("default", TextButton.TextButtonStyle.class));
+        loginPanel.add(forgotPasswordButton).colspan(2).padBottom(40).row();
+
+
+        TextButton backtoMainMenuButton = new TextButton("Back to Main Menu", skin);
+        styleButton(backtoMainMenuButton, new Color(0.7f, 0.4f, 0.2f, 1f), new Color(0.8f, 0.5f, 0.3f, 1f));
+        loginPanel.add(backtoMainMenuButton).colspan(2).width(250).height(50).row();
+
 
 
         messageLabel = new Label("", skin);
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.center);
-        mainTable.add(messageLabel).colspan(2).width(400).padTop(20).row();
+        loginPanel.add(messageLabel).colspan(2).width(350).padTop(25).row();
 
 
-        scrollPane = new ScrollPane(mainTable, skin);
-        scrollPane.setFillParent(true);
-        scrollPane.setScrollingDisabled(true, false);
-        scrollPane.setupFadeScrollBars(0f, 0f);
-        scrollPane.setOverscroll(false, false);
 
+        rootTable.add(loginPanel).center().expand().row();
+        stage.addActor(rootTable);
 
-        stage.addActor(scrollPane);
 
 
         loginButton.addListener(new ClickListener() {
@@ -146,7 +165,7 @@ public class LoginMenuView implements Screen, AppMenu {
             }
         });
 
-        backtoMainMenu.addListener(new ClickListener(){
+        backtoMainMenuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.getInstance().setCurrentMenu(Menu.MainMenu);
@@ -155,18 +174,35 @@ public class LoginMenuView implements Screen, AppMenu {
         });
     }
 
+
+    private void styleButton(TextButton button, Color normalColor, Color hoverColor) {
+        button.setColor(normalColor);
+        button.getLabel().setColor(Color.WHITE);
+        button.getLabel().setFontScale(1.1f);
+
+        button.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                button.setColor(hoverColor);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                button.setColor(normalColor);
+            }
+        });
+    }
+
+
     private void showSuccessMessage(String message) {
         messageLabel.setText(message);
         messageLabel.setColor(SUCCESS_COLOR);
     }
 
-
     private void showErrorMessage(String message) {
         messageLabel.setText(message);
         messageLabel.setColor(ERROR_COLOR);
         Gdx.input.setInputProcessor(stage);
-
-
         stage.setKeyboardFocus(null);
     }
 
@@ -186,8 +222,18 @@ public class LoginMenuView implements Screen, AppMenu {
 
         if (result.state()) {
             showSuccessMessage(result.message());
-            // TODO go to game menu
 
+
+            App.getInstance().setCurrentUser(user);
+            stage.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence(
+                com.badlogic.gdx.scenes.scene2d.actions.Actions.delay(1.5f),
+                com.badlogic.gdx.scenes.scene2d.actions.Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.getInstance().switchScreen(new MainMenuView());
+                    }
+                })
+            ));
 
         } else {
             showErrorMessage(result.message());
@@ -199,11 +245,11 @@ public class LoginMenuView implements Screen, AppMenu {
 
         Table forgotTable = new Table();
         forgotTable.pad(20);
+        forgotTable.defaults().spaceBottom(10);
 
         forgotTable.add(new Label("Username:", skin)).padRight(10);
         final TextField usernameInput = new TextField("", skin);
         forgotTable.add(usernameInput).width(250).padBottom(20).row();
-
 
         final Label errorLabel = new Label("", skin);
         errorLabel.setColor(ERROR_COLOR);
@@ -211,13 +257,13 @@ public class LoginMenuView implements Screen, AppMenu {
         forgotTable.add(errorLabel).colspan(2).width(350).padBottom(20).row();
 
         TextButton submitButton = new TextButton("Submit", skin);
-        forgotTable.add(submitButton).colspan(2).width(150).row();
+        styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
+        forgotTable.add(submitButton).colspan(2).width(150).height(40).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String username = usernameInput.getText();
-
 
                 User user = App.getInstance().getUserByUserName(username);
                 if (user == null) {
@@ -225,10 +271,7 @@ public class LoginMenuView implements Screen, AppMenu {
                     return;
                 }
 
-
                 forgotPasswordUsername = username;
-
-
                 App.getInstance().setCurrentUser(user);
 
                 Result result = controller.forgotPassword(username);
@@ -243,7 +286,7 @@ public class LoginMenuView implements Screen, AppMenu {
         });
 
         forgotDialog.getContentTable().add(forgotTable);
-        forgotDialog.button("Cancel", false).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
+        forgotDialog.button("Cancel", false, skin.get("default", TextButton.TextButtonStyle.class)).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
         forgotDialog.show(stage);
     }
 
@@ -252,7 +295,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         Table securityTable = new Table();
         securityTable.pad(20);
-
+        securityTable.defaults().spaceBottom(10);
 
         int questionNumber = user.getPickQuestionNumber();
         String question = SecurityQuestions.getQuestionByNumber(questionNumber);
@@ -265,8 +308,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         securityTable.add(new Label("Answer:", skin)).padRight(10);
         final TextField answerInput = new TextField("", skin);
-        securityTable.add(answerInput).width(250).padBottom(20).row();
-
+        securityTable.add(answerInput).width(250).row();
 
         final Label errorLabel = new Label("", skin);
         errorLabel.setColor(ERROR_COLOR);
@@ -274,7 +316,8 @@ public class LoginMenuView implements Screen, AppMenu {
         securityTable.add(errorLabel).colspan(2).width(350).padBottom(20).row();
 
         TextButton submitButton = new TextButton("Submit", skin);
-        securityTable.add(submitButton).colspan(2).width(150).row();
+        styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
+        securityTable.add(submitButton).colspan(2).width(150).height(40).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -292,8 +335,7 @@ public class LoginMenuView implements Screen, AppMenu {
         });
 
         securityDialog.getContentTable().add(securityTable);
-        securityDialog.button("Cancel", false).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
-        Gdx.input.setInputProcessor(stage);
+        securityDialog.button("Cancel", false, skin.get("default", TextButton.TextButtonStyle.class)).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
         securityDialog.show(stage);
     }
 
@@ -304,19 +346,20 @@ public class LoginMenuView implements Screen, AppMenu {
 
         Table passwordTable = new Table();
         passwordTable.pad(20);
+        passwordTable.defaults().spaceBottom(10);
 
         Label questionLabel = new Label("Would you like a random password?", skin);
         questionLabel.setWrap(true);
-        questionLabel.setWidth(400);
-
-        passwordTable.add(questionLabel).width(400).padBottom(20).row();
+        passwordTable.add(questionLabel).colspan(2).width(400).padBottom(20).row();
 
         Table buttonTable = new Table();
         TextButton yesButton = new TextButton("Yes", skin);
+        styleButton(yesButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
         TextButton noButton = new TextButton("No", skin);
+        styleButton(noButton, new Color(0.7f, 0.4f, 0.2f, 1f), new Color(0.8f, 0.5f, 0.3f, 1f));
 
-        buttonTable.add(yesButton).width(100).padRight(20);
-        buttonTable.add(noButton).width(100);
+        buttonTable.add(yesButton).width(100).height(40).padRight(20);
+        buttonTable.add(noButton).width(100).height(40);
 
         passwordTable.add(buttonTable).colspan(2).row();
 
@@ -327,10 +370,8 @@ public class LoginMenuView implements Screen, AppMenu {
                 Result result = controller.changePassword(randomPass, true);
                 user.setPassword(result.message());
                 SaveData.saveUsersToFile(App.getInstance().getUsers());
-                showSuccessMessage("your password changed successfully! NEW PASSWORD: " + result.message());
+                showSuccessMessage("Your password changed successfully! NEW PASSWORD: " + result.message());
                 newPasswordDialog.hide();
-
-
             }
         });
 
@@ -343,7 +384,7 @@ public class LoginMenuView implements Screen, AppMenu {
         });
 
         newPasswordDialog.getContentTable().add(passwordTable);
-        newPasswordDialog.button("Cancel", false).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
+        newPasswordDialog.button("Cancel", false, skin.get("default", TextButton.TextButtonStyle.class)).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
         newPasswordDialog.show(stage);
     }
 
@@ -352,13 +393,13 @@ public class LoginMenuView implements Screen, AppMenu {
 
         Table passwordTable = new Table();
         passwordTable.pad(20);
+        passwordTable.defaults().spaceBottom(10);
 
         passwordTable.add(new Label("New Password:", skin)).padRight(10);
         final TextField newPasswordField = new TextField("", skin);
         newPasswordField.setPasswordCharacter('*');
         newPasswordField.setPasswordMode(true);
-        passwordTable.add(newPasswordField).width(250).padBottom(20).row();
-
+        passwordTable.add(newPasswordField).width(250).row();
 
         final Label errorLabel = new Label("", skin);
         errorLabel.setColor(ERROR_COLOR);
@@ -366,7 +407,8 @@ public class LoginMenuView implements Screen, AppMenu {
         passwordTable.add(errorLabel).colspan(2).width(350).padBottom(20).row();
 
         TextButton submitButton = new TextButton("Submit", skin);
-        passwordTable.add(submitButton).colspan(2).width(150).row();
+        styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
+        passwordTable.add(submitButton).colspan(2).width(150).height(40).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -377,22 +419,24 @@ public class LoginMenuView implements Screen, AppMenu {
                 if (result.state()) {
                     user.setPassword(result.message());
                     SaveData.saveUsersToFile(App.getInstance().getUsers());
-                    showSuccessMessage("your password changed successfully! NEW PASSWORD: " + result.message());
+                    showSuccessMessage("Your password changed successfully! NEW PASSWORD: " + result.message());
                     customPasswordDialog.hide();
-
-
                 } else {
                     errorLabel.setText(result.message());
 
+
                     TextButton retryButton = new TextButton("Try Again", skin);
-                    passwordTable.add(retryButton).colspan(2).width(150).padTop(10).row();
+                    styleButton(retryButton, new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.7f, 0.7f, 0.7f, 1f));
+                    passwordTable.add(retryButton).colspan(2).width(150).height(40).padTop(10).row();
+                    passwordTable.pack();
 
                     retryButton.addListener(new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-
                             newPasswordField.setText("");
                             errorLabel.setText("");
+                            passwordTable.removeActor(retryButton);
+                            passwordTable.pack();
                         }
                     });
                 }
@@ -400,7 +444,7 @@ public class LoginMenuView implements Screen, AppMenu {
         });
 
         customPasswordDialog.getContentTable().add(passwordTable);
-        customPasswordDialog.button("Cancel", false).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
+        customPasswordDialog.button("Cancel", false, skin.get("default", TextButton.TextButtonStyle.class)).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
         customPasswordDialog.show(stage);
     }
 
@@ -411,10 +455,12 @@ public class LoginMenuView implements Screen, AppMenu {
 
 
         if (backgroundTexture != null) {
-            stage.getBatch().begin();
-            stage.getBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            stage.getBatch().end();
+            backgroundBatch.begin();
+            backgroundBatch.setColor(1, 1, 1, 1);
+            backgroundBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            backgroundBatch.end();
         }
+
 
         stage.act(delta);
         stage.draw();
@@ -423,6 +469,8 @@ public class LoginMenuView implements Screen, AppMenu {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+
+
     }
 
     @Override
@@ -445,11 +493,11 @@ public class LoginMenuView implements Screen, AppMenu {
         if (backgroundTexture != null) {
             backgroundTexture.dispose();
         }
+        if (backgroundBatch != null) {
+            backgroundBatch.dispose();
+        }
     }
 
     @Override
-    public void checkCommand(Scanner scanner) {
-
-
-    }
+    public void checkCommand(Scanner scanner) {}
 }
