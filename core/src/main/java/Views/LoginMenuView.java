@@ -47,7 +47,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
 
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("abackgrounds/farm1.png"));
+            backgroundTexture = new Texture(Gdx.files.internal("backgrounds/LoginMenu.png"));
         } catch (Exception e) {
             System.out.println("Background image not found: " + e.getMessage());
 
@@ -64,14 +64,11 @@ public class LoginMenuView implements Screen, AppMenu {
         mainTable = new Table();
         mainTable.setFillParent(false);
         mainTable.pad(50);
-        mainTable.setBackground(skin.newDrawable("white", BACKGROUND_COLOR));
+//        mainTable.setBackground(skin.newDrawable("white", BACKGROUND_COLOR));
 
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("default-font"), TITLE_COLOR);
         Label titleLabel = new Label("Stardew Valley Login", titleStyle);
-
-
-
 
         mainTable.add(titleLabel).colspan(2).pad(20).row();
 

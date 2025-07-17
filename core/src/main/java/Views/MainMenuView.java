@@ -1,10 +1,7 @@
 package Views;
 
 import Controllers.MainMenuControllers;
-import Models.App;
-import Models.Result;
-import Models.SaveData;
-import Models.User;
+import Models.*;
 
 import com.Fianl.Main;
 import com.badlogic.gdx.Gdx;
@@ -56,11 +53,10 @@ public class MainMenuView implements Screen, AppMenu {
 
 
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("backgrounds/main_menu_bg.png"));
+            backgroundTexture = new Texture(Gdx.files.internal("assets/backgrounds/MainMenu.png"));
         } catch (Exception e) {
             System.out.println("Background image not found: " + e.getMessage());
         }
-
 
         if (currentUser != null) {
             loadUserAvatar();
@@ -79,20 +75,20 @@ public class MainMenuView implements Screen, AppMenu {
                 avatarTexture = new Texture(Gdx.files.internal(currentUser.getAvatarPath()));
             } else {
 
-                avatarTexture = new Texture(Gdx.files.internal("avatars/avatar1.png"));
+                avatarTexture = new Texture(Gdx.files.internal("assets/avatars/avatar1.png"));
 
 
-                currentUser.setAvatarPath("avatars/avatar1.png");
+                currentUser.setAvatarPath("assets/avatars/avatar1.png");
                 SaveData.saveUsersToFile(App.getInstance().getUsers());
             }
         } catch (Exception e) {
             System.out.println("Avatar image not found: " + e.getMessage());
             try {
 
-                avatarTexture = new Texture(Gdx.files.internal("avatars/avatar1.png"));
+                avatarTexture = new Texture(Gdx.files.internal("assets/avatars/avatar1.png"));
 
 
-                currentUser.setAvatarPath("avatars/avatar1.png");
+                currentUser.setAvatarPath("assets/avatars/avatar1.png");
                 SaveData.saveUsersToFile(App.getInstance().getUsers());
             } catch (Exception ex) {
                 System.out.println("Default avatar not found either: " + ex.getMessage());
@@ -152,7 +148,6 @@ public class MainMenuView implements Screen, AppMenu {
 
             mainTable.add(userInfoTable).colspan(2).padBottom(40).row();
         }
-
 
         createMenuButton("Game Menu", "game menu", BUTTON_COLOR);
         createMenuButton("Profile Menu", "profile menu", BUTTON_COLOR);
@@ -297,12 +292,14 @@ public class MainMenuView implements Screen, AppMenu {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
         if (backgroundTexture != null) {
             stage.getBatch().begin();
+            stage.getBatch().setColor(1, 1, 1, 1);
             stage.getBatch().draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             stage.getBatch().end();
         }
