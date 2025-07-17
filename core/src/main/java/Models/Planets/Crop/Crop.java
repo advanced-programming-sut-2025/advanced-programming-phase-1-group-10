@@ -8,6 +8,7 @@ public class Crop implements Item {
     private int numberOfCrop;
     private int currentStageIndex;
     private DateTime lastWateredDate;
+    private DateTime whenPlanted;
     private boolean isFertilized;
     private boolean isHarvestable;
 
@@ -78,5 +79,13 @@ public class Crop implements Item {
 
     public void setHarvestable(boolean harvestable) {
         isHarvestable = harvestable;
+    }
+
+    public DateTime getWhenPlanted() {
+        return whenPlanted;
+    }
+
+    public void setWhenPlanted(DateTime whenPlanted) {
+        this.whenPlanted = whenPlanted;
     }
 }
