@@ -59,7 +59,7 @@ public class GameMenu implements AppMenu {
                         }
                     }
                 }
-                App.getInstance().setCurrentMenu(Menu.GameLauncher);
+                //App.getInstance().setCurrentMenu(Menu.GameLauncher);
                 System.out.println("All players have chosen their farms. Game starts!");
             }
         } else {

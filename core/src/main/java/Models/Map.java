@@ -6,6 +6,8 @@ public class Map {
     public static final int mapHeight = 120;
     public static final int mapWidth = 160;
 
+    public static final int tileSize = 32;
+
 
     private final Tile[][] map = new Tile[mapHeight][mapWidth];
 

@@ -221,7 +221,8 @@ public class GameMenuView implements Screen, AppMenu {
 
                 if (result.state()) {
 
-                    App.getInstance().setCurrentMenu(Menu.GameLauncher);
+                    //App.getInstance().setCurrentMenu(Menu.GameLauncher);
+                    Main.getInstance().switchScreen(new GameLauncherView());
                     showSuccessMessage("game created!");
                     // going to the game
                     newGameDialog.hide();

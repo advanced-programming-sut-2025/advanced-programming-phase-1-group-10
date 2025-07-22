@@ -23,9 +23,10 @@
         "What is your favorite sport?": "salam"
       }
     },
-    "stayLoggedIn": true,
+    "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "assets/avatars/avatar1.png"
   },
   {
     "nickname": "ali",
