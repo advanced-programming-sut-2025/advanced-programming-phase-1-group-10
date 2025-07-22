@@ -1,3 +1,5 @@
+
+
 package Views;
 
 import Controllers.RegisterManuController;
@@ -12,6 +14,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,7 +32,8 @@ public class RegisterMenuView implements Screen, AppMenu {
     private Stage stage;
     private Skin skin;
     private ScrollPane scrollPane;
-
+    private SpriteBatch batch;
+    private Texture backgroundTexture;
 
     private enum ViewMode {
         REGISTER_FORM,
@@ -59,17 +64,26 @@ public class RegisterMenuView implements Screen, AppMenu {
     private final Color BUTTON_COLOR = new Color(0.2f, 0.6f, 0.9f, 1f);
     private final Color ERROR_COLOR = new Color(0.9f, 0.3f, 0.3f, 1f);
     private final Color SUCCESS_COLOR = new Color(0.3f, 0.7f, 0.3f, 1f);
+    private final Color PANEL_BACKGROUND_COLOR_TRANSPARENT = new Color(0, 0, 0, 0f);
 
     public RegisterMenuView() {
         controller = new RegisterManuController();
         stage = new Stage(new ScreenViewport());
+        batch = new SpriteBatch();
+
+        try {
+            backgroundTexture = new Texture(Gdx.files.internal("assets/backgrounds/RegisterMenu.png"));
 
 
+        } catch (Exception e) {
+            System.out.println("Background image not found or loaded incorrectly: " + e.getMessage());
+            backgroundTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGB888);
+            backgroundTexture.draw(new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGB888), 0, 0);
+        }
         Main main = (Main)Gdx.app.getApplicationListener();
         skin = main.getSkin();
 
         createUI();
-
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -87,11 +101,11 @@ public class RegisterMenuView implements Screen, AppMenu {
         createRegisterForm();
 
 
-        scrollPane = new ScrollPane(mainTable, skin);
-        scrollPane.setFillParent(true);
-        scrollPane.setScrollingDisabled(true, false);
+//        scrollPane = new ScrollPane(mainTable, skin);
+//        scrollPane.setFillParent(true);
+//        scrollPane.setScrollingDisabled(true, false);
 
-        stage.addActor(scrollPane);
+        stage.addActor(mainTable);
     }
 
     private void createRegisterForm() {
@@ -108,29 +122,29 @@ public class RegisterMenuView implements Screen, AppMenu {
         if (usernameField == null) {
             usernameField = new TextField("", skin);
         }
-        registerTable.add(usernameField).width(250).padBottom(15).row();
+        registerTable.add(usernameField).width(350).padBottom(15).row();
 
 
         registerTable.add(new Label("Nickname:", skin)).align(Align.left).padRight(10);
         if (nicknameField == null) {
             nicknameField = new TextField("", skin);
         }
-        registerTable.add(nicknameField).width(250).padBottom(15).row();
+        registerTable.add(nicknameField).width(350).padBottom(15).row();
 
 
         registerTable.add(new Label("Email:", skin)).align(Align.left).padRight(10);
         if (emailField == null) {
             emailField = new TextField("", skin);
         }
-        registerTable.add(emailField).width(250).padBottom(15).row();
+        registerTable.add(emailField).width(350).padBottom(15).row();
 
 
         registerTable.add(new Label("Gender:", skin)).align(Align.left).padRight(10);
 
 
         if (maleButton == null) {
-            maleButton = new TextButton("Male", skin, "toggle");
-            femaleButton = new TextButton("Female", skin, "toggle");
+            maleButton = new TextButton("Male", skin);
+            femaleButton = new TextButton("Female", skin);
             maleButton.setChecked(true);
 
 
@@ -170,7 +184,7 @@ public class RegisterMenuView implements Screen, AppMenu {
             passwordField.setPasswordCharacter('*');
             passwordField.setPasswordMode(true);
         }
-        registerTable.add(passwordField).width(250).padBottom(15).row();
+        registerTable.add(passwordField).width(350).padBottom(15).row();
 
 
         registerTable.add(new Label("Confirm Password:", skin)).align(Align.left).padRight(10);
@@ -179,7 +193,7 @@ public class RegisterMenuView implements Screen, AppMenu {
             confirmPasswordField.setPasswordCharacter('*');
             confirmPasswordField.setPasswordMode(true);
         }
-        registerTable.add(confirmPasswordField).width(250).padBottom(15).row();
+        registerTable.add(confirmPasswordField).width(350).padBottom(15).row();
 
 
         if (showPasswordCheckbox == null) {
@@ -227,8 +241,8 @@ public class RegisterMenuView implements Screen, AppMenu {
         });
 
         Table buttonTable = new Table();
-        buttonTable.add(registerButton).width(120).padRight(20);
-        buttonTable.add(loginButton).width(120);
+        buttonTable.add(registerButton).width(170).padRight(20);
+        buttonTable.add(loginButton).width(170);
 
         registerTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -256,7 +270,7 @@ public class RegisterMenuView implements Screen, AppMenu {
 
         final Label questionLabel = new Label("1. What was your first pet's name?", skin);
         questionLabel.setWrap(true);
-        securityTable.add(questionLabel).colspan(2).width(350).padBottom(20).row();
+        securityTable.add(questionLabel).colspan(2).width(370).padBottom(20).row();
 
 
         TextButton prevButton = new TextButton("<", skin);
@@ -279,20 +293,20 @@ public class RegisterMenuView implements Screen, AppMenu {
         });
 
         Table navigationTable = new Table();
-        navigationTable.add(prevButton).width(40).padRight(20);
-        navigationTable.add(nextButton).width(40);
+        navigationTable.add(prevButton).width(80).padRight(20);
+        navigationTable.add(nextButton).width(80);
 
         securityTable.add(navigationTable).colspan(2).padBottom(20).row();
 
 
         securityTable.add(new Label("Answer:", skin)).align(Align.left).padRight(10);
         final TextField answerField = new TextField("", skin);
-        securityTable.add(answerField).width(250).padBottom(15).row();
+        securityTable.add(answerField).width(350).padBottom(15).row();
 
 
         securityTable.add(new Label("Confirm Answer:", skin)).align(Align.left).padRight(10);
         final TextField confirmAnswerField = new TextField("", skin);
-        securityTable.add(confirmAnswerField).width(250).padBottom(30).row();
+        securityTable.add(confirmAnswerField).width(350).padBottom(30).row();
 
 
         TextButton confirmButton = new TextButton("Confirm", skin);
@@ -332,8 +346,8 @@ public class RegisterMenuView implements Screen, AppMenu {
         });
 
         Table buttonTable = new Table();
-        buttonTable.add(confirmButton).width(120).padRight(20);
-        buttonTable.add(backButton).width(120);
+        buttonTable.add(confirmButton).width(160).padRight(20);
+        buttonTable.add(backButton).width(160);
 
         securityTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -399,7 +413,7 @@ public class RegisterMenuView implements Screen, AppMenu {
                     handleRegisterWithSelectedUsername(suggestion);
                 }
             });
-            suggestionsTable.add(suggestionButton).colspan(2).width(250).padBottom(10).row();
+            suggestionsTable.add(suggestionButton).colspan(2).width(350).padBottom(10).row();
         }
 
 
@@ -411,7 +425,7 @@ public class RegisterMenuView implements Screen, AppMenu {
                 switchToView(ViewMode.REGISTER_FORM);
             }
         });
-        suggestionsTable.add(newUsernameButton).colspan(2).width(250).padTop(10).padBottom(20).row();
+        suggestionsTable.add(newUsernameButton).colspan(2).width(350).padTop(10).padBottom(20).row();
 
 
         TextButton backButton = new TextButton("Back", skin);
@@ -421,7 +435,7 @@ public class RegisterMenuView implements Screen, AppMenu {
                 switchToView(ViewMode.REGISTER_FORM);
             }
         });
-        suggestionsTable.add(backButton).colspan(2).width(120).padTop(20);
+        suggestionsTable.add(backButton).colspan(2).width(160).padTop(20);
     }
 
 
@@ -515,6 +529,14 @@ public class RegisterMenuView implements Screen, AppMenu {
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (backgroundTexture != null) {
+            batch.begin();
+            batch.setColor(1, 1, 1, 1);
+            batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.end();
+        }
+
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
@@ -542,6 +564,12 @@ public class RegisterMenuView implements Screen, AppMenu {
     public void dispose() {
         if (stage != null) {
             stage.dispose();
+        }
+        if (batch != null) {
+            batch.dispose();
+        }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
         }
     }
 

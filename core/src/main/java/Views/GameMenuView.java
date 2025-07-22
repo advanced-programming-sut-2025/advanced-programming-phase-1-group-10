@@ -76,30 +76,44 @@ public class GameMenuView implements Screen, AppMenu {
         mainTable.pad(50);
 
 
-        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("default-font"), TITLE_COLOR);
+        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("BoldImpact"), TITLE_COLOR);
         Label titleLabel = new Label("GAME MENU", titleStyle);
         titleLabel.setFontScale(2.0f);
         mainTable.add(titleLabel).colspan(2).padBottom(50).row();
 
 
-        newGameButton = createAnimatedButton("New Game", BUTTON_COLOR);
+        newGameButton = createAnimatedButton("New Game");
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showNewGameDialog();
             }
         });
-        mainTable.add(newGameButton).colspan(2).width(300).height(60).padBottom(20).row();
+        mainTable.add(newGameButton).colspan(2).width(300).height(80).padBottom(20).row();
 
 
-        TextButton backButton = createAnimatedButton("Back to Main Menu", BUTTON_COLOR);
+        TextButton quickGame = createAnimatedButton("Quick Game");
+        quickGame.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Result result = controller.quickGame();
+                if(result.state()) {
+                    System.out.println("game startttt!!!!");
+                    Main.getInstance().switchScreen(new GameLauncherView());
+                }
+            }
+        });
+        mainTable.add(quickGame).colspan(2).width(300).height(80).padBottom(20).row();
+
+
+        TextButton backButton = createAnimatedButton("Back to Main Menu");
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Main.getInstance().switchScreen(new MainMenuView());
             }
         });
-        mainTable.add(backButton).colspan(2).width(300).height(60).padBottom(20).row();
+        mainTable.add(backButton).colspan(2).width(300).height(80).padBottom(20).row();
 
 
         messageLabel = new Label("", skin);
@@ -110,16 +124,16 @@ public class GameMenuView implements Screen, AppMenu {
         stage.addActor(mainTable);
     }
 
-    private TextButton createAnimatedButton(String text, final Color color) {
+    public TextButton createAnimatedButton(String text) {
         TextButton button = new TextButton(text, skin);
-        button.setColor(color);
+//        button.setColor(color);
 
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 button.addAction(Actions.sequence(
                     Actions.parallel(
-                        Actions.color(BUTTON_HOVER_COLOR, 0.2f),
+//                        Actions.color(BUTTON_HOVER_COLOR, 0.2f),
                         Actions.scaleTo(1.05f, 1.05f, 0.2f, Interpolation.swingOut)
                     )
                 ));
@@ -127,10 +141,10 @@ public class GameMenuView implements Screen, AppMenu {
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setColor(color);
+//                button.setColor(color);
                 button.addAction(Actions.sequence(
                     Actions.parallel(
-                        Actions.color(color, 0.2f),
+//                        Actions.color(color, 0.2f),
                         Actions.scaleTo(1f, 1f, 0.2f, Interpolation.swingIn)
                     )
                 ));
@@ -142,7 +156,6 @@ public class GameMenuView implements Screen, AppMenu {
 
     private void showNewGameDialog() {
         Dialog newGameDialog = new Dialog("New Game", skin);
-
         Table contentTable = new Table();
         contentTable.pad(20);
 
@@ -156,7 +169,7 @@ public class GameMenuView implements Screen, AppMenu {
 
 
         TextButton addPlayerButton = new TextButton("+ Add Player", skin);
-        formTable.add(addPlayerButton).colspan(2).width(150).padBottom(20).row();
+        formTable.add(addPlayerButton).colspan(2).width(220).padBottom(20).row();
 
 
         addPlayerFields(formTable, usernameFields, farmTypeSelectBoxes, 1);
@@ -183,7 +196,7 @@ public class GameMenuView implements Screen, AppMenu {
         TextButton createButton = new TextButton("Create", skin);
         //TextButton cancelButton = new TextButton("Cancel", skin);
 
-        buttonTable.add(createButton).width(120).padRight(20);
+        buttonTable.add(createButton).width(160).padRight(20);
         //buttonTable.add(cancelButton).width(120);
 
 
@@ -223,7 +236,7 @@ public class GameMenuView implements Screen, AppMenu {
 
                     //App.getInstance().setCurrentMenu(Menu.GameLauncher);
                     Main.getInstance().switchScreen(new GameLauncherView());
-                    showSuccessMessage("game created!");
+//                    showSuccessMessage("game created!");
                     // going to the game
                     newGameDialog.hide();
                 } else {
@@ -245,7 +258,7 @@ public class GameMenuView implements Screen, AppMenu {
         scrollPane.setScrollingDisabled(true, false);
 
 
-        contentTable.add(scrollPane).width(500).height(400);
+        contentTable.add(scrollPane).width(850).height(550);
 
         newGameDialog.getContentTable().add(contentTable);
         newGameDialog.button("Cancel", false).key(com.badlogic.gdx.Input.Keys.ESCAPE, false);
@@ -261,11 +274,11 @@ public class GameMenuView implements Screen, AppMenu {
     private void addPlayerFields(Table contentTable, ArrayList<TextField> usernameFields, ArrayList<SelectBox<String>> farmTypeSelectBoxes, int playerNumber) {
 
         Label usernameLabel = new Label("Player " + playerNumber + " Username:", skin);
-        usernameLabel.setFontScale(1.1f);
+        usernameLabel.setFontScale(1.0f);
         contentTable.add(usernameLabel).padRight(10).align(Align.right).padBottom(5);
         TextField usernameField = new TextField("", skin);
         usernameField.getStyle().font.getData().setScale(1.1f);
-        contentTable.add(usernameField).width(250).padBottom(5).row();
+        contentTable.add(usernameField).width(270).padBottom(5).row();
         usernameFields.add(usernameField);
 
         Label farmTypeLabel = new Label("Player " + playerNumber + " Farm Type:", skin);
@@ -273,8 +286,8 @@ public class GameMenuView implements Screen, AppMenu {
         contentTable.add(farmTypeLabel).padRight(10).align(Align.right).padBottom(15);
         SelectBox<String> farmTypeSelectBox = new SelectBox<>(skin);
         farmTypeSelectBox.setItems("Type 1", "Type 2");
-        farmTypeSelectBox.getStyle().font.getData().setScale(1.1f);
-        contentTable.add(farmTypeSelectBox).width(180).padBottom(15).row();
+        farmTypeSelectBox.getStyle().font.getData().setScale(1.0f);
+        contentTable.add(farmTypeSelectBox).width(200).padBottom(5).row();
         farmTypeSelectBoxes.add(farmTypeSelectBox);
     }
 

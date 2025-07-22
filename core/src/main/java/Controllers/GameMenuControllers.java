@@ -42,6 +42,9 @@ public class GameMenuControllers {
         return new Result(true, "Game created.");
     }
 
+    public Result quickGame(){
+        return createGame("user1","user2","user3","user4");
+    }
 
     public boolean isUsernameExist(String username) {
         return App.getInstance().getUsers().stream().anyMatch(user -> user.getUsername().equals(username));

@@ -88,7 +88,7 @@ public class ProfileMenuView implements Screen, AppMenu {
 
     private void loadTextures() {
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("backgrounds/profile_bg.png"));
+            backgroundTexture = new Texture(Gdx.files.internal("backgrounds/ProfileMenu.png"));
         } catch (Exception e) {
             System.out.println("Background image not found: " + e.getMessage());
         }
@@ -179,18 +179,18 @@ public class ProfileMenuView implements Screen, AppMenu {
             contentTable.add(avatarImage).size(160, 160).colspan(2).padBottom(30).row();
         }
 
-        TextButton changeAvatarButton = createAnimatedButton("Change Avatar", BUTTON_COLOR);
+        TextButton changeAvatarButton = createAnimatedButton("Change Avatar");
         changeAvatarButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showAvatarSelectionDialog();
             }
         });
-        contentTable.add(changeAvatarButton).colspan(2).width(150).padBottom(20).row();
+        contentTable.add(changeAvatarButton).colspan(2).width(300).padBottom(20).row();
 
 
         Table infoTable = new Table();
-        infoTable.setBackground(skin.newDrawable("white", new Color(1, 1, 1, 0.8f)));
+        //infoTable.setBackground(skin.newDrawable("white", new Color(1, 1, 1, 0.8f)));
         infoTable.pad(15);
 
 
@@ -256,47 +256,47 @@ public class ProfileMenuView implements Screen, AppMenu {
         Table buttonsTable = new Table();
 
 
-        TextButton changeUsernameButton = createAnimatedButton("Change Username", BUTTON_COLOR);
+        TextButton changeUsernameButton = createAnimatedButton("Change Username");
         changeUsernameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showChangeUsernameForm();
             }
         });
-        buttonsTable.add(changeUsernameButton).width(200).padBottom(10).row();
+        buttonsTable.add(changeUsernameButton).width(300).padBottom(10).row();
 
 
-        TextButton changeNicknameButton = createAnimatedButton("Change Nickname", BUTTON_COLOR);
+        TextButton changeNicknameButton = createAnimatedButton("Change Nickname");
         changeNicknameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showChangeNicknameForm();
             }
         });
-        buttonsTable.add(changeNicknameButton).width(200).padBottom(10).row();
+        buttonsTable.add(changeNicknameButton).width(300).padBottom(10).row();
 
 
-        TextButton changeEmailButton = createAnimatedButton("Change Email", BUTTON_COLOR);
+        TextButton changeEmailButton = createAnimatedButton("Change Email");
         changeEmailButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showChangeEmailForm();
             }
         });
-        buttonsTable.add(changeEmailButton).width(200).padBottom(10).row();
+        buttonsTable.add(changeEmailButton).width(300).padBottom(10).row();
 
 
-        TextButton changePasswordButton = createAnimatedButton("Change Password", BUTTON_COLOR);
+        TextButton changePasswordButton = createAnimatedButton("Change Password");
         changePasswordButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showChangePasswordForm();
             }
         });
-        buttonsTable.add(changePasswordButton).width(200).padBottom(10).row();
+        buttonsTable.add(changePasswordButton).width(300).padBottom(10).row();
 
 
-        TextButton backButton = createAnimatedButton("Back to Main Menu", BACK_BUTTON_COLOR);
+        TextButton backButton = createAnimatedButton("Back to Main Menu");
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -308,7 +308,7 @@ public class ProfileMenuView implements Screen, AppMenu {
                 }
             }
         });
-        buttonsTable.add(backButton).width(200).padTop(20);
+        buttonsTable.add(backButton).width(300).padTop(20);
 
 
         buttonsTable.addAction(Actions.sequence(
@@ -410,7 +410,7 @@ public class ProfileMenuView implements Screen, AppMenu {
 
 
         TextButton backButton = new TextButton("Cancel", skin);
-        backButton.setColor(BACK_BUTTON_COLOR);
+//        backButton.setColor(BACK_BUTTON_COLOR);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -438,17 +438,15 @@ public class ProfileMenuView implements Screen, AppMenu {
         table.add(row).expandX().fillX().padBottom(10).row();
     }
 
-    private TextButton createAnimatedButton(String text, final Color color) {
+    private TextButton createAnimatedButton(String text) {
         TextButton button = new TextButton(text, skin);
-        button.setColor(color);
-
 
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 button.addAction(Actions.sequence(
                     Actions.parallel(
-                        Actions.color(BUTTON_HOVER_COLOR, 0.2f),
+//                        Actions.color(BUTTON_HOVER_COLOR, 0.2f),
                         Actions.scaleTo(1.05f, 1.05f, 0.2f, Interpolation.swingOut)
                     )
                 ));
@@ -458,7 +456,7 @@ public class ProfileMenuView implements Screen, AppMenu {
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 button.addAction(Actions.sequence(
                     Actions.parallel(
-                        Actions.color(color, 0.2f),
+//                        Actions.color(color, 0.2f),
                         Actions.scaleTo(1f, 1f, 0.2f, Interpolation.swingIn)
                     )
                 ));
@@ -489,13 +487,13 @@ public class ProfileMenuView implements Screen, AppMenu {
 
         Table buttonTable = new Table();
         TextButton submitButton = new TextButton("Submit", skin);
-        submitButton.setColor(BUTTON_COLOR);
+//        submitButton.setColor(BUTTON_COLOR);
 
         TextButton backButton = new TextButton("Back", skin);
-        backButton.setColor(BACK_BUTTON_COLOR);
+//        backButton.setColor(BACK_BUTTON_COLOR);
 
-        buttonTable.add(submitButton).width(120).padRight(20);
-        buttonTable.add(backButton).width(120);
+        buttonTable.add(submitButton).width(150).padRight(20);
+        buttonTable.add(backButton).width(150);
 
         contentTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -546,10 +544,10 @@ public class ProfileMenuView implements Screen, AppMenu {
         submitButton.setColor(BUTTON_COLOR);
 
         TextButton backButton = new TextButton("Back", skin);
-        backButton.setColor(BACK_BUTTON_COLOR);
+//        backButton.setColor(BACK_BUTTON_COLOR);
 
-        buttonTable.add(submitButton).width(120).padRight(20);
-        buttonTable.add(backButton).width(120);
+        buttonTable.add(submitButton).width(150).padRight(20);
+        buttonTable.add(backButton).width(150);
 
         contentTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -600,10 +598,10 @@ public class ProfileMenuView implements Screen, AppMenu {
         submitButton.setColor(BUTTON_COLOR);
 
         TextButton backButton = new TextButton("Back", skin);
-        backButton.setColor(BACK_BUTTON_COLOR);
+//        backButton.setColor(BACK_BUTTON_COLOR);
 
-        buttonTable.add(submitButton).width(120).padRight(20);
-        buttonTable.add(backButton).width(120);
+        buttonTable.add(submitButton).width(150).padRight(20);
+        buttonTable.add(backButton).width(150);
 
         contentTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -665,7 +663,7 @@ public class ProfileMenuView implements Screen, AppMenu {
             }
         });
 
-        contentTable.add(randomPasswordButton).colspan(2).width(250).padBottom(20).row();
+        contentTable.add(randomPasswordButton).colspan(2).width(400).padBottom(20).row();
 
 
         Table buttonTable = new Table();
@@ -673,10 +671,10 @@ public class ProfileMenuView implements Screen, AppMenu {
         submitButton.setColor(BUTTON_COLOR);
 
         TextButton backButton = new TextButton("Back", skin);
-        backButton.setColor(BACK_BUTTON_COLOR);
+//        backButton.setColor(BACK_BUTTON_COLOR);
 
-        buttonTable.add(submitButton).width(120).padRight(20);
-        buttonTable.add(backButton).width(120);
+        buttonTable.add(submitButton).width(150).padRight(20);
+        buttonTable.add(backButton).width(150);
 
         contentTable.add(buttonTable).colspan(2).padBottom(20).row();
 
@@ -776,7 +774,7 @@ public class ProfileMenuView implements Screen, AppMenu {
                 suggestionDialog.hide();
             }
         });
-        suggestionTable.add(newUsernameButton).width(300).padTop(10).row();
+        suggestionTable.add(newUsernameButton).width(350).padTop(10).row();
 
         suggestionDialog.getContentTable().add(suggestionTable);
         suggestionDialog.button("Cancel", false);

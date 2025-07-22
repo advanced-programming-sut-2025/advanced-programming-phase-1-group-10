@@ -79,10 +79,10 @@ public class LoginMenuView implements Screen, AppMenu {
         loginPanel.defaults().spaceBottom(15).align(Align.center);
 
 
-        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("default-font"), TITLE_COLOR);
+        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("BoldImpact"), TITLE_COLOR);
         Label titleLabel = new Label("Welcome to Stardew Valley!", titleStyle);
         titleLabel.setFontScale(1.8f);
-        loginPanel.add(titleLabel).colspan(2).padBottom(80).row();
+        loginPanel.add(titleLabel).colspan(2).padBottom(30).row();
 
 
         Label usernameLabel = new Label("Username:", skin);
@@ -90,7 +90,7 @@ public class LoginMenuView implements Screen, AppMenu {
         loginPanel.add(usernameLabel).align(Align.left);
         usernameField = new TextField("", skin);
         usernameField.setMessageText("Enter your username");
-        loginPanel.add(usernameField).width(300).height(40).row();
+        loginPanel.add(usernameField).width(500).height(70).row();
 
 
         Label passwordLabel = new Label("Password:", skin);
@@ -100,10 +100,10 @@ public class LoginMenuView implements Screen, AppMenu {
         passwordField.setPasswordCharacter('*');
         passwordField.setPasswordMode(true);
         passwordField.setMessageText("Enter your password");
-        loginPanel.add(passwordField).width(300).height(40).row();
+        loginPanel.add(passwordField).width(500).height(70).row();
 
 
-        stayLoggedInCheckbox = new CheckBox(" Keep me logged in", skin);
+        stayLoggedInCheckbox = new CheckBox("Keep me logged in", skin);
         stayLoggedInCheckbox.getLabel().setColor(TEXT_COLOR);
         loginPanel.add(stayLoggedInCheckbox).colspan(2).align(Align.left).padBottom(25).row();
 
@@ -111,11 +111,11 @@ public class LoginMenuView implements Screen, AppMenu {
         Table buttonRow = new Table();
         TextButton loginButton = new TextButton("Login", skin);
         styleButton(loginButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
-        buttonRow.add(loginButton).width(140).height(50).padRight(20);
+        buttonRow.add(loginButton).width(180).height(70).padRight(20);
 
         TextButton registerButton = new TextButton("Register", skin);
         styleButton(registerButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
-        buttonRow.add(registerButton).width(140).height(50);
+        buttonRow.add(registerButton).width(180).height(70);
         loginPanel.add(buttonRow).colspan(2).padBottom(20).row();
 
 
@@ -127,7 +127,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         TextButton backtoMainMenuButton = new TextButton("Back to Main Menu", skin);
         styleButton(backtoMainMenuButton, new Color(0.7f, 0.4f, 0.2f, 1f), new Color(0.8f, 0.5f, 0.3f, 1f));
-        loginPanel.add(backtoMainMenuButton).colspan(2).width(250).height(50).row();
+        loginPanel.add(backtoMainMenuButton).colspan(2).width(360).height(80).row();
 
 
 
@@ -258,7 +258,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         TextButton submitButton = new TextButton("Submit", skin);
         styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
-        forgotTable.add(submitButton).colspan(2).width(150).height(40).row();
+        forgotTable.add(submitButton).colspan(2).width(180).height(60).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -317,7 +317,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         TextButton submitButton = new TextButton("Submit", skin);
         styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
-        securityTable.add(submitButton).colspan(2).width(150).height(40).row();
+        securityTable.add(submitButton).colspan(2).width(180).height(60).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -358,8 +358,8 @@ public class LoginMenuView implements Screen, AppMenu {
         TextButton noButton = new TextButton("No", skin);
         styleButton(noButton, new Color(0.7f, 0.4f, 0.2f, 1f), new Color(0.8f, 0.5f, 0.3f, 1f));
 
-        buttonTable.add(yesButton).width(100).height(40).padRight(20);
-        buttonTable.add(noButton).width(100).height(40);
+        buttonTable.add(yesButton).width(130).height(60).padRight(20);
+        buttonTable.add(noButton).width(130).height(60);
 
         passwordTable.add(buttonTable).colspan(2).row();
 
@@ -408,7 +408,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
         TextButton submitButton = new TextButton("Submit", skin);
         styleButton(submitButton, BUTTON_COLOR_NORMAL, BUTTON_COLOR_HOVER);
-        passwordTable.add(submitButton).colspan(2).width(150).height(40).row();
+        passwordTable.add(submitButton).colspan(2).width(180).height(60).row();
 
         submitButton.addListener(new ClickListener() {
             @Override
@@ -427,7 +427,7 @@ public class LoginMenuView implements Screen, AppMenu {
 
                     TextButton retryButton = new TextButton("Try Again", skin);
                     styleButton(retryButton, new Color(0.6f, 0.6f, 0.6f, 1f), new Color(0.7f, 0.7f, 0.7f, 1f));
-                    passwordTable.add(retryButton).colspan(2).width(150).height(40).padTop(10).row();
+                    passwordTable.add(retryButton).colspan(2).width(190).height(60).padTop(10).row();
                     passwordTable.pack();
 
                     retryButton.addListener(new ClickListener() {

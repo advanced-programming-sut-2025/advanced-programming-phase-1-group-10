@@ -29,7 +29,7 @@
     "avatarPath": "assets/avatars/avatar1.png"
   },
   {
-    "nickname": "ali",
+    "nickname": "salam",
     "password": "fXnM9+OHLq\u0027h",
     "username": "ilia",
     "gender": "Male",
@@ -40,9 +40,10 @@
         "What was the name of your first school?": "salam"
       }
     },
-    "stayLoggedIn": true,
+    "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "avatars/avatar2.png"
   },
   {
     "nickname": "salami",
@@ -106,7 +107,8 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "assets/avatars/avatar1.png"
   },
   {
     "nickname": "salam",
@@ -309,6 +311,40 @@
     "pickQuestion": {
       "5": {
         "What was the name of your first school?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
+  },
+  {
+    "nickname": "sala,",
+    "password": "{phrR\u003e\u0026F[J\u00275",
+    "hashPassword": "Gf4QECoE2fHl5s0+SWd1XA\u003d\u003d:0w9iuoGLQZLOSo+djQbA4fQSA9/6pofaApnnG85gdSc\u003d",
+    "username": "isal45653",
+    "gender": "Female",
+    "email": "kakk@ahgjd.cso",
+    "pickQuestionNumber": 2,
+    "pickQuestion": {
+      "2": {
+        "Who was your best friend in childhood?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0
+  },
+  {
+    "nickname": "sala,",
+    "password": "V5Yy+|r^n3\u003c1",
+    "hashPassword": "AMonn4RqIb+GHn1au2aQWA\u003d\u003d:B72HsUykbJ1fq8ZytEsAnsSxaNP9Pkx9p35xc98hkw8\u003d",
+    "username": "isal53",
+    "gender": "Male",
+    "email": "dall@ysd.cs",
+    "pickQuestionNumber": 1,
+    "pickQuestion": {
+      "1": {
+        "What is your favorite color?": "salamm"
       }
     },
     "stayLoggedIn": false,

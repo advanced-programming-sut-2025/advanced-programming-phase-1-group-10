@@ -1,5 +1,6 @@
 package Views;
 
+import Controllers.GameMenuControllers;
 import Controllers.MainMenuControllers;
 import Models.*;
 
@@ -103,7 +104,7 @@ public class MainMenuView implements Screen, AppMenu {
         mainTable.pad(50);
 
 
-        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("default-font"), TITLE_COLOR);
+        Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("Impact"), TITLE_COLOR);
         Label titleLabel = new Label("STARDEW VALLEY", titleStyle);
         titleLabel.setFontScale(2.0f);
         mainTable.add(titleLabel).colspan(2).padBottom(30).row();
@@ -149,12 +150,25 @@ public class MainMenuView implements Screen, AppMenu {
             mainTable.add(userInfoTable).colspan(2).padBottom(40).row();
         }
 
-        createMenuButton("Game Menu", "game menu", BUTTON_COLOR);
-        createMenuButton("Profile Menu", "profile menu", BUTTON_COLOR);
+        createMenuButton("Game Menu", "game menu");
+        createMenuButton("Profile Menu", "profile menu");
+
+        TextButton quickGame = new TextButton("quick game", skin);
+        quickGame.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameMenuControllers controllers  = new GameMenuControllers();
+                Result result = controllers.quickGame();
+                if(result.state()) {
+                    Main.getInstance().switchScreen(new GameLauncherView());
+                }
+            }
+        });
+        mainTable.add(quickGame).colspan(2).width(300).height(80).padBottom(20).row();
 
 
         if (currentUser == null) {
-            createMenuButton("Login / Register", "login menu", BUTTON_COLOR);
+            createMenuButton("Login / Register", "login menu");
         } else {
 
             TextButton logoutButton = new TextButton("Logout", skin);
@@ -199,20 +213,20 @@ public class MainMenuView implements Screen, AppMenu {
         stage.addActor(mainTable);
     }
 
-    private void createMenuButton(String text, final String menuName, Color color) {
+    private void createMenuButton(String text, final String menuName) {
         TextButton button = new TextButton(text, skin);
-        styleButton(button, color);
+        //styleButton(button, color);
 
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                button.setColor(BUTTON_HOVER_COLOR);
+                //button.setColor(BUTTON_HOVER_COLOR);
                 button.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                button.setColor(color);
+                //button.setColor(color);
                 button.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
@@ -222,7 +236,7 @@ public class MainMenuView implements Screen, AppMenu {
             }
         });
 
-        mainTable.add(button).colspan(2).width(300).height(60).padBottom(20).row();
+        mainTable.add(button).colspan(2).width(300).height(80).padBottom(20).row();
     }
 
     private void styleButton(TextButton button, Color color) {

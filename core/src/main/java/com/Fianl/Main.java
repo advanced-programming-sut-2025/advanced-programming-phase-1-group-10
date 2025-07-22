@@ -21,7 +21,7 @@ public class Main extends Game {
 
 
         try {
-            skin = new Skin(Gdx.files.internal("assets/skin/uiskin.json"));
+            skin = new Skin(Gdx.files.internal("assets/mainskin/skin.json"));
         } catch (Exception e) {
             System.out.println("Error loading skin: " + e.getMessage());
             e.printStackTrace();
