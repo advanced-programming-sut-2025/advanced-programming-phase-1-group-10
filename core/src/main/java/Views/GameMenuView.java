@@ -233,8 +233,8 @@ public class GameMenuView implements Screen, AppMenu {
                 );
 
                 if (result.state()) {
-
                     //App.getInstance().setCurrentMenu(Menu.GameLauncher);
+                    controller.setUpFarms(farmTypes);
                     Main.getInstance().switchScreen(new GameLauncherView());
 //                    showSuccessMessage("game created!");
                     // going to the game

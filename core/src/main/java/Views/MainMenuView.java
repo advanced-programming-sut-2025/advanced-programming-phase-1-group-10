@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MainMenuView implements Screen, AppMenu {
@@ -160,6 +162,7 @@ public class MainMenuView implements Screen, AppMenu {
                 GameMenuControllers controllers  = new GameMenuControllers();
                 Result result = controllers.quickGame();
                 if(result.state()) {
+                    controllers.setUpFarms(new ArrayList<>(Arrays.asList("1","2","2","1")));
                     Main.getInstance().switchScreen(new GameLauncherView());
                 }
             }

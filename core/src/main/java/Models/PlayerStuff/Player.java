@@ -1,11 +1,16 @@
 package Models.PlayerStuff;
 
 
+import Assets.PlayerAsset;
 import Models.*;
 import Models.Animal.Animal;
 import Models.FriendShip.Friendship;
 import Models.FriendShip.Gift;
 import Models.Tools.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 import java.util.ArrayList;
@@ -16,6 +21,22 @@ public class Player implements Person {
 
     private String name;
     private Gender gender;
+
+
+    public static int PLAYER_WIDTH = 32;
+    public static int PLAYER_HEIGHT = 64;
+
+    private float x, y;
+    private float speed = 100f;
+    private float stateTime;
+    private Direction direction = Direction.DOWN;
+    private boolean moving = false;
+
+    private final PlayerAsset playerAsset = new PlayerAsset();
+
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     private Position position;
 
@@ -216,5 +237,81 @@ public class Player implements Person {
 
     public void setGold(int gold) {
         this.gold = gold;
+    }
+
+    public void update(float delta) {
+        moving = false;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            x -= speed * delta;
+            direction = Direction.LEFT;
+            moving = true;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            x += speed * delta;
+            direction = Direction.RIGHT;
+            moving = true;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            y += speed * delta;
+            direction = Direction.UP;
+            moving = true;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            y -= speed * delta;
+            direction = Direction.DOWN;
+            moving = true;
+        }
+
+        stateTime += delta;
+
+        // Sync Position with pixel coordinates
+        int row = (int) (y / Map.tileSize);
+        int col = (int) (x / Map.tileSize);
+        this.position = new Position(row, col);
+
+        System.out.println(position.getX() + " " + position.getY());
+
+    }
+
+
+    public void render(SpriteBatch batch) {
+        TextureRegion currentFrame;
+
+        if (moving) {
+            switch (direction) {
+                case UP:
+                    currentFrame = playerAsset.getWalkUpAnimation().getKeyFrame(stateTime, true);
+                    break;
+                case DOWN:
+                    currentFrame = playerAsset.getWalkDownAnimation().getKeyFrame(stateTime, true);
+                    break;
+                case LEFT:
+                    currentFrame = playerAsset.getWalkLeftAnimation().getKeyFrame(stateTime, true);
+                    break;
+                case RIGHT:
+                    currentFrame = playerAsset.getWalkRightAnimation().getKeyFrame(stateTime, true);
+                    break;
+                default:
+                    currentFrame = playerAsset.getIdleFrame();
+            }
+        } else {
+            currentFrame = playerAsset.getIdleFrame();
+        }
+
+        batch.draw(currentFrame, x, y,PLAYER_WIDTH,PLAYER_HEIGHT);
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 }

@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.*;
+import Models.Commands.GameMenuCommands;
 import Models.FriendShip.Friendship;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
@@ -17,7 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
+
+import static Models.App.getInstance;
 
 public class GameMenuControllers {
 
@@ -383,4 +387,31 @@ public class GameMenuControllers {
     }
 
 
+    public void setUpFarms(ArrayList<String> farmTypes) {
+        int index = 0;
+        for (Player player : getInstance().getCurrentGame().getPlayers()) {
+            String mapNumber = String.valueOf(farmTypes.get(index).charAt(farmTypes.get(index).length() - 1));
+            Position position = chooseStartingPoint(
+                getInstance().getCurrentGame().getPlayers().indexOf(player)
+            );
+            //Create farm
+            System.out.println(mapNumber);
+            Farm farm = createFarm(mapNumber, position, getInstance().getCurrentGame());
+            //Set player postion left-up of the house.
+            Position playerPostion = getPlaceByName(farm.getPlaces(), "House").getPosition();
+            player.setPosition(new Position(0,0));
+            player.getPosition().setX(playerPostion.getX() - 1);
+            player.getPosition().setY(playerPostion.getY() - 1);
+            player.setX(player.getPosition().getX() * Map.mapWidth);
+            player.setY(player.getPosition().getY() * Map.mapHeight);
+            getTileByPosition(player.getPosition()).setPerson(player);
+            putRandomMineral(farm,4);
+            putRandomForagingPlanet(farm,10);
+            //Give farm to player
+            player.setFarm(farm);
+            //Set up Realation with players
+            setUpFriendShip(player);
+            index++;
+        }
+    }
 }

@@ -1,28 +1,34 @@
 package Views;
 
 import Controllers.FinalControllers.GameControllerFinal;
+import Models.App;
+import Models.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import java.util.Scanner;
 
 public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private final Stage stage;
-    private final ScreenViewport viewport;
+    private OrthographicCamera camera;
+    private final StretchViewport viewport;
     private final GameControllerFinal controller;
 
     public GameLauncherView() {
-        this.viewport = new ScreenViewport();
+        this.camera = new OrthographicCamera();
+        this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         this.stage = new Stage(viewport);
         this.controller = new GameControllerFinal();
         this.controller.setView(this);
 
+        viewport.apply();
         Gdx.input.setInputProcessor(this);
     }
 
@@ -33,12 +39,23 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public void show() {
+        float centerX = Map.mapWidth * Map.tileSize / 2f;
+        float centerY = Map.mapHeight * Map.tileSize / 2f;
 
+        camera.position.set(centerX, centerY, 0);
+        camera.update();
     }
 
     @Override
     public void render(float v) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        stage.getBatch().setProjectionMatrix(camera.combined);
+
+        camera.position.set(App.getInstance().getCurrentGame().getCurrentPlayer().getX(), App.getInstance().getCurrentGame().getCurrentPlayer().getY(), 0);
+        camera.update();
+
+        camera.zoom = 1f;
 
         stage.getBatch().begin();
         controller.update((SpriteBatch) stage.getBatch());

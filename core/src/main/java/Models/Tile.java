@@ -1,6 +1,7 @@
 package Models;
 
 import Models.Animal.Animal;
+import Models.Place.Lake;
 import Models.Place.Place;
 import Models.Planets.Seed;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -107,7 +108,10 @@ public class Tile {
     }
 
     public void update(){
-        if(tileType == TileType.Wall){
+
+        if(this.place instanceof Lake){
+            this.tileType = TileType.Lake;
+        } else if(tileType == TileType.Wall){
             return;
         } else if(!plow && !watered){
             this.tileType = TileType.Grass;
