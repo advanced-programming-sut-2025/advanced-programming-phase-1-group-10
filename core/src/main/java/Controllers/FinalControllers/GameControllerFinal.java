@@ -10,12 +10,14 @@ public class GameControllerFinal {
 
     private MapController mapController;
     private PlayerController playerController;
+    private BarController barController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
         this.mapController = new MapController();
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
+        this.barController = new BarController();
     }
 
     public void update(SpriteBatch batch) {
@@ -23,4 +25,15 @@ public class GameControllerFinal {
         playerController.update(batch);
     }
 
+    public MapController getMapController() {
+        return mapController;
+    }
+
+    public PlayerController getPlayerController() {
+        return playerController;
+    }
+
+    public BarController getBarController() {
+        return barController;
+    }
 }

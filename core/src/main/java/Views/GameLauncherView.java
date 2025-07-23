@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -18,8 +19,14 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private final Stage stage;
     private final OrthographicCamera camera;
+    private OrthographicCamera hudCamera;
     private final StretchViewport viewport;
     private final GameControllerFinal controller;
+
+
+    private final SpriteBatch batch;
+
+    private float elapsedTime;
 
     public GameLauncherView() {
         this.camera = new OrthographicCamera();
@@ -27,7 +34,10 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         this.stage = new Stage(viewport);
         this.controller = new GameControllerFinal();
         this.controller.setView(this);
-
+        this.batch = (SpriteBatch) stage.getBatch();
+        this.hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        hudCamera.update();
         viewport.apply();
         Gdx.input.setInputProcessor(this);
     }
@@ -39,11 +49,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public void show() {
-        float centerX = Map.mapWidth * Map.tileSize / 2f;
-        float centerY = Map.mapHeight * Map.tileSize / 2f;
 
-        camera.position.set(centerX, centerY, 0);
-        camera.update();
     }
 
     @Override
@@ -67,21 +73,29 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
         camera.position.set(cameraX, cameraY, 0);
 
+        camera.zoom = 1f;
         camera.update();
 
-        stage.getBatch().setProjectionMatrix(camera.combined);
-
-        stage.getBatch().begin();
+        // ----- Render game world -----
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
         controller.update((SpriteBatch) stage.getBatch());
-        stage.getBatch().end();
+        batch.end();
 
-        stage.act();
-        stage.draw();
+        // ----- Render HUD/UI (BarController) -----
+        // Switch to screen-space projection (identity matrix)
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+        controller.getBarController().update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+
+        elapsedTime += delta;
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        hudCamera.setToOrtho(false, width, height);
     }
 
     @Override

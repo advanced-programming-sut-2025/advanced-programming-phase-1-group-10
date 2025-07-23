@@ -19,6 +19,7 @@ public class Player implements Person {
     private final String name;
     private Gender gender;
 
+    public static final int STARTING_GOLD = 43200;
 
     public static int PLAYER_WIDTH = 32;
     public static int PLAYER_HEIGHT = 64;
@@ -65,6 +66,7 @@ public class Player implements Person {
         this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
         this.isFainted = false;
         this.inventory = new Inventory();
+        this.gold = STARTING_GOLD;
         this.inventory.getBackPack().getItems().addAll(Arrays.asList(
                 new Hoe(Quality.STARTER,5),
                 new Pickaxe(Quality.STARTER,5),
