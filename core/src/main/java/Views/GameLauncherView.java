@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private final Stage stage;
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
     private final StretchViewport viewport;
     private final GameControllerFinal controller;
 
@@ -47,15 +47,29 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.getBatch().setProjectionMatrix(camera.combined);
+        // Get camera dimensions in world units
+        float halfWidth = camera.viewportWidth * camera.zoom / 2f;
+        float halfHeight = camera.viewportHeight * camera.zoom / 2f;
 
-        camera.position.set(App.getInstance().getCurrentGame().getCurrentPlayer().getX(), App.getInstance().getCurrentGame().getCurrentPlayer().getY(), 0);
+        // Get map boundaries in pixels
+        float mapPixelWidth = Map.mapWidth * Map.tileSize;
+        float mapPixelHeight = Map.mapHeight * Map.tileSize;
+
+        // Get player coordinates
+        float targetX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
+        float targetY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
+
+        // Clamp camera position so it doesn’t show areas outside the map
+        float cameraX = Math.max(halfWidth, Math.min(targetX, mapPixelWidth - halfWidth));
+        float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
+        camera.position.set(cameraX, cameraY, 0);
+
         camera.update();
 
-        camera.zoom = 1f;
+        stage.getBatch().setProjectionMatrix(camera.combined);
 
         stage.getBatch().begin();
         controller.update((SpriteBatch) stage.getBatch());
