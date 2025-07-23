@@ -107,20 +107,11 @@ public class Tile {
         return " ";
     }
 
-    public void update(){
-
-        if(this.place instanceof Lake){
-            this.tileType = TileType.Lake;
-        } else if(tileType == TileType.Wall){
-            return;
-        } else if(!plow && !watered){
-            this.tileType = TileType.Grass;
-        } else if(plow && !watered){
-            this.tileType = TileType.Plowed;
-        } else if(plow && watered){
-            this.tileType = TileType.Watered;
-        }
+    public void setPosition(Position position) {
+        this.position = position;
     }
+
+
     public void render(SpriteBatch batch, float x, float y) {
         batch.draw(tileType.getSprite(), x, y);
     }

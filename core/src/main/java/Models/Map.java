@@ -28,4 +28,13 @@ public class Map {
     public Tile[][] getMap() {
         return map;
     }
+
+    public float getWidth() {
+        return mapWidth * tileSize;
+    }
+
+    public float getHeight() {
+        return mapHeight * tileSize;
+    }
+
 }
