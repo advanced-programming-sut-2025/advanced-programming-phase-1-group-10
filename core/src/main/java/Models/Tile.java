@@ -5,6 +5,7 @@ import Models.Place.Lake;
 import Models.Place.Place;
 import Models.Planets.Seed;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Tile {
 
@@ -20,6 +21,8 @@ public class Tile {
     private boolean plow = false;
     private boolean watered = false;
     private boolean fertilizer = false;
+
+    private TextureRegion assetRegion;
 
     private Seed plantedSeed;
 
@@ -111,10 +114,23 @@ public class Tile {
         this.position = position;
     }
 
-
     public void render(SpriteBatch batch, float x, float y) {
-        batch.draw(tileType.getSprite(), x, y);
+        if(assetRegion == null) {
+            batch.draw(tileType.getSprite(), x, y);
+            return;
+        }
+        batch.draw(assetRegion, x, y);
     }
+
+    public void setAssetRegion(TextureRegion region) {
+        this.assetRegion = region;
+    }
+
+    public TextureRegion getAssetRegion() {
+        return assetRegion;
+    }
+
+
 }
 
 

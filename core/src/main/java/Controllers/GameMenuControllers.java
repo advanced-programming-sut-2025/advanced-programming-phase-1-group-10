@@ -1,7 +1,8 @@
 package Controllers;
 
+import Assets.HouseAsset;
 import Models.*;
-import Models.Commands.GameMenuCommands;
+import Models.Config.FarmConfig;
 import Models.FriendShip.Friendship;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
@@ -13,12 +14,14 @@ import Models.Planets.Crop.ForagingCropType;
 import Models.Planets.Tree;
 import Models.Planets.TreeType;
 import Models.PlayerStuff.Player;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import static Models.App.getInstance;
@@ -84,15 +87,86 @@ public class GameMenuControllers {
         }
     }
 
-
-    public Farm createFarm(String num, Position position, Game game) {
+    public Farm createFarm(String type, Position start, Game game) {
+        FarmConfig config = getFarmConfig(type);
         Farm farm = new Farm();
-        if (num.equals("1")) {
-            farm = createFarmType1(position, game);
-        } else if (num.equals("2")) {
-            farm = createFarmType2(position, game);
+        farm.setPosition(start);
+
+        // Setup farm tiles
+        for (int i = 0; i < Farm.farmHeight; i++) {
+            for (int j = 0; j < Farm.farmWidth; j++) {
+                Tile tile = game.getGameMap().getMap()[start.getX() + i][start.getY() + j];
+                farm.getTiles()[i][j] = tile;
+                tile.setFarm(farm);
+
+                if ((i == 0 || i == Farm.farmHeight - 1 || j == 0 || j == Farm.farmWidth - 1)) {
+                    if (!((j > 29 && j < 35) || (j > 126 && j < 132))) {
+                        tile.setTileType(TileType.Wall);
+                    }
+                }
+            }
         }
+
+        // Add farm features
+        farm.getPlaces().add(createPlace(game, start, farm, config.lakeOffset, config.lakeHeight, config.lakeWidth, PlaceType.LAKE));
+        farm.getPlaces().add(createPlace(game, start, farm, config.houseOffset, config.houseHeight, config.houseWidth, PlaceType.HOUSE));
+        farm.getPlaces().add(createPlace(game, start, farm, config.quarryOffset, config.quarryHeight, config.quarryWidth, PlaceType.QUARRY));
+        farm.getPlaces().add(createPlace(game, start, farm, config.greenhouseOffset, config.greenhouseHeight, config.greenhouseWidth, PlaceType.GREENHOUSE));
+
         return farm;
+    }
+
+    private FarmConfig getFarmConfig(String type) {
+        return switch (type) {
+            case "1" -> new FarmConfig(
+                new Position(16, 24), 5, 15,
+                new Position(8, 24), 8, 8,
+                new Position(16, 4), 4, 8,
+                new Position(8, 8), 6, 7
+            );
+            case "2" -> new FarmConfig(
+                new Position(10, 40), 4, 12,
+                new Position(12, 24), 8, 8,
+                new Position(16, 8), 4, 6,
+                new Position(4, 8), 6, 7
+            );
+            default -> throw new IllegalArgumentException("Invalid farm type: " + type);
+        };
+    }
+
+    private Place createPlace(Game game, Position start, Farm farm, Position offset, int height, int width, PlaceType type) {
+        Position absPos = new Position(start.getX() + offset.getX(), start.getY() + offset.getY());
+        Place place;
+
+        switch (type) {
+            case LAKE:
+                place = new Lake(absPos, height, width);
+                break;
+            case QUARRY:
+                place = new Quarry(absPos, height, width);
+                break;
+            case GREENHOUSE:
+                place = new GreenHouse(absPos, height, width);
+                break;
+            case HOUSE:
+                place = new House(absPos, height, width);
+                if (!setUpPlace(game, height, width, absPos, place)) {
+                    throw new RuntimeException("Failed to place house at: " + absPos);
+                }
+                TextureRegion[][] regions = new HouseAsset(new Texture("place/house/houseOutside.png")).getHouseRegions();
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        Tile tile = place.getPlaceTiles()[i][j];
+                        tile.setAssetRegion(regions[height - 1 - i][j]);
+                    }
+                }
+                return place;
+            default:
+                throw new IllegalArgumentException("Unknown place type: " + type);
+        }
+
+        setUpPlace(game, height, width, absPos, place);
+        return place;
     }
 
     public Position chooseStartingPoint(int index) {
@@ -110,130 +184,6 @@ public class GameMenuControllers {
         return null;
     }
 
-    public Farm createFarmType2(Position startingPosition, Game game) {
-
-        Farm farm = new Farm();
-        farm.setPosition(startingPosition);
-        //Create Farm
-        for (int height = startingPosition.getX(); height < startingPosition.getX() + Farm.farmHeight; height++) {
-            for (int width = startingPosition.getY(); width < startingPosition.getY() + Farm.farmWidth; width++) {
-                Tile tile = game.getGameMap().getMap()[height][width];
-                farm.getTiles()[height - startingPosition.getX()][width - startingPosition.getY()] = tile;
-                tile.setFarm(farm);
-            }
-        }
-        for (int height = 0; height < Farm.farmHeight; height++) {
-            for (int width = 0; width < Farm.farmWidth; width++) {
-                if ((height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1)) {
-                    if (!( (width > 29 && width < 35) || (width > 126 && width < 132) )){
-                        farm.getTiles()[height][width].setTileType(TileType.Wall);
-                    }
-                }
-
-            }
-        }
-        //Create lake, lake data:
-        final int lakeHeight = 4;
-        final int lakeWidth = 12;
-        final Position lakeBasePositon = new Position(10, 40);
-        final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
-        farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
-        //Create house, house data:
-        final int houseHeight = 4;
-        final int houseWidth = 4;
-        final Position houseBasePostion = new Position(12, 24);
-        final Position housePosition = new Position(startingPosition.getX() + houseBasePostion.getX(), startingPosition.getY() + houseBasePostion.getY());
-        farm.getPlaces().add(createHouse(startingPosition, game, farm, houseHeight, houseWidth, housePosition));
-        //Create Quarry
-        final int quarryHeight = 4;
-        final int quarryWidth = 6;
-        final Position quarryBasePosition = new Position(16, 8);
-        final Position quarryPostion = new Position(startingPosition.getX() + quarryBasePosition.getX(), startingPosition.getY() + quarryBasePosition.getY());
-        farm.getPlaces().add(createQuarry(startingPosition, game, farm, quarryHeight, quarryWidth, quarryPostion));
-        //Create GreenHouse
-        final int greenHouseHeight = 6;
-        final int greenHouseWidth = 7;
-        final Position greenHouseBasePostion = new Position(4, 8);
-        final Position greenHousePosition = new Position(startingPosition.getX() + greenHouseBasePostion.getX(), startingPosition.getY() + greenHouseBasePostion.getY());
-        farm.getPlaces().add(createGreenHouse(startingPosition, game, farm, greenHouseHeight, greenHouseWidth, greenHousePosition));
-        return farm;
-    }
-
-
-    public Farm createFarmType1(Position startingPosition, Game game) {
-
-        Farm farm = new Farm();
-        farm.setPosition(startingPosition);
-        //Create Farm
-        for (int height = startingPosition.getX(); height < startingPosition.getX() + Farm.farmHeight; height++) {
-            for (int width = startingPosition.getY(); width < startingPosition.getY() + Farm.farmWidth; width++) {
-                Tile tile = game.getGameMap().getMap()[height][width];
-                farm.getTiles()[height - startingPosition.getX()][width - startingPosition.getY()] = tile;
-                tile.setFarm(farm);
-            }
-        }
-        for (int height = 0; height < Farm.farmHeight; height++) {
-            for (int width = 0; width < Farm.farmWidth; width++) {
-                if (height == 0 || height == Farm.farmHeight - 1 || width == 0 || width == Farm.farmWidth - 1) {
-                    if (!( (width > 29 && width < 35) || (width > 126 && width < 132) )){
-                        farm.getTiles()[height][width].setTileType(TileType.Wall);
-                    }
-                }
-
-            }
-        }
-        //Create lake, lake data:
-        final int lakeHeight = 5;
-        final int lakeWidth = 15;
-        final Position lakeBasePositon = new Position(16, 24);
-        final Position lakePosition = new Position(startingPosition.getX() + lakeBasePositon.getX(), startingPosition.getY() + lakeBasePositon.getY());
-        farm.getPlaces().add(createLake(startingPosition, game, farm, lakeHeight, lakeWidth, lakePosition));
-        //Create house, house data:
-        final int houseHeight = 4;
-        final int houseWidth = 4;
-        final Position houseBasePostion = new Position(8, 24);
-        final Position housePosition = new Position(startingPosition.getX() + houseBasePostion.getX(), startingPosition.getY() + houseBasePostion.getY());
-        farm.getPlaces().add(createHouse(startingPosition, game, farm, houseHeight, houseWidth, housePosition));
-        //Create Quarry
-        final int quarryHeight = 4;
-        final int quarryWidth = 8;
-        final Position quarryBasePosition = new Position(16, 4);
-        final Position quarryPostion = new Position(startingPosition.getX() + quarryBasePosition.getX(), startingPosition.getY() + quarryBasePosition.getY());
-        farm.getPlaces().add(createQuarry(startingPosition, game, farm, quarryHeight, quarryWidth, quarryPostion));
-        //Create GreenHouse
-        final int greenHouseHeight = 6;
-        final int greenHouseWidth = 7;
-        final Position greenHouseBasePostion = new Position(8, 8);
-        final Position greenHousePosition = new Position(startingPosition.getX() + greenHouseBasePostion.getX(), startingPosition.getY() + greenHouseBasePostion.getY());
-        farm.getPlaces().add(createGreenHouse(startingPosition, game, farm, greenHouseHeight, greenHouseWidth, greenHousePosition));
-        return farm;
-    }
-
-    private GreenHouse createGreenHouse(Position startingPosition, Game game, Farm farm, int greenhouseHeight, int greenhouseWidth, Position grenhousePosition) {
-        GreenHouse greenHouse = new GreenHouse(grenhousePosition, greenhouseHeight, greenhouseWidth);
-        setUpPlace(game, greenhouseHeight, greenhouseWidth, grenhousePosition, greenHouse);
-        return greenHouse;
-    }
-
-
-    private Quarry createQuarry(Position startingPosition, Game game, Farm farm, int quarryHeight, int quarryWidth, Position quarryPosition) {
-        Quarry quarry = new Quarry(quarryPosition, quarryHeight, quarryWidth);
-        setUpPlace(game, quarryHeight, quarryWidth, quarryPosition, quarry);
-        return quarry;
-    }
-
-
-    private Lake createLake(Position startingPosition, Game game, Farm farm, int lakeHeight, int lakeWidth, Position lakePosition) {
-        Lake lake = new Lake(lakePosition, lakeHeight, lakeWidth);
-        setUpPlace(game, lakeHeight, lakeWidth, lakePosition, lake);
-        return lake;
-    }
-
-    private House createHouse(Position startingPosition, Game game, Farm farm, int houseHeight, int houseWidth, Position housePostion) {
-        House house = new House(housePostion, houseHeight, houseWidth);
-        setUpPlace(game, houseHeight, houseWidth, housePostion, house);
-        return house;
-    }
 
 
     public Place getPlaceByName(ArrayList<Place> places, String name) {
@@ -262,10 +212,7 @@ public class GameMenuControllers {
     }
 
     public boolean isAvailableTileForMineral(Tile tile) {
-        if (tile.getItem() != null) {
-            return false;
-        }
-        return true;
+        return tile.getItem() == null;
     }
 
     public Item getRandomItem(ArrayList<Item> list) {
@@ -304,16 +251,6 @@ public class GameMenuControllers {
         }
     }
 
-//    public static void setUpPlace(Game game, int placeheight, int placewidth, Position position, Place place) {
-//        for (int height = position.getX(); height < position.getX() + placeheight; height++) {
-//            for (int width = position.getY(); width < position.getY() + placewidth; width++) {
-//                Tile tile = game.getGameMap().getMap()[height][width];
-//                tile.setPlace(place);
-//                place.getPlaceTiles()[height - position.getX()][width - position.getY()] = tile;
-//            }
-//        }
-//    }
-
     public boolean isAvailableForPlant(Tile tile) {
         return tile.getItem() == null && tile.getPlace() == null && tile.getTileType() != TileType.Wall;
     }
@@ -343,7 +280,7 @@ public class GameMenuControllers {
                 new Crop(ForagingCropType.COMMON_MUSHROOM, 1)
         ));
 
-        //2/3 of items are common mushroom and fiber
+        // 2/3 of items are common mushroom and fiber
         for (int i = 0; i < 2 * numberOfRandom; i++) {
             Item randomItem = getRandomItem(fiberAndMushroom);
             Tile tile = getRandomTileArrayList(tiles);
@@ -388,30 +325,35 @@ public class GameMenuControllers {
 
 
     public void setUpFarms(ArrayList<String> farmTypes) {
-        int index = 0;
-        for (Player player : getInstance().getCurrentGame().getPlayers()) {
-            String mapNumber = String.valueOf(farmTypes.get(index).charAt(farmTypes.get(index).length() - 1));
-            Position position = chooseStartingPoint(
-                getInstance().getCurrentGame().getPlayers().indexOf(player)
-            );
-            //Create farm
-            System.out.println(mapNumber);
-            Farm farm = createFarm(mapNumber, position, getInstance().getCurrentGame());
-            //Set player postion left-up of the house.
-            Position playerPostion = getPlaceByName(farm.getPlaces(), "House").getPosition();
-            player.setPosition(new Position(0,0));
-            player.getPosition().setX(playerPostion.getX() - 1);
-            player.getPosition().setY(playerPostion.getY() - 1);
-            player.setX(player.getPosition().getX() * Map.mapWidth);
-            player.setY(player.getPosition().getY() * Map.mapHeight);
-            getTileByPosition(player.getPosition()).setPerson(player);
-            putRandomMineral(farm,4);
-            putRandomForagingPlanet(farm,10);
-            //Give farm to player
+        Game game = getInstance().getCurrentGame();
+        List<Player> players = game.getPlayers();
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            String farmTypeId = farmTypes.get(i);
+            String mapNumber = String.valueOf(farmTypeId.charAt(farmTypeId.length() - 1));
+
+            Position startingPoint = chooseStartingPoint(i);
+
+            Farm farm = createFarm(mapNumber, startingPoint, game);
+
+            // Place player just outside the house
+            Position housePos = getPlaceByName(farm.getPlaces(), "House").getPosition();
+            Position playerPos = new Position(housePos.getX() - 1, housePos.getY() - 1);
+            player.setPosition(playerPos);
+            player.setX(playerPos.getX() * Map.mapWidth);
+            player.setY(playerPos.getY() * Map.mapHeight);
+
+            getTileByPosition(playerPos).setPerson(player);
+
+            // Setup resources and assign farm
+            putRandomMineral(farm, 4);
+            putRandomForagingPlanet(farm, 10);
             player.setFarm(farm);
-            //Set up Realation with players
+
+            // Setup friendships
             setUpFriendShip(player);
-            index++;
         }
     }
+
 }

@@ -9,10 +9,10 @@ public enum TileType {
     Plowed(new Sprite(new Texture("tiles/plowed.png")),true),
     Watered(new Sprite(new Texture("tiles/watered.png")),true),
     Lake(new Sprite(new Texture("tiles/lake.png")),false),
-    ;
+    Quarry(new Sprite(new Texture("tiles/quarry.png")),true);
 
-    private Sprite sprite;
-    private boolean isWalkable;
+    private final Sprite sprite;
+    private final boolean isWalkable;
 
     TileType(Sprite sprite, boolean isWalkable) {
         this.sprite = sprite;

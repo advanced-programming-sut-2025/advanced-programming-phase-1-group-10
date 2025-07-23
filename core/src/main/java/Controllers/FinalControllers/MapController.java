@@ -3,6 +3,7 @@ package Controllers.FinalControllers;
 import Models.App;
 import Models.Map;
 import Models.Place.Lake;
+import Models.Place.Quarry;
 import Models.Tile;
 import Models.TileType;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,7 +29,10 @@ public class MapController {
     public void updateTileType(Tile tile){
         if(tile.getPlace() instanceof Lake){
             tile.setTileType(TileType.Lake);
-        } else if(tile.getTileType() == TileType.Wall){
+        } else if(tile.getPlace() instanceof Quarry) {
+            tile.setTileType(TileType.Quarry);
+        }
+        else if(tile.getTileType() == TileType.Wall){
             tile.setTileType(TileType.Wall);
         } else if(!tile.getisPlow() && !tile.isWatered()){
             tile.setTileType(TileType.Grass);
