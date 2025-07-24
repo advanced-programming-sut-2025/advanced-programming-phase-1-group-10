@@ -2,6 +2,7 @@ package Controllers.FinalControllers;
 
 import Models.App;
 import Models.Map;
+import Models.Mineral.Mineral;
 import Models.Place.Lake;
 import Models.Place.Quarry;
 import Models.Tile;
@@ -22,6 +23,9 @@ public class MapController {
                 Tile tile = map.getMap()[y][x];
                 updateTileType(tile);
                 tile.render(batch, x * Map.tileSize, y * Map.tileSize);
+                if(tile.getItem() instanceof Mineral){
+                    batch.draw(tile.getItem().show(), x * Map.tileSize, y * Map.tileSize);
+                }
             }
         }
     }

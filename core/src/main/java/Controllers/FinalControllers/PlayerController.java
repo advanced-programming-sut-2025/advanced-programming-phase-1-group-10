@@ -117,7 +117,7 @@ public class PlayerController {
                     return false;
                 }
                 Tile tile = map.getMap()[row][col];
-                if (tile == null || !tile.getTileType().isWalkable()) {
+                if (tile == null || !tile.isWalkable()) {
                     return false;
                 }
             }

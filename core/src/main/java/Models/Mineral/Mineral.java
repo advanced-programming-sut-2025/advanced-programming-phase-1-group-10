@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Mineral implements Item {
 
-    private MineralTypes mineralType;
+    private final MineralTypes mineralType;
     private int numberOfMineral;
+    private boolean isAxed;
 
     public Mineral(MineralTypes mineralType, int numberOfMineral) {
         this.mineralType = mineralType;
         this.numberOfMineral = numberOfMineral;
+        this.isAxed = false;
     }
 
 
@@ -21,7 +23,7 @@ public class Mineral implements Item {
 
     @Override
     public Sprite show() {
-        return null;
+        return isAxed ? mineralType.getOre() : mineralType.getNode();
     }
 
     @Override
@@ -39,5 +41,12 @@ public class Mineral implements Item {
         return new Mineral(mineralType, number);
     }
 
+    public boolean isAxed() {
+        return isAxed;
+    }
+
+    public void setAxed(boolean axed) {
+        isAxed = axed;
+    }
 
 }

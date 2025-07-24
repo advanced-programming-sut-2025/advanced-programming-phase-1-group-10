@@ -34,6 +34,7 @@ public class Pickaxe extends Tool {
 
             if (player.getMiningLevel() >= 2) {
                 player.getInventory().getBackPack().addItem(item);
+                ((Mineral) item).setAxed(true);
             }
 
             player.setMiningAbility(player.getMiningAbility() + 10);

@@ -131,6 +131,9 @@ public class Tile {
     }
 
 
+    public boolean isWalkable() {
+        return tileType.isWalkable() && item == null;
+    }
 }
 
 

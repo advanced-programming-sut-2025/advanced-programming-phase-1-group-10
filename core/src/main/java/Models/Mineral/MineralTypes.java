@@ -1,5 +1,8 @@
 package Models.Mineral;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public enum MineralTypes {
 
     QUARTZ("Quartz","A clear crystal commonly found in caves and mines.",25,true),
@@ -26,12 +29,16 @@ public enum MineralTypes {
     private final String description;
     private final int sellPrice;
     private final boolean isForaging;
+    private final Sprite node;
+    private final Sprite ore;
 
     MineralTypes(String name, String description, int sellPrice, boolean isForaging) {
         this.name = name;
         this.description = description;
         this.sellPrice = sellPrice;
         this.isForaging = isForaging;
+        this.node = new Sprite(new Texture("node/" + name.replace(" ", "_").toLowerCase() + ".png"));
+        this.ore = new Sprite(new Texture("ore/" + name.replace(" ", "_").toLowerCase() + ".png"));
     }
 
     public String getName() {
@@ -48,5 +55,13 @@ public enum MineralTypes {
 
     public boolean isForaging() {
         return isForaging;
+    }
+
+    public Sprite getNode() {
+        return node;
+    }
+
+    public Sprite getOre() {
+        return ore;
     }
 }
