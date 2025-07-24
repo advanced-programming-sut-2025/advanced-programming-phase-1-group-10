@@ -5,6 +5,7 @@ import Models.Item;
 import Models.Mineral.Mineral;
 import Models.PlayerStuff.Player;
 import Models.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Pickaxe extends Tool {
     public Pickaxe(Quality quality, int energyUsage) {
@@ -14,6 +15,11 @@ public class Pickaxe extends Tool {
     @Override
     public String getName() {
         return "Pickaxe";
+    }
+
+    @Override
+    public Sprite show() {
+        return toolAsset.show(this);
     }
 
     @Override

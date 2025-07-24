@@ -2,6 +2,7 @@ package Models.Planets.Crop;
 
 import Models.DateTime.DateTime;
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Crop implements Item {
     CropType cropType;
@@ -26,8 +27,8 @@ public class Crop implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Cr";
+    public Sprite show() {
+        return null;
     }
 
     @Override

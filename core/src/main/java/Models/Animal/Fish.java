@@ -1,6 +1,7 @@
 package Models.Animal;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Fish implements Item {
 
@@ -18,8 +19,8 @@ public class Fish implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Fi";
+    public Sprite show() {
+        return null;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package Models.Planets;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Fruit implements Item {
     private FruitType fruitType;
@@ -17,8 +18,8 @@ public class Fruit implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Fr";
+    public Sprite show() {
+        return null;
     }
 
     @Override

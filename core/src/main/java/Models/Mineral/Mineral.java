@@ -1,6 +1,7 @@
 package Models.Mineral;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Mineral implements Item {
 
@@ -19,8 +20,8 @@ public class Mineral implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Mi";
+    public Sprite show() {
+        return null;
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -19,7 +18,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private final Stage stage;
     private final OrthographicCamera camera;
-    private OrthographicCamera hudCamera;
+    private final OrthographicCamera hudCamera;
     private final StretchViewport viewport;
     private final GameControllerFinal controller;
 
@@ -73,7 +72,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
         camera.position.set(cameraX, cameraY, 0);
 
-        camera.zoom = 1f;
+        camera.zoom = 0.7f;
         camera.update();
 
         // ----- Render game world -----
@@ -87,6 +86,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         controller.getBarController().update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        controller.getInventoryBarController().update(batch);
         batch.end();
 
         elapsedTime += delta;
@@ -119,8 +119,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public boolean keyDown(int i) {
-        return false;
+    public boolean keyDown(int keycode) {
+        controller.getInventoryBarController().selectSlotByKey(keycode);
+        return true;
     }
 
     @Override
@@ -159,7 +160,13 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public boolean scrolled(float v, float v1) {
-        return false;
+    public boolean scrolled(float amountX, float amountY) {
+        if (amountY > 0) {
+            controller.getInventoryBarController().scrollSlot(+1);
+        } else if (amountY < 0) {
+            controller.getInventoryBarController().scrollSlot(-1);
+        }
+        return true;
     }
+
 }

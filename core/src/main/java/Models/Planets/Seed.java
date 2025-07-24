@@ -1,6 +1,7 @@
 package Models.Planets;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Seed implements Item {
     private SeedType seedType;
@@ -17,8 +18,8 @@ public class Seed implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Se";
+    public Sprite show() {
+        return null;
     }
 
     @Override

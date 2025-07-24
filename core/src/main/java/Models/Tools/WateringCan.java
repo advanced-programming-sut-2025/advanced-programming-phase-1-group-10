@@ -4,6 +4,7 @@ import Models.App;
 import Models.Place.Lake;
 import Models.PlayerStuff.Player;
 import Models.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class WateringCan extends Tool {
 
@@ -18,6 +19,11 @@ public class WateringCan extends Tool {
     @Override
     public String getName() {
         return "Watering Can";
+    }
+
+    @Override
+    public Sprite show() {
+        return toolAsset.show(this);
     }
 
     @Override
@@ -46,8 +52,8 @@ public class WateringCan extends Tool {
     public int getCapacityByQuality(Quality quality) {
         switch (quality){
             case STARTER: this.capacity = 40 ;break;
-            case BRONZE : this.capacity = 55 ; break;
-            case SILVER : this.capacity = 70 ; break;
+            case COPPER: this.capacity = 55 ; break;
+            case STEEL: this.capacity = 70 ; break;
             case GOLD : this.capacity =  85; break;
             case IRIDIUM: this.capacity =  100 ; break;
         }

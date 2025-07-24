@@ -1,7 +1,6 @@
 package Models.PlayerStuff;
 
 
-import Assets.PlayerAsset;
 import Models.*;
 import Models.Animal.Animal;
 import Models.FriendShip.Friendship;
@@ -16,13 +15,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Person {
 
+    public static int PLAYER_WIDTH = 32;
+    public static int PLAYER_HEIGHT = 64;
+
+    public static int  PLAYER_INENTORY_BAR_SIZE = 12;
+
     private final String name;
     private Gender gender;
 
     public static final int STARTING_GOLD = 43200;
 
-    public static int PLAYER_WIDTH = 32;
-    public static int PLAYER_HEIGHT = 64;
+
+    private final ArrayList<Item> iventoryBarItems;
+    private int selectedSlot;
 
     private float x, y;
     private float speed = 100f;
@@ -30,14 +35,11 @@ public class Player implements Person {
     private Direction direction = Direction.DOWN;
     private boolean moving = false;
 
-    private final PlayerAsset playerAsset = new PlayerAsset();
-
     public enum Direction {
         UP, DOWN, LEFT, RIGHT
     }
 
     private Position position;
-
     private Farm farm;
 
     private final ArrayList<Animal> playerAnimals = new ArrayList<>();
@@ -46,9 +48,7 @@ public class Player implements Person {
     private final ArrayList<Gift>  recievedGifts = new ArrayList<>();
     private final ArrayList<TradeRequest> tradeRequests = new ArrayList<>();
 
-
-
-    private int gold = 0;
+    private int gold;
     private final Energy energy;
     private boolean isFainted;
     private Player couple;
@@ -67,7 +67,8 @@ public class Player implements Person {
         this.isFainted = false;
         this.inventory = new Inventory();
         this.gold = STARTING_GOLD;
-        this.inventory.getBackPack().getItems().addAll(Arrays.asList(
+        this.iventoryBarItems = new ArrayList<>();
+        this.iventoryBarItems.addAll(Arrays.asList(
                 new Hoe(Quality.STARTER,5),
                 new Pickaxe(Quality.STARTER,5),
                 new Axe(Quality.STARTER,5),
@@ -281,5 +282,17 @@ public class Player implements Person {
 
     public void setMoving(boolean moving) {
         this.moving = moving;
+    }
+
+    public ArrayList<Item> getIventoryBarItems() {
+        return iventoryBarItems;
+    }
+
+    public int getSelectedSlot() {
+        return selectedSlot;
+    }
+
+    public void setSelectedSlot(int selectedSlot) {
+        this.selectedSlot = selectedSlot;
     }
 }

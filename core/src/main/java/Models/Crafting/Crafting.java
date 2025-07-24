@@ -1,6 +1,7 @@
 package Models.Crafting;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Crafting implements Item {
 
@@ -18,8 +19,8 @@ public class Crafting implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Cr";
+    public Sprite show() {
+        return null;
     }
 
     @Override

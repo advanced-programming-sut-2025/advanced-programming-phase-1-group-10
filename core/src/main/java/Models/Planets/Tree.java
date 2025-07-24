@@ -3,6 +3,7 @@ package Models.Planets;
 import Models.App;
 import Models.DateTime.DateTime;
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 
@@ -27,8 +28,8 @@ public class Tree implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Tr";
+    public Sprite show() {
+        return null;
     }
 
 

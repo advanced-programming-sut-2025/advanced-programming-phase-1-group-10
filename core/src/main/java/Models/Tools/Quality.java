@@ -2,8 +2,8 @@ package Models.Tools;
 
 public enum Quality {
     STARTER(0),
-    BRONZE(1),
-    SILVER(2),
+    COPPER(1),
+    STEEL(2),
     GOLD(3),
     IRIDIUM(4);
 

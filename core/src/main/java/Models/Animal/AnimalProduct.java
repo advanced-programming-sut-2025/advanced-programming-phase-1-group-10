@@ -1,6 +1,7 @@
 package Models.Animal;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class AnimalProduct implements Item {
 
@@ -44,8 +45,8 @@ public class AnimalProduct implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Ap";
+    public Sprite show() {
+        return null;
     }
 
     @Override

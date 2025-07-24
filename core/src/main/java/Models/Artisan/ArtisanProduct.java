@@ -1,6 +1,7 @@
 package Models.Artisan;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class ArtisanProduct implements Item {
 
@@ -18,8 +19,8 @@ public class ArtisanProduct implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Ar";
+    public Sprite show() {
+        return null;
     }
 
     @Override

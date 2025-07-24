@@ -11,6 +11,7 @@ public class GameControllerFinal {
     private MapController mapController;
     private PlayerController playerController;
     private BarController barController;
+    private InventoryBarController inventoryBarController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -18,6 +19,7 @@ public class GameControllerFinal {
         this.mapController = new MapController();
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
         this.barController = new BarController();
+        this.inventoryBarController = new InventoryBarController();
     }
 
     public void update(SpriteBatch batch) {
@@ -35,5 +37,9 @@ public class GameControllerFinal {
 
     public BarController getBarController() {
         return barController;
+    }
+
+    public InventoryBarController getInventoryBarController() {
+        return inventoryBarController;
     }
 }

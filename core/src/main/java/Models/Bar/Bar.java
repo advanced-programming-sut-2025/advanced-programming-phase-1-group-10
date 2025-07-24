@@ -1,6 +1,7 @@
 package Models.Bar;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Bar implements Item {
 
@@ -18,8 +19,8 @@ public class Bar implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Ba";
+    public Sprite show() {
+        return null;
     }
 
     @Override

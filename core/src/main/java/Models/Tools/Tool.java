@@ -1,16 +1,20 @@
 package Models.Tools;
 
+import Assets.ToolAsset;
 import Models.Item;
 import Models.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public abstract class Tool implements Item {
     private String name;
     private int energyUsage;
     private Quality quality;
+    protected ToolAsset toolAsset;
 
     public Tool(Quality quality, int energyUsage) {
         this.quality = quality;
         this.energyUsage = energyUsage;
+        this.toolAsset = new ToolAsset();
     }
 
     @Override
@@ -19,8 +23,8 @@ public abstract class Tool implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "To";
+    public Sprite show() {
+        return null;
     }
 
     @Override

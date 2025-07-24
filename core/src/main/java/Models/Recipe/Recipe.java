@@ -1,6 +1,7 @@
 package Models.Recipe;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Recipe implements Item {
 
@@ -18,8 +19,8 @@ public class Recipe implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Re";
+    public Sprite show() {
+        return null;
     }
 
     @Override

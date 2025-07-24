@@ -1,6 +1,7 @@
 package Models.Tools;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Fertilizer implements Item {
     private String name;
@@ -16,8 +17,8 @@ public class Fertilizer implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "Fe";
+    public Sprite show() {
+        return null;
     }
 
     @Override

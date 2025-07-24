@@ -3,6 +3,7 @@ package Models.Tools;
 import Models.App;
 import Models.PlayerStuff.Player;
 import Models.Tile;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Hoe extends Tool {
 
@@ -13,6 +14,11 @@ public class Hoe extends Tool {
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public Sprite show() {
+        return toolAsset.show(this);
     }
 
     @Override

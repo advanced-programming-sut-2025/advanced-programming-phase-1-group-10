@@ -1,6 +1,7 @@
 package Models.Cooking;
 
 import Models.Item;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Grocery implements Item {
 
@@ -19,8 +20,8 @@ public class Grocery implements Item {
     }
 
     @Override
-    public String getSymbol() {
-        return "g";
+    public Sprite show() {
+        return null;
     }
 
     @Override
