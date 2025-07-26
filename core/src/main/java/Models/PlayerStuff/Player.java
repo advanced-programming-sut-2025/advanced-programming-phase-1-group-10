@@ -30,7 +30,7 @@ public class Player implements Person {
     private int selectedSlot;
 
     private float x, y;
-    private float speed = 100f;
+    private float speed = 500f;
     private float stateTime;
     private Direction direction = Direction.DOWN;
     private boolean moving = false;
@@ -295,4 +295,6 @@ public class Player implements Person {
     public void setSelectedSlot(int selectedSlot) {
         this.selectedSlot = selectedSlot;
     }
+
+
 }

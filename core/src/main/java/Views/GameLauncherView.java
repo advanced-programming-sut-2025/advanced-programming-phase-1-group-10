@@ -3,12 +3,14 @@ package Views;
 import Controllers.FinalControllers.GameControllerFinal;
 import Models.App;
 import Models.Map;
+import Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -72,7 +74,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
         camera.position.set(cameraX, cameraY, 0);
 
-        camera.zoom = 0.7f;
+        camera.zoom = 0.6f;
         camera.update();
 
         // ----- Render game world -----
@@ -135,9 +137,35 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) {
-        return false;
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        // Convert screen coordinates to world coordinates (game camera)
+        Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+
+        float clickX = worldCoords.x;
+        float clickY = worldCoords.y;
+
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        float playerX = player.getX();
+        float playerY = player.getY();
+
+        float dx = clickX - playerX;
+        float dy = clickY - playerY;
+
+        String direction;
+
+        // Determine which direction the click is closest to
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = (dx > 0) ? "RIGHT" : "LEFT";
+        } else {
+            direction = (dy > 0) ? "UP" : "DOWN";
+        }
+
+        // Send to InteractController or Item logic
+        controller.getInteractController().useItemInDirection(direction);
+
+        return true;
     }
+
 
     @Override
     public boolean touchUp(int i, int i1, int i2, int i3) {

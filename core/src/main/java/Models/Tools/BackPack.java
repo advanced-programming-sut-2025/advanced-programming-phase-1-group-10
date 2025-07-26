@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class BackPack{
 
     private BackpackType backpackType;
-    private final ArrayList<Item> items = new ArrayList<Item>();
+    private final ArrayList<Item> items = new ArrayList<>();
 
     public BackpackType getBackpackType() {
         return backpackType;

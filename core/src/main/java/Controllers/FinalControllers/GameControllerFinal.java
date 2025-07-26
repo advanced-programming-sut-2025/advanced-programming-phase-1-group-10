@@ -12,6 +12,7 @@ public class GameControllerFinal {
     private PlayerController playerController;
     private BarController barController;
     private InventoryBarController inventoryBarController;
+    private InteractController interactController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -20,11 +21,13 @@ public class GameControllerFinal {
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
         this.barController = new BarController();
         this.inventoryBarController = new InventoryBarController();
+        this.interactController = new InteractController();
     }
 
     public void update(SpriteBatch batch) {
         mapController.update(batch);
         playerController.update(batch);
+        interactController.update();
     }
 
     public MapController getMapController() {
@@ -41,5 +44,9 @@ public class GameControllerFinal {
 
     public InventoryBarController getInventoryBarController() {
         return inventoryBarController;
+    }
+
+    public InteractController getInteractController() {
+        return interactController;
     }
 }
