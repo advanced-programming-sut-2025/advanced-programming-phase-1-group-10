@@ -125,21 +125,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         controller.getInventoryBarController().selectSlotByKey(keycode);
-        // place coop
-        if (keycode == Input.Keys.C) {
-            return true;
-        }
-        // place coop in map
-        if (keycode == Input.Keys.ENTER && controller.getAnimalBuildingController().isPlacingCoop()) {
-            return true;
-        }
-        // move coop
-        if ((keycode == Input.Keys.UP || keycode == Input.Keys.DOWN ||
-            keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) &&
-            controller.getAnimalBuildingController().isPlacingCoop()) {
-            return true;
-        }
-
         return true;
     }
 
