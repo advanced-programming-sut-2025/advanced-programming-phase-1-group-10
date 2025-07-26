@@ -58,7 +58,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // اگر در حالت نمایش داخلی ساختمان هستیم، فقط آن را نمایش بده
         if (controller.getAnimalBuildingController().isShowingInterior()) {
             batch.begin();
             controller.getAnimalBuildingController().update(batch, delta);
@@ -149,7 +148,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         return false;
     }
 
-    // در کلاس GameLauncherView، متد touchDown را به‌روزرسانی کنید
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Convert screen coordinates to world coordinates (game camera)

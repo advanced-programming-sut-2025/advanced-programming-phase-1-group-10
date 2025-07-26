@@ -437,14 +437,6 @@ public class AnimalBuildingController {
         return isPlacingBarn;
     }
 
-    public List<Coop> getPlacedCoops() {
-        return placedCoops;
-    }
-
-    public List<Barn> getPlacedBarns() {
-        return placedBarns;
-    }
-
     public boolean isShowingCoopInterior() {
         return showingCoopInterior;
     }
