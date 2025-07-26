@@ -12,6 +12,7 @@ public class GameControllerFinal {
     private PlayerController playerController;
     private BarController barController;
     private InventoryBarController inventoryBarController;
+    private AnimalBuildingController animalBuildingController;
     private InteractController interactController;
 
 
@@ -21,12 +22,14 @@ public class GameControllerFinal {
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
         this.barController = new BarController();
         this.inventoryBarController = new InventoryBarController();
+        this.animalBuildingController = new AnimalBuildingController();
         this.interactController = new InteractController();
     }
 
     public void update(SpriteBatch batch) {
         mapController.update(batch);
         playerController.update(batch);
+        animalBuildingController.update(batch);
         interactController.update();
     }
 
@@ -44,6 +47,10 @@ public class GameControllerFinal {
 
     public InventoryBarController getInventoryBarController() {
         return inventoryBarController;
+    }
+
+    public AnimalBuildingController getAnimalBuildingController() {
+        return animalBuildingController;
     }
 
     public InteractController getInteractController() {

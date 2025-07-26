@@ -5,6 +5,7 @@ import Models.App;
 import Models.Map;
 import Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -123,8 +124,24 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         controller.getInventoryBarController().selectSlotByKey(keycode);
+        // place coop
+        if (keycode == Input.Keys.C) {
+            return true;
+        }
+        // place coop in map
+        if (keycode == Input.Keys.ENTER && controller.getAnimalBuildingController().isPlacingCoop()) {
+            return true;
+        }
+        // move coop
+        if ((keycode == Input.Keys.UP || keycode == Input.Keys.DOWN ||
+            keycode == Input.Keys.LEFT || keycode == Input.Keys.RIGHT) &&
+            controller.getAnimalBuildingController().isPlacingCoop()) {
+            return true;
+        }
+
         return true;
     }
+
 
     @Override
     public boolean keyUp(int i) {
