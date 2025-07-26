@@ -58,6 +58,16 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // اگر در حالت نمایش داخلی ساختمان هستیم، فقط آن را نمایش بده
+        if (controller.getAnimalBuildingController().isShowingInterior()) {
+            batch.begin();
+            controller.getAnimalBuildingController().update(batch, delta);
+            batch.end();
+
+            elapsedTime += delta;
+            return;
+        }
+
         // Get camera dimensions in world units
         float halfWidth = camera.viewportWidth * camera.zoom / 2f;
         float halfHeight = camera.viewportHeight * camera.zoom / 2f;
@@ -70,7 +80,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float targetX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
         float targetY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
 
-        // Clamp camera position so it doesn’t show areas outside the map
+        // Clamp camera position so it doesn't show areas outside the map
         float cameraX = Math.max(halfWidth, Math.min(targetX, mapPixelWidth - halfWidth));
         float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
         camera.position.set(cameraX, cameraY, 0);
@@ -81,7 +91,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         // ----- Render game world -----
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        controller.update((SpriteBatch) stage.getBatch());
+        controller.update(batch, delta);
         batch.end();
 
         // ----- Render HUD/UI (BarController) -----
@@ -119,7 +129,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        controller.getAnimalBuildingController().dispose();
     }
 
     @Override
@@ -139,6 +149,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         return false;
     }
 
+    // در کلاس GameLauncherView، متد touchDown را به‌روزرسانی کنید
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Convert screen coordinates to world coordinates (game camera)
@@ -146,6 +157,12 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
         float clickX = worldCoords.x;
         float clickY = worldCoords.y;
+
+        // check to click on animal houses
+        boolean buildingClicked = controller.getAnimalBuildingController().handleClick(clickX, clickY);
+        if (buildingClicked) {
+            return true;
+        }
 
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         float playerX = player.getX();
@@ -168,6 +185,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
         return true;
     }
+
 
 
     @Override

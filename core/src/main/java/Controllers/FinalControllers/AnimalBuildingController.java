@@ -5,8 +5,11 @@ import Models.*;
 import Models.Place.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +27,55 @@ public class AnimalBuildingController {
     private float tempCoopY = 0;
     private final List<Coop> placedCoops = new ArrayList<>();
 
+    // coop inside
+    private Coop selectedCoop = null;
+    private boolean showingCoopInterior = false;
+
     // barn
     private boolean isPlacingBarn = false;
     private float tempBarnX = 0;
     private float tempBarnY = 0;
     private final List<Barn> placedBarns = new ArrayList<>();
 
+    // barn inside
+    private Barn selectedBarn = null;
+    private boolean showingBarnInterior = false;
+
     private final float MOVEMENT_SPEED = 5.0f;
     private Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
 
+
+    private float interiorDisplayTime = 0;
+    private final float INTERIOR_DISPLAY_DURATION = 8.0f; // imporatnt
+    private boolean autoHideInterior = true;
+
+
+    private ShapeRenderer shapeRenderer;
+
+
+    private float interiorX;
+    private float interiorY;
+    private float interiorScale = 1.5f;
+
     public AnimalBuildingController() {
         this.animalBuildingAsset = new AnimalBuildingAsset();
+        this.shapeRenderer = new ShapeRenderer();
     }
 
-    public void update(SpriteBatch batch) {
+    public void update(SpriteBatch batch, float delta) {
+        if (isShowingInterior()) {
+            renderInterior(batch);
+        } else {
+            renderBuildings(batch);
+            renderPlacingBuilding(batch);
+        }
+
+        handleInput(delta);
+
+        updateInteriorDisplayTime(delta);
+    }
+
+    private void renderBuildings(SpriteBatch batch) {
         for (Coop coop : placedCoops) {
             Position pos = coop.getPosition();
             batch.draw(animalBuildingAsset.getCoop(), pos.getX(), pos.getY());
@@ -47,9 +85,52 @@ public class AnimalBuildingController {
             Position pos = barn.getPosition();
             batch.draw(animalBuildingAsset.getBarn(), pos.getX(), pos.getY());
         }
+    }
 
-        handleInput();
+    private void renderInterior(SpriteBatch batch) {
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
 
+        batch.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.rect(0, 0, screenWidth, screenHeight);
+        shapeRenderer.end();
+
+        batch.begin();
+
+        if (showingCoopInterior && selectedCoop != null) {
+            Sprite interiorSprite = animalBuildingAsset.getCoopinside();
+            float spriteWidth = interiorSprite.getWidth() * interiorScale;
+            float spriteHeight = interiorSprite.getHeight() * interiorScale;
+
+            interiorX = (screenWidth - spriteWidth) / 2;
+            interiorY = (screenHeight - spriteHeight) / 2;
+
+            batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
+
+            // show the animals in the coop
+            // renderCoopAnimals(batch, selectedCoop, interiorX, interiorY, interiorScale);
+        } else if (showingBarnInterior && selectedBarn != null) {
+            Sprite interiorSprite = animalBuildingAsset.getBarninside();
+            float spriteWidth = interiorSprite.getWidth() * interiorScale;
+            float spriteHeight = interiorSprite.getHeight() * interiorScale;
+
+            interiorX = (screenWidth - spriteWidth) / 2;
+            interiorY = (screenHeight - spriteHeight) / 2;
+
+            batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
+
+            // show the animals in the barn
+            // renderBarnAnimals(batch, selectedBarn, interiorX, interiorY, interiorScale);
+        }
+
+        // draw a close button if we want
+        // batch.draw(closeButtonTexture, screenWidth - 50, screenHeight - 50, 40, 40);
+    }
+
+    private void renderPlacingBuilding(SpriteBatch batch) {
         if (isPlacingCoop) {
             Sprite coopSprite = animalBuildingAsset.getCoop();
             coopSprite.setAlpha(0.7f);
@@ -67,7 +148,35 @@ public class AnimalBuildingController {
         }
     }
 
-    private void handleInput() {
+    private void updateInteriorDisplayTime(float delta) {
+        if (autoHideInterior && (showingCoopInterior || showingBarnInterior)) {
+            interiorDisplayTime += delta;
+
+            if (interiorDisplayTime >= INTERIOR_DISPLAY_DURATION) {
+                closeInteriorView();
+            }
+        }
+    }
+
+    private void handleInput(float delta) {
+        if (isShowingInterior()) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                closeInteriorView();
+                return;
+            }
+
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                // check the click on the close button
+                // call closeInteriorView()
+            }
+
+            return;
+        }
+
+        handleBuildingPlacement();
+    }
+
+    private void handleBuildingPlacement() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.C) && !isPlacingCoop && !isPlacingBarn) {
             isPlacingCoop = true;
             tempCoopX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
@@ -103,6 +212,60 @@ public class AnimalBuildingController {
                 isPlacingBarn = false;
             }
         }
+    }
+
+    public boolean handleClick(float worldX, float worldY) {
+        if (isShowingInterior()) {
+            return true;
+        }
+
+        if (isPlacingCoop || isPlacingBarn) {
+            return false;
+        }
+
+        for (Coop coop : placedCoops) {
+            Position pos = coop.getPosition();
+            Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
+                animalBuildingAsset.getCoop().getRegionWidth(),
+                animalBuildingAsset.getCoop().getRegionHeight());
+
+            if (bounds.contains(worldX, worldY)) {
+                System.out.println("Clicked on Coop at: " + pos.getX() + ", " + pos.getY());
+                selectedCoop = coop;
+                showingCoopInterior = true;
+                showingBarnInterior = false;
+                selectedBarn = null;
+                interiorDisplayTime = 0;
+                return true;
+            }
+        }
+
+        for (Barn barn : placedBarns) {
+            Position pos = barn.getPosition();
+            Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
+                animalBuildingAsset.getBarn().getRegionWidth(),
+                animalBuildingAsset.getBarn().getRegionHeight());
+
+            if (bounds.contains(worldX, worldY)) {
+                System.out.println("Clicked on Barn at: " + pos.getX() + ", " + pos.getY());
+                selectedBarn = barn;
+                showingBarnInterior = true;
+                showingCoopInterior = false;
+                selectedCoop = null;
+                interiorDisplayTime = 0;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void closeInteriorView() {
+        showingCoopInterior = false;
+        showingBarnInterior = false;
+        selectedCoop = null;
+        selectedBarn = null;
+        interiorDisplayTime = 0;
     }
 
     private void handleBuildingMovement(float x, float y, boolean isCoop) {
@@ -280,5 +443,35 @@ public class AnimalBuildingController {
 
     public List<Barn> getPlacedBarns() {
         return placedBarns;
+    }
+
+    public boolean isShowingCoopInterior() {
+        return showingCoopInterior;
+    }
+
+    public boolean isShowingBarnInterior() {
+        return showingBarnInterior;
+    }
+
+    public boolean isShowingInterior() {
+        return showingCoopInterior || showingBarnInterior;
+    }
+
+    public Coop getSelectedCoop() {
+        return selectedCoop;
+    }
+
+    public Barn getSelectedBarn() {
+        return selectedBarn;
+    }
+
+    public void setAutoHideInterior(boolean autoHide) {
+        this.autoHideInterior = autoHide;
+    }
+
+    public void dispose() {
+        if (shapeRenderer != null) {
+            shapeRenderer.dispose();
+        }
     }
 }

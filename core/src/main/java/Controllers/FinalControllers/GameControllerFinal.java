@@ -28,11 +28,16 @@ public class GameControllerFinal {
         this.energyController = new EnergyController();
     }
 
-    public void update(SpriteBatch batch) {
+    public void update(SpriteBatch batch, float delta) {
+        if (animalBuildingController.isShowingInterior()) {
+            animalBuildingController.update(batch, delta);
+            return;
+        }
+
         mapController.update(batch);
         playerController.update(batch);
-        animalBuildingController.update(batch);
         interactController.update();
+        animalBuildingController.update(batch, delta);
     }
 
     public MapController getMapController() {

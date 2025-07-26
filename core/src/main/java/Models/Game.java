@@ -22,7 +22,6 @@ public class Game {
     private final ArrayList<Store> stores = new ArrayList<>();
     private HashMap<String , Animal> animals = new HashMap<>();
 
-
     private final Map gameMap;
 
     private Player currentPlayer;
