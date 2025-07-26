@@ -1,6 +1,9 @@
 package Models.Tools;
 
+import Controllers.FinalControllers.BarController;
+import Models.App;
 import Models.Item;
+import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
 
@@ -22,29 +25,42 @@ public class BackPack{
     }
 
     public boolean addItem(Item item) {
-        if (items.size() < backpackType.getCapacity()) {
-            for(Item it : items){
-                if(it.getName().equals(item.getName())){
-                    it.setNumber(it.getNumber() + item.getNumber());
-                    return true;
-                }
+        final ArrayList<Item> barItems = App.getInstance().getCurrentGame().getCurrentPlayer().getIventoryBarItems();
+        final int barCapacity = Player.PLAYER_INENTORY_BAR_SIZE;
+        final int backpackCapacity = backpackType.getCapacity();
+
+        // 1. Try to stack in bar
+        for (Item barItem : barItems) {
+            if (barItem.getName().equals(item.getName())) {
+                barItem.setNumber(barItem.getNumber() + item.getNumber());
+                return true;
             }
+        }
+
+        // 2. Try to stack in backpack
+        for (Item backpackItem : items) {
+            if (backpackItem.getName().equals(item.getName())) {
+                backpackItem.setNumber(backpackItem.getNumber() + item.getNumber());
+                return true;
+            }
+        }
+
+        // 3. Try to add to empty slot in bar
+        if (barItems.size() < barCapacity) {
+            barItems.add(item);
+            return true;
+        }
+
+        // 4. Try to add to empty slot in backpack
+        if (items.size() < backpackCapacity) {
             items.add(item);
             return true;
-        } else if(items.size() == backpackType.getCapacity()) {
-            for(Item it : items){
-                if(it.getName().equals(item.getName())){
-                    it.setNumber(it.getNumber() + item.getNumber());
-                    return true;
-                }
-            }
-            return false;
         }
-        else {
-            //Backpack is full
-            return false;
-        }
+
+        // 5. No space
+        return false;
     }
+
 
     public boolean removeItem(Item item) {
         if (items.contains(item)) {

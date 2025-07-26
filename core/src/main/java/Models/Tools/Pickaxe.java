@@ -29,34 +29,38 @@ public class Pickaxe extends Tool {
 
         Item item = tile.getItem();
 
+        // Handle Mineral
         if (item instanceof Mineral) {
-
-
-            if (player.getMiningLevel() >= 2) {
-                player.getInventory().getBackPack().addItem(item);
+            boolean added = player.getInventory().getBackPack().addItem(item);
+            if (added) {
                 ((Mineral) item).setAxed(true);
+                tile.setItem(null); // Only remove if added
+                isUsed = true;
             }
-
+            // Even if mineral wasn't removed, give XP
             player.setMiningAbility(player.getMiningAbility() + 10);
-            if(player.getInventory().getBackPack().addItem(item)){
-                tile.setItem(null);
-            }
-            isUsed = true;
         }
 
+        // Handle Plowed Tile
         if (tile.getisPlow()) {
             tile.setPlow(false);
             isUsed = true;
         }
 
-        if (tile.getItem() != null) {
-            tile.setItem(null);
-            isUsed = true;
-        }
+        // Optional: If there's an unhandled item on tile, remove it (depends on game logic)
+        // This block is dangerous unless you're sure you want to clear all items.
+        // if (tile.getItem() != null) {
+        //     tile.setItem(null);
+        //     isUsed = true;
+        // }
 
-        int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
+        // Energy consumption
+        int energyCost = (int) ((getEnergyUsage() - getQuality().getValue()) *
+            App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
+
         player.getEnergy().setEnergyAmount(
-                player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
+            player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
     }
+
 }

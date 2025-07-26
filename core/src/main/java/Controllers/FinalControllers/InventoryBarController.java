@@ -4,9 +4,12 @@ import Assets.SlotAsset;
 import Models.App;
 import Models.Item;
 import Models.PlayerStuff.Player;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.util.List;
 
 public class InventoryBarController {
 
@@ -19,27 +22,26 @@ public class InventoryBarController {
     }
 
     public void update(SpriteBatch batch) {
-        int screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+        int screenWidth = Gdx.graphics.getWidth();
         int totalBarWidth = Player.PLAYER_INENTORY_BAR_SIZE * SLOT_SIZE;
         int startX = (screenWidth - totalBarWidth) / 2;
         int y = 40;
 
+        List<Item> barItems = player.getIventoryBarItems();
+
         for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
-            TextureRegion texture = (i == player.getSelectedSlot()) ?
-                slotAsset.getSlotHover() : slotAsset.getSlot();
+            TextureRegion texture = (i == player.getSelectedSlot())
+                ? slotAsset.getSlotHover()
+                : slotAsset.getSlot();
             batch.draw(texture, startX + i * SLOT_SIZE, y, SLOT_SIZE, SLOT_SIZE);
 
-            Item item = null;
-            if (i < player.getIventoryBarItems().size()) {
-                item = player.getIventoryBarItems().get(i);
-            }
-
+            Item item = (i < barItems.size()) ? barItems.get(i) : null;
             if (item != null) {
                 batch.draw(item.show(), startX + i * SLOT_SIZE, y, SLOT_SIZE, SLOT_SIZE);
             }
         }
-
     }
+
 
     // Scroll input: +1 = next slot, -1 = previous slot
     public void scrollSlot(int direction) {
