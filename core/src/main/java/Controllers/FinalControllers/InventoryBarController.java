@@ -6,6 +6,8 @@ import Models.Item;
 import Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -29,17 +31,30 @@ public class InventoryBarController {
 
         List<Item> barItems = player.getIventoryBarItems();
 
+        BitmapFont font = new BitmapFont(); // You may want to cache this or style it externally
+        font.getData().setScale(1);       // Resize font for better fit
+        font.setColor(Color.WHITE);          // Set desired color
+
         for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
             TextureRegion texture = (i == player.getSelectedSlot())
                 ? slotAsset.getSlotHover()
                 : slotAsset.getSlot();
-            batch.draw(texture, startX + i * SLOT_SIZE, y, SLOT_SIZE, SLOT_SIZE);
+            int slotX = startX + i * SLOT_SIZE;
+
+            batch.draw(texture, slotX, y, SLOT_SIZE, SLOT_SIZE);
 
             Item item = (i < barItems.size()) ? barItems.get(i) : null;
             if (item != null) {
-                batch.draw(item.show(), startX + i * SLOT_SIZE, y, SLOT_SIZE, SLOT_SIZE);
+                batch.draw(item.show(), slotX, y, SLOT_SIZE, SLOT_SIZE);
+
+                if (item.getNumber() > 1) {
+                    String amount = String.valueOf(item.getNumber());
+                    font.draw(batch, amount, slotX + SLOT_SIZE - 12, y + 14); // Bottom-right corner
+                }
             }
         }
+
+        font.dispose(); // Only do this if not caching the font elsewhere
     }
 
 

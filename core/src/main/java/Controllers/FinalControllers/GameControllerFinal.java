@@ -14,6 +14,7 @@ public class GameControllerFinal {
     private InventoryBarController inventoryBarController;
     private AnimalBuildingController animalBuildingController;
     private InteractController interactController;
+    private EnergyController energyController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -24,6 +25,7 @@ public class GameControllerFinal {
         this.inventoryBarController = new InventoryBarController();
         this.animalBuildingController = new AnimalBuildingController();
         this.interactController = new InteractController();
+        this.energyController = new EnergyController();
     }
 
     public void update(SpriteBatch batch) {
@@ -55,5 +57,9 @@ public class GameControllerFinal {
 
     public InteractController getInteractController() {
         return interactController;
+    }
+
+    public EnergyController getEnergyController() {
+        return energyController;
     }
 }
