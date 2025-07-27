@@ -6,12 +6,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class HouseAsset {
     private final TextureRegion[][] houseRegions;
+    private final TextureRegion[][] houseInsideRegions;
 
-    public HouseAsset(Texture texture) {
-        houseRegions = TextureRegion.split(texture, Map.tileSize, Map.tileSize);
+    public HouseAsset() {
+        houseRegions = TextureRegion.split(new Texture("place/house/houseOutside.png"), Map.tileSize, Map.tileSize);
+        houseInsideRegions = TextureRegion.split(new Texture("place/house/houseInside.png"), Map.tileSize, Map.tileSize);
     }
 
     public TextureRegion[][] getHouseRegions() {
         return houseRegions;
+    }
+
+    public TextureRegion[][] getHouseInsideRegions() {
+        return houseInsideRegions;
     }
 }

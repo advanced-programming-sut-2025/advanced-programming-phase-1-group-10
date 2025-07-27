@@ -1,11 +1,8 @@
 package Controllers.FinalControllers;
 
-import Models.App;
-import Models.Map;
+import Models.*;
 import Models.Place.Lake;
 import Models.Place.Quarry;
-import Models.Tile;
-import Models.TileType;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MapController {
@@ -17,17 +14,36 @@ public class MapController {
     }
 
     public void update(SpriteBatch batch) {
+        // Get player position
+        int playerX = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getX();
+        int playerY = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getY();
+
         for (int y = 0; y < Map.mapHeight; y++) {
             for (int x = 0; x < Map.mapWidth; x++) {
                 Tile tile = map.getMap()[y][x];
+
+                // Reset renderInside by default
+                tile.setRenderInside(false);
+
+                // If this tile is part of a Place
+                if (tile.getPlace() != null) {
+
+                if (tile.getPlace().contains(new Position(playerX, playerY))) {
+                    tile.setRenderInside(true);
+                }
+
+                }
+
                 updateTileType(tile);
                 tile.render(batch, x * Map.tileSize, y * Map.tileSize);
-                try{
+
+                try {
                     batch.draw(tile.getItem().show(), x * Map.tileSize, y * Map.tileSize);
-                } catch (NullPointerException ignored){}
+                } catch (NullPointerException ignored) {}
             }
         }
     }
+
 
     public void updateTileType(Tile tile){
         if(tile.getPlace() instanceof Lake){

@@ -14,7 +14,6 @@ import Models.Planets.Crop.ForagingCropType;
 import Models.Planets.Tree;
 import Models.Planets.TreeType;
 import Models.PlayerStuff.Player;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
@@ -153,11 +152,14 @@ public class GameMenuControllers {
                 if (!setUpPlace(game, height, width, absPos, place)) {
                     throw new RuntimeException("Failed to place house at: " + absPos);
                 }
-                TextureRegion[][] regions = new HouseAsset(new Texture("place/house/houseOutside.png")).getHouseRegions();
+                TextureRegion[][] regionOutside = new HouseAsset().getHouseRegions();
+                TextureRegion[][] regionInside = new HouseAsset().getHouseInsideRegions();
+
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
                         Tile tile = place.getPlaceTiles()[i][j];
-                        tile.setAssetRegion(regions[height - 1 - i][j]);
+                        tile.setAssetRegionOutside(regionOutside[height - 1 - i][j]);
+                        tile.setAssetRegionInside(regionInside[height - 1 - i][j]);
                     }
                 }
                 return place;
@@ -256,7 +258,8 @@ public class GameMenuControllers {
     }
 
     public void putRandomForagingPlanet(Farm farm, int numberOfRandom) {
-        ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream).filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream)
+            .filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Item> planets = new ArrayList<>();
         for (ForagingCropType foragingCropType : ForagingCropType.values()) {
             if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())

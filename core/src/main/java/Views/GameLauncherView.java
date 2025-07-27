@@ -216,4 +216,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         return true;
     }
 
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
 }

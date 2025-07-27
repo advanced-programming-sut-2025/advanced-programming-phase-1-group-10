@@ -15,6 +15,7 @@ public class GameControllerFinal {
     private AnimalBuildingController animalBuildingController;
     private InteractController interactController;
     private EnergyController energyController;
+    private TimeController timeController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -26,6 +27,7 @@ public class GameControllerFinal {
         this.animalBuildingController = new AnimalBuildingController();
         this.interactController = new InteractController();
         this.energyController = new EnergyController();
+        this.timeController = new TimeController();
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -38,6 +40,7 @@ public class GameControllerFinal {
         playerController.update(batch);
         interactController.update();
         animalBuildingController.update(batch, delta);
+        timeController.update(delta, batch);
     }
 
     public MapController getMapController() {
@@ -66,5 +69,9 @@ public class GameControllerFinal {
 
     public EnergyController getEnergyController() {
         return energyController;
+    }
+
+    public TimeController getTimeController() {
+        return timeController;
     }
 }

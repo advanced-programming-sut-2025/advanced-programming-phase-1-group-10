@@ -41,4 +41,12 @@ public class Place {
         return "!!";
     }
 
+    public boolean contains(Position pos) {
+        int px = pos.getX();
+        int py = pos.getY();
+        return px >= position.getX() && px < position.getX() + width &&
+            py >= position.getY() && py < position.getY() + height;
+    }
+
+
 }

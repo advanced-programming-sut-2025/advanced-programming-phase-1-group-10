@@ -1,13 +1,16 @@
 package Models;
 
 import Models.Animal.Animal;
-import Models.Place.Lake;
 import Models.Place.Place;
 import Models.Planets.Seed;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Tile {
+
+    public Tile() {
+
+    }
 
     private Person person;
     private Farm farm;
@@ -22,7 +25,9 @@ public class Tile {
     private boolean watered = false;
     private boolean fertilizer = false;
 
-    private TextureRegion assetRegion;
+    private TextureRegion assetRegionOutside;
+    private TextureRegion assetRegionInside;
+    private boolean renderInside = false; // default to false
 
     private Seed plantedSeed;
 
@@ -115,24 +120,47 @@ public class Tile {
     }
 
     public void render(SpriteBatch batch, float x, float y) {
-        if(assetRegion == null) {
-            batch.draw(tileType.getSprite(), x, y);
-            return;
+        TextureRegion regionToDraw = null;
+
+        if (renderInside && assetRegionInside != null) {
+            regionToDraw = assetRegionInside;
+        } else if (!renderInside && assetRegionOutside != null) {
+            regionToDraw = assetRegionOutside;
         }
-        batch.draw(assetRegion, x, y);
+
+        if (regionToDraw != null) {
+            batch.draw(regionToDraw, x, y);
+        } else {
+            batch.draw(tileType.getSprite(), x, y);
+        }
     }
 
-    public void setAssetRegion(TextureRegion region) {
-        this.assetRegion = region;
+    public void setAssetRegionOutside(TextureRegion region) {
+        this.assetRegionOutside = region;
     }
 
-    public TextureRegion getAssetRegion() {
-        return assetRegion;
+    public TextureRegion getAssetRegionOutside() {
+        return assetRegionOutside;
     }
-
 
     public boolean isWalkable() {
         return tileType.isWalkable() && item == null;
+    }
+
+    public void setAssetRegionInside(TextureRegion region) {
+        this.assetRegionInside = region;
+    }
+
+    public TextureRegion getAssetRegionInside() {
+        return assetRegionInside;
+    }
+
+    public void setRenderInside(boolean inside) {
+        this.renderInside = inside;
+    }
+
+    public boolean isRenderInside() {
+        return renderInside;
     }
 }
 
