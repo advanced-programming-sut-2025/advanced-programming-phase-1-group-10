@@ -1,5 +1,6 @@
 package com.Fianl;
 
+import Controllers.MessageSystem;
 import Models.App;
 import Views.LoginMenuView;
 import Views.MainMenuView;
@@ -26,9 +27,7 @@ public class Main extends Game {
             System.out.println("Error loading skin: " + e.getMessage());
             e.printStackTrace();
         }
-
-
-
+        MessageSystem.initialize();
         switchScreen(new MainMenuView());
     }
 

@@ -1,9 +1,11 @@
 package Controllers.FinalControllers;
 
 import Controllers.CheatCodeControllers;
+import Controllers.MessageSystem;
 import Models.Commands.CheatCodeCommands;
 import Models.Commands.GameCommands;
 import Models.Position;
+import Models.Result;
 import com.Fianl.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -35,25 +37,18 @@ public class CheatBoxController {
     private String lastEnteredText = "";
 
     public CheatBoxController() {
-
         stage = new Stage(new ScreenViewport());
-
 
         Skin skin = Main.getInstance().getSkin();
 
-
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle(skin.get(TextField.TextFieldStyle.class));
 
-
         textFieldStyle.fontColor = new Color(0, 1, 0, 1);
-
 
         cheatTextField = new TextField("", textFieldStyle);
         cheatTextField.setSize(CHEATBOX_WIDTH, CHEATBOX_HEIGHT);
 
-
         cheatTextField.setPosition(PADDING, PADDING);
-
 
         cheatTextField.setAlignment(Align.left);
         cheatTextField.setBlinkTime(0.5f);
@@ -129,13 +124,24 @@ public class CheatBoxController {
         System.out.println("Processing cheat code: " + input);
         Matcher matcher;
         if ((matcher = CheatCodeCommands.CHEAT_HOUR.getMatcher(input)) != null) {
-            System.out.println(cheatCodeController.advanceHour(Integer.parseInt(matcher.group("x"))));
+            Result result = cheatCodeController.advanceHour(Integer.parseInt(matcher.group("x")));
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+
         } else if ((matcher = CheatCodeCommands.CHEAT_DAY.getMatcher(input)) != null) {
-            System.out.println(cheatCodeController.advanceDay(Integer.parseInt(matcher.group("x"))));
+            Result result = cheatCodeController.advanceDay(Integer.parseInt(matcher.group("x")));
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+
         } else if ((matcher = CheatCodeCommands.CHANGE_NEXT_DAY_WEATHER.getMatcher(input)) != null) {
-            System.out.println(cheatCodeController.changeWeather(
+            Result result = cheatCodeController.changeWeather(
                 matcher.group("Type").trim()
-            ));
+            );
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+            else
+                MessageSystem.showError(result.message(),4.0f);
+
         } else if((matcher = CheatCodeCommands.THOR_TILE.getMatcher(input)) != null){
             System.out.println(cheatCodeController.thorTile(new Position(
                     Integer.parseInt(matcher.group("x")),
@@ -143,17 +149,35 @@ public class CheatBoxController {
                 )
             ));
         } else if((matcher = CheatCodeCommands.ADD_MONEY.getMatcher(input)) != null){
-            System.out.println(cheatCodeController.addMoney(
+            Result result = cheatCodeController.addMoney(
                 matcher.group("count")
-            ));
+            );
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+            else
+                MessageSystem.showError(result.message(),4.0f);
+
         } else if((matcher = CheatCodeCommands.SET_ENERGY.getMatcher(input)) != null){
-            System.out.println(cheatCodeController.setEnergy(matcher.group("value")));
+            Result result = cheatCodeController.setEnergy(matcher.group("value"));
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+            else
+                MessageSystem.showError(result.message(),4.0f);
+
         } else if ((matcher = CheatCodeCommands.SET_ENERGY_UNLIMITED.getMatcher(input)) != null) {
-            System.out.println(cheatCodeController.setUnlimitedEnergy());
+            Result result = cheatCodeController.setUnlimitedEnergy();
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+
         } else if((matcher = CheatCodeCommands.SET_ANIMAL_FRIENDSHIP.getMatcher(input)) != null){
             String name = matcher.group("animalName");
             String amount = matcher.group("amount");
-            System.out.println(cheatCodeController.setAnimalFriendShip(name,amount));
+            Result result = cheatCodeController.setAnimalFriendShip(name,amount);
+
+            if (result.state())
+                MessageSystem.showInfo(result.message(),5.0f);
+            else
+                MessageSystem.showError(result.message(),4.0f);
         }
     }
 

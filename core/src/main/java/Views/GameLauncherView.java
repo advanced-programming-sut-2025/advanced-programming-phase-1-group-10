@@ -1,6 +1,7 @@
 package Views;
 
 import Controllers.FinalControllers.GameControllerFinal;
+import Controllers.MessageSystem;
 import Models.App;
 import Models.Map;
 import Models.PlayerStuff.Player;
@@ -99,6 +100,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         controller.getBarController().update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.getInventoryBarController().update(batch);
         controller.getEnergyController().update(batch);
+        MessageSystem.update(batch, viewport);
         batch.end();
 
         controller.getCheatBoxController().render();
@@ -130,6 +132,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     public void dispose() {
         controller.getAnimalBuildingController().dispose();
         controller.getCheatBoxController().dispose();
+        MessageSystem.dispose();
     }
 
     @Override
