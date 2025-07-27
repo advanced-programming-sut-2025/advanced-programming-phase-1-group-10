@@ -145,7 +145,7 @@ public class Tile {
     }
 
     public boolean isWalkable() {
-        return tileType.isWalkable() && item == null;
+        return tileType.isWalkable() && item == null && animal == null;
     }
 
     public void setAssetRegionInside(TextureRegion region) {

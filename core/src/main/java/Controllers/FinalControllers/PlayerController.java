@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class PlayerController {
 
+    private int currentPlayerIndex = 0;
+
     public PlayerController(Map map) {
         this.map = map;
     }
@@ -71,22 +73,12 @@ public class PlayerController {
         PlayerAsset asset = movementAnimation;
 
         if (player.isMoving()) {
-            switch (player.getDirection()) {
-                case UP:
-                    currentFrame = asset.getWalkUpAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
-                    break;
-                case DOWN:
-                    currentFrame = asset.getWalkDownAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
-                    break;
-                case LEFT:
-                    currentFrame = asset.getWalkLeftAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
-                    break;
-                case RIGHT:
-                    currentFrame = asset.getWalkRightAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
-                    break;
-                default:
-                    currentFrame = asset.getIdleFrame(player.getGender());
-            }
+            currentFrame = switch (player.getDirection()) {
+                case UP -> asset.getWalkUpAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
+                case DOWN -> asset.getWalkDownAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
+                case LEFT -> asset.getWalkLeftAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
+                case RIGHT -> asset.getWalkRightAnimation(player.getGender()).getKeyFrame(player.getStateTime(), true);
+            };
         } else {
             currentFrame = asset.getIdleFrame(player.getGender());
         }
@@ -95,7 +87,7 @@ public class PlayerController {
     }
 
     private boolean canMoveTo(float nextX, float nextY, Map map) {
-        float width  = Player.PLAYER_WIDTH;
+        float width = Player.PLAYER_WIDTH;
         float height = Player.PLAYER_HEIGHT / 2f;
 
         //The height divided by 2 because there is no restriction for player head.
@@ -126,11 +118,23 @@ public class PlayerController {
         return true;
     }
 
+    public void handlePlayerSwitching() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) { // '.'
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+            App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.COMMA)) { // ','
+            currentPlayerIndex = (currentPlayerIndex - 1 + players.size()) % players.size();
+            App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));
+        }
+    }
 
     public void update(SpriteBatch batch) {
+        handlePlayerSwitching();
+
+        updatePosition(App.getInstance().getCurrentGame().getCurrentPlayer(), Gdx.graphics.getDeltaTime());
         for (Player player : players) {
-            updatePosition(player, Gdx.graphics.getDeltaTime());
             render(player, batch);
         }
     }
+
 }

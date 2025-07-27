@@ -108,10 +108,10 @@ public class GameMenuControllers {
         }
 
         // Add farm features
-        farm.getPlaces().add(createPlace(game, start, farm, config.lakeOffset, config.lakeHeight, config.lakeWidth, PlaceType.LAKE));
-        farm.getPlaces().add(createPlace(game, start, farm, config.houseOffset, config.houseHeight, config.houseWidth, PlaceType.HOUSE));
-        farm.getPlaces().add(createPlace(game, start, farm, config.quarryOffset, config.quarryHeight, config.quarryWidth, PlaceType.QUARRY));
-        farm.getPlaces().add(createPlace(game, start, farm, config.greenhouseOffset, config.greenhouseHeight, config.greenhouseWidth, PlaceType.GREENHOUSE));
+        farm.getPlaces().add(createPlace(game, start, config.lakeOffset, config.lakeHeight, config.lakeWidth, PlaceType.LAKE));
+        farm.getPlaces().add(createPlace(game, start, config.houseOffset, config.houseHeight, config.houseWidth, PlaceType.HOUSE));
+        farm.getPlaces().add(createPlace(game, start, config.quarryOffset, config.quarryHeight, config.quarryWidth, PlaceType.QUARRY));
+        farm.getPlaces().add(createPlace(game, start, config.greenhouseOffset, config.greenhouseHeight, config.greenhouseWidth, PlaceType.GREENHOUSE));
 
         return farm;
     }
@@ -134,7 +134,7 @@ public class GameMenuControllers {
         };
     }
 
-    private Place createPlace(Game game, Position start, Farm farm, Position offset, int height, int width, PlaceType type) {
+    private Place createPlace(Game game, Position start, Position offset, int height, int width, PlaceType type) {
         Position absPos = new Position(start.getX() + offset.getX(), start.getY() + offset.getY());
         Place place;
 
@@ -150,7 +150,7 @@ public class GameMenuControllers {
                 if (!setUpPlace(game, height, width, absPos, place)) {
                     throw new RuntimeException("Failed to place greenhouse at: " + absPos);
                 }
-                TextureRegion[][] broken = new GreenHouseAsset().getBroken();
+                //TextureRegion[][] broken = new GreenHouseAsset().getBroken();
                 TextureRegion[][] greenhouseInside = new GreenHouseAsset().getGreenhouseInside();
                 TextureRegion[][] greenhouseOutside = new GreenHouseAsset().getGreenhouuseOutside();
 
@@ -352,27 +352,35 @@ public class GameMenuControllers {
             String farmTypeId = farmTypes.get(i);
             String mapNumber = String.valueOf(farmTypeId.charAt(farmTypeId.length() - 1));
 
+            // Choose a unique starting point for each farm
             Position startingPoint = chooseStartingPoint(i);
 
+            // Create the farm based on map number and position
             Farm farm = createFarm(mapNumber, startingPoint, game);
 
-            // Place player just outside the house
+            // Place player just outside the house (e.g., bottom-left of house)
             Position housePos = getPlaceByName(farm.getPlaces(), "House").getPosition();
             Position playerPos = new Position(housePos.getX() - 1, housePos.getY() - 1);
-            player.setPosition(playerPos);
-            player.setX(playerPos.getX() * Map.mapWidth);
-            player.setY(playerPos.getY() * Map.mapHeight);
 
+            // Assign tile-based and pixel-based coordinates
+            player.setPosition(playerPos);
+            player.setX(playerPos.getY() * Map.tileSize);
+            player.setY(playerPos.getX() * Map.tileSize);
+
+            // Place the player into the map
             getTileByPosition(playerPos).setPerson(player);
 
-            // Setup resources and assign farm
+            // Setup resources on the farm
             putRandomMineral(farm, 4);
             putRandomForagingPlanet(farm, 10);
+
+            // Assign the farm to the player
             player.setFarm(farm);
 
-            // Setup friendships
+            // Setup friendships or other game-specific logic
             setUpFriendShip(player);
         }
     }
+
 
 }
