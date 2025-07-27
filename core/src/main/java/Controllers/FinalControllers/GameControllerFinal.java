@@ -16,7 +16,7 @@ public class GameControllerFinal {
     private InteractController interactController;
     private EnergyController energyController;
     private TimeController timeController;
-
+    private CheatBoxController cheatBoxController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -28,9 +28,12 @@ public class GameControllerFinal {
         this.interactController = new InteractController();
         this.energyController = new EnergyController();
         this.timeController = new TimeController();
+        this.cheatBoxController = new CheatBoxController();
     }
 
     public void update(SpriteBatch batch, float delta) {
+
+        cheatBoxController.update(delta);
         if (animalBuildingController.isShowingInterior()) {
             animalBuildingController.update(batch, delta);
             return;
@@ -73,5 +76,9 @@ public class GameControllerFinal {
 
     public TimeController getTimeController() {
         return timeController;
+    }
+
+    public CheatBoxController getCheatBoxController() {
+        return cheatBoxController;
     }
 }

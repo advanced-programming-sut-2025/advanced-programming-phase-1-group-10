@@ -131,7 +131,9 @@ public class PlayerController {
     public void update(SpriteBatch batch) {
         handlePlayerSwitching();
 
-        updatePosition(App.getInstance().getCurrentGame().getCurrentPlayer(), Gdx.graphics.getDeltaTime());
+        updatePosition(App.getInstance().getCurrentGame().getCurrentPlayer(),
+                    Gdx.graphics.getDeltaTime());
+
         for (Player player : players) {
             render(player, batch);
         }

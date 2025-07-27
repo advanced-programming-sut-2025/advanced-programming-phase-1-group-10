@@ -62,7 +62,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             batch.begin();
             controller.getAnimalBuildingController().update(batch, delta);
             batch.end();
-
             elapsedTime += delta;
             return;
         }
@@ -102,6 +101,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         controller.getEnergyController().update(batch);
         batch.end();
 
+        controller.getCheatBoxController().render();
         elapsedTime += delta;
     }
 
@@ -129,6 +129,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     @Override
     public void dispose() {
         controller.getAnimalBuildingController().dispose();
+        controller.getCheatBoxController().dispose();
     }
 
     @Override

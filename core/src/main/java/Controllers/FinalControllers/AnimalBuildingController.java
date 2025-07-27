@@ -177,13 +177,13 @@ public class AnimalBuildingController {
     }
 
     private void handleBuildingPlacement() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C) && !isPlacingCoop && !isPlacingBarn) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSLASH) && !isPlacingCoop && !isPlacingBarn) {
             isPlacingCoop = true;
             tempCoopX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
             tempCoopY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.B) && !isPlacingBarn && !isPlacingCoop) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SLASH) && !isPlacingBarn && !isPlacingCoop) {
             isPlacingBarn = true;
             tempBarnX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
             tempBarnY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
