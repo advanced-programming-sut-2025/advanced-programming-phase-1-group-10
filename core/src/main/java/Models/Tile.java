@@ -129,6 +129,7 @@ public class Tile {
         }
 
         if (regionToDraw != null) {
+            batch.draw(TileType.Grass.getSprite(), x,y);
             batch.draw(regionToDraw, x, y);
         } else {
             batch.draw(tileType.getSprite(), x, y);

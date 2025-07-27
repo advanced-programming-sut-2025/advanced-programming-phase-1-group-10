@@ -1,5 +1,6 @@
 package Controllers;
 
+import Assets.GreenHouseAsset;
 import Assets.HouseAsset;
 import Models.*;
 import Models.Config.FarmConfig;
@@ -121,13 +122,13 @@ public class GameMenuControllers {
                 new Position(16, 24), 5, 15,
                 new Position(8, 24), 8, 8,
                 new Position(16, 4), 4, 8,
-                new Position(8, 8), 6, 7
+                new Position(5, 8), 10, 7
             );
             case "2" -> new FarmConfig(
                 new Position(10, 40), 4, 12,
                 new Position(12, 24), 8, 8,
                 new Position(16, 8), 4, 6,
-                new Position(4, 8), 6, 7
+                new Position(5, 8), 10, 7
             );
             default -> throw new IllegalArgumentException("Invalid farm type: " + type);
         };
@@ -146,7 +147,22 @@ public class GameMenuControllers {
                 break;
             case GREENHOUSE:
                 place = new GreenHouse(absPos, height, width);
-                break;
+                if (!setUpPlace(game, height, width, absPos, place)) {
+                    throw new RuntimeException("Failed to place greenhouse at: " + absPos);
+                }
+                TextureRegion[][] broken = new GreenHouseAsset().getBroken();
+                TextureRegion[][] greenhouseInside = new GreenHouseAsset().getGreenhouseInside();
+                TextureRegion[][] greenhouseOutside = new GreenHouseAsset().getGreenhouuseOutside();
+
+
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        Tile tile = place.getPlaceTiles()[i][j];
+                        tile.setAssetRegionOutside(greenhouseOutside[height - 1 - i][j]);
+                        tile.setAssetRegionInside(greenhouseInside[height - 1 - i][j]);
+                    }
+                }
+                return place;
             case HOUSE:
                 place = new House(absPos, height, width);
                 if (!setUpPlace(game, height, width, absPos, place)) {

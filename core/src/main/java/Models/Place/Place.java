@@ -42,11 +42,12 @@ public class Place {
     }
 
     public boolean contains(Position pos) {
-        int px = pos.getX();
-        int py = pos.getY();
-        return px >= position.getX() && px < position.getX() + width &&
-            py >= position.getY() && py < position.getY() + height;
+        int px = pos.getY(); // treat Y as if it's X
+        int py = pos.getX(); // treat X as if it's Y
+        return px >= position.getY() && px < position.getY() + width &&
+            py >= position.getX() && py < position.getX() + height;
     }
+
 
 
 }
