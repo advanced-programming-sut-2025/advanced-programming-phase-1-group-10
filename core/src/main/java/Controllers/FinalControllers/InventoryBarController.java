@@ -17,7 +17,7 @@ public class InventoryBarController {
 
     private final SlotAsset slotAsset;
     private final static int SLOT_SIZE = 64;
-    private final Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+    private Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
 
     public InventoryBarController() {
         this.slotAsset = new SlotAsset();
@@ -53,6 +53,8 @@ public class InventoryBarController {
                 }
             }
         }
+
+        player = App.getInstance().getCurrentGame().getCurrentPlayer();
 
         font.dispose(); // Only do this if not caching the font elsewhere
     }

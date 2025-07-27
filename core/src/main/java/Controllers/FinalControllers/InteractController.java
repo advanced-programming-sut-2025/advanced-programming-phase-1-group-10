@@ -7,7 +7,7 @@ import Models.Tools.Tool;
 public class InteractController {
 
     private Item currentItem;
-    private final Player player;
+    private Player player;
     private final Map map;
 
 
@@ -20,6 +20,9 @@ public class InteractController {
         try{
             this.currentItem = player.getIventoryBarItems().get(player.getSelectedSlot());
         } catch (Exception ignored){}
+
+        player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
     }
 
     public void useItemInDirection(String direction) {
