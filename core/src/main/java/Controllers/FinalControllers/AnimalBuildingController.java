@@ -21,37 +21,30 @@ public class AnimalBuildingController {
 
     private final AnimalBuildingAsset animalBuildingAsset;
 
-    // coop
     private boolean isPlacingCoop = false;
     private float tempCoopX = 0;
     private float tempCoopY = 0;
     private final List<Coop> placedCoops = new ArrayList<>();
 
-    // coop inside
     private Coop selectedCoop = null;
     private boolean showingCoopInterior = false;
 
-    // barn
     private boolean isPlacingBarn = false;
     private float tempBarnX = 0;
     private float tempBarnY = 0;
     private final List<Barn> placedBarns = new ArrayList<>();
 
-    // barn inside
     private Barn selectedBarn = null;
     private boolean showingBarnInterior = false;
 
     private final float MOVEMENT_SPEED = 5.0f;
     private Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
 
-
     private float interiorDisplayTime = 0;
-    private final float INTERIOR_DISPLAY_DURATION = 8.0f; // imporatnt
+    private final float INTERIOR_DISPLAY_DURATION = 5.0f;
     private boolean autoHideInterior = true;
 
-
     private ShapeRenderer shapeRenderer;
-
 
     private float interiorX;
     private float interiorY;
@@ -71,7 +64,6 @@ public class AnimalBuildingController {
         }
 
         handleInput(delta);
-
         updateInteriorDisplayTime(delta);
     }
 
@@ -110,8 +102,6 @@ public class AnimalBuildingController {
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
 
-            // show the animals in the coop
-            // renderCoopAnimals(batch, selectedCoop, interiorX, interiorY, interiorScale);
         } else if (showingBarnInterior && selectedBarn != null) {
             Sprite interiorSprite = animalBuildingAsset.getBarninside();
             float spriteWidth = interiorSprite.getWidth() * interiorScale;
@@ -122,12 +112,8 @@ public class AnimalBuildingController {
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
 
-            // show the animals in the barn
-            // renderBarnAnimals(batch, selectedBarn, interiorX, interiorY, interiorScale);
         }
 
-        // draw a close button if we want
-        // batch.draw(closeButtonTexture, screenWidth - 50, screenHeight - 50, 40, 40);
     }
 
     private void renderPlacingBuilding(SpriteBatch batch) {
@@ -166,8 +152,6 @@ public class AnimalBuildingController {
             }
 
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                // check the click on the close button
-                // call closeInteriorView()
             }
 
             return;
@@ -223,6 +207,7 @@ public class AnimalBuildingController {
             return false;
         }
 
+
         for (Coop coop : placedCoops) {
             Position pos = coop.getPosition();
             Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
@@ -239,6 +224,7 @@ public class AnimalBuildingController {
                 return true;
             }
         }
+
 
         for (Barn barn : placedBarns) {
             Position pos = barn.getPosition();
@@ -259,6 +245,7 @@ public class AnimalBuildingController {
 
         return false;
     }
+
 
     public void closeInteriorView() {
         showingCoopInterior = false;
@@ -296,7 +283,25 @@ public class AnimalBuildingController {
             Coop newCoop = new Coop(position, coopHeight, coopWidth);
             placedCoops.add(newCoop);
 
-            System.out.println("Coop placed at: " + tempCoopX + ", " + tempCoopY);
+
+            int tileSize = Map.tileSize;
+            int startTileX = (int) Math.floor(tempCoopX / tileSize);
+            int startTileY = (int) Math.floor(tempCoopY / tileSize);
+            int coopWidthInTiles = (int) Math.ceil((double) coopWidth / tileSize);
+            int coopHeightInTiles = (int) Math.ceil((double) coopHeight / tileSize);
+
+
+            for (int row = 0; row < coopHeightInTiles; row++) {
+                for (int col = 0; col < coopWidthInTiles; col++) {
+                    int tileX = startTileX + col;
+                    int tileY = startTileY + row;
+                    if (tileX < mapWidth && tileY < mapHeight) {
+                        map[tileX][tileY].setPlace(newCoop);
+                    }
+                }
+            }
+
+            System.out.println("Coop placed at tile: " + startTileX + ", " + startTileY);
             isPlacingCoop = false;
         } else {
             System.out.println("Cannot place coop here. Invalid position.");
@@ -312,12 +317,29 @@ public class AnimalBuildingController {
             Barn newBarn = new Barn(position, barnHeight, barnWidth);
             placedBarns.add(newBarn);
 
-            System.out.println("Barn placed at: " + tempBarnX + ", " + tempBarnY);
+            int tileSize = Map.tileSize;
+            int startTileX = (int) Math.floor(tempBarnX / tileSize);
+            int startTileY = (int) Math.floor(tempBarnY / tileSize);
+            int barnWidthInTiles = (int) Math.ceil((double) barnWidth / tileSize);
+            int barnHeightInTiles = (int) Math.ceil((double) barnHeight / tileSize);
+
+            for (int row = 0; row < barnHeightInTiles; row++) {
+                for (int col = 0; col < barnWidthInTiles; col++) {
+                    int tileX = startTileX + col;
+                    int tileY = startTileY + row;
+                    if (tileX < mapWidth && tileY < mapHeight) {
+                        map[tileX][tileY].setPlace(newBarn);
+                    }
+                }
+            }
+
+            System.out.println("Barn placed at tile: " + startTileX + ", " + startTileY);
             isPlacingBarn = false;
         } else {
             System.out.println("Cannot place barn here. Invalid position.");
         }
     }
+
 
     private boolean isValidPlacement(float x, float y, boolean isCoop) {
         Sprite buildingSprite = isCoop ? animalBuildingAsset.getCoop() : animalBuildingAsset.getBarn();
@@ -338,7 +360,7 @@ public class AnimalBuildingController {
         int buildingWidthInTiles = (int) Math.ceil((double) buildingSprite.getRegionWidth() / tileSize);
         int buildingHeightInTiles = (int) Math.ceil((double) buildingSprite.getRegionHeight() / tileSize);
 
-        if (startTileX + buildingWidthInTiles > mapWidth || startTileY + buildingHeightInTiles > mapHeight) {
+        if (startTileX + buildingWidthInTiles >= mapWidth || startTileY + buildingHeightInTiles >= mapHeight) {
             System.out.println("Invalid placement: Building extends beyond map boundaries");
             return false;
         }
@@ -351,10 +373,6 @@ public class AnimalBuildingController {
                 }
 
                 Tile tile = map[tileX][tileY];
-                if (tile == null) {
-                    System.out.println("Invalid placement: Tile is null");
-                    return false;
-                }
 
                 if (tile.getTileType() != TileType.Grass) {
                     System.out.println("Invalid placement: Tile is not grass");
