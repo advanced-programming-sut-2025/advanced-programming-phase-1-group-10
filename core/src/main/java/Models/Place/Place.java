@@ -48,6 +48,11 @@ public class Place {
             py >= position.getX() && py < position.getX() + height;
     }
 
+    public int getHeight() {
+        return height;
+    }
 
-
+    public int getWidth() {
+        return width;
+    }
 }

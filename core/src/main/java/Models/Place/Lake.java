@@ -19,4 +19,14 @@ public class Lake extends Place {
         return "Lake";
     }
 
+    @Override
+    public int getHeight() {
+        return super.getHeight();
+    }
+
+    @Override
+    public int getWidth() {
+        return super.getWidth();
+    }
+
 }

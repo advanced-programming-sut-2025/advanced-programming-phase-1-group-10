@@ -7,7 +7,7 @@ public enum FishType {
     SARDINE("Sardine",Season.FALL, 40),
     SHAD("Shad",Season.FALL, 60),
     BLUE_DISCUS("Blue Discus",Season.FALL, 120),
-    MIDNIGHT_CARP("Midnight Crap",Season.WINTER, 150),
+    MIDNIGHT_CARP("Midnight Carp",Season.WINTER, 150),
     SQUID("Squid",Season.WINTER, 80),
     TUNA("Tuna",Season.WINTER, 100),
     PERCH("Perch",Season.WINTER, 55),

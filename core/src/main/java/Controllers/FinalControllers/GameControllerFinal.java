@@ -3,10 +3,13 @@ package Controllers.FinalControllers;
 import Controllers.MessageSystem;
 import Models.App;
 import Models.NPC.NPC;
+import Models.Place.Lake;
 import Views.GameLauncherView;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.List;
 
 public class GameControllerFinal {
 
@@ -25,6 +28,7 @@ public class GameControllerFinal {
     private SkillController skillController;
     private NpcController npcController;
     public WeatherController weatherController;
+    private FishController fishController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -41,6 +45,12 @@ public class GameControllerFinal {
         this.skillController = new SkillController();
         this.npcController = new NpcController();
         this.weatherController = new WeatherController();
+
+        List<Lake> allLakes = FishController.findAllLakes();
+        if (!allLakes.isEmpty()) {
+            this.fishController = new FishController(allLakes);
+            System.out.println("slam");
+        }
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -58,6 +68,14 @@ public class GameControllerFinal {
         storeController.update(batch);
         npcController.update(batch);
         playerController.update(batch);
+
+        if (fishController != null) {
+            fishController.update(batch, delta);
+        }
+    }
+
+    public FishController getFishController() {
+        return fishController;
     }
 
     public void updateSecondCamera(SpriteBatch batch, float delta, Viewport viewport) {

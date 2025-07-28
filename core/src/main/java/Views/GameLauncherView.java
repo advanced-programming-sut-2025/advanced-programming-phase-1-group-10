@@ -130,6 +130,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         controller.getAnimalBuildingController().dispose();
         controller.getCheatBoxController().dispose();
         MessageSystem.dispose();
+        if (controller.getFishController() != null) {
+            controller.getFishController().dispose();
+        }
     }
 
     @Override
