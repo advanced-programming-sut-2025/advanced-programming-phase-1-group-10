@@ -5,7 +5,7 @@ import Models.Position;
 public class NpcHosue extends Place {
 
     private final int houseHeight = 4;
-    private final int houseWidth = 9;
+    private final int houseWidth = 3;
 
     public NpcHosue(Position position, int height, int width) {
         super(position, height, width);
@@ -28,4 +28,6 @@ public class NpcHosue extends Place {
     public String getPlaceName() {
         return "NPCHouse";
     }
+
+
 }

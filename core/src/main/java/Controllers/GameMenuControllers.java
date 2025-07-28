@@ -75,11 +75,11 @@ public class GameMenuControllers {
 
     public void setUpNPCs(Game game) {
         game.getNpcs().addAll(Arrays.asList(
-                new Abigel("Abigel",new Position(56,105),new NpcHosue(new Position(55,103),4,9)),
-                new Harvey("Harvey",new Position(56,127),new NpcHosue(new Position(55,122),4,9)),
-                new Lia("Lia",new Position(56,145),new NpcHosue(new Position(55,142),4,9)),
-                new Robbin("Robbin",new Position(63,114),new NpcHosue(new Position(62,112),4,9)),
-                new Sebastian("Sebastian",new Position(63,134),new NpcHosue(new Position(62,132),4,9))
+                new Abigel("Abigel",new Position(53,104),new NpcHosue(new Position(55,103),4,9)),
+                new Harvey("Harvey",new Position(53,123),new NpcHosue(new Position(55,122),4,9)),
+                new Lia("Lia",new Position(53,143),new NpcHosue(new Position(55,142),4,9)),
+                new Robbin("Robbin",new Position(61,113),new NpcHosue(new Position(62,112),4,9)),
+                new Sebastian("Sebastian",new Position(61,133),new NpcHosue(new Position(62,132),4,9))
                 ));
         for(NPC npc : game.getNpcs()) {
             getTileByPosition(npc.getPosition()).setPerson(npc);

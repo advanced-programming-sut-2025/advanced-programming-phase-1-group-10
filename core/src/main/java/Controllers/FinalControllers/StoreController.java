@@ -15,33 +15,16 @@ public class StoreController {
 
     public void update(SpriteBatch batch) {
         for (Store store : App.getInstance().getCurrentGame().getStores()) {
-            TextureRegion[][] region = null;
-
-            switch (store.getPlaceName()) {
-                case "blackSmith":
-                    region = storeAsset.getBlackSmithOutside();
-                    break;
-                case "carpenter":
-                    region = storeAsset.getCarpenterOutside();
-                    break;
-                case "fishShop":
-                    region = storeAsset.getFishStoreOutside();
-                    break;
-                case "jojaMart":
-                    region = storeAsset.getJojoMartOutside();
-                    break;
-                case "marineRanch":
-                    region = storeAsset.getMarineRanchOutside();
-                    break;
-                case "pierreGeneral":
-                    region = storeAsset.getPierreGeneralOutside();
-                    break;
-                case "stardropSaloon":
-                    region = storeAsset.getStardropSaloonOutside();
-                    break;
-                default:
-                    throw new RuntimeException("Unknown store place: " + store.getPlaceName());
-            }
+            TextureRegion[][] region = switch (store.getPlaceName()) {
+                case "blackSmith" -> storeAsset.getBlackSmithOutside();
+                case "carpenter" -> storeAsset.getCarpenterOutside();
+                case "fishShop" -> storeAsset.getFishStoreOutside();
+                case "jojaMart" -> storeAsset.getJojoMartOutside();
+                case "marineRanch" -> storeAsset.getMarineRanchOutside();
+                case "pierreGeneral" -> storeAsset.getPierreGeneralOutside();
+                case "stardropSaloon" -> storeAsset.getStardropSaloonOutside();
+                default -> throw new RuntimeException("Unknown store place: " + store.getPlaceName());
+            };
 
             int texHeight = region.length;
             int texWidth = region[0].length;

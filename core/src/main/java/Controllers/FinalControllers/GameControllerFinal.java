@@ -1,6 +1,7 @@
 package Controllers.FinalControllers;
 
 import Models.App;
+import Models.NPC.NPC;
 import Views.GameLauncherView;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -19,6 +20,7 @@ public class GameControllerFinal {
     private CheatBoxController cheatBoxController;
     private StoreController storeController;
     private SkillController skillController;
+    private NpcController npcController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -33,6 +35,7 @@ public class GameControllerFinal {
         this.cheatBoxController = new CheatBoxController();
         this.storeController = new StoreController();
         this.skillController = new SkillController();
+        this.npcController = new NpcController();
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -48,8 +51,8 @@ public class GameControllerFinal {
         animalBuildingController.update(batch, delta);
         timeController.update(delta, batch);
         storeController.update(batch);
+        npcController.update(batch);
         playerController.update(batch);
-
     }
 
     public MapController getMapController() {
@@ -94,5 +97,9 @@ public class GameControllerFinal {
 
     public SkillController getSkillController() {
         return skillController;
+    }
+
+    public NpcController getNpcController() {
+        return npcController;
     }
 }
