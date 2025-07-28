@@ -97,11 +97,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         // Switch to screen-space projection (identity matrix)
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
-        controller.getBarController().update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        controller.getInventoryBarController().update(batch);
-        controller.getEnergyController().update(batch);
-        controller.getSkillController().update(batch);
-        MessageSystem.update(batch, viewport);
+        controller.updateSecondCamera(batch, delta, viewport);
         batch.end();
 
         controller.getCheatBoxController().render();

@@ -1,6 +1,7 @@
 package Controllers.FinalControllers;
 
 import Models.App;
+import Models.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,7 +35,7 @@ public class TimeController {
 
             // Set color to black with calculated transparency
             batch.setColor(0f, 0f, 0f, alpha);
-            batch.draw(nightOverlay, 0, 0, screenWidth, screenHeight);
+            batch.draw(nightOverlay, 0, 0, Map.mapWidth *  Map.tileSize, Map.mapHeight * Map.tileSize);
             batch.setColor(1f, 1f, 1f, 1f);
         }
     }
@@ -42,7 +43,7 @@ public class TimeController {
     private float getNightAlpha(int hour) {
         // Smooth transition from 18 (day) to 22 (night)
         if (hour < 18 || hour > 22) return 0f;
-        return (hour - 18) / 4f; // 0.0 → 1.0 over 4 hours
+        return (hour - 18) / 4.5f; // 0.0 → 1.0 over 4 hours
     }
 
     public void dispose() {

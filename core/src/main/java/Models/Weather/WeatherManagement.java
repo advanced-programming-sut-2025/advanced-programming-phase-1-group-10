@@ -19,10 +19,6 @@ public class WeatherManagement {
         return instance;
     }
 
-    public void doLightning(Tile tile) {
-
-    }
-
     public static Result showWeather() {
         return new Result(true, "Game weather: " + App.getInstance().getCurrentGame().getWeather().getName());
     }

@@ -1,9 +1,12 @@
 package Controllers.FinalControllers;
 
+import Controllers.MessageSystem;
 import Models.App;
 import Models.NPC.NPC;
 import Views.GameLauncherView;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameControllerFinal {
 
@@ -21,6 +24,7 @@ public class GameControllerFinal {
     private StoreController storeController;
     private SkillController skillController;
     private NpcController npcController;
+    public WeatherController weatherController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -36,6 +40,7 @@ public class GameControllerFinal {
         this.storeController = new StoreController();
         this.skillController = new SkillController();
         this.npcController = new NpcController();
+        this.weatherController = new WeatherController();
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -53,6 +58,15 @@ public class GameControllerFinal {
         storeController.update(batch);
         npcController.update(batch);
         playerController.update(batch);
+    }
+
+    public void updateSecondCamera(SpriteBatch batch, float delta, Viewport viewport) {
+        weatherController.update(batch);
+        barController.update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        inventoryBarController.update(batch);
+        energyController.update(batch);
+        skillController.update(batch);
+        MessageSystem.update(batch, viewport);
     }
 
     public MapController getMapController() {
@@ -101,5 +115,9 @@ public class GameControllerFinal {
 
     public NpcController getNpcController() {
         return npcController;
+    }
+
+    public WeatherController getWeatherController() {
+        return weatherController;
     }
 }
