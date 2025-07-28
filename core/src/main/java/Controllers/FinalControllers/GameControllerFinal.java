@@ -18,6 +18,7 @@ public class GameControllerFinal {
     private TimeController timeController;
     private CheatBoxController cheatBoxController;
     private StoreController storeController;
+    private SkillController skillController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -31,6 +32,7 @@ public class GameControllerFinal {
         this.timeController = new TimeController();
         this.cheatBoxController = new CheatBoxController();
         this.storeController = new StoreController();
+        this.skillController = new SkillController();
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -47,6 +49,7 @@ public class GameControllerFinal {
         timeController.update(delta, batch);
         storeController.update(batch);
         playerController.update(batch);
+
     }
 
     public MapController getMapController() {
@@ -87,5 +90,9 @@ public class GameControllerFinal {
 
     public StoreController getStoreController() {
         return storeController;
+    }
+
+    public SkillController getSkillController() {
+        return skillController;
     }
 }

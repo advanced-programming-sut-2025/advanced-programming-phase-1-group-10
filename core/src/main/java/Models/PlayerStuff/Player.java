@@ -181,7 +181,7 @@ public class Player implements Person {
 
     private int calculateLevel(int xp) {
         int level = 0;
-        while (level < 4 && xp >= 50 + level * 100) {
+        while (level < 5 && xp >= 50 + level * 100) {
             level++;
         }
         return level;

@@ -100,6 +100,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         controller.getBarController().update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         controller.getInventoryBarController().update(batch);
         controller.getEnergyController().update(batch);
+        controller.getSkillController().update(batch);
         MessageSystem.update(batch, viewport);
         batch.end();
 
