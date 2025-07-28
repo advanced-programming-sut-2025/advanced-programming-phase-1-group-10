@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public enum TileType {
-    Wall(new Sprite(new Texture("tiles/wall.png")),false),
+    Wall(new Sprite(new Texture("tiles/grass.png")),false),
     Grass(new Sprite(new Texture("tiles/grass.png")),true),
     Plowed(new Sprite(new Texture("tiles/plowed.png")),true),
     Watered(new Sprite(new Texture("tiles/watered.png")),true),

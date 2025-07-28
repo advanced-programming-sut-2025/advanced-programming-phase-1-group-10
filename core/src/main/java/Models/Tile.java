@@ -1,10 +1,14 @@
 package Models;
 
+import Assets.OtherAssets;
 import Models.Animal.Animal;
 import Models.Place.Place;
 import Models.Planets.Seed;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import javax.print.attribute.standard.MediaSize;
 
 public class Tile {
 
@@ -131,6 +135,9 @@ public class Tile {
         if (regionToDraw != null) {
             batch.draw(TileType.Grass.getSprite(), x,y);
             batch.draw(regionToDraw, x, y);
+        } else if (tileType ==TileType.Wall){
+            batch.draw(tileType.getSprite(), x, y);
+            batch.draw(OtherAssets.bush, x, y);
         } else {
             batch.draw(tileType.getSprite(), x, y);
         }
