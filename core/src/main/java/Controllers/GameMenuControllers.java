@@ -59,13 +59,13 @@ public class GameMenuControllers {
 
     public void setUpCity(Game game) {
         game.getStores().addAll(Arrays.asList(
-                new BlackSmith(new Position(58, 12), 4, 6, new Seller("Clint", "11", new Position(54, 12)), 9, 16),
-                new CarpenterShop(new Position(61, 43), 4, 16, new Seller("Robin", "44", new Position(62, 45)), 9, 20),
-                new JojaMart(new Position(53, 10), 4, 20, new Seller("Morris", "22", new Position(59, 16)), 9, 23),
-                new FishStore(new Position(65, 17), 5, 8, new Seller("Willy", "55", new Position(66, 19)), 9, 17),
-                new PierreGeneralStore(new Position(52, 37), 4, 5, new Seller("Pierrre", "33", new Position(53, 39)), 9, 17),
-                new StardropSaloon(new Position(67, 46), 3, 12, new Seller("Gus", "77", new Position(68, 48)), 12, 24),
-                new MarrineRanchStore(new Position(53, 56), 4, 12, new Seller("Marnie", "66", new Position(54, 65)), 9, 16)
+                new BlackSmith(new Position(58, 20), 6, 8, new Seller("Clint", "11", new Position(54, 12)), 9, 16),
+                new CarpenterShop(new Position(61, 43), 7, 8, new Seller("Robin", "44", new Position(62, 45)), 9, 20),
+                new JojaMart(new Position(53, 10), 4, 5, new Seller("Morris", "22", new Position(59, 16)), 9, 23),
+                new FishStore(new Position(65, 17), 6, 6, new Seller("Willy", "55", new Position(66, 19)), 9, 17),
+                new PierreGeneralStore(new Position(52, 37), 6, 6, new Seller("Pierrre", "33", new Position(53, 39)), 9, 17),
+                new StardropSaloon(new Position(64, 56), 7, 6, new Seller("Gus", "77", new Position(68, 48)), 12, 24),
+                new MarrineRanchStore(new Position(53, 56), 6, 10, new Seller("Marnie", "66", new Position(54, 65)), 9, 16)
         ));
         for (Store store : game.getStores()) {
             setUpPlace(game, store.getHeight(), store.getWidth(), store.getPosition(), store);

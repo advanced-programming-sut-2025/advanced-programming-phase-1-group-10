@@ -103,4 +103,9 @@ public class JojaMart extends Store {
     public Tile[][] getPlaceTiles() {
         return super.getPlaceTiles();
     }
+
+    @Override
+    public String getPlaceName() {
+        return "jojaMart";
+    }
 }

@@ -156,4 +156,9 @@ public class StardropSaloon extends Store {
         return super.getPlaceTiles();
     }
 
+    @Override
+    public String getPlaceName() {
+        return "stardropSaloon";
+    }
+
 }

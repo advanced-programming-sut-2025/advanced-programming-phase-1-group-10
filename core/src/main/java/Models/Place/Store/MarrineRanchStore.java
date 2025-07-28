@@ -143,4 +143,9 @@ public class MarrineRanchStore extends Store {
         return super.getPlaceTiles();
     }
 
+    @Override
+    public String getPlaceName() {
+        return "marineRanch";
+    }
+
 }

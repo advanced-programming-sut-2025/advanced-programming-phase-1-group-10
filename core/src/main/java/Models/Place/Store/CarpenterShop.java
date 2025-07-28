@@ -124,4 +124,9 @@ public class CarpenterShop extends Store {
         return super.getPlaceTiles();
     }
 
+    @Override
+    public String getPlaceName() {
+        return "carpenter";
+    }
+
 }

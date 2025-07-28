@@ -107,4 +107,8 @@ public class PierreGeneralStore extends Store {
         return super.getPlaceTiles();
     }
 
+    @Override
+    public String getPlaceName() {
+        return "pierreGeneral";
+    }
 }

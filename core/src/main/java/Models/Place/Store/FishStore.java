@@ -51,4 +51,9 @@ public class FishStore extends Store {
         return super.getPlaceTiles();
     }
 
+    @Override
+    public String getPlaceName() {
+        return "fishShop";
+    }
+
 }

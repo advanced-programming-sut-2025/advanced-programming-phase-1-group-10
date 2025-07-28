@@ -17,6 +17,7 @@ public class GameControllerFinal {
     private EnergyController energyController;
     private TimeController timeController;
     private CheatBoxController cheatBoxController;
+    private StoreController storeController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -29,6 +30,7 @@ public class GameControllerFinal {
         this.energyController = new EnergyController();
         this.timeController = new TimeController();
         this.cheatBoxController = new CheatBoxController();
+        this.storeController = new StoreController();
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -40,10 +42,11 @@ public class GameControllerFinal {
         }
 
         mapController.update(batch);
-        playerController.update(batch);
         interactController.update();
         animalBuildingController.update(batch, delta);
         timeController.update(delta, batch);
+        storeController.update(batch);
+        playerController.update(batch);
     }
 
     public MapController getMapController() {
@@ -80,5 +83,9 @@ public class GameControllerFinal {
 
     public CheatBoxController getCheatBoxController() {
         return cheatBoxController;
+    }
+
+    public StoreController getStoreController() {
+        return storeController;
     }
 }
