@@ -1,5 +1,6 @@
 package Models;
 
+import Assets.GrassAssets;
 import Assets.OtherAssets;
 import Models.Animal.Animal;
 import Models.Place.Place;
@@ -121,26 +122,6 @@ public class Tile {
 
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    public void render(SpriteBatch batch, float x, float y) {
-        TextureRegion regionToDraw = null;
-
-        if (renderInside && assetRegionInside != null) {
-            regionToDraw = assetRegionInside;
-        } else if (!renderInside && assetRegionOutside != null) {
-            regionToDraw = assetRegionOutside;
-        }
-
-        if (regionToDraw != null) {
-            batch.draw(TileType.Grass.getSprite(), x,y);
-            batch.draw(regionToDraw, x, y);
-        } else if (tileType ==TileType.Wall){
-            batch.draw(tileType.getSprite(), x, y);
-            batch.draw(OtherAssets.bush, x, y);
-        } else {
-            batch.draw(tileType.getSprite(), x, y);
-        }
     }
 
     public void setAssetRegionOutside(TextureRegion region) {
