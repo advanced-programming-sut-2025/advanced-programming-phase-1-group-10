@@ -1,5 +1,6 @@
 package Assets;
 
+import Models.App;
 import Models.Tools.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -40,6 +41,13 @@ public class ToolAsset {
     private final Sprite steelScythe = new Sprite(new Texture("tools/seythe/steel.png"));
     private final Sprite goldScythe = new Sprite(new Texture("tools/seythe/gold.png"));
     private final Sprite iridiumScythe = new Sprite(new Texture("tools/seythe/iridium.png"));
+
+    // FISHINH POLE
+    private final Sprite trainingpole = new Sprite(new Texture("tools/fishingpole/training.png"));
+    private final Sprite bamboopole = new Sprite(new Texture("tools/fishingpole/bamboo.png"));
+    private final Sprite fiberglasspole = new Sprite(new Texture("tools/fishingpole/fiberglass.png"));
+    private final Sprite iridiumpole = new Sprite(new Texture("tools/fishingpole/iridium.png"));
+
 
     public Sprite show(Tool tool) {
         Quality q = tool.getQuality();
@@ -83,6 +91,13 @@ public class ToolAsset {
                 case STEEL -> steelScythe;
                 case GOLD -> goldScythe;
                 case IRIDIUM -> iridiumScythe;
+            };
+        } else if (tool instanceof FishingPole){
+            return switch (q) {
+                case STARTER -> trainingpole;
+                case COPPER -> bamboopole;
+                case STEEL -> fiberglasspole;
+                case GOLD, IRIDIUM -> iridiumpole;
             };
         }
 

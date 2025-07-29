@@ -30,6 +30,8 @@ public class GameControllerFinal {
     private WeatherController weatherController;
     private FishController fishController;
     private InventoryController inventoryController;
+    private FishingMiniGameController fishingMiniGameController;
+    private boolean fishingMiniGameActive = false;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -51,13 +53,22 @@ public class GameControllerFinal {
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {
             this.fishController = new FishController(allLakes);
-            System.out.println("slam");
         }
+
+
+        this.fishingMiniGameController = new FishingMiniGameController(this);
     }
 
     public void update(SpriteBatch batch, float delta) {
-
         cheatBoxController.update(delta);
+
+
+        if (fishingMiniGameActive) {
+            System.out.println("tooye game controllerfinal - fishingMiniGameActive = " + fishingMiniGameActive);
+            fishingMiniGameController.update(batch, delta);
+            return;
+        }
+
         if (animalBuildingController.isShowingInterior()) {
             animalBuildingController.update(batch, delta);
             return;
@@ -74,6 +85,26 @@ public class GameControllerFinal {
         if (fishController != null) {
             fishController.update(batch, delta);
         }
+    }
+
+    public void startFishingMiniGame() {
+        fishingMiniGameActive = true;
+        fishingMiniGameController.startGame();
+    }
+
+
+    public void setFishingMiniGameActive(boolean active) {
+        fishingMiniGameActive = active;
+    }
+
+
+    public boolean isFishingMiniGameActive() {
+        return fishingMiniGameActive;
+    }
+
+
+    public FishingMiniGameController getFishingMiniGameController() {
+        return fishingMiniGameController;
     }
 
     public FishController getFishController() {

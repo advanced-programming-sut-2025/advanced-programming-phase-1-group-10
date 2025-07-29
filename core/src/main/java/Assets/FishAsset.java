@@ -44,4 +44,8 @@ public class FishAsset {
             sprite.getTexture().dispose();
         }
     }
+
+    public Sprite show(FishType fishType){
+        return fishSprites.get(fishType);
+    }
 }

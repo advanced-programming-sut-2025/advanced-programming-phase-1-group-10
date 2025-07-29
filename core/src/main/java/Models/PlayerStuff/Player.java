@@ -73,7 +73,8 @@ public class Player implements Person {
                 new Pickaxe(Quality.STARTER,5),
                 new Axe(Quality.STARTER,5),
                 new WateringCan(Quality.STARTER,5),
-                new Seythe(Quality.STARTER,2)
+                new Seythe(Quality.STARTER,2),
+                new FishingPole(Quality.STARTER,5)
         ));
         this.gender = ThreadLocalRandom.current().nextBoolean() ? Gender.Male : Gender.Female;
     }

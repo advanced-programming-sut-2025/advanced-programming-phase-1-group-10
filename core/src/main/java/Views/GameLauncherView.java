@@ -36,6 +36,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         this.stage = new Stage(viewport);
         this.controller = new GameControllerFinal();
+        App.getInstance().setGameControllerFinal(controller);
         this.controller.setView(this);
         this.batch = (SpriteBatch) stage.getBatch();
         this.hudCamera = new OrthographicCamera();
@@ -133,13 +134,23 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         if (controller.getFishController() != null) {
             controller.getFishController().dispose();
         }
+        controller.getFishingMiniGameController().dispose();
     }
 
     @Override
     public boolean keyDown(int keycode) {
+        if (controller.isFishingMiniGameActive()) {
+            if (keycode == Input.Keys.UP || keycode == Input.Keys.DOWN || keycode == Input.Keys.Q) {
+                if (keycode == Input.Keys.Q) {
+                    controller.setFishingMiniGameActive(false);
+                }
+                return true;
+            }
+        }
         controller.getInventoryBarController().selectSlotByKey(keycode);
         return true;
     }
+
 
 
     @Override

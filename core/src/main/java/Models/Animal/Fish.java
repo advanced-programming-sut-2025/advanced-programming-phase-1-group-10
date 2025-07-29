@@ -1,5 +1,6 @@
 package Models.Animal;
 
+import Assets.FishAsset;
 import Models.Item;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -7,10 +8,12 @@ public class Fish implements Item {
 
     private FishType fishType;
     private int numberOfFish;
+    protected FishAsset fishAsset;
 
     public Fish(FishType fishType, int numberOfFish) {
         this.fishType = fishType;
         this.numberOfFish = numberOfFish;
+        this.fishAsset = new FishAsset();
     }
 
     @Override
@@ -20,7 +23,7 @@ public class Fish implements Item {
 
     @Override
     public Sprite show() {
-        return null;
+        return fishAsset.show(fishType);
     }
 
     @Override

@@ -484,10 +484,6 @@ public class GameController {
             })
             .collect(Collectors.toList());
 
-        if (seasonalFishes.isEmpty()) {
-            return new Result(false, "there are no fish to catch in this season.");
-        }
-
         List<FishType> caughtFishes = new ArrayList<>();
         StringBuilder resultMessage = new StringBuilder("You caught " + numberOfFishes + " fish:\n");
 

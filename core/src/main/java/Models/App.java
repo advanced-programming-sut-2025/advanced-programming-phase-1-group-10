@@ -1,11 +1,14 @@
 package Models;
 
+import Controllers.FinalControllers.GameControllerFinal;
+
 import java.util.ArrayList;
 
 public class App {
 
     private static App instance;
     private ArrayList<User> users = new ArrayList<>();
+    private GameControllerFinal gameControllerFinal;
 
     private App() {
         games = new ArrayList<>();
@@ -74,5 +77,16 @@ public class App {
 
     public void setCurrentMenu(Menu currentMenu) {
         this.currentMenu = currentMenu;
+    }
+
+    public GameControllerFinal getGameControllerFinal() {
+        if (gameControllerFinal == null) {
+            System.out.println("WARNING: gameControllerFinal is null!");
+        }
+        return gameControllerFinal;
+    }
+
+    public void setGameControllerFinal(GameControllerFinal controller) {
+        this.gameControllerFinal = controller;
     }
 }
