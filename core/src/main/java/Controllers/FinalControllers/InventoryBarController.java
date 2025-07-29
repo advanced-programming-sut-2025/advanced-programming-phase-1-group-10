@@ -1,6 +1,7 @@
 package Controllers.FinalControllers;
 
 import Assets.SlotAsset;
+import Controllers.Utils.InventoryUtils;
 import Models.App;
 import Models.Item;
 import Models.PlayerStuff.Player;
@@ -55,6 +56,23 @@ public class InventoryBarController {
         }
 
         player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            int mouseX = Gdx.input.getX();
+            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // flip Y-axis for LibGDX
+            for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
+                int slotX = startX + i * SLOT_SIZE;
+                int slotY = y;
+
+                if (mouseX >= slotX && mouseX < slotX + SLOT_SIZE &&
+                    mouseY >= slotY && mouseY < slotY + SLOT_SIZE) {
+                    // You right-clicked on slot i
+                    InventoryUtils.transferItem(i, false); // fromBar = false means bar -> backpack
+                    break;
+                }
+            }
+        }
+
 
         font.dispose(); // Only do this if not caching the font elsewhere
     }

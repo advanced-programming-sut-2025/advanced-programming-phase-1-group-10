@@ -27,8 +27,9 @@ public class GameControllerFinal {
     private StoreController storeController;
     private SkillController skillController;
     private NpcController npcController;
-    public WeatherController weatherController;
+    private WeatherController weatherController;
     private FishController fishController;
+    private InventoryController inventoryController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -45,6 +46,7 @@ public class GameControllerFinal {
         this.skillController = new SkillController();
         this.npcController = new NpcController();
         this.weatherController = new WeatherController();
+        this.inventoryController = new InventoryController();
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {
@@ -84,6 +86,7 @@ public class GameControllerFinal {
         inventoryBarController.update(batch);
         energyController.update(batch);
         skillController.update(batch);
+        inventoryController.update(batch);
         MessageSystem.update(batch, viewport);
     }
 

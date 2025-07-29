@@ -1,13 +1,12 @@
 package Models.Tools;
 
-import Controllers.FinalControllers.BarController;
 import Models.App;
 import Models.Item;
 import Models.PlayerStuff.Player;
 
 import java.util.ArrayList;
 
-public class BackPack{
+public class BackPack {
 
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<>();
@@ -31,6 +30,7 @@ public class BackPack{
 
         // 1. Try to stack in bar
         for (Item barItem : barItems) {
+            if (barItem == null) continue;
             if (barItem.getName().equals(item.getName())) {
                 barItem.setNumber(barItem.getNumber() + item.getNumber());
                 return true;
@@ -73,9 +73,10 @@ public class BackPack{
     }
 
     public boolean removeItemNumber(String name, int number) {
-        for(Item it : items){
-            if(it.getName().equals(name)){
-                if(it.getNumber() <= number) items.remove(it); else it.setNumber(it.getNumber() - number);
+        for (Item it : items) {
+            if (it.getName().equals(name)) {
+                if (it.getNumber() <= number) items.remove(it);
+                else it.setNumber(it.getNumber() - number);
                 return true;
             }
         }
