@@ -1,6 +1,5 @@
 package Controllers.FinalControllers;
 
-import Assets.SlotAsset;
 import Controllers.Utils.InventoryUtils;
 import Models.App;
 import Models.Item;
@@ -22,7 +21,6 @@ public class InventoryController {
 
 
     private final Texture slot = new Texture("slot/slot.png");
-    private final SlotAsset slotAsset = new SlotAsset();  // Optional use for hover effects or more visuals
     private final int SLOT_SIZE = 64;
     private final int SLOTS_PER_ROW = 12;
 
@@ -67,8 +65,14 @@ public class InventoryController {
 
             if (isHovered && Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
                 if (i < items.size()) {
-                    InventoryUtils.transferItem(i, true); // true: from backpack
-                    return; // Break out to avoid index issues due to item removal
+                    if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)) {
+                        // Ctrl + Right Click → remove item
+                        items.remove(i);
+                    } else {
+                        // Regular Right Click → transfer item
+                        InventoryUtils.transferItem(i, true); // true: from backpack
+                    }
+                    return;
                 }
             }
 
