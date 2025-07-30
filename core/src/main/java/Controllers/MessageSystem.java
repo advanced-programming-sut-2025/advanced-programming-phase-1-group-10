@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -54,6 +55,7 @@ public class MessageSystem {
 
     private static final Array<Message> activeMessages = new Array<>();
     private static BitmapFont font;
+    private static BitmapFont largeFont;
     private static ShapeRenderer shapeRenderer;
     private static final int MAX_MESSAGES = 5;
     private static final int MESSAGE_HEIGHT = 60;
@@ -70,10 +72,24 @@ public class MessageSystem {
 
 
     public static void initialize() {
-        font = new BitmapFont();
-        font.getData().setScale(2.1f);
-        shapeRenderer = new ShapeRenderer();
 
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/mainFont.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter paramSmall = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        paramSmall.size = 40;
+        paramSmall.color = Color.BROWN;
+
+        FreeTypeFontGenerator.FreeTypeFontParameter paramLarge = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        paramLarge.size = 60;
+        paramLarge.color = Color.BROWN;
+
+        font = generator.generateFont(paramSmall);
+        largeFont = generator.generateFont(paramLarge);
+
+
+        generator.dispose();
+
+        shapeRenderer = new ShapeRenderer();
 
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -212,11 +228,12 @@ public class MessageSystem {
             float verticalPosition = i * (MESSAGE_HEIGHT + MESSAGE_SPACING);
             float textY = startY - verticalPosition + (float)MESSAGE_HEIGHT / 2 - 40;
 
-
             font.setColor(message.color.r, message.color.g, message.color.b, message.alpha);
 
-
             font.draw(batch, message.text, PADDING_X + 20, textY);
+
+            // draw title if you want with large font
+
         }
 
         batch.setProjectionMatrix(originalProjection);
@@ -225,6 +242,9 @@ public class MessageSystem {
     public static void dispose() {
         if (font != null) {
             font.dispose();
+        }
+        if (largeFont != null) {
+            largeFont.dispose();
         }
         if (shapeRenderer != null) {
             shapeRenderer.dispose();

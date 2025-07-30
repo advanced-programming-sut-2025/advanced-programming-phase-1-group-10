@@ -65,11 +65,7 @@ public class GameControllerFinal {
         cheatBoxController.update(delta);
 
 
-        if (fishingMiniGameActive) {
-            System.out.println("tooye game controllerfinal - fishingMiniGameActive = " + fishingMiniGameActive);
-            fishingMiniGameController.update(batch, delta);
-            return;
-        }
+
 
         if (animalBuildingController.isShowingInterior()) {
             animalBuildingController.update(batch, delta);
@@ -103,6 +99,10 @@ public class GameControllerFinal {
         inventoryController.update(batch);
         npcRelationController.update(batch);
         MessageSystem.update(batch, viewport);
+        if (fishingMiniGameActive) {
+            fishingMiniGameController.update(batch, delta);
+            return;
+        }
     }
 
 
