@@ -20,9 +20,13 @@ public class InventoryBarController {
     private final static int SLOT_SIZE = 64;
     private Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
 
-    public InventoryBarController() {
+    private final NpcMenuController npcMenuController;
+
+    public InventoryBarController(NpcMenuController npcMenuController) {
         this.slotAsset = new SlotAsset();
+        this.npcMenuController = npcMenuController;
     }
+
 
     public void update(SpriteBatch batch) {
         int screenWidth = Gdx.graphics.getWidth();
@@ -60,18 +64,38 @@ public class InventoryBarController {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             int mouseX = Gdx.input.getX();
             int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // flip Y-axis for LibGDX
+
             for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
                 int slotX = startX + i * SLOT_SIZE;
                 int slotY = y;
 
                 if (mouseX >= slotX && mouseX < slotX + SLOT_SIZE &&
                     mouseY >= slotY && mouseY < slotY + SLOT_SIZE) {
-                    // You right-clicked on slot i
-                    InventoryUtils.transferItem(i, false); // fromBar = false means bar -> backpack
+
+                    Item selected = (i < barItems.size()) ? barItems.get(i) : null;
+                    if (selected == null) return;
+
+                    if (npcMenuController.isMenuOpen()) {
+                        if (npcMenuController.getHoveredSlotIndex() != -1) {
+                            // Try to add gift
+                            Item clone = selected.copyItem(1);
+
+                            if (npcMenuController.tryAddItemToSlot(clone)) {
+                                selected.setNumber(selected.getNumber() - 1);
+                                if (selected.getNumber() <= 0) {
+                                    barItems.remove(i);
+                                }
+                            }
+                        }
+                    } else {
+                        InventoryUtils.transferItem(i, false); // bar -> backpack
+                    }
+
                     break;
                 }
             }
         }
+
 
 
         font.dispose(); // Only do this if not caching the font elsewhere
