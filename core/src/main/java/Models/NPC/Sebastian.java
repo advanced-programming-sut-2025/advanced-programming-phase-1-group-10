@@ -14,6 +14,8 @@ import Models.Planets.Crop.CropTypeNormal;
 import Models.Position;
 import Models.Quest;
 import Models.Weather.Weather;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,8 +32,8 @@ public class Sebastian extends NPC {
     ));
 
     @Override
-    public String getSymbol() {
-        return "Se";
+    public Sprite show() {
+        return new Sprite(new Texture("npc/sebastian/icon.png"));
     }
 
     @Override
@@ -61,6 +63,11 @@ public class Sebastian extends NPC {
             return "Hi, " + App.getInstance().getCurrentGame().getCurrentPlayer().getName() + "! what are you looking for my friend?";
         }
         return "Do you want to hurt me?";
+    }
+
+    @Override
+    public ArrayList<Quest> getQuests() {
+        return quests;
     }
 }
 

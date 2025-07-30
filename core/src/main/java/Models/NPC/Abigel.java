@@ -13,11 +13,14 @@ import Models.Planets.Crop.CropTypeNormal;
 import Models.Position;
 import Models.Quest;
 import Models.Weather.Weather;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Abigel extends NPC {
+
 
     private final ArrayList<Quest> quests = new ArrayList<>(Arrays.asList(
             new Quest(1,false,"Give 50 Irons and get two Diamonds",new Mineral(MineralTypes.IRON,50),0,new Mineral(MineralTypes.DIAMOND,2)),
@@ -30,8 +33,8 @@ public class Abigel extends NPC {
     }
 
     @Override
-    public String getSymbol() {
-        return "Ab";
+    public Sprite show() {
+        return new Sprite(new Texture("npc/abigel/icon.png"));
     }
 
     @Override

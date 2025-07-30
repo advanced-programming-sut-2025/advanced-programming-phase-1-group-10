@@ -1,5 +1,7 @@
 package Models;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class Seller implements Person {
 
     private String name;
@@ -22,8 +24,8 @@ public class Seller implements Person {
     }
 
     @Override
-    public String getSymbol() {
-        return symbol;
+    public Sprite show() {
+        return null;
     }
 
     @Override

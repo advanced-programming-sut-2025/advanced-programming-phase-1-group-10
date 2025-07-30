@@ -13,6 +13,8 @@ import Models.Planets.Crop.CropTypeNormal;
 import Models.Position;
 import Models.Quest;
 import Models.Weather.Weather;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +31,8 @@ public class Robbin extends NPC {
     ));
 
     @Override
-    public String getSymbol() {
-        return "Ro";
+    public Sprite show() {
+        return new Sprite(new Texture("npc/robbin/icon.png"));
     }
 
     @Override
@@ -66,4 +68,8 @@ public class Robbin extends NPC {
         return "You are new?";
     }
 
+    @Override
+    public ArrayList<Quest> getQuests() {
+        return quests;
+    }
 }

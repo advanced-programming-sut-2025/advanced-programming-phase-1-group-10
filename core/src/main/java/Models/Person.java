@@ -1,7 +1,9 @@
 package Models;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public interface Person {
     String getName();
-    String getSymbol();
+    Sprite show();
     Position getPosition();
 }

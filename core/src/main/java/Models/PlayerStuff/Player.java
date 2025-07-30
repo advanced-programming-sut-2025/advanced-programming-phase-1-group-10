@@ -6,7 +6,7 @@ import Models.Animal.Animal;
 import Models.FriendShip.Friendship;
 import Models.FriendShip.Gift;
 import Models.Tools.*;
-
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
 import java.util.ArrayList;
@@ -213,8 +213,8 @@ public class Player implements Person {
     }
 
     @Override
-    public String getSymbol() {
-        return "Pl";
+    public Sprite show() {
+        return null;
     }
 
     public ArrayList<Gift> getRecievedGifts() {

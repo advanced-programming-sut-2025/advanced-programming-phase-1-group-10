@@ -32,6 +32,7 @@ public class GameControllerFinal {
     private InventoryController inventoryController;
     private FishingMiniGameController fishingMiniGameController;
     private boolean fishingMiniGameActive = false;
+    private NpcRelationController npcRelationController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -49,6 +50,7 @@ public class GameControllerFinal {
         this.npcController = new NpcController();
         this.weatherController = new WeatherController();
         this.inventoryController = new InventoryController();
+        this.npcRelationController = new NpcRelationController();
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {
@@ -92,6 +94,17 @@ public class GameControllerFinal {
         fishingMiniGameController.startGame();
     }
 
+    public void updateSecondCamera(SpriteBatch batch, float delta, Viewport viewport) {
+        weatherController.update(batch);
+        barController.update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        inventoryBarController.update(batch);
+        energyController.update(batch);
+        skillController.update(batch);
+        inventoryController.update(batch);
+        npcRelationController.update(batch);
+        MessageSystem.update(batch, viewport);
+    }
+
 
     public void setFishingMiniGameActive(boolean active) {
         fishingMiniGameActive = active;
@@ -109,16 +122,6 @@ public class GameControllerFinal {
 
     public FishController getFishController() {
         return fishController;
-    }
-
-    public void updateSecondCamera(SpriteBatch batch, float delta, Viewport viewport) {
-        weatherController.update(batch);
-        barController.update(batch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        inventoryBarController.update(batch);
-        energyController.update(batch);
-        skillController.update(batch);
-        inventoryController.update(batch);
-        MessageSystem.update(batch, viewport);
     }
 
     public MapController getMapController() {
@@ -171,5 +174,9 @@ public class GameControllerFinal {
 
     public WeatherController getWeatherController() {
         return weatherController;
+    }
+
+    public NpcRelationController getNpcRelationController() {
+        return npcRelationController;
     }
 }

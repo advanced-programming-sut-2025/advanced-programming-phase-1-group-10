@@ -15,6 +15,8 @@ import Models.Planets.FruitType;
 import Models.Position;
 import Models.Quest;
 import Models.Weather.Weather;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +33,8 @@ public class Harvey extends NPC {
     ));
 
     @Override
-    public String getSymbol() {
-        return "Ha";
+    public Sprite show() {
+        return new Sprite(new Texture("npc/harvey/icon.png"));
     }
 
     @Override

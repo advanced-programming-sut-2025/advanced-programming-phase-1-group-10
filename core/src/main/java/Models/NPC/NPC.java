@@ -2,15 +2,15 @@ package Models.NPC;
 
 import Models.*;
 import Models.Place.NpcHosue;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 
 public class NPC implements Person {
 
-    private String name;
-    private Position position;
+    private final String name;
+    private final Position position;
     private final NpcHosue hosue;
-    //TODO Add this
     private final ArrayList<Item> favoriteItems;
     private final ArrayList<Quest> quests = new ArrayList<>();
 
@@ -22,9 +22,8 @@ public class NPC implements Person {
     }
 
     @Override
-    public String getSymbol() {
-        //Never Prints
-        return "!";
+    public Sprite show() {
+       return null;
     }
 
     @Override
@@ -45,7 +44,6 @@ public class NPC implements Person {
     }
 
     public String talk(){
-        //This must not happen.
         return "";
     }
 
@@ -61,4 +59,5 @@ public class NPC implements Person {
     public ArrayList<Quest> getQuests() {
         return quests;
     }
+
 }
