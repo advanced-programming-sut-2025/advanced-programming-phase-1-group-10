@@ -60,6 +60,8 @@ public class Player implements Person {
     private int foragingAbility;
     private int fishingAbility;
 
+    private Quest currentQuest;
+
 
     public Player(String name) {
         this.name = name;
@@ -297,5 +299,11 @@ public class Player implements Person {
         this.selectedSlot = selectedSlot;
     }
 
+    public Quest getCurrentQuest() {
+        return currentQuest;
+    }
 
+    public void setCurrentQuest(Quest currentQuest) {
+        this.currentQuest = currentQuest;
+    }
 }

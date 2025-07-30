@@ -43,7 +43,7 @@ public class Abigel extends NPC {
     };
 
     private final ArrayList<Quest> quests = new ArrayList<>(Arrays.asList(
-            new Quest(1,false,"Give 50 Irons and get two Diamonds",new Mineral(MineralTypes.IRON,50),0,new Mineral(MineralTypes.DIAMOND,2)),
+            new Quest(1,false,"Give 50 Irons and get 2 Diamonds",new Mineral(MineralTypes.IRON,50),0,new Mineral(MineralTypes.DIAMOND,2)),
             new Quest(2,false,"Give 1 Radioactive bar and get 5000 gold",new Bar(BarType.RADIOACTIVE_BAR,1),5000,null),
             new Quest(3,false,"Give 50 wheats and win 5 Golden Bar",new Crop(CropTypeNormal.WHEAT,50),0,new Bar(BarType.GOLD_BAR,5))
     ));

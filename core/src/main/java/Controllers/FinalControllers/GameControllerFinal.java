@@ -33,6 +33,7 @@ public class GameControllerFinal {
     private boolean fishingMiniGameActive = false;
     private DialogueController dialogueController;
     private NpcMenuController npcMenuController;
+    private QuestMenuController questMenuController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -52,6 +53,7 @@ public class GameControllerFinal {
         this.dialogueController = new DialogueController();
         this.npcMenuController = new NpcMenuController();
         this.inventoryBarController = new InventoryBarController(npcMenuController);
+        this.questMenuController = new QuestMenuController();
 
 
         List<Lake> allLakes = FishController.findAllLakes();
@@ -101,6 +103,7 @@ public class GameControllerFinal {
         inventoryController.update(batch);
         dialogueController.update(batch);
         npcMenuController.update(batch);
+        questMenuController.update(batch);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);

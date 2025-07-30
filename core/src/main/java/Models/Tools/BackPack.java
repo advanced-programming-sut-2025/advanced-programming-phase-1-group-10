@@ -62,14 +62,8 @@ public class BackPack {
     }
 
 
-    public boolean removeItem(Item item) {
-        if (items.contains(item)) {
-            items.remove(item);
-            return true;
-        } else {
-            //Item not found in backpack
-            return false;
-        }
+    public void removeItem(Item item) {
+        items.remove(item);
     }
 
     public boolean removeItemNumber(String name, int number) {
@@ -83,15 +77,14 @@ public class BackPack {
         return false;
     }
 
-    public boolean setItemNumber(Item item, int number) {
+    public void setItemNumber(Item item, int number) {
         for (Item i : items) {
             if (i.equals(item)) {
                 i.setNumber(number);
-                return true;
+                return;
             }
         }
         //Item not found in backpack
-        return false;
     }
 
     public int getItemNumber(Item item) {
@@ -103,5 +96,26 @@ public class BackPack {
         //Item not found in backpack
         return 0;
     }
+
+    public boolean hasItem(Item item, int number) {
+        int count = 0;
+
+        // Check backpack
+        for (Item i : items) {
+            if (i != null && i.getName().equals(item.getName())) {
+                count += i.getNumber();
+            }
+        }
+
+        // Check inventory bar
+        for (Item i : App.getInstance().getCurrentGame().getCurrentPlayer().getIventoryBarItems()) {
+            if (i != null && i.getName().equals(item.getName())) {
+                count += i.getNumber();
+            }
+        }
+
+        return count >= number;
+    }
+
 
 }
