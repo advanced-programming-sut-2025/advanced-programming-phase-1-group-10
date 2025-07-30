@@ -17,7 +17,7 @@ public class FishingMiniGameAsset implements Disposable {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(0, 0, 0, 1);
         pixmap.fill();
-        backgroundTexture = new Texture(pixmap);
+        backgroundTexture = new Texture(Gdx.files.internal("Animals/Fish/MiniGame/background.jpg"));
         pixmap.dispose();
 
         try {
