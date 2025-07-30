@@ -1,9 +1,7 @@
 package Models.NPC;
 
-import Models.App;
 import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
-import Models.DateTime.Season;
 import Models.Item;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
@@ -12,14 +10,38 @@ import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Position;
 import Models.Quest;
-import Models.Weather.Weather;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Robbin extends NPC {
+
+    String[] dialogues = {
+        "Hey, traveler. Sit down a moment. I was just working on a new tune. Want to hear it?",
+        "You ever feel like a melody is stuck in your chest, just waiting to come out?",
+        "Music’s like sunlight — it touches everyone, whether they notice or not.",
+        "I write better songs when you’re around. Must be your energy.",
+        "Wanna jam sometime? Doesn’t matter if you can’t play — music finds a way.",
+        "I’ve been humming this tune all morning. Think I’ll name it after you.",
+        "The best lyrics come when you're not trying too hard — just like friendships.",
+        "I saw you in the fields yesterday — it looked like a music video in motion.",
+        "Not all songs need words. Sometimes a glance is enough.",
+        "When I can’t sleep, I strum my guitar until my dreams come back.",
+        "I found an old record player. Wanna come listen with me sometime?",
+        "You're like a walking harmony. Weird, huh?",
+        "People don’t listen enough. I mean really listen — to each other, to themselves.",
+        "Ever tried writing your thoughts down like lyrics? It helps.",
+        "I heard laughter down the street. Made me smile. Hope it was you.",
+        "You’ve got rhythm — even when you walk.",
+        "We should throw a little music night. Just us and the moon.",
+        "You're always welcome at my campfire. It’s where the best songs happen.",
+        "If your heart had a sound, I bet it’d be beautiful.",
+        "Stay cool out there. The world needs more good vibes like yours."
+    };
+
     public Robbin(String name, Position position, NpcHosue hosue) {
         super(name, position, hosue);
     }
@@ -56,17 +78,9 @@ public class Robbin extends NPC {
     }
 
     public String talk() {
-        if(App.getInstance().getCurrentGame().getWeather() == Weather.STORM){
-            return "Storm, that's might be awful for farmers.";
-        } else if(App.getInstance().getCurrentGame().getGameTime().getSeason() == Season.SPRING){
-            return "What a beautiful season? I don't know why Lia doesn't like it";
-        } else if(App.getInstance().getCurrentGame().getNextDayWeather() == Weather.RAIN){
-            return "Look at those clouds! Tommorow will be raining";
-        } else if(hasRelationWithNPC(this.getName())){
-            return App.getInstance().getCurrentGame().getCurrentPlayer().getName() + "! nice to see you!";
-        }
-        return "You are new?";
+        return dialogues[new Random().nextInt(dialogues.length)];
     }
+
 
     @Override
     public ArrayList<Quest> getQuests() {

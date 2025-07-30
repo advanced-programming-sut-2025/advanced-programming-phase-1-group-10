@@ -1,11 +1,9 @@
 package Models.NPC;
 
-import Models.App;
 import Models.Cooking.Cooking;
 import Models.Cooking.CookingType;
 import Models.Crafting.Crafting;
 import Models.Crafting.CraftingType;
-import Models.DateTime.Season;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.Place.NpcHosue;
@@ -13,14 +11,38 @@ import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Position;
 import Models.Quest;
-import Models.Weather.Weather;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Sebastian extends NPC {
+
+    String[] dialogues = {
+        "Hey hey! Wanna race to the big tree? I bet I can beat you this time!",
+        "I found a shiny rock earlier. I named it ‘Steve’. Wanna see it?",
+        "You smell like flowers. Have you been rolling in the meadow again?",
+        "Sometimes I pretend the clouds are giant sheep and I’m their shepherd!",
+        "Wanna hear a secret? I buried treasure near the old stump. Don’t tell anyone!",
+        "The grown-ups are always so serious. Why don’t they play more?",
+        "I drew a picture of you and me. You look like a hero!",
+        "Let’s build a fort out of leaves and sticks! It'll be the coolest base ever!",
+        "I think butterflies have tiny maps in their wings. How else do they know where to go?",
+        "The forest makes music if you listen really really hard!",
+        "You're like the big sibling I never had. It’s nice.",
+        "I saw a rabbit today! It twitched its nose and ran away. I think it was saying hi.",
+        "Wanna play hide and seek later? I know the best hiding spot ever!",
+        "If I grow up, I wanna be just like you!",
+        "The stars are like little night candles. They keep monsters away.",
+        "Sometimes I wish I could fly. But jumping really high is almost the same!",
+        "You’re always so nice to me. I like that.",
+        "I’m not scared of the dark… much. But it’s better with you around.",
+        "My friend moved away, but I think you’re even better!",
+        "Can we go on an adventure soon? I’ll pack snacks!"
+    };
+
     public Sebastian(String name, Position position, NpcHosue hosue) {
         super(name, position, hosue);
     }
@@ -53,17 +75,10 @@ public class Sebastian extends NPC {
 
     @Override
     public String talk() {
-        if(App.getInstance().getCurrentGame().getWeather() == Weather.SNOW){
-            return "Snow blankets the world in a quiet, cold stillness, turning everything into a soft, white wonderland.";
-        } else if(App.getInstance().getCurrentGame().getGameTime().getSeason() == Season.SUMMER){
-            return "How do you bear this weather?";
-        } else if(App.getInstance().getCurrentGame().getNextDayWeather() == Weather.SUNNY){
-            return "Tommorow is sunny. Ops!";
-        } else if(hasRelationWithNPC(this.getName())){
-            return "Hi, " + App.getInstance().getCurrentGame().getCurrentPlayer().getName() + "! what are you looking for my friend?";
-        }
-        return "Do you want to hurt me?";
+
+        return dialogues[new Random().nextInt(dialogues.length)];
     }
+
 
     @Override
     public ArrayList<Quest> getQuests() {

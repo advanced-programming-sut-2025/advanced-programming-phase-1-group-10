@@ -1,10 +1,7 @@
 package Controllers.FinalControllers;
 
-import Models.App;
+import Models.*;
 import Models.NPC.NPC;
-import Models.Person;
-import Models.Position;
-import Models.Tile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -68,10 +65,18 @@ public class NpcRelationController {
             int x = (Gdx.graphics.getWidth() - boxWidth) / 2;
             int y = 80;
 
+            meetNPC();
+
             batch.draw(dialogueBox, x, y, boxWidth, boxHeight);
             batch.draw(npc.show(), x + 864, y + 130, 256, 256);
 
-            font.draw(batch, currentDialogue, x + 30, y + boxHeight - 40);
+            String[] lines = wrapText(currentDialogue, 57);
+            int lineHeight = 40; // Adjust as needed
+            int startY = y + boxHeight - 60;
+
+            for (int i = 0; i < lines.length; i++) {
+                font.draw(batch, lines[i], x + 30, startY - i * lineHeight);
+            }
             largeFont.draw(batch, npc.getName(), x + 920, y + 78);
         }
     }
@@ -99,4 +104,46 @@ public class NpcRelationController {
 
         return null;
     }
+
+    public void meetNPC() {
+        NPC npc = getNearbyPerson(NPC.class);
+        if (npc == null) return;
+        NPCRelation relation = getNPCRealtion(npc);
+        if (relation == null) {
+            relation = new NPCRelation(npc, 0, false, false);
+            App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().add(relation);
+
+        }
+
+        relation.setRelationPoint(relation.getRelationPoint() + 20);
+
+    }
+
+    public NPCRelation getNPCRealtion(NPC npc) {
+        return App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().stream().filter(npcRelation -> npcRelation.getNpc().equals(npc)).findFirst().orElse(null);
+    }
+
+    private String[] wrapText(String text, int maxLineLength) {
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        java.util.List<String> lines = new java.util.ArrayList<>();
+
+        for (String word : words) {
+            if (line.length() + word.length() + 1 <= maxLineLength) {
+                if (!line.isEmpty()) line.append(" ");
+                line.append(word);
+            } else {
+                lines.add(line.toString());
+                line = new StringBuilder(word);
+            }
+        }
+
+        if (!line.isEmpty()) {
+            lines.add(line.toString());
+        }
+
+        return lines.toArray(new String[0]);
+    }
+
+
 }

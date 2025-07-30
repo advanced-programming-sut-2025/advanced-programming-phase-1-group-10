@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 
-public class NPC implements Person {
+public abstract class NPC implements Person {
 
     private final String name;
     private final Position position;

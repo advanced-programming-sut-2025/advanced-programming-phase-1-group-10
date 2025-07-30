@@ -1238,23 +1238,6 @@ public class GameController {
         return App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().stream().filter(npcRelation -> npcRelation.getNpc().equals(npc)).findFirst().orElse(null);
     }
 
-    public Result meetNPC(String name) {
-        NPC npc = getNearbyPerson(name, NPC.class);
-        if (npc == null) {
-            return new Result(false, "NPC not found!");
-        }
-        NPCRelation relation = getNPCRealtion(npc);
-        String message = npc.talk();
-        if (relation == null) {
-            relation = new NPCRelation(npc, 0, false, false);
-            App.getInstance().getCurrentGame().getCurrentPlayer().getNpcRelations().add(relation);
-
-        }
-
-        relation.setRelationPoint(relation.getRelationPoint() + 20);
-
-        return new Result(true,message);
-    }
 
     public Result sendGift(String name, String itemName) {
         NPC npc = getNearbyPerson(name, NPC.class);

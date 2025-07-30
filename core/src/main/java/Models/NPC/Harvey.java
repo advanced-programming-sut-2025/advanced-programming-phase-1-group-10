@@ -2,10 +2,8 @@ package Models.NPC;
 
 import Models.Animal.Fish;
 import Models.Animal.FishType;
-import Models.App;
 import Models.Bar.Bar;
 import Models.Bar.BarType;
-import Models.DateTime.Season;
 import Models.Item;
 import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
@@ -14,14 +12,38 @@ import Models.Planets.Fruit;
 import Models.Planets.FruitType;
 import Models.Position;
 import Models.Quest;
-import Models.Weather.Weather;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Harvey extends NPC {
+
+    String[] dialogues = {
+        "You remind me of someone I knew long ago. Curious eyes, strong heart.",
+        "This village may seem quiet, but there’s magic in its silence. Listen close, you’ll hear it.",
+        "Sometimes, doing nothing is exactly what the soul needs.",
+        "There are lessons in every breeze, every sunrise. You just need to be still enough to hear them.",
+        "Don’t rush life. Even the tree knows it must take its time to grow tall.",
+        "You seek answers, but don’t forget to ask the right questions first.",
+        "Kindness is a language understood by all. You speak it well.",
+        "You carry something special within you — I can see it in the way you move through the world.",
+        "Pain is not an enemy, child. It's a teacher. One we rarely thank, but always remember.",
+        "When I was your age, I wanted to change the world. Now I plant flowers and watch them bloom.",
+        "You have fire in your spirit. Be careful it doesn’t burn you from within.",
+        "It’s okay to be unsure. The stars don’t always show the path, but they’re there to guide.",
+        "The world has many stories. Tell yours with grace.",
+        "You’re not alone, even when it feels that way. We all walk together, even from afar.",
+        "Sometimes the best thing you can do is sit, breathe, and wait for clarity.",
+        "Every scar you carry tells a tale. Wear them with honor.",
+        "I saw you help that stranger yesterday. The world needs more of that.",
+        "Your hands are young, but your spirit is old. That’s rare.",
+        "There’s strength in silence. Don’t fear it.",
+        "Come visit me again. I enjoy our little talks — they remind me that hope still walks these lands."
+    };
+
     public Harvey(String name, Position position, NpcHosue hosue) {
         super(name, position, hosue);
     }
@@ -59,16 +81,8 @@ public class Harvey extends NPC {
 
     @Override
     public String talk() {
-        if(App.getInstance().getCurrentGame().getWeather() == Weather.SUNNY){
-            return "It's a beautiful day with clear skies and warm sunshine all around.";
-        } else if(App.getInstance().getCurrentGame().getGameTime().getSeason() == Season.SUMMER){
-            return "Summer is the season of long sunny days, blooming nature, and the scent of adventure in the air.";
-        } else if(App.getInstance().getCurrentGame().getGameTime().getSeason() == Season.WINTER){
-            return "Where is the sun?? I can't see it through the clouds";
-        } else if(hasRelationWithNPC(this.getName())){
-            return "Tell my" + App.getInstance().getCurrentGame().getCurrentPlayer().getName() + ", how do you feel?";
-        }
-        return "A new person in the village? Unbilevable!";
+        return dialogues[new Random().nextInt(dialogues.length)];
+
     }
 
     @Override
