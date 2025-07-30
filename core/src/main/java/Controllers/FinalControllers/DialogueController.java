@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-public class NpcRelationController {
+public class DialogueController {
 
     private final Texture dialogueBox = new Texture("dialogue/dialogueBox.png");
     private final Sprite dialogue = new Sprite(new Texture("dialogue/dialogue.png"));
@@ -21,7 +21,7 @@ public class NpcRelationController {
     private boolean showDialogue = false;
     private String currentDialogue = "";
 
-    public NpcRelationController() {
+    public DialogueController() {
         // Load custom font from TTF
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/mainFont.ttf"));
 
@@ -115,7 +115,10 @@ public class NpcRelationController {
 
         }
 
-        relation.setRelationPoint(relation.getRelationPoint() + 20);
+        if(!getNPCRealtion(npc).isIstalkedToday()){
+            relation.setRelationPoint(relation.getRelationPoint() + 20);
+            getNPCRealtion(npc).setIstalkedToday(true);
+        }
 
     }
 

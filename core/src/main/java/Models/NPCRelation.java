@@ -12,6 +12,8 @@ public class NPCRelation {
     private boolean istalkedToday;
     private boolean isGiftSent;
 
+    public static final int MAX_RELATION_LEVEL = 5;
+
     public NPCRelation(NPC npc, int relationPoint, boolean istalkedToday, boolean isGiftSent) {
         this.npc = npc;
         this.acceptedQuests = new ArrayList<>();
@@ -61,7 +63,7 @@ public class NPCRelation {
     }
 
     public int getFrinendShipLevel(){
-        return (this.relationPoint < 800) ?(this.relationPoint / 200) : 4;
+        return (this.relationPoint < 200 * MAX_RELATION_LEVEL) ?(this.relationPoint / 200) : MAX_RELATION_LEVEL;
     }
 
 }

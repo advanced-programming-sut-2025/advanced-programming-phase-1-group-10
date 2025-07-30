@@ -2,7 +2,6 @@ package Controllers.FinalControllers;
 
 import Controllers.MessageSystem;
 import Models.App;
-import Models.NPC.NPC;
 import Models.Place.Lake;
 import Views.GameLauncherView;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +31,8 @@ public class GameControllerFinal {
     private InventoryController inventoryController;
     private FishingMiniGameController fishingMiniGameController;
     private boolean fishingMiniGameActive = false;
-    private NpcRelationController npcRelationController;
+    private DialogueController dialogueController;
+    private NpcMenuController npcMenuController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -50,7 +50,8 @@ public class GameControllerFinal {
         this.npcController = new NpcController();
         this.weatherController = new WeatherController();
         this.inventoryController = new InventoryController();
-        this.npcRelationController = new NpcRelationController();
+        this.dialogueController = new DialogueController();
+        this.npcMenuController = new NpcMenuController();
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {
@@ -101,7 +102,8 @@ public class GameControllerFinal {
         energyController.update(batch);
         skillController.update(batch);
         inventoryController.update(batch);
-        npcRelationController.update(batch);
+        dialogueController.update(batch);
+        npcMenuController.update(batch);
         MessageSystem.update(batch, viewport);
     }
 
@@ -176,7 +178,7 @@ public class GameControllerFinal {
         return weatherController;
     }
 
-    public NpcRelationController getNpcRelationController() {
-        return npcRelationController;
+    public DialogueController getNpcRelationController() {
+        return dialogueController;
     }
 }
