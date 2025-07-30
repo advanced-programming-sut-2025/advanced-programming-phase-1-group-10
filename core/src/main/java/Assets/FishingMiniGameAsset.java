@@ -11,6 +11,7 @@ public class FishingMiniGameAsset implements Disposable {
     private Texture fishTexture;
     private Texture bobberTexture;
     private Texture greenBarTexture;
+    private Texture legendryFishTexture;
 
     public FishingMiniGameAsset() {
 
@@ -46,6 +47,18 @@ public class FishingMiniGameAsset implements Disposable {
         }
 
         try {
+            legendryFishTexture = new Texture(Gdx.files.internal("Animals/Fish/MiniGame/LegendaryFish_icon.png"));
+        } catch (Exception e) {
+            Pixmap pixmap1 = new Pixmap(40, 25, Pixmap.Format.RGBA8888);
+            pixmap1.setColor(0.2f, 0.6f, 1, 1);
+            pixmap1.fillCircle(20, 12, 10);
+            pixmap1.setColor(0.1f, 0.3f, 0.8f, 1);
+            pixmap1.fillTriangle(30, 12, 40, 5, 40, 20);
+            legendryFishTexture = new Texture(pixmap1);
+            pixmap1.dispose();
+        }
+
+        try {
             bobberTexture = new Texture(Gdx.files.internal("Minigames/Fishing/bobber.png"));
         } catch (Exception e) {
             Pixmap pixmap1 = new Pixmap(40, 15, Pixmap.Format.RGBA8888);
@@ -76,6 +89,10 @@ public class FishingMiniGameAsset implements Disposable {
 
     public Texture getFishTexture() {
         return fishTexture;
+    }
+
+    public Texture getLegendryFishTexture() {
+        return legendryFishTexture;
     }
 
     public Texture getBobberTexture() {

@@ -311,8 +311,14 @@ public class FishingMiniGameController {
 
         batch.draw(assets.getGreenBarTexture(), BAR_X + (BAR_WIDTH - GREEN_BAR_WIDTH) / 2 + 8, bobberY - GREEN_BAR_HEIGHT / 2, GREEN_BAR_WIDTH, GREEN_BAR_HEIGHT);
 
-        batch.draw(assets.getFishTexture(), BAR_X + (BAR_WIDTH - FISH_WIDTH) / 2 + 5, fishY - FISH_HEIGHT / 2, FISH_WIDTH, FISH_HEIGHT);
-
+        if(caughtFishType.equals(FishType.LEGEND) ||
+        caughtFishType.equals(FishType.GLACIERFISH) ||
+        caughtFishType.equals(FishType.ANGLER) ||
+        caughtFishType.equals(FishType.CRIMSONFISH)){
+            batch.draw(assets.getLegendryFishTexture(), BAR_X + (BAR_WIDTH - FISH_WIDTH) / 2 + 5, fishY - FISH_HEIGHT / 2, FISH_WIDTH, FISH_HEIGHT);
+        }
+        else
+            batch.draw(assets.getFishTexture(), BAR_X + (BAR_WIDTH - FISH_WIDTH) / 2 + 5, fishY - FISH_HEIGHT / 2, FISH_WIDTH, FISH_HEIGHT);
 
         float progressBarWidth = 10 * SCALE_FACTOR;
         float progressBarX = BAR_X + BAR_WIDTH + (15 * SCALE_FACTOR) - 59;
@@ -346,25 +352,25 @@ public class FishingMiniGameController {
 
         player.setFishingAbility(player.getFishingAbility() + 5);
 
-
-        Quality fishQuality = Quality.STARTER;
-        if (isPerfectCatch) {
-            if (caughtFishType.getPrice() >= 1000) {
-                fishQuality = Quality.IRIDIUM;
-            } else if (caughtFishType.getPrice() >= 500) {
-                fishQuality = Quality.GOLD;
-            } else {
-                fishQuality = Quality.GOLD;
-            }
-
-
-            player.setFishingAbility(player.getFishingAbility() + 7);
-        }
-
-
         Fish caughtFish = new Fish(caughtFishType, 1);
 
         boolean added = player.getInventory().getBackPack().addItem(caughtFish);
+
+        Quality fishQuality = caughtFish.getQuality();
+        if (isPerfectCatch) {
+            if (fishQuality.equals(Quality.STEEL)) {
+                fishQuality = Quality.GOLD;
+            } else if (fishQuality.equals(Quality.GOLD)) {
+                fishQuality = Quality.IRIDIUM;
+            } else {
+                fishQuality = Quality.STEEL;
+            }
+
+            // 2.4 برابر شدن توانایی ماهیگیری
+            player.setFishingAbility((int) (player.getFishingAbility() * 2.4));
+        }
+        else
+            player.setFishingAbility(player.getFarmingAbility() + 10);
 
         if (added) {
             if (isPerfectCatch) {
