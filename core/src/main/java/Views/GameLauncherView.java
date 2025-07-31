@@ -237,6 +237,13 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (controller.getAnimalBuildingController().isShowingInterior()) {
+            boolean handled = controller.getAnimalBuildingController().handleInteriorClick(screenX, screenY, button);
+            if (handled) {
+                return true;
+            }
+        }
+
         if (controller.getAnimalListController().isShowing() && button == Input.Buttons.LEFT) {
             AnimalListController.AnimalDisplayData animalData = controller.getAnimalListController().getAnimalAt(screenX, screenY);
             if (animalData != null) {

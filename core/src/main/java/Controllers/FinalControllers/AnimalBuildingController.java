@@ -51,7 +51,7 @@ public class AnimalBuildingController {
     private Tile[][] map = App.getInstance().getCurrentGame().getGameMap().getMap();
 
     private float interiorDisplayTime = 0;
-    private final float INTERIOR_DISPLAY_DURATION = 5.0f;
+    private final float INTERIOR_DISPLAY_DURATION = 45.0f;
     private boolean autoHideInterior = true;
 
     private ShapeRenderer shapeRenderer;
@@ -60,15 +60,41 @@ public class AnimalBuildingController {
     private float interiorY;
     private float interiorScale = 1.5f;
 
+    private final AnimalController animalController;
+    private final List<AnimalPosition> visibleAnimals = new ArrayList<>();
+
+    private static class AnimalPosition {
+        Animal animal;
+        float x, y, width, height;
+
+        AnimalPosition(Animal animal, float x, float y, float width, float height) {
+            this.animal = animal;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        boolean contains(float testX, float testY) {
+            return testX >= x && testX <= x + width &&
+                testY >= y && testY <= y + height;
+        }
+    }
+
     public AnimalBuildingController(AnimalAsset animalAsset) {
         this.animalBuildingAsset = new AnimalBuildingAsset();
         this.shapeRenderer = new ShapeRenderer();
         this.animalAsset = animalAsset;
+        this.animalController = new AnimalController();
     }
 
     public void update(SpriteBatch batch, float delta) {
         if (isShowingInterior()) {
             renderInterior(batch);
+
+            if (animalController != null && animalController.isMenuVisible()) {
+                animalController.render(delta);
+            }
         } else {
             renderBuildings(batch);
             renderPlacingBuilding(batch);
@@ -151,6 +177,9 @@ public class AnimalBuildingController {
             return;
         }
 
+
+        visibleAnimals.clear();
+
         float animalSize = 96f;
         float padding = 30f;
         float startYOffset = interiorHeight * 0.3f;
@@ -177,8 +206,28 @@ public class AnimalBuildingController {
                 }
 
                 batch.draw(animalTexture, x, y, animalSize, animalSize);
+                visibleAnimals.add(new AnimalPosition(animal, x, y, animalSize, animalSize));
             }
         }
+    }
+
+
+    public boolean handleInteriorClick(float screenX, float screenY, int button) {
+        if (!isShowingInterior() || visibleAnimals.isEmpty()) {
+            return false;
+        }
+
+        float worldY = Gdx.graphics.getHeight() - screenY;
+
+        if (button == 1) {
+            for (AnimalPosition animalPos : visibleAnimals) {
+                if (animalPos.contains(screenX, worldY)) {
+                    return animalController.handleRightClick(screenX, screenY, animalPos.animal, animalPos.x, animalPos.y);
+                }
+            }
+        }
+
+        return false;
     }
 
     private void renderPlacingBuilding(SpriteBatch batch) {
@@ -662,6 +711,9 @@ public class AnimalBuildingController {
     public void dispose() {
         if (shapeRenderer != null) {
             shapeRenderer.dispose();
+        }
+        if (animalController != null) {
+            animalController.dispose();
         }
     }
 
