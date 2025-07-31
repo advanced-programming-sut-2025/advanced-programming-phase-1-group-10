@@ -43,7 +43,7 @@ public class GameControllerFinal {
         this.mapController = new MapController();
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
         this.barController = new BarController();
-        this.animalBuildingController = new AnimalBuildingController();
+        this.animalBuildingController = new AnimalBuildingController(new AnimalAsset());
         this.interactController = new InteractController();
         this.energyController = new EnergyController();
         this.timeController = new TimeController();
@@ -110,7 +110,6 @@ public class GameControllerFinal {
         dialogueController.update(batch);
         npcMenuController.update(batch);
         questMenuController.update(batch);
-        friendshipController.update(batch);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);
