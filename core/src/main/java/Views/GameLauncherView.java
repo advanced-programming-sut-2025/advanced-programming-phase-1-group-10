@@ -72,6 +72,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (controller.getAnimalBuildingController().isShowingInterior()) {
+            batch.setProjectionMatrix(hudCamera.combined);
             batch.begin();
             controller.getAnimalBuildingController().update(batch, delta);
             batch.end();
@@ -174,14 +175,55 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                 return true;
             }
         }
+
+        if (keycode == Input.Keys.SLASH) {
+            int barnType = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+                barnType = 0; // normal barn
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+                barnType = 1; // big barn
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+                barnType = 2; // deluxe barn
+            }
+
+            controller.getAnimalBuildingController().startPlacingBarn(barnType);
+            return true;
+        }
+
+        if (keycode == Input.Keys.BACKSLASH) {
+            int coopType = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+                coopType = 0; // normal coop
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+                coopType = 1; // big coop
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+                coopType = 2; // deluxe coop
+            }
+
+            controller.getAnimalBuildingController().startPlacingCoop(coopType);
+            return true;
+        }
+
+        if ((keycode == Input.Keys.NUM_1 || keycode == Input.Keys.NUM_2
+            || keycode == Input.Keys.NUM_3) &&
+            (controller.getAnimalBuildingController().isPlacingBarn()
+                || controller.getAnimalBuildingController().isPlacingCoop())) {
+            int buildingType = keycode - Input.Keys.NUM_1;
+            if (controller.getAnimalBuildingController().isPlacingBarn()) {
+                controller.getAnimalBuildingController().changeBarnType(buildingType);
+            } else if (controller.getAnimalBuildingController().isPlacingCoop()) {
+                controller.getAnimalBuildingController().changeCoopType(buildingType);
+            }
+
+            return true;
+        }
+
         if (keycode == Input.Keys.N) {
             controller.getAnimalListController().toggleVisibility();
         }
         controller.getInventoryBarController().selectSlotByKey(keycode);
         return true;
     }
-
-
 
     @Override
     public boolean keyUp(int i) {

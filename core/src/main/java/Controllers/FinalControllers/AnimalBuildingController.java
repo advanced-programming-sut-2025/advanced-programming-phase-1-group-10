@@ -2,6 +2,7 @@ package Controllers.FinalControllers;
 
 import Assets.AnimalBuildingAsset;
 import Assets.AnimalAsset;
+import Controllers.MessageSystem;
 import Models.*;
 import Models.Animal.Animal;
 import Models.Animal.AnimalType;
@@ -26,6 +27,8 @@ public class AnimalBuildingController {
     private final AnimalBuildingAsset animalBuildingAsset;
     private final AnimalAsset animalAsset;
 
+
+    private int selectedCoopType = 0;
     private boolean isPlacingCoop = false;
     private float tempCoopX = 0;
     private float tempCoopY = 0;
@@ -34,6 +37,8 @@ public class AnimalBuildingController {
     private Coop selectedCoop = null;
     private boolean showingCoopInterior = false;
 
+
+    private int selectedBarnType = 0;
     private boolean isPlacingBarn = false;
     private float tempBarnX = 0;
     private float tempBarnY = 0;
@@ -76,12 +81,30 @@ public class AnimalBuildingController {
     private void renderBuildings(SpriteBatch batch) {
         for (Coop coop : placedCoops) {
             Position pos = coop.getPosition();
-            batch.draw(animalBuildingAsset.getCoop(), pos.getX(), pos.getY());
+
+            Sprite coopSprite;
+            if (coop.isDeluxe()) {
+                coopSprite = animalBuildingAsset.getDeluxeCoop();
+            } else if (coop.isBig()) {
+                coopSprite = animalBuildingAsset.getBigCoop();
+            } else {
+                coopSprite = animalBuildingAsset.getCoop();
+            }
+            batch.draw(coopSprite, pos.getX(), pos.getY());
         }
 
         for (Barn barn : placedBarns) {
             Position pos = barn.getPosition();
-            batch.draw(animalBuildingAsset.getBarn(), pos.getX(), pos.getY());
+
+            Sprite barnSprite;
+            if (barn.isDeluxe()) {
+                barnSprite = animalBuildingAsset.getDeluxeBarn();
+            } else if (barn.isBig()) {
+                barnSprite = animalBuildingAsset.getBigBarn();
+            } else {
+                barnSprite = animalBuildingAsset.getBarn();
+            }
+            batch.draw(barnSprite, pos.getX(), pos.getY());
         }
     }
 
@@ -99,7 +122,7 @@ public class AnimalBuildingController {
         batch.begin();
 
         if (showingCoopInterior && selectedCoop != null) {
-            Sprite interiorSprite = animalBuildingAsset.getCoopinside();
+            Sprite interiorSprite = animalBuildingAsset.getCoopInside();
             float spriteWidth = interiorSprite.getWidth() * interiorScale;
             float spriteHeight = interiorSprite.getHeight() * interiorScale;
 
@@ -107,12 +130,10 @@ public class AnimalBuildingController {
             interiorY = (screenHeight - spriteHeight) / 2;
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
-
-
             renderAnimalsInside(batch, selectedCoop.getAnimals(), interiorX, interiorY, spriteWidth, spriteHeight);
 
         } else if (showingBarnInterior && selectedBarn != null) {
-            Sprite interiorSprite = animalBuildingAsset.getBarninside();
+            Sprite interiorSprite = animalBuildingAsset.getBarnInside();
             float spriteWidth = interiorSprite.getWidth() * interiorScale;
             float spriteHeight = interiorSprite.getHeight() * interiorScale;
 
@@ -120,12 +141,9 @@ public class AnimalBuildingController {
             interiorY = (screenHeight - spriteHeight) / 2;
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
-
-
             renderAnimalsInside(batch, selectedBarn.getAnimals(), interiorX, interiorY, spriteWidth, spriteHeight);
         }
     }
-
 
     private void renderAnimalsInside(SpriteBatch batch, List<Animal> animals, float interiorX, float interiorY, float interiorWidth, float interiorHeight) {
         if (animalAsset == null) {
@@ -133,9 +151,9 @@ public class AnimalBuildingController {
             return;
         }
 
-        float animalSize = 128f;
+        float animalSize = 96f;
         float padding = 30f;
-        float startYOffset = interiorHeight * 0.3f ;
+        float startYOffset = interiorHeight * 0.3f;
         float drawableHeight = interiorHeight - startYOffset - padding;
         int animalsPerRow = (int) ((interiorWidth - 2 * padding) / (animalSize + padding));
 
@@ -151,13 +169,10 @@ public class AnimalBuildingController {
                 int row = i / animalsPerRow;
                 int col = i % animalsPerRow;
 
-
                 float x = interiorX + padding + col * (animalSize + padding) + 500;
                 float y = interiorY + startYOffset + drawableHeight - padding - animalSize - row * (animalSize + padding) - 230;
 
-
                 if (y < interiorY + padding) {
-
                     continue;
                 }
 
@@ -168,7 +183,20 @@ public class AnimalBuildingController {
 
     private void renderPlacingBuilding(SpriteBatch batch) {
         if (isPlacingCoop) {
-            Sprite coopSprite = animalBuildingAsset.getCoop();
+
+            Sprite coopSprite;
+            switch (selectedCoopType) {
+                case 1:
+                    coopSprite = animalBuildingAsset.getBigCoop();
+                    break;
+                case 2:
+                    coopSprite = animalBuildingAsset.getDeluxeCoop();
+                    break;
+                default:
+                    coopSprite = animalBuildingAsset.getCoop();
+                    break;
+            }
+
             coopSprite.setAlpha(0.7f);
             coopSprite.setPosition(tempCoopX, tempCoopY);
             coopSprite.draw(batch);
@@ -176,7 +204,20 @@ public class AnimalBuildingController {
         }
 
         if (isPlacingBarn) {
-            Sprite barnSprite = animalBuildingAsset.getBarn();
+
+            Sprite barnSprite;
+            switch (selectedBarnType) {
+                case 1:
+                    barnSprite = animalBuildingAsset.getBigBarn();
+                    break;
+                case 2:
+                    barnSprite = animalBuildingAsset.getDeluxeBarn();
+                    break;
+                default:
+                    barnSprite = animalBuildingAsset.getBarn();
+                    break;
+            }
+
             barnSprite.setAlpha(0.7f);
             barnSprite.setPosition(tempBarnX, tempBarnY);
             barnSprite.draw(batch);
@@ -201,6 +242,7 @@ public class AnimalBuildingController {
             }
 
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
             }
 
             return;
@@ -210,17 +252,6 @@ public class AnimalBuildingController {
     }
 
     private void handleBuildingPlacement() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSLASH) && !isPlacingCoop && !isPlacingBarn) {
-            isPlacingCoop = true;
-            tempCoopX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
-            tempCoopY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SLASH) && !isPlacingBarn && !isPlacingCoop) {
-            isPlacingBarn = true;
-            tempBarnX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
-            tempBarnY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
-        }
 
         if (isPlacingCoop) {
             handleBuildingMovement(tempCoopX, tempCoopY, true);
@@ -245,6 +276,126 @@ public class AnimalBuildingController {
         }
     }
 
+    private void placeCoop() {
+        if (isValidPlacement(tempCoopX, tempCoopY, true)) {
+            Position position = new Position((int)tempCoopX, (int)tempCoopY);
+
+
+            Sprite coopSprite;
+            switch (selectedCoopType) {
+                case 1:
+                    coopSprite = animalBuildingAsset.getBigCoop();
+                    break;
+                case 2:
+                    coopSprite = animalBuildingAsset.getDeluxeCoop();
+                    break;
+                default:
+                    coopSprite = animalBuildingAsset.getCoop();
+                    break;
+            }
+
+            int coopWidth = coopSprite.getRegionWidth();
+            int coopHeight = coopSprite.getRegionHeight();
+
+            Coop newCoop = new Coop(position, coopHeight, coopWidth);
+
+
+            switch (selectedCoopType) {
+                case 1:
+                    newCoop.setBig();
+                    newCoop.setBig(true);
+                    break;
+                case 2:
+                    newCoop.setDeluxe();
+                    newCoop.setDeluxe(true);
+                    break;
+            }
+
+            placedCoops.add(newCoop);
+            MessageSystem.showInfo("Coop added to map!",4.0f);
+
+            int tileSize = Map.tileSize;
+            int startTileX = (int) Math.floor(tempCoopX / tileSize);
+            int startTileY = (int) Math.floor(tempCoopY / tileSize);
+            int coopWidthInTiles = (int) Math.ceil((double) coopWidth / tileSize);
+            int coopHeightInTiles = (int) Math.ceil((double) coopHeight / tileSize);
+
+            for (int row = 0; row < coopHeightInTiles; row++) {
+                for (int col = 0; col < coopWidthInTiles; col++) {
+                    int tileX = startTileX + col;
+                    int tileY = startTileY + row;
+                    if (tileX < mapWidth && tileY < mapHeight) {
+                        map[tileX][tileY].setPlace(newCoop);
+                    }
+                }
+            }
+
+            System.out.println(newCoop.getPlaceName() + " placed at tile: " + startTileX + ", " + startTileY);
+            isPlacingCoop = false;
+        } else {
+            System.out.println("Cannot place coop here. Invalid position.");
+        }
+    }
+
+    private void placeBarn() {
+        if (isValidPlacement(tempBarnX, tempBarnY, false)) {
+            Position position = new Position((int)tempBarnX, (int)tempBarnY);
+
+            Sprite barnSprite;
+            switch (selectedBarnType) {
+                case 1:
+                    barnSprite = animalBuildingAsset.getBigBarn();
+                    break;
+                case 2:
+                    barnSprite = animalBuildingAsset.getDeluxeBarn();
+                    break;
+                default:
+                    barnSprite = animalBuildingAsset.getBarn();
+                    break;
+            }
+
+            int barnWidth = barnSprite.getRegionWidth();
+            int barnHeight = barnSprite.getRegionHeight();
+
+            Barn newBarn = new Barn(position, barnHeight, barnWidth);
+
+            switch (selectedBarnType) {
+                case 1:
+                    newBarn.setBig();
+                    newBarn.setBig(true);
+                    break;
+                case 2:
+                    newBarn.setDeluxe();
+                    newBarn.setDeluxe(true);
+                    break;
+            }
+
+            placedBarns.add(newBarn);
+            MessageSystem.showInfo("Barn added to map!" , 4.0f);
+
+            int tileSize = Map.tileSize;
+            int startTileX = (int) Math.floor(tempBarnX / tileSize);
+            int startTileY = (int) Math.floor(tempBarnY / tileSize);
+            int barnWidthInTiles = (int) Math.ceil((double) barnWidth / tileSize);
+            int barnHeightInTiles = (int) Math.ceil((double) barnHeight / tileSize);
+
+            for (int row = 0; row < barnHeightInTiles; row++) {
+                for (int col = 0; col < barnWidthInTiles; col++) {
+                    int tileX = startTileX + col;
+                    int tileY = startTileY + row;
+                    if (tileX < mapWidth && tileY < mapHeight) {
+                        map[tileX][tileY].setPlace(newBarn);
+                    }
+                }
+            }
+
+            System.out.println(newBarn.getPlaceName() + " placed at tile: " + startTileX + ", " + startTileY);
+            isPlacingBarn = false;
+        } else {
+            System.out.println("Cannot place barn here. Invalid position.");
+        }
+    }
+
     public boolean handleClick(float worldX, float worldY) {
         if (isShowingInterior()) {
             return true;
@@ -254,14 +405,25 @@ public class AnimalBuildingController {
             return false;
         }
 
+
         for (Coop coop : placedCoops) {
             Position pos = coop.getPosition();
+
+            Sprite coopSprite;
+            if (coop.isDeluxe()) {
+                coopSprite = animalBuildingAsset.getDeluxeCoop();
+            } else if (coop.isBig()) {
+                coopSprite = animalBuildingAsset.getBigCoop();
+            } else {
+                coopSprite = animalBuildingAsset.getCoop();
+            }
+
             Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
-                animalBuildingAsset.getCoop().getRegionWidth(),
-                animalBuildingAsset.getCoop().getRegionHeight());
+                coopSprite.getRegionWidth(),
+                coopSprite.getRegionHeight());
 
             if (bounds.contains(worldX, worldY)) {
-                System.out.println("Clicked on Coop at: " + pos.getX() + ", " + pos.getY());
+                System.out.println("Clicked on " + coop.getPlaceName() + " at: " + pos.getX() + ", " + pos.getY());
                 selectedCoop = coop;
                 showingCoopInterior = true;
                 showingBarnInterior = false;
@@ -271,14 +433,25 @@ public class AnimalBuildingController {
             }
         }
 
+
         for (Barn barn : placedBarns) {
             Position pos = barn.getPosition();
+
+            Sprite barnSprite;
+            if (barn.isDeluxe()) {
+                barnSprite = animalBuildingAsset.getDeluxeBarn();
+            } else if (barn.isBig()) {
+                barnSprite = animalBuildingAsset.getBigBarn();
+            } else {
+                barnSprite = animalBuildingAsset.getBarn();
+            }
+
             Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
-                animalBuildingAsset.getBarn().getRegionWidth(),
-                animalBuildingAsset.getBarn().getRegionHeight());
+                barnSprite.getRegionWidth(),
+                barnSprite.getRegionHeight());
 
             if (bounds.contains(worldX, worldY)) {
-                System.out.println("Clicked on Barn at: " + pos.getX() + ", " + pos.getY());
+                System.out.println("Clicked on " + barn.getPlaceName() + " at: " + pos.getX() + ", " + pos.getY());
                 selectedBarn = barn;
                 showingBarnInterior = true;
                 showingCoopInterior = false;
@@ -319,73 +492,37 @@ public class AnimalBuildingController {
         }
     }
 
-    private void placeCoop() {
-        if (isValidPlacement(tempCoopX, tempCoopY, true)) {
-            Position position = new Position((int)tempCoopX, (int)tempCoopY);
-            int coopWidth = animalBuildingAsset.getCoop().getRegionWidth();
-            int coopHeight = animalBuildingAsset.getCoop().getRegionHeight();
-
-            Coop newCoop = new Coop(position, coopHeight, coopWidth);
-            placedCoops.add(newCoop);
-
-            int tileSize = Map.tileSize;
-            int startTileX = (int) Math.floor(tempCoopX / tileSize);
-            int startTileY = (int) Math.floor(tempCoopY / tileSize);
-            int coopWidthInTiles = (int) Math.ceil((double) coopWidth / tileSize);
-            int coopHeightInTiles = (int) Math.ceil((double) coopHeight / tileSize);
-
-            for (int row = 0; row < coopHeightInTiles; row++) {
-                for (int col = 0; col < coopWidthInTiles; col++) {
-                    int tileX = startTileX + col;
-                    int tileY = startTileY + row;
-                    if (tileX < mapWidth && tileY < mapHeight) {
-                        map[tileX][tileY].setPlace(newCoop);
-                    }
-                }
-            }
-
-            System.out.println("Coop placed at tile: " + startTileX + ", " + startTileY);
-            isPlacingCoop = false;
-        } else {
-            System.out.println("Cannot place coop here. Invalid position.");
-        }
-    }
-
-    private void placeBarn() {
-        if (isValidPlacement(tempBarnX, tempBarnY, false)) {
-            Position position = new Position((int)tempBarnX, (int)tempBarnY);
-            int barnWidth = animalBuildingAsset.getBarn().getRegionWidth();
-            int barnHeight = animalBuildingAsset.getBarn().getRegionHeight();
-
-            Barn newBarn = new Barn(position, barnHeight, barnWidth);
-            placedBarns.add(newBarn);
-
-            int tileSize = Map.tileSize;
-            int startTileX = (int) Math.floor(tempBarnX / tileSize);
-            int startTileY = (int) Math.floor(tempBarnY / tileSize);
-            int barnWidthInTiles = (int) Math.ceil((double) barnWidth / tileSize);
-            int barnHeightInTiles = (int) Math.ceil((double) barnHeight / tileSize);
-
-            for (int row = 0; row < barnHeightInTiles; row++) {
-                for (int col = 0; col < barnWidthInTiles; col++) {
-                    int tileX = startTileX + col;
-                    int tileY = startTileY + row;
-                    if (tileX < mapWidth && tileY < mapHeight) {
-                        map[tileX][tileY].setPlace(newBarn);
-                    }
-                }
-            }
-
-            System.out.println("Barn placed at tile: " + startTileX + ", " + startTileY);
-            isPlacingBarn = false;
-        } else {
-            System.out.println("Cannot place barn here. Invalid position.");
-        }
-    }
-
 
     private boolean isValidPlacement(float x, float y, boolean isCoop) {
-        Sprite buildingSprite = isCoop ? animalBuildingAsset.getCoop() : animalBuildingAsset.getBarn();
+        Sprite buildingSprite;
+
+        if (isCoop) {
+
+            switch (selectedCoopType) {
+                case 1:
+                    buildingSprite = animalBuildingAsset.getBigCoop();
+                    break;
+                case 2:
+                    buildingSprite = animalBuildingAsset.getDeluxeCoop();
+                    break;
+                default:
+                    buildingSprite = animalBuildingAsset.getCoop();
+                    break;
+            }
+        } else {
+
+            switch (selectedBarnType) {
+                case 1:
+                    buildingSprite = animalBuildingAsset.getBigBarn();
+                    break;
+                case 2:
+                    buildingSprite = animalBuildingAsset.getDeluxeBarn();
+                    break;
+                default:
+                    buildingSprite = animalBuildingAsset.getBarn();
+                    break;
+            }
+        }
 
         float mapPixelWidth = mapWidth * Map.tileSize;
         float mapPixelHeight = mapHeight * Map.tileSize;
@@ -544,11 +681,12 @@ public class AnimalBuildingController {
                 }
 
                 coop.addAnimal(animal);
+                App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+                MessageSystem.showInfo("A " + animalName + "added to COOP!", 5.0f);
                 System.out.println(animalName + " placed in Coop at: " + pos.getX() + ", " + pos.getY());
                 return true;
             }
         }
-
 
         for (Barn barn : placedBarns) {
             Position pos = barn.getPosition();
@@ -564,11 +702,63 @@ public class AnimalBuildingController {
                     }
                 }
                 barn.addAnimal(animal);
+                App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+                MessageSystem.showInfo("A " + animalName + "added to BARN!", 5.0f);
                 System.out.println(animalName + " placed in Barn at: " + pos.getX() + ", " + pos.getY());
                 return true;
             }
         }
 
         return false;
+    }
+
+    public void startPlacingBarn(int barnType) {
+        if (!isPlacingCoop && !isPlacingBarn) {
+            isPlacingBarn = true;
+            selectedBarnType = barnType;
+            tempBarnX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
+            tempBarnY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
+            System.out.println("Starting to place " + getBarnTypeName(barnType));
+        }
+    }
+
+    public void startPlacingCoop(int coopType) {
+        if (!isPlacingCoop && !isPlacingBarn) {
+            isPlacingCoop = true;
+            selectedCoopType = coopType;
+            tempCoopX = App.getInstance().getCurrentGame().getCurrentPlayer().getX();
+            tempCoopY = App.getInstance().getCurrentGame().getCurrentPlayer().getY();
+            System.out.println("Starting to place " + getCoopTypeName(coopType));
+        }
+    }
+
+    public void changeBarnType(int barnType) {
+        if (isPlacingBarn) {
+            selectedBarnType = barnType;
+            System.out.println("Changed to " + getBarnTypeName(barnType));
+        }
+    }
+
+    public void changeCoopType(int coopType) {
+        if (isPlacingCoop) {
+            selectedCoopType = coopType;
+            System.out.println("Changed to " + getCoopTypeName(coopType));
+        }
+    }
+
+    private String getBarnTypeName(int type) {
+        switch (type) {
+            case 1: return "Big Barn";
+            case 2: return "Deluxe Barn";
+            default: return "Barn";
+        }
+    }
+
+    private String getCoopTypeName(int type) {
+        switch (type) {
+            case 1: return "Big Coop";
+            case 2: return "Deluxe Coop";
+            default: return "Coop";
+        }
     }
 }
