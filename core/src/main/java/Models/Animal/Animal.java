@@ -13,16 +13,33 @@ import static Controllers.GameController.getTileByPosition;
 
 public class Animal {
 
-    private AnimalType animalType ;
+
+    private AnimalType animalType;
     private final ArrayList<AnimalProductType> animalProductTypes = new ArrayList<>();
-    private String name ;
+    private String name;
     private int friendShip;
     private AnimalProduct currentProduct;
-
     private Position position;
-
     private boolean petted = false;
     private boolean fed = false;
+
+
+    public static final float ANIMAL_WIDTH = 64f;
+    public static final float ANIMAL_HEIGHT = 64f;
+    private float x;
+    private float y;
+    private float speed = 80f;
+    private float stateTime = 0f;
+    private Direction direction = Direction.DOWN;
+    private boolean moving = false;
+    private boolean free = false;
+    private Position homePosition;
+    private float lastMoveTime = 0f;
+
+
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     public Animal(AnimalType animalType, String name) {
         this.animalType = animalType;
@@ -55,6 +72,7 @@ public class Animal {
         }
     }
 
+
     public AnimalType getAnimalType() {
         return animalType;
     }
@@ -84,43 +102,38 @@ public class Animal {
         friendShip += 15;
     }
 
-    public void feed(){
+    public void feed() {
         fed = true;
         friendShip += 8;
     }
 
     public ProductQuality calculateQuality() {
         double random = Math.random();
-        double quality = ((double) friendShip /1000) * (0.5 + 0.5 * random);
+        double quality = ((double) friendShip / 1000) * (0.5 + 0.5 * random);
 
-        if(quality <= 0.5) {
+        if (quality <= 0.5) {
             return ProductQuality.NORMAL;
-        }
-        else if(quality <= 0.7) {
+        } else if (quality <= 0.7) {
             return ProductQuality.SILVER;
-        }
-        else if(quality <= 0.9) {
+        } else if (quality <= 0.9) {
             return ProductQuality.GOLD;
-        }
-        else {
+        } else {
             return ProductQuality.IRIDIUM;
         }
     }
 
     public void produce() {
-        if(friendShip > 100 && animalProductTypes.size() > 1) {
+        if (friendShip > 100 && animalProductTypes.size() > 1) {
             double random = 0.5 + Math.random();
             double probability = (friendShip + 150 * random) / 1500;
 
-            if(probability > 0.5) {
-                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(),1);
+            if (probability > 0.5) {
+                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(), 1);
+            } else {
+                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
             }
-            else {
-                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(),1);
-            }
-        }
-        else {
-            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(),1);
+        } else {
+            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
         }
     }
 
@@ -137,7 +150,7 @@ public class Animal {
     }
 
     public int getPrice() {
-        return (int) (animalType.getPrice() * (((double) friendShip /1000) + 0.3));
+        return (int) (animalType.getPrice() * (((double) friendShip / 1000) + 0.3));
     }
 
     public void setPosition(Position position) {
@@ -149,30 +162,29 @@ public class Animal {
     }
 
     public static Animal animalFactory(String animalType, String name) {
-        for(AnimalType at: AnimalType.values()) {
-            if(at.name().equalsIgnoreCase(animalType)) {
+        for (AnimalType at : AnimalType.values()) {
+            if (at.name().equalsIgnoreCase(animalType)) {
                 return new Animal(at, name);
             }
         }
         return null;
     }
 
-    public static void updateAnimalState(Animal animal){
+    public static void updateAnimalState(Animal animal) {
         DateTime dateAndTime = App.getInstance().getCurrentGame().getGameTime();
-        if(!animal.isFed()) {
+        if (!animal.isFed()) {
             animal.setFriendShip(animal.getFriendShip() - 20);
         }
-        if(!animal.isPetted()) {
-            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip()/200) - 10);
+        if (!animal.isPetted()) {
+            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip() / 200) - 10);
         }
-        if(!isCorrectEnclosure(animal)) {
+        if (!isCorrectEnclosure(animal)) {
             animal.setFriendShip(animal.getFriendShip() - 20);
         }
 
-        if(animal.isFed() && dateAndTime.getDay() % animal.getAnimalType().getPeriode() == 0) {
+        if (animal.isFed() && dateAndTime.getDay() % animal.getAnimalType().getPeriode() == 0) {
             animal.produce();
-        }
-        else {
+        } else {
             animal.setCurrentProduct(null);
         }
         animal.petted = false;
@@ -181,13 +193,86 @@ public class Animal {
 
     private static boolean isCorrectEnclosure(Animal animal) {
         Tile tile = getTileByPosition(animal.getPosition());
-        if(tile == null) return false;
+        if (tile == null) return false;
 
-        if(animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("COOP"))
+        if (animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("COOP"))
             return tile.getPlace() instanceof Coop;
-        else if(animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("BARN"))
+        else if (animal.getAnimalType().getEnclosures().toString().equalsIgnoreCase("BARN"))
             return tile.getPlace() instanceof Barn;
 
         return false;
+    }
+
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public float getStateTime() {
+        return stateTime;
+    }
+
+    public void setStateTime(float stateTime) {
+        this.stateTime = stateTime;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public boolean isFree() {
+        return free;
+    }
+
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+
+    public Position getHomePosition() {
+        return homePosition;
+    }
+
+    public void setHomePosition(Position homePosition) {
+        this.homePosition = homePosition;
+    }
+
+    public float getLastMoveTime() {
+        return lastMoveTime;
+    }
+
+    public void setLastMoveTime(float lastMoveTime) {
+        this.lastMoveTime = lastMoveTime;
     }
 }

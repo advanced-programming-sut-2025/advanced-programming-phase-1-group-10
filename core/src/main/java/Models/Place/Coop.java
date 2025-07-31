@@ -72,4 +72,12 @@ public class Coop extends Place{
     public void addAnimal(Animal animal){
         animals.add(animal);
     }
+
+    public void setBig(boolean big) {
+        Big = big;
+    }
+
+    public void setDeluxe(boolean deluxe) {
+        Deluxe = deluxe;
+    }
 }

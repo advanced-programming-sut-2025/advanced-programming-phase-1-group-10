@@ -25,45 +25,79 @@ public class AnimalAsset {
     }
 
     private void loadAnimalAssets(String animalName) {
-
         String spriteSheetPath = "Animals/Sprites/" + animalName + ".png";
         Texture spriteSheet = new Texture(Gdx.files.internal(spriteSheetPath));
-
+        spriteSheet.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         String singleTexturePath = "Animals/Textures/" + animalName + ".png";
         Texture singleTexture = new Texture(Gdx.files.internal(singleTexturePath));
 
+        // we can change this variables for each animal
+        int rows = 5;
+        int cols = 4;
 
-        int frameCols = 4;
-        int frameRows = 6;
-        TextureRegion[][] tmp = TextureRegion.split(spriteSheet,
-            spriteSheet.getWidth() / frameCols,
-            spriteSheet.getHeight() / frameRows);
 
+        // if (animalName.equals("Sheep")) {
+        //     rows = 2;
+        //     cols = 4;
+        // }
+
+        int frameWidth = spriteSheet.getWidth() / cols;
+        int frameHeight = spriteSheet.getHeight() / rows;
+
+        TextureRegion[][] tmp = createRegionsFromSheet(spriteSheet, frameWidth, frameHeight);
 
         AnimalData animalData = new AnimalData();
         animalData.spriteSheet = spriteSheet;
         animalData.singleTexture = singleTexture;
 
         animalData.idleFrame = tmp[0][0];
-        animalData.walkDownAnimation = createAnimation(tmp[0]);
-        animalData.walkRightAnimation = createAnimation(tmp[1]);
-        animalData.walkUpAnimation = createAnimation(tmp[2]);
-        animalData.walkLeftAnimation = createAnimation(tmp[3]);
-        animalData.peckingAnimation = createAnimation(tmp[4]);
-        animalData.specialActionAnimation = createAnimation(tmp[5]);
+
+
+        if (rows >= 3) {
+            animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, 4);
+            animalData.walkLeftAnimation = createFlippedAnimation(tmp[1], 0, 4);
+            animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
+            animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
+        } else {
+            animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, cols);
+            animalData.walkUpAnimation = createExactAnimation(tmp[0], 0, cols);
+            animalData.walkLeftAnimation = createFlippedAnimation(tmp[0], 0, cols);
+            animalData.walkRightAnimation = createExactAnimation(tmp[0], 0, cols);
+        }
 
         animalAssetsMap.put(animalName, animalData);
     }
 
-    private Animation<TextureRegion> createAnimation(TextureRegion[] framesRow) {
+    private TextureRegion[][] createRegionsFromSheet(Texture sheet, int frameWidth, int frameHeight) {
+        int rows = sheet.getHeight() / frameHeight;
+        int cols = sheet.getWidth() / frameWidth;
+        TextureRegion[][] regions = new TextureRegion[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                regions[row][col] = new TextureRegion(sheet, col * frameWidth, row * frameHeight, frameWidth, frameHeight);
+            }
+        }
+        return regions;
+    }
+
+    private Animation<TextureRegion> createExactAnimation(TextureRegion[] framesRow, int startIndex, int frameCount) {
         Array<TextureRegion> frames = new Array<>(TextureRegion.class);
-        for (TextureRegion region : framesRow) {
-            frames.add(region);
+        for (int i = startIndex; i < startIndex + frameCount && i < framesRow.length; i++) {
+            frames.add(new TextureRegion(framesRow[i]));
         }
         return new Animation<>(FRAME_DURATION, frames, Animation.PlayMode.LOOP);
     }
 
+    private Animation<TextureRegion> createFlippedAnimation(TextureRegion[] framesRow, int startIndex, int frameCount) {
+        Array<TextureRegion> frames = new Array<>(TextureRegion.class);
+        for (int i = startIndex; i < startIndex + frameCount && i < framesRow.length; i++) {
+            TextureRegion flipped = new TextureRegion(framesRow[i]);
+            flipped.flip(true, false);
+            frames.add(flipped);
+        }
+        return new Animation<>(FRAME_DURATION, frames, Animation.PlayMode.LOOP);
+    }
 
     private static class AnimalData {
         Texture spriteSheet;
@@ -73,10 +107,7 @@ public class AnimalAsset {
         Animation<TextureRegion> walkLeftAnimation;
         Animation<TextureRegion> walkRightAnimation;
         Animation<TextureRegion> walkUpAnimation;
-        Animation<TextureRegion> peckingAnimation;
-        Animation<TextureRegion> specialActionAnimation;
     }
-
 
     public Animation<TextureRegion> getWalkDownAnimation(String animalName) {
         return animalAssetsMap.get(animalName).walkDownAnimation;
@@ -94,18 +125,9 @@ public class AnimalAsset {
         return animalAssetsMap.get(animalName).walkUpAnimation;
     }
 
-    public Animation<TextureRegion> getPeckingAnimation(String animalName) {
-        return animalAssetsMap.get(animalName).peckingAnimation;
-    }
-
-    public Animation<TextureRegion> getSpecialActionAnimation(String animalName) {
-        return animalAssetsMap.get(animalName).specialActionAnimation;
-    }
-
     public TextureRegion getIdleFrame(String animalName) {
         return animalAssetsMap.get(animalName).idleFrame;
     }
-
 
     public Texture getSingleTexture(String animalName) {
         return animalAssetsMap.get(animalName).singleTexture;
