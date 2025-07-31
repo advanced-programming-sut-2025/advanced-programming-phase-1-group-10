@@ -1,5 +1,6 @@
 package Controllers.FinalControllers;
 
+import Assets.AnimalAsset;
 import Controllers.MessageSystem;
 import Models.App;
 import Models.Place.Lake;
@@ -34,6 +35,7 @@ public class GameControllerFinal {
     private DialogueController dialogueController;
     private NpcMenuController npcMenuController;
     private QuestMenuController questMenuController;
+    private AnimalListController animalListController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -54,6 +56,7 @@ public class GameControllerFinal {
         this.npcMenuController = new NpcMenuController();
         this.inventoryBarController = new InventoryBarController(npcMenuController);
         this.questMenuController = new QuestMenuController();
+        this.animalListController = new AnimalListController(new AnimalAsset());
 
 
         List<Lake> allLakes = FishController.findAllLakes();
@@ -109,6 +112,7 @@ public class GameControllerFinal {
             fishingMiniGameController.update(batch, delta);
             return;
         }
+        animalListController.update(batch);
     }
 
 
@@ -184,5 +188,9 @@ public class GameControllerFinal {
 
     public DialogueController getNpcRelationController() {
         return dialogueController;
+    }
+
+    public AnimalListController getAnimalListController() {
+        return animalListController;
     }
 }

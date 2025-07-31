@@ -147,6 +147,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                 return true;
             }
         }
+        if (keycode == Input.Keys.N) {
+            controller.getAnimalListController().toggleVisibility();
+        }
         controller.getInventoryBarController().selectSlotByKey(keycode);
         return true;
     }

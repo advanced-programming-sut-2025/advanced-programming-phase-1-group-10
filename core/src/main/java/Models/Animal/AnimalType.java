@@ -3,14 +3,14 @@ package Models.Animal;
 import Models.Place.Maintenance;
 
 public enum AnimalType {
-    CHICKEN("chicken",Maintenance.Coop, 800,1),
-    DUCK("duck",Maintenance.Coop, 1200,2),
-    RABBIT("rabbit",Maintenance.Coop, 8000,4),
-    DINOSAUR("dinosaur",Maintenance.Coop, 14000,7),
-    COW("cow",Maintenance.Barn, 1500,1),
-    GOAT("goat",Maintenance.Barn, 4000,2),
-    SHEEP("sheep",Maintenance.Barn, 8000,3),
-    PIG("pig",Maintenance.Barn, 16000,1);
+    CHICKEN("Chicken",Maintenance.Coop, 800,1),
+    DUCK("Duck",Maintenance.Coop, 1200,2),
+    RABBIT("Rabbit",Maintenance.Coop, 8000,4),
+    DINOSAUR("Dinosaur",Maintenance.Coop, 14000,7),
+    COW("Cow",Maintenance.Barn, 1500,1),
+    GOAT("Goat",Maintenance.Barn, 4000,2),
+    SHEEP("Sheep",Maintenance.Barn, 8000,3),
+    PIG("Pig",Maintenance.Barn, 16000,1);
 
 
     private final String type;
