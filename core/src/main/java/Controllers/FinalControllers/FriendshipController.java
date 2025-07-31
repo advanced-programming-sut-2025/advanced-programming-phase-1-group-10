@@ -124,8 +124,7 @@ public class FriendshipController {
         recipientBox.setPosition(messageField.getX() + messageField.getWidth() + 10, msgRowY);
         sendButton.setPosition(recipientBox.getX() + recipientBox.getWidth() + 10, msgRowY);
 
-        // Draw everything with your batch
-        batch.end(); // ensure you're inside begin
+
         batch.draw(menuBox, centerX, centerY, boxWidth, boxHeight);
 
         int columns = 3;
@@ -210,11 +209,6 @@ public class FriendshipController {
             giftIcon.setPosition(colX + (columnWidth - 48) / 2f, giftY);
             giftIcon.draw(batch);
         }
-        batch.end(); // <--- important before stage.draw()
-
-        // UI stage (text field / dropdown / button)
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
     }
 
 
