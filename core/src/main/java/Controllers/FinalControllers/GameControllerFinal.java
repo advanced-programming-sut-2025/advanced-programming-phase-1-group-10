@@ -39,6 +39,8 @@ public class GameControllerFinal {
     private FriendshipController friendshipController;
     private NotificationController notificationController;
     private ChatHistoryController chatHistoryController;
+    private AnimalMovementController animalMovementController;
+
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -63,6 +65,7 @@ public class GameControllerFinal {
         this.animalListController = new AnimalListController(new AnimalAsset());
         this.notificationController = new NotificationController();
         this.chatHistoryController = new ChatHistoryController();
+        this.animalMovementController = new AnimalMovementController(new AnimalAsset(), App.getInstance().getCurrentGame().getGameMap());
 
 
 
@@ -77,9 +80,6 @@ public class GameControllerFinal {
 
     public void update(SpriteBatch batch, float delta) {
         cheatBoxController.update(delta);
-
-
-
 
         if (animalBuildingController.isShowingInterior()) {
             animalBuildingController.update(batch, delta);
@@ -97,6 +97,8 @@ public class GameControllerFinal {
         if (fishController != null) {
             fishController.update(batch, delta);
         }
+        animalMovementController.update(delta);
+        animalMovementController.render(batch);
     }
 
     public void startFishingMiniGame() {
@@ -125,6 +127,9 @@ public class GameControllerFinal {
         animalListController.update(batch);
     }
 
+    public AnimalMovementController getAnimalMovementController() {
+        return animalMovementController;
+    }
 
     public void setFishingMiniGameActive(boolean active) {
         fishingMiniGameActive = active;

@@ -2,7 +2,9 @@ package Controllers.FinalControllers;
 
 import Models.Animal.Animal;
 import Models.App;
+import Models.Map;
 import Models.PlayerStuff.Player;
+import Models.Position;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -183,7 +185,32 @@ public class AnimalController {
 
             case "Remove":
 
-                System.out.println("Removing " + selectedAnimal.getName() + " from building");
+                if (!selectedAnimal.isFree()) {
+
+                    float releaseX, releaseY;
+                    float offset = 2 * Map.tileSize;
+
+
+                    if (App.getInstance().getGameControllerFinal().getAnimalBuildingController().isShowingCoopInterior()) {
+                        Position coopPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedCoop().getPosition();
+
+                        releaseX = coopPos.getX() + offset;
+                        releaseY = coopPos.getY() + offset;
+                    } else {
+
+                        Position barnPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedBarn().getPosition();
+
+                        releaseX = barnPos.getX() + offset;
+                        releaseY = barnPos.getY() + offset;
+                    }
+
+
+                    App.getInstance().getGameControllerFinal().getAnimalMovementController().releaseAnimal(selectedAnimal, releaseX, releaseY);
+                    System.out.println("Removed " + selectedAnimal.getName() + " from building");
+
+
+                    App.getInstance().getGameControllerFinal().getAnimalBuildingController().closeInteriorView();
+                }
                 break;
 
             case "Sell":
@@ -196,7 +223,6 @@ public class AnimalController {
                 System.out.println("Harvesting products from " + selectedAnimal.getName());
                 break;
         }
-
 
         hideMenu();
     }
