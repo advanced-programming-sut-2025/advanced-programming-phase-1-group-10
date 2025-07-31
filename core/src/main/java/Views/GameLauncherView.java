@@ -117,8 +117,16 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                 batch.draw(animalTexture, draggedAnimalX, draggedAnimalY, 64, 64);
             }
         }
-
         batch.end();
+
+        stage.act(delta);
+        stage.draw();
+
+        controller.getFriendshipController().checkFKeyPress();
+        if (controller.getFriendshipController().isMenuOpen()) {
+            controller.getFriendshipController().render(delta);
+        }
+
 
         controller.getCheatBoxController().render();
         elapsedTime += delta;

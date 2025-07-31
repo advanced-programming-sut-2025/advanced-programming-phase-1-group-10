@@ -10,6 +10,8 @@ import Models.PlayerStuff.Player;
 import com.Fianl.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -28,6 +30,8 @@ import java.util.List;
 public class FriendshipController {
 
     private final Stage stage;
+    private InputProcessor previousInputProcessor;
+    private InputMultiplexer multiplexer;
 
     private final Sprite menuBox = new Sprite(new Texture("friendship/menuBox.png"));
     private final Sprite maleIcon = new Sprite(new Texture("friendship/male.png"));
@@ -51,8 +55,10 @@ public class FriendshipController {
     private final SelectBox<String> recipientBox;
     private final TextButton sendButton;
 
-    public FriendshipController(Stage stage) {
-        this.stage = stage;
+    private boolean fKeyHandled = false;
+
+    public FriendshipController() {
+        this.stage = new Stage(new ScreenViewport());
 
         // Font setup
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/mainFont.ttf"));
@@ -66,26 +72,21 @@ public class FriendshipController {
             giftItems.add(null);
         }
 
-        // Scene2D UI setup
-        // Ensure input multiplexing if other input is used elsewhere; external code can wrap with InputMultiplexer.
-        Gdx.input.setInputProcessor(stage);
-        stage.setViewport(new ScreenViewport());
-
         // Message field
         messageField = new TextField("", Main.getInstance().getSkin());
         messageField.setMessageText("Write message...");
         messageField.setMaxLength(200);
-        messageField.setSize(500, 40);
+        messageField.setSize(500, 60);
         stage.addActor(messageField);
 
         // Recipient dropdown
         recipientBox = new SelectBox<>(Main.getInstance().getSkin());
-        recipientBox.setSize(140, 40); // a bit wider for names
+        recipientBox.setSize(200, 60); // a bit wider for names
         stage.addActor(recipientBox);
 
         // Send button
         sendButton = new TextButton("Send", Main.getInstance().getSkin());
-        sendButton.setSize(100, 40);
+        sendButton.setSize(120, 60);
         stage.addActor(sendButton);
 
         sendButton.addListener(new ChangeListener() {
@@ -96,17 +97,43 @@ public class FriendshipController {
         });
     }
 
-    public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            showMenu = !showMenu;
+    public void checkFKeyPress() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && !fKeyHandled) {
+            fKeyHandled = true;
+            toggleVisibility();
+        } else if (!Gdx.input.isKeyPressed(Input.Keys.F)) {
+            fKeyHandled = false;
         }
-        if (!showMenu) return;
+    }
 
+    public void render(float delta) {
+        if (!showMenu) return;
+        updateUIState();
+        SpriteBatch batch = (SpriteBatch) stage.getBatch();
+        batch.begin();
+        renderSprites(batch);
+        batch.end();
+        stage.act(delta);
+        stage.draw();
+    }
+
+
+    public void toggleVisibility() {
+        showMenu = !showMenu;
+        if (showMenu) {
+            previousInputProcessor = Gdx.input.getInputProcessor();
+            Gdx.input.setInputProcessor(stage);
+            updateUIState();
+        } else {
+            Gdx.input.setInputProcessor(previousInputProcessor);
+        }
+    }
+
+    private void updateUIState() {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
         List<Friendship> friendships = currentPlayer.getFriendships();
         if (friendships == null || friendships.isEmpty()) return;
 
-        // Update recipient dropdown items
         String[] names = friendships.stream()
             .map(f -> f.getPlayer().getName())
             .toArray(String[]::new);
@@ -117,13 +144,25 @@ public class FriendshipController {
         int centerX = (Gdx.graphics.getWidth() - boxWidth) / 2;
         int centerY = (Gdx.graphics.getHeight() - boxHeight) / 2;
 
-        // Position UI widgets
         float msgRowY = centerY + 55;
         float msgBoxX = centerX + 140;
-        messageField.setPosition(msgBoxX, msgRowY);
-        recipientBox.setPosition(messageField.getX() + messageField.getWidth() + 10, msgRowY);
-        sendButton.setPosition(recipientBox.getX() + recipientBox.getWidth() + 10, msgRowY);
 
+        messageField.setPosition(msgBoxX - 35, msgRowY );
+        recipientBox.setPosition(messageField.getX() + messageField.getWidth() + 10, msgRowY );
+        sendButton.setPosition(recipientBox.getX() + recipientBox.getWidth() + 10, msgRowY );
+    }
+
+    private void renderSprites(SpriteBatch batch) {
+        if (!showMenu) return;
+
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        List<Friendship> friendships = currentPlayer.getFriendships();
+        if (friendships == null || friendships.isEmpty()) return;
+
+        int boxWidth = 1024;
+        int boxHeight = 768;
+        int centerX = (Gdx.graphics.getWidth() - boxWidth) / 2;
+        int centerY = (Gdx.graphics.getHeight() - boxHeight) / 2;
 
         batch.draw(menuBox, centerX, centerY, boxWidth, boxHeight);
 
@@ -131,7 +170,6 @@ public class FriendshipController {
         int rowHeight = boxHeight / 4;
         int columnWidth = boxWidth / columns;
 
-        // Row 1: icons/names
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
             Player friend = friendship.getPlayer();
@@ -147,7 +185,6 @@ public class FriendshipController {
             font.draw(batch, friend.getName(), colX + (columnWidth / 2f) - 10, iconY - 10);
         }
 
-        // Row 2: hearts
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
             int level = friendship.getLevel();
@@ -166,7 +203,6 @@ public class FriendshipController {
             }
         }
 
-        // Row 3: gift slots
         hoveredSlotIndex = -1;
         for (int i = 0; i < friendships.size(); i++) {
             int colX = centerX + i * columnWidth;
@@ -210,7 +246,6 @@ public class FriendshipController {
             giftIcon.draw(batch);
         }
     }
-
 
     public boolean isMenuOpen() {
         return showMenu;
@@ -267,4 +302,12 @@ public class FriendshipController {
         if (f2 != null) f2.setXp(f2.getXp() + xp);
     }
 
+    public void dispose() {
+        font.dispose();
+        stage.dispose();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
 }

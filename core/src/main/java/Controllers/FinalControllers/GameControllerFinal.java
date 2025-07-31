@@ -55,7 +55,7 @@ public class GameControllerFinal {
         this.inventoryController = new InventoryController();
         this.dialogueController = new DialogueController();
         this.npcMenuController = new NpcMenuController();
-        this.friendshipController = new FriendshipController(gameLauncherView.getStage());
+        this.friendshipController = new FriendshipController();
         this.inventoryBarController = new InventoryBarController(npcMenuController, friendshipController);
         this.questMenuController = new QuestMenuController();
         this.animalListController = new AnimalListController(new AnimalAsset());
@@ -110,7 +110,7 @@ public class GameControllerFinal {
         dialogueController.update(batch);
         npcMenuController.update(batch);
         questMenuController.update(batch);
-        friendshipController.update(batch);
+        friendshipController.render(delta);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);
@@ -196,5 +196,13 @@ public class GameControllerFinal {
 
     public AnimalListController getAnimalListController() {
         return animalListController;
+    }
+
+    public GameLauncherView getGameLauncherView() {
+        return gameLauncherView;
+    }
+
+    public FriendshipController getFriendshipController() {
+        return friendshipController;
     }
 }
