@@ -55,7 +55,7 @@ public class NpcMenuController {
     }
 
     public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             showMenu = !showMenu;
         }
 
@@ -184,7 +184,6 @@ public class NpcMenuController {
                 }
             }
         }
-
 
     }
 

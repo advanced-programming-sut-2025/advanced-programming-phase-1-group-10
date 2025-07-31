@@ -18,17 +18,22 @@ public class InventoryBarController {
 
     private final SlotAsset slotAsset;
     private final static int SLOT_SIZE = 64;
-    private Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+    private Player player;
 
     private final NpcMenuController npcMenuController;
+    private final FriendshipController friendshipController;
 
-    public InventoryBarController(NpcMenuController npcMenuController) {
+    public InventoryBarController(NpcMenuController npcMenuController, FriendshipController friendshipController) {
         this.slotAsset = new SlotAsset();
         this.npcMenuController = npcMenuController;
+        this.friendshipController = friendshipController;
+        this.player = App.getInstance().getCurrentGame().getCurrentPlayer();
     }
 
-
     public void update(SpriteBatch batch) {
+        // refresh player each frame (in case it was switched)
+        player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
         int screenWidth = Gdx.graphics.getWidth();
         int totalBarWidth = Player.PLAYER_INENTORY_BAR_SIZE * SLOT_SIZE;
         int startX = (screenWidth - totalBarWidth) / 2;
@@ -36,10 +41,11 @@ public class InventoryBarController {
 
         List<Item> barItems = player.getIventoryBarItems();
 
-        BitmapFont font = new BitmapFont(); // You may want to cache this or style it externally
-        font.getData().setScale(1);       // Resize font for better fit
-        font.setColor(Color.WHITE);          // Set desired color
+        BitmapFont font = new BitmapFont(); // consider caching instead of recreating/disposing
+        font.getData().setScale(1);
+        font.setColor(Color.WHITE);
 
+        // Draw bar
         for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
             TextureRegion texture = (i == player.getSelectedSlot())
                 ? slotAsset.getSlotHover()
@@ -53,17 +59,15 @@ public class InventoryBarController {
                 batch.draw(item.show(), slotX, y, SLOT_SIZE, SLOT_SIZE);
 
                 if (item.getNumber() > 1) {
-                    String amount = String.valueOf(item.getNumber());
-                    font.draw(batch, amount, slotX + SLOT_SIZE - 12, y + 14); // Bottom-right corner
+                    font.draw(batch, String.valueOf(item.getNumber()), slotX + SLOT_SIZE - 12, y + 14);
                 }
             }
         }
 
-        player = App.getInstance().getCurrentGame().getCurrentPlayer();
-
+        // Right-click logic
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             int mouseX = Gdx.input.getX();
-            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // flip Y-axis for LibGDX
+            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // invert Y
 
             for (int i = 0; i < Player.PLAYER_INENTORY_BAR_SIZE; i++) {
                 int slotX = startX + i * SLOT_SIZE;
@@ -73,14 +77,26 @@ public class InventoryBarController {
                     mouseY >= slotY && mouseY < slotY + SLOT_SIZE) {
 
                     Item selected = (i < barItems.size()) ? barItems.get(i) : null;
-                    if (selected == null) return;
+                    if (selected == null) {
+                        continue; // empty slot, skip
+                    }
 
                     if (npcMenuController.isMenuOpen()) {
-                        if (npcMenuController.getHoveredSlotIndex() != -1) {
-                            // Try to add gift
+                        int hovered = npcMenuController.getHoveredSlotIndex();
+                        if (hovered != -1) {
                             Item clone = selected.copyItem(1);
-
                             if (npcMenuController.tryAddItemToSlot(clone)) {
+                                selected.setNumber(selected.getNumber() - 1);
+                                if (selected.getNumber() <= 0) {
+                                    barItems.remove(i);
+                                }
+                            }
+                        }
+                    } else if (friendshipController.isMenuOpen()) {
+                        int friendSelected = friendshipController.getSelectedSlotIndex(); // must exist accessor
+                        if (friendSelected != -1) {
+                            Item clone = selected.copyItem(1);
+                            if (friendshipController.tryAddItemToSlot(clone)) {
                                 selected.setNumber(selected.getNumber() - 1);
                                 if (selected.getNumber() <= 0) {
                                     barItems.remove(i);
@@ -91,16 +107,13 @@ public class InventoryBarController {
                         InventoryUtils.transferItem(i, false); // bar -> backpack
                     }
 
-                    break;
+                    break; // handled click
                 }
             }
         }
 
-
-
-        font.dispose(); // Only do this if not caching the font elsewhere
+        font.dispose();
     }
-
 
     // Scroll input: +1 = next slot, -1 = previous slot
     public void scrollSlot(int direction) {
