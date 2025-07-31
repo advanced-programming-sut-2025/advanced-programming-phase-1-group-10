@@ -41,5 +41,11 @@ public class Message {
         this.message = message;
     }
 
+    public boolean isNotified() {
+        return isNotified;
+    }
 
+    public void setNotified(boolean notified) {
+        isNotified = notified;
+    }
 }

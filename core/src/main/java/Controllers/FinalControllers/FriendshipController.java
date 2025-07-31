@@ -1,6 +1,7 @@
 package Controllers.FinalControllers;
 
 import Assets.SlotAsset;
+import Controllers.MessageSystem;
 import Models.App;
 import Models.FriendShip.Friendship;
 import Models.FriendShip.Message;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -39,7 +41,6 @@ public class FriendshipController {
     private final Sprite fullHeart = new Sprite(new Texture("friendship/fullHeart.png"));
     private final Sprite emptyHeart = new Sprite(new Texture("friendship/emptyHeart.png"));
     private final Sprite giftIcon = new Sprite(new Texture("friendship/giftIcon.png"));
-    private final Sprite button = new Sprite(new Texture("friendship/button.png"));
 
     private final ArrayList<Item> giftItems = new ArrayList<>();
     private final SlotAsset slotAsset = new SlotAsset();
@@ -92,6 +93,10 @@ public class FriendshipController {
         sendButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                if(messageField.getText().isEmpty()) {
+                    MessageSystem.showMessage("Message Box is empty.",2f, Color.RED);
+                    return;
+                }
                 attemptSendMessage();
             }
         });
@@ -289,18 +294,33 @@ public class FriendshipController {
 
         // Clear after send
         messageField.setText("");
+
+        //Add XPs:
+        addXpToPlayers(receiver,20);
     }
 
     public Friendship getFriendship(Player player, Player goal){
         return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
     }
 
-    public void addXpToPlayers(Player player, int xp){
-        Friendship f1 = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(), player);
-        if (f1 != null) f1.setXp(f1.getXp() + xp);
-        Friendship f2 = getFriendship(player, App.getInstance().getCurrentGame().getCurrentPlayer());
-        if (f2 != null) f2.setXp(f2.getXp() + xp);
+    public void addXpToPlayers(Player player, int xp) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        try {
+            Friendship f1 = getFriendship(currentPlayer, player);
+            if (f1 != null) f1.setXp(f1.getXp() + xp);
+        } catch (Exception e) {
+            System.err.println("Failed to add xp to player");
+        }
+
+        try {
+            Friendship f2 = getFriendship(player, currentPlayer);
+            if (f2 != null) f2.setXp(f2.getXp() + xp);
+        } catch (Exception e) {
+            System.err.println("Failed to add xp to player");
+        }
     }
+
 
     public void dispose() {
         font.dispose();

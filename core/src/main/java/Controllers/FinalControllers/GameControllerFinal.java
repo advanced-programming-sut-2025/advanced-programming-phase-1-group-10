@@ -37,6 +37,8 @@ public class GameControllerFinal {
     private QuestMenuController questMenuController;
     private AnimalListController animalListController;
     private FriendshipController friendshipController;
+    private NotificationController notificationController;
+    private ChatHistoryController chatHistoryController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -59,6 +61,8 @@ public class GameControllerFinal {
         this.inventoryBarController = new InventoryBarController(npcMenuController, friendshipController);
         this.questMenuController = new QuestMenuController();
         this.animalListController = new AnimalListController(new AnimalAsset());
+        this.notificationController = new NotificationController();
+        this.chatHistoryController = new ChatHistoryController();
 
 
 
@@ -111,6 +115,8 @@ public class GameControllerFinal {
         npcMenuController.update(batch);
         questMenuController.update(batch);
         friendshipController.render(delta);
+        notificationController.update();
+        chatHistoryController.update(batch);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);
