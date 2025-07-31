@@ -99,7 +99,7 @@ public class GameMenuView implements Screen, AppMenu {
                 Result result = controller.quickGame();
                 if(result.state()) {
                     System.out.println("game startttt!!!!");
-                    Main.getInstance().switchScreen(new GameLauncherView());
+                    Main.getInstance().switchScreen(new GameLauncherView(skin));
                 }
             }
         });
@@ -235,7 +235,7 @@ public class GameMenuView implements Screen, AppMenu {
                 if (result.state()) {
                     //App.getInstance().setCurrentMenu(Menu.GameLauncher);
                     controller.setUpFarms(farmTypes);
-                    Main.getInstance().switchScreen(new GameLauncherView());
+                    Main.getInstance().switchScreen(new GameLauncherView(skin));
 //                    showSuccessMessage("game created!");
                     // going to the game
                     newGameDialog.hide();

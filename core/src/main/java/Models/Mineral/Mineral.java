@@ -38,7 +38,9 @@ public class Mineral implements Item {
 
     @Override
     public Item copyItem(int number) {
-        return new Mineral(mineralType, number);
+        Mineral mineral = new Mineral(mineralType, number);
+        mineral.setAxed(true);
+        return mineral;
     }
 
     public boolean isAxed() {

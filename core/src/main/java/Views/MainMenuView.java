@@ -163,7 +163,7 @@ public class MainMenuView implements Screen, AppMenu {
                 Result result = controllers.quickGame();
                 if(result.state()) {
                     controllers.setUpFarms(new ArrayList<>(Arrays.asList("1","2","2","1")));
-                    Main.getInstance().switchScreen(new GameLauncherView());
+                    Main.getInstance().switchScreen(new GameLauncherView(skin));
                 }
             }
         });

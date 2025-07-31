@@ -16,11 +16,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 import java.util.Scanner;
 
 public class GameLauncherView implements AppMenu, Screen, InputProcessor {
+
+    private final Skin skin;
 
     private final Stage stage;
     private final OrthographicCamera camera;
@@ -38,7 +41,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private float elapsedTime;
 
-    public GameLauncherView() {
+    public GameLauncherView(Skin skin) {
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         this.stage = new Stage(viewport);
@@ -51,6 +54,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         hudCamera.update();
         viewport.apply();
         Gdx.input.setInputProcessor(this);
+        this.skin = skin;
     }
 
     @Override
@@ -270,5 +274,13 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     public float getElapsedTime() {
         return elapsedTime;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Skin getSkin() {
+        return skin;
     }
 }

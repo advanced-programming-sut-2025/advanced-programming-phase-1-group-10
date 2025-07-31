@@ -3,9 +3,11 @@ package Controllers.FinalControllers;
 import Assets.SlotAsset;
 import Models.App;
 import Models.FriendShip.Friendship;
+import Models.FriendShip.Message;
 import Models.Item;
 import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
+import com.Fianl.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,11 +15,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FriendshipController {
+
+    private final Stage stage;
 
     private final Sprite menuBox = new Sprite(new Texture("friendship/menuBox.png"));
     private final Sprite maleIcon = new Sprite(new Texture("friendship/male.png"));
@@ -36,43 +46,93 @@ public class FriendshipController {
     private int hoveredSlotIndex = -1;
     private int selectedSlotIndex = -1;
 
-    public FriendshipController() {
+    // UI widgets
+    private final TextField messageField;
+    private final SelectBox<String> recipientBox;
+    private final TextButton sendButton;
+
+    public FriendshipController(Stage stage) {
+        this.stage = stage;
+
+        // Font setup
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/mainFont.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.size = 36;
         font = generator.generateFont(param);
         generator.dispose();
 
+        // Gift slots init
         for (int i = 0; i < 3; i++) {
             giftItems.add(null);
         }
+
+        // Scene2D UI setup
+        // Ensure input multiplexing if other input is used elsewhere; external code can wrap with InputMultiplexer.
+        Gdx.input.setInputProcessor(stage);
+        stage.setViewport(new ScreenViewport());
+
+        // Message field
+        messageField = new TextField("", Main.getInstance().getSkin());
+        messageField.setMessageText("Write message...");
+        messageField.setMaxLength(200);
+        messageField.setSize(500, 40);
+        stage.addActor(messageField);
+
+        // Recipient dropdown
+        recipientBox = new SelectBox<>(Main.getInstance().getSkin());
+        recipientBox.setSize(140, 40); // a bit wider for names
+        stage.addActor(recipientBox);
+
+        // Send button
+        sendButton = new TextButton("Send", Main.getInstance().getSkin());
+        sendButton.setSize(100, 40);
+        stage.addActor(sendButton);
+
+        sendButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                attemptSendMessage();
+            }
+        });
     }
 
     public void update(SpriteBatch batch) {
-        // Toggle UI with F key
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             showMenu = !showMenu;
         }
-
         if (!showMenu) return;
 
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
         List<Friendship> friendships = currentPlayer.getFriendships();
         if (friendships == null || friendships.isEmpty()) return;
 
+        // Update recipient dropdown items
+        String[] names = friendships.stream()
+            .map(f -> f.getPlayer().getName())
+            .toArray(String[]::new);
+        recipientBox.setItems(names);
+
         int boxWidth = 1024;
         int boxHeight = 768;
         int centerX = (Gdx.graphics.getWidth() - boxWidth) / 2;
         int centerY = (Gdx.graphics.getHeight() - boxHeight) / 2;
 
-        // Draw background
+        // Position UI widgets
+        float msgRowY = centerY + 55;
+        float msgBoxX = centerX + 140;
+        messageField.setPosition(msgBoxX, msgRowY);
+        recipientBox.setPosition(messageField.getX() + messageField.getWidth() + 10, msgRowY);
+        sendButton.setPosition(recipientBox.getX() + recipientBox.getWidth() + 10, msgRowY);
+
+        // Draw everything with your batch
+        batch.end(); // ensure you're inside begin
         batch.draw(menuBox, centerX, centerY, boxWidth, boxHeight);
 
         int columns = 3;
         int rowHeight = boxHeight / 4;
         int columnWidth = boxWidth / columns;
 
-        // --- Row 1: Icons + Names ---
+        // Row 1: icons/names
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
             Player friend = friendship.getPlayer();
@@ -88,10 +148,10 @@ public class FriendshipController {
             font.draw(batch, friend.getName(), colX + (columnWidth / 2f) - 10, iconY - 10);
         }
 
-        // --- Row 2: Friendship Hearts ---
+        // Row 2: hearts
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
-            int level = friendship.getLevel(); // 0–4
+            int level = friendship.getLevel();
 
             int colX = centerX + i * columnWidth;
             int heartY = centerY + boxHeight - 2 * rowHeight + 110;
@@ -107,9 +167,8 @@ public class FriendshipController {
             }
         }
 
-        // --- Row 3: Gift Slots + Icons ---
+        // Row 3: gift slots
         hoveredSlotIndex = -1;
-
         for (int i = 0; i < friendships.size(); i++) {
             int colX = centerX + i * columnWidth;
             int slotY = centerY + boxHeight - 3 * rowHeight + 140;
@@ -127,52 +186,37 @@ public class FriendshipController {
                     selectedSlotIndex = i;
                 }
                 if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-                    // right click on selected slot returns its item to bar
                     if (giftItems.get(i) != null) {
                         Item toReturn = giftItems.get(i);
-                        currentPlayer.getInventory().getBackPack().addItem(toReturn); // simple push-back, adjust if stacking logic needed
+                        currentPlayer.getInventory().getBackPack().addItem(toReturn);
                         giftItems.set(i, null);
                     }
                 }
             }
 
-            // Highlight selected slot
             if (i == selectedSlotIndex) {
                 batch.draw(slotAsset.getSlotHover(), slotX, slotY, 80, 80);
             } else {
                 batch.draw(slotAsset.getSlot(), slotX, slotY, 80, 80);
             }
 
-            // Draw item if exists
             Item itemInSlot = giftItems.get(i);
             if (itemInSlot != null) {
                 batch.draw(itemInSlot.show(), slotX + 8, slotY + 8, 64, 64);
             }
 
-            // Draw gift icon under slot
             int giftY = centerY + boxHeight - 3 * rowHeight + 40;
             giftIcon.setSize(48, 48);
             giftIcon.setPosition(colX + (columnWidth - 48) / 2f, giftY);
             giftIcon.draw(batch);
         }
+        batch.end(); // <--- important before stage.draw()
 
-        // --- Row 4: Message UI ---
-        int msgRowY = centerY + 55;
-        int msgBoxX = centerX + 140;
-        int msgBoxWidth = 500;
-        int dropdownX = msgBoxX + msgBoxWidth + 10;
-        int buttonX = dropdownX + 110;
-
-        batch.setColor(1f, 1f, 1f, 0.6f);
-        batch.draw(menuBox.getTexture(), msgBoxX, msgRowY, msgBoxWidth, 50); // message box
-        batch.draw(button.getTexture(), dropdownX, msgRowY, 100, 50);       // dropdown
-        batch.draw(button.getTexture(), buttonX, msgRowY, 80, 50);          // send button
-        batch.setColor(1f, 1f, 1f, 1f);
-
-        font.draw(batch, "Write message...", msgBoxX + 10, msgRowY + 25);
-        font.draw(batch, "To: ", dropdownX + 10, msgRowY + 25);
-        font.draw(batch, "Send", buttonX + 15, msgRowY + 25);
+        // UI stage (text field / dropdown / button)
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
+
 
     public boolean isMenuOpen() {
         return showMenu;
@@ -191,4 +235,42 @@ public class FriendshipController {
         giftItems.set(selectedSlotIndex, item);
         return true;
     }
+
+    private void attemptSendMessage() {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        List<Friendship> friendships = currentPlayer.getFriendships();
+        if (friendships == null || friendships.isEmpty()) return;
+
+        String text = messageField.getText().trim();
+        if (text.isEmpty()) return;
+
+        int selectedIndex = recipientBox.getSelectedIndex();
+        if (selectedIndex < 0 || selectedIndex >= friendships.size()) return;
+
+        Player receiver = friendships.get(selectedIndex).getPlayer();
+
+        Message msg = new Message(
+            currentPlayer,
+            receiver,
+            text,
+            false
+        );
+        // deliver; assumes Player has receiveMessage(Message)
+        receiver.getRecievedMessages().add(msg);
+
+        // Clear after send
+        messageField.setText("");
+    }
+
+    public Friendship getFriendship(Player player, Player goal){
+        return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
+    }
+
+    public void addXpToPlayers(Player player, int xp){
+        Friendship f1 = getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(), player);
+        if (f1 != null) f1.setXp(f1.getXp() + xp);
+        Friendship f2 = getFriendship(player, App.getInstance().getCurrentGame().getCurrentPlayer());
+        if (f2 != null) f2.setXp(f2.getXp() + xp);
+    }
+
 }

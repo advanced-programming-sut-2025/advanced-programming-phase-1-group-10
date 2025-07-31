@@ -5,6 +5,7 @@ import Models.*;
 import Models.Animal.Animal;
 import Models.FriendShip.Friendship;
 import Models.FriendShip.Gift;
+import Models.FriendShip.Message;
 import Models.Tools.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -47,6 +48,7 @@ public class Player implements Person {
     private final ArrayList<Friendship> friendships = new ArrayList<>();
     private final ArrayList<Gift>  recievedGifts = new ArrayList<>();
     private final ArrayList<TradeRequest> tradeRequests = new ArrayList<>();
+    private final ArrayList<Message>  recievedMessages = new ArrayList<>();
 
     private int gold;
     private final Energy energy;
@@ -305,5 +307,9 @@ public class Player implements Person {
 
     public void setCurrentQuest(Quest currentQuest) {
         this.currentQuest = currentQuest;
+    }
+
+    public ArrayList<Message> getRecievedMessages() {
+        return recievedMessages;
     }
 }
