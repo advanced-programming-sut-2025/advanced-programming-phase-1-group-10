@@ -32,6 +32,7 @@ public class NotificationController {
         for (Gift gift : player.getRecievedGifts()) {
             if (!gift.isNotified()) {
                 gift.setNotified(true);
+                player.getInventory().getBackPack().addItem(gift.getItem());
                 MessageSystem.showMessage(
                     "You received gift from " + gift.getSender().getName(),
                     2f,

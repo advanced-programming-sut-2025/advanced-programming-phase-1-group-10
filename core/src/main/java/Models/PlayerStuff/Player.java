@@ -47,6 +47,7 @@ public class Player implements Person {
     private final ArrayList<NPCRelation> npcRelations = new ArrayList<>();
     private final ArrayList<Friendship> friendships = new ArrayList<>();
     private final ArrayList<Gift>  recievedGifts = new ArrayList<>();
+    private final ArrayList<Gift> sendedGifts = new ArrayList<>();
     private final ArrayList<TradeRequest> tradeRequests = new ArrayList<>();
     private final ArrayList<Message>  recievedMessages = new ArrayList<>();
 
@@ -311,5 +312,9 @@ public class Player implements Person {
 
     public ArrayList<Message> getRecievedMessages() {
         return recievedMessages;
+    }
+
+    public ArrayList<Gift> getSendedGifts() {
+        return sendedGifts;
     }
 }

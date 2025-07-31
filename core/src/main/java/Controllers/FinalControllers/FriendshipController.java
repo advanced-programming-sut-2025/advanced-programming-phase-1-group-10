@@ -31,9 +31,10 @@ import java.util.List;
 
 public class FriendshipController {
 
+    private boolean giftClickHandled = false;
+
     private final Stage stage;
     private InputProcessor previousInputProcessor;
-    private InputMultiplexer multiplexer;
 
     private final Sprite menuBox = new Sprite(new Texture("friendship/menuBox.png"));
     private final Sprite maleIcon = new Sprite(new Texture("friendship/male.png"));
@@ -246,11 +247,88 @@ public class FriendshipController {
             }
 
             int giftY = centerY + boxHeight - 3 * rowHeight + 40;
-            giftIcon.setSize(48, 48);
-            giftIcon.setPosition(colX + (columnWidth - 48) / 2f, giftY);
+            int giftSize = 48;
+            float giftX = colX + (columnWidth - giftSize) / 2f;
+
+            giftIcon.setSize(giftSize, giftSize);
+            giftIcon.setPosition(giftX, giftY);
             giftIcon.draw(batch);
+
+            mouseX = Gdx.input.getX();
+            mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+            boolean giftHovered = mouseX >= giftX && mouseX <= giftX + giftSize &&
+                mouseY >= giftY && mouseY <= giftY + giftSize;
+
+            if (giftHovered) {
+                if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                    if (!giftClickHandled) {
+                        giftClickHandled = true;
+                        if (i < friendships.size()) {
+                            Player receiver = friendships.get(i).getPlayer();
+                            sendItem(i, receiver);
+                        }
+                    }
+                } else {
+                    giftClickHandled = false;
+                }
+            }
         }
     }
+
+
+    private void sendItem(int slotIndex, Player receiver) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if (slotIndex < 0 || slotIndex >= giftItems.size()) {
+            MessageSystem.showMessage("Invalid slot.", 2f, Color.RED);
+            return;
+        }
+
+        Item item = giftItems.get(slotIndex);
+        if (item == null) {
+            MessageSystem.showMessage("No item in that gift slot.", 2f, Color.RED);
+            return;
+        }
+
+        if (receiver == null) {
+            MessageSystem.showMessage("No recipient selected.", 2f, Color.RED);
+            return;
+        }
+
+        // Create the Gift
+        Models.FriendShip.Gift gift = new Models.FriendShip.Gift(
+            currentPlayer,
+            receiver,
+            item.copyItem(item.getNumber()), // or copy what you intend to send; adjust quantity logic
+            false
+        );
+
+        // Deliver: assume receiver has a list to receive gifts; adjust accessor if different
+        try {
+            receiver.getRecievedGifts().add(gift);
+            currentPlayer.getSendedGifts().add(gift);
+        } catch (Exception e) {
+            MessageSystem.showMessage("Failed to send gift.", 2f, Color.RED);
+            return;
+        }
+
+        // Optionally mark notification / adjust friendship XP
+        addXpToPlayers(receiver, 50); // example: give XP for sending a gift
+
+        // Remove or decrement the item from the slot
+        // If you only sent one unit:
+        item.setNumber(item.getNumber() - 1);
+        if (item.getNumber() <= 0) {
+            giftItems.set(slotIndex, null);
+        }
+
+
+
+        MessageSystem.showMessage("Gift sent to " + receiver.getName() + "!", 2f, Color.GREEN);
+    }
+
+
 
     public boolean isMenuOpen() {
         return showMenu;
@@ -330,4 +408,5 @@ public class FriendshipController {
     public Stage getStage() {
         return stage;
     }
+
 }
