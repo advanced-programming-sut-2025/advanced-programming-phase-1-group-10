@@ -126,11 +126,38 @@ public class AnimalListController {
         animalNameFont.dispose();
     }
 
-    private static class AnimalDisplayData {
-        String name;
+    public static class AnimalDisplayData {
+        public String name;
 
         public AnimalDisplayData(String name) {
             this.name = name;
         }
+    }
+
+    public AnimalDisplayData getAnimalAt(float screenX, float screenY) {
+        if (!isShowing) return null;
+
+        float slotWidth = listWidth / SLOTS_PER_ROW;
+        float slotHeight = listHeight / 2;
+
+        float touchX = screenX;
+        float touchY = Gdx.graphics.getHeight() - screenY;
+
+        if (touchX >= listX && touchX <= listX + listWidth &&
+            touchY >= listY && touchY <= listY + listHeight) {
+
+            int col = (int) ((touchX - listX) / slotWidth);
+            int row = 1 - (int) ((touchY - listY) / slotHeight);
+            int index = row * SLOTS_PER_ROW + col;
+
+            if (index >= 0 && index < animalsToDisplay.size()) {
+                return animalsToDisplay.get(index);
+            }
+        }
+        return null;
+    }
+
+    public AnimalAsset getAnimalAsset() {
+        return animalAsset;
     }
 }

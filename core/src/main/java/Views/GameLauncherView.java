@@ -1,5 +1,6 @@
 package Views;
 
+import Controllers.FinalControllers.AnimalListController;
 import Controllers.FinalControllers.GameControllerFinal;
 import Controllers.MessageSystem;
 import Models.App;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -26,6 +28,11 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     private final StretchViewport viewport;
     private final GameControllerFinal controller;
 
+    // temporary variables
+    private boolean isDraggingAnimal = false;
+    private String draggedAnimalName = null;
+    private float draggedAnimalX;
+    private float draggedAnimalY;
 
     private final SpriteBatch batch;
 
@@ -99,6 +106,14 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         controller.updateSecondCamera(batch, delta, viewport);
+
+        if (isDraggingAnimal && draggedAnimalName != null) {
+            Texture animalTexture = controller.getAnimalListController().getAnimalAsset().getSingleTexture(draggedAnimalName);
+            if (animalTexture != null) {
+                batch.draw(animalTexture, draggedAnimalX, draggedAnimalY, 64, 64);
+            }
+        }
+
         batch.end();
 
         controller.getCheatBoxController().render();
@@ -168,13 +183,21 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Convert screen coordinates to world coordinates (game camera)
-        Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+        if (controller.getAnimalListController().isShowing() && button == Input.Buttons.LEFT) {
+            AnimalListController.AnimalDisplayData animalData = controller.getAnimalListController().getAnimalAt(screenX, screenY);
+            if (animalData != null) {
+                isDraggingAnimal = true;
+                draggedAnimalName = animalData.name;
+                draggedAnimalX = screenX;
+                draggedAnimalY = screenY;
+                return true;
+            }
+        }
 
+        Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
         float clickX = worldCoords.x;
         float clickY = worldCoords.y;
 
-        // check to click on animal houses
         boolean buildingClicked = controller.getAnimalBuildingController().handleClick(clickX, clickY);
         if (buildingClicked) {
             return true;
@@ -188,34 +211,45 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float dy = clickY - playerY;
 
         String direction;
-
-        // Determine which direction the click is closest to
         if (Math.abs(dx) > Math.abs(dy)) {
             direction = (dx > 0) ? "RIGHT" : "LEFT";
         } else {
             direction = (dy > 0) ? "UP" : "DOWN";
         }
 
-        // Send to InteractController or Item logic
         controller.getInteractController().useItemInDirection(direction);
 
         return true;
     }
 
-
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        if (isDraggingAnimal) {
+            draggedAnimalX = screenX - 32;
+            draggedAnimalY = Gdx.graphics.getHeight() - screenY - 32;
+            return true;
+        }
+        return false;
+    }
 
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) {
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (isDraggingAnimal && button == Input.Buttons.LEFT) {
+            Vector3 worldCoords = camera.unproject(new Vector3(screenX, screenY, 0));
+            float dropX = worldCoords.x;
+            float dropY = worldCoords.y;
+
+            boolean animalPlaced = controller.getAnimalBuildingController().placeAnimalOnBuilding(draggedAnimalName, dropX, dropY);
+
+            isDraggingAnimal = false;
+            draggedAnimalName = null;
+            return animalPlaced;
+        }
         return false;
     }
 
     @Override
     public boolean touchCancelled(int i, int i1, int i2, int i3) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int i, int i1, int i2) {
         return false;
     }
 

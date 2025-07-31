@@ -42,7 +42,7 @@ public class GameControllerFinal {
         this.mapController = new MapController();
         this.playerController = new PlayerController(App.getInstance().getCurrentGame().getGameMap());
         this.barController = new BarController();
-        this.animalBuildingController = new AnimalBuildingController();
+        this.animalBuildingController = new AnimalBuildingController(new AnimalAsset());
         this.interactController = new InteractController();
         this.energyController = new EnergyController();
         this.timeController = new TimeController();
@@ -57,7 +57,6 @@ public class GameControllerFinal {
         this.inventoryBarController = new InventoryBarController(npcMenuController);
         this.questMenuController = new QuestMenuController();
         this.animalListController = new AnimalListController(new AnimalAsset());
-
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {

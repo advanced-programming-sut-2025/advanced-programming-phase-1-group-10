@@ -1,15 +1,20 @@
 package Models.Place;
 
+import Models.Animal.Animal;
 import Models.Position;
+
+import java.util.ArrayList;
 
 public class Coop extends Place{
     private int animalCount = 0;
     private int capacity = 4;
     private boolean Big = false;
     private boolean Deluxe = false;
+    private ArrayList<Animal> animals;
 
     public Coop(Position position, int height, int width) {
         super(position, height, width);
+        this.animals = new ArrayList<>();
     }
 
     public int getCapacity() {
@@ -60,4 +65,11 @@ public class Coop extends Place{
         return "Coop";
     }
 
+    public ArrayList<Animal> getAnimals() {
+        return animals;
+    }
+
+    public void addAnimal(Animal animal){
+        animals.add(animal);
+    }
 }

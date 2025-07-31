@@ -1,11 +1,15 @@
 package Controllers.FinalControllers;
 
 import Assets.AnimalBuildingAsset;
+import Assets.AnimalAsset;
 import Models.*;
+import Models.Animal.Animal;
+import Models.Animal.AnimalType;
 import Models.Place.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,6 +24,7 @@ import static Models.Map.mapWidth;
 public class AnimalBuildingController {
 
     private final AnimalBuildingAsset animalBuildingAsset;
+    private final AnimalAsset animalAsset;
 
     private boolean isPlacingCoop = false;
     private float tempCoopX = 0;
@@ -50,9 +55,10 @@ public class AnimalBuildingController {
     private float interiorY;
     private float interiorScale = 1.5f;
 
-    public AnimalBuildingController() {
+    public AnimalBuildingController(AnimalAsset animalAsset) {
         this.animalBuildingAsset = new AnimalBuildingAsset();
         this.shapeRenderer = new ShapeRenderer();
+        this.animalAsset = animalAsset;
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -102,6 +108,9 @@ public class AnimalBuildingController {
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
 
+
+            renderAnimalsInside(batch, selectedCoop.getAnimals(), interiorX, interiorY, spriteWidth, spriteHeight);
+
         } else if (showingBarnInterior && selectedBarn != null) {
             Sprite interiorSprite = animalBuildingAsset.getBarninside();
             float spriteWidth = interiorSprite.getWidth() * interiorScale;
@@ -112,8 +121,49 @@ public class AnimalBuildingController {
 
             batch.draw(interiorSprite, interiorX, interiorY, spriteWidth, spriteHeight);
 
+
+            renderAnimalsInside(batch, selectedBarn.getAnimals(), interiorX, interiorY, spriteWidth, spriteHeight);
+        }
+    }
+
+
+    private void renderAnimalsInside(SpriteBatch batch, List<Animal> animals, float interiorX, float interiorY, float interiorWidth, float interiorHeight) {
+        if (animalAsset == null) {
+            System.err.println("AnimalAsset is not set in AnimalBuildingController.");
+            return;
         }
 
+        float animalSize = 128f;
+        float padding = 30f;
+        float startYOffset = interiorHeight * 0.3f ;
+        float drawableHeight = interiorHeight - startYOffset - padding;
+        int animalsPerRow = (int) ((interiorWidth - 2 * padding) / (animalSize + padding));
+
+        if (animalsPerRow < 1) {
+            animalsPerRow = 1;
+        }
+
+        for (int i = 0; i < animals.size(); i++) {
+            Animal animal = animals.get(i);
+            Texture animalTexture = animalAsset.getSingleTexture(animal.getAnimalType().getType());
+
+            if (animalTexture != null) {
+                int row = i / animalsPerRow;
+                int col = i % animalsPerRow;
+
+
+                float x = interiorX + padding + col * (animalSize + padding) + 500;
+                float y = interiorY + startYOffset + drawableHeight - padding - animalSize - row * (animalSize + padding) - 230;
+
+
+                if (y < interiorY + padding) {
+
+                    continue;
+                }
+
+                batch.draw(animalTexture, x, y, animalSize, animalSize);
+            }
+        }
     }
 
     private void renderPlacingBuilding(SpriteBatch batch) {
@@ -137,7 +187,6 @@ public class AnimalBuildingController {
     private void updateInteriorDisplayTime(float delta) {
         if (autoHideInterior && (showingCoopInterior || showingBarnInterior)) {
             interiorDisplayTime += delta;
-
             if (interiorDisplayTime >= INTERIOR_DISPLAY_DURATION) {
                 closeInteriorView();
             }
@@ -175,7 +224,6 @@ public class AnimalBuildingController {
 
         if (isPlacingCoop) {
             handleBuildingMovement(tempCoopX, tempCoopY, true);
-
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 placeCoop();
             }
@@ -187,7 +235,6 @@ public class AnimalBuildingController {
 
         if (isPlacingBarn) {
             handleBuildingMovement(tempBarnX, tempBarnY, false);
-
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 placeBarn();
             }
@@ -207,7 +254,6 @@ public class AnimalBuildingController {
             return false;
         }
 
-
         for (Coop coop : placedCoops) {
             Position pos = coop.getPosition();
             Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
@@ -224,7 +270,6 @@ public class AnimalBuildingController {
                 return true;
             }
         }
-
 
         for (Barn barn : placedBarns) {
             Position pos = barn.getPosition();
@@ -283,13 +328,11 @@ public class AnimalBuildingController {
             Coop newCoop = new Coop(position, coopHeight, coopWidth);
             placedCoops.add(newCoop);
 
-
             int tileSize = Map.tileSize;
             int startTileX = (int) Math.floor(tempCoopX / tileSize);
             int startTileY = (int) Math.floor(tempCoopY / tileSize);
             int coopWidthInTiles = (int) Math.ceil((double) coopWidth / tileSize);
             int coopHeightInTiles = (int) Math.ceil((double) coopHeight / tileSize);
-
 
             for (int row = 0; row < coopHeightInTiles; row++) {
                 for (int col = 0; col < coopWidthInTiles; col++) {
@@ -483,5 +526,49 @@ public class AnimalBuildingController {
         if (shapeRenderer != null) {
             shapeRenderer.dispose();
         }
+    }
+
+    public boolean placeAnimalOnBuilding(String animalName, float worldX, float worldY) {
+
+        for (Coop coop : placedCoops) {
+            Position pos = coop.getPosition();
+            Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
+                animalBuildingAsset.getCoop().getRegionWidth(),
+                animalBuildingAsset.getCoop().getRegionHeight());
+            if (bounds.contains(worldX, worldY)) {
+                Animal animal = null;
+                for(AnimalType animalType : AnimalType.values()){
+                    if(animalType.getType().equalsIgnoreCase(animalName)){
+                        animal = new Animal(animalType,animalName);
+                    }
+                }
+
+                coop.addAnimal(animal);
+                System.out.println(animalName + " placed in Coop at: " + pos.getX() + ", " + pos.getY());
+                return true;
+            }
+        }
+
+
+        for (Barn barn : placedBarns) {
+            Position pos = barn.getPosition();
+            Rectangle bounds = new Rectangle(pos.getX(), pos.getY(),
+                animalBuildingAsset.getBarn().getRegionWidth(),
+                animalBuildingAsset.getBarn().getRegionHeight());
+            if (bounds.contains(worldX, worldY)) {
+                Animal animal = null;
+
+                for(AnimalType animalType : AnimalType.values()){
+                    if(animalType.getType().equalsIgnoreCase(animalName)){
+                        animal = new Animal(animalType,animalName);
+                    }
+                }
+                barn.addAnimal(animal);
+                System.out.println(animalName + " placed in Barn at: " + pos.getX() + ", " + pos.getY());
+                return true;
+            }
+        }
+
+        return false;
     }
 }
