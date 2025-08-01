@@ -123,11 +123,11 @@ public class Animal {
     }
 
     public void produce() {
-        if (friendShip > 100 && animalProductTypes.size() > 1) {
+        if (friendShip > 20 && animalProductTypes.size() > 1) {
             double random = 0.5 + Math.random();
             double probability = (friendShip + 150 * random) / 1500;
 
-            if (probability > 0.5) {
+            if (probability > 0.1) {
                 currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(), 1);
             } else {
                 currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
@@ -135,6 +135,7 @@ public class Animal {
         } else {
             currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
         }
+        System.out.println("current peoduct : " + currentProduct.getName());
     }
 
     public AnimalProduct getCurrentProduct() {
@@ -170,25 +171,26 @@ public class Animal {
         return null;
     }
 
+    // should be complete
     public static void updateAnimalState(Animal animal) {
         DateTime dateAndTime = App.getInstance().getCurrentGame().getGameTime();
-        if (!animal.isFed()) {
-            animal.setFriendShip(animal.getFriendShip() - 20);
-        }
-        if (!animal.isPetted()) {
-            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip() / 200) - 10);
-        }
-        if (!isCorrectEnclosure(animal)) {
-            animal.setFriendShip(animal.getFriendShip() - 20);
-        }
+//        if (!animal.isFed()) {
+//            animal.setFriendShip(animal.getFriendShip() - 20);
+//        }
+//        if (!animal.isPetted()) {
+//            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip() / 200) - 10);
+//        }
+//        if (!isCorrectEnclosure(animal)) {
+//            animal.setFriendShip(animal.getFriendShip() - 20);
+//        }
 
-        if (animal.isFed() && dateAndTime.getDay() % animal.getAnimalType().getPeriode() == 0) {
+        if (true) {
             animal.produce();
         } else {
             animal.setCurrentProduct(null);
         }
-        animal.petted = false;
-        animal.fed = false;
+//        animal.petted = false;
+//        animal.fed = false;
     }
 
     private static boolean isCorrectEnclosure(Animal animal) {
