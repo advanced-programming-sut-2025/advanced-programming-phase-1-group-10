@@ -4,6 +4,8 @@ package Models.FriendShip;
 import Models.Item;
 import Models.PlayerStuff.Player;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Gift {
 
     private final Player sender;
@@ -11,6 +13,7 @@ public class Gift {
     private double rate;
     private Item item;
     private boolean isNotified;
+    private final int seed;
 
     public Gift(Player sender,Player receiver, Item item, boolean isNotified) {
         this.sender = sender;
@@ -18,6 +21,7 @@ public class Gift {
         this.rate = 0;
         this.item = item;
         this.isNotified = isNotified;
+        this.seed =  ThreadLocalRandom.current().nextInt(0,100000);
     }
 
     public Player getSender() {
@@ -50,5 +54,9 @@ public class Gift {
 
     public Player getReceiver() {
         return receiver;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 }

@@ -40,6 +40,7 @@ public class GameControllerFinal {
     private NotificationController notificationController;
     private ChatHistoryController chatHistoryController;
     private AnimalMovementController animalMovementController;
+    private GiftHistoryController giftHistoryController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -65,6 +66,7 @@ public class GameControllerFinal {
         this.animalListController = new AnimalListController(new AnimalAsset());
         this.notificationController = new NotificationController();
         this.chatHistoryController = new ChatHistoryController();
+        this.giftHistoryController = new GiftHistoryController();
         this.animalMovementController = new AnimalMovementController(new AnimalAsset(), App.getInstance().getCurrentGame().getGameMap());
 
 
@@ -119,6 +121,7 @@ public class GameControllerFinal {
         friendshipController.render(delta);
         notificationController.update();
         chatHistoryController.update(batch);
+        giftHistoryController.update(batch);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);
