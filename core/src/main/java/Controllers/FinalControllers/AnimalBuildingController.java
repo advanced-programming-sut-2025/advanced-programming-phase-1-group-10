@@ -802,6 +802,22 @@ public class AnimalBuildingController {
         return false;
     }
 
+    public void removeAnimalFromBuilding(Animal animal) {
+        if (selectedCoop != null) {
+            selectedCoop.getAnimals().remove(animal);
+            selectedCoop.setAnimalCount(selectedCoop.getAnimalCount() - 1);
+            if (isShowingCoopInterior()) {
+                closeInteriorView();
+            }
+        } else if (selectedBarn != null) {
+            selectedBarn.getAnimals().remove(animal);
+            selectedBarn.setAnimalCount(selectedBarn.getAnimalCount() - 1);
+            if (isShowingBarnInterior()) {
+                closeInteriorView();
+            }
+        }
+    }
+
     public void startPlacingBarn(int barnType) {
         if (!isPlacingCoop && !isPlacingBarn) {
             isPlacingBarn = true;

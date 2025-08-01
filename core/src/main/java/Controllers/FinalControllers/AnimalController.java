@@ -184,7 +184,15 @@ public class AnimalController {
                 }
                 break;
             case "Sell":
-                System.out.println("Selling " + selectedAnimal.getName());
+                if (selectedAnimal != null) {
+                    int sellingPrice = selectedAnimal.getPrice();
+                    player.addGold(sellingPrice);
+                    App.getInstance().getGameControllerFinal().getAnimalBuildingController().removeAnimalFromBuilding(selectedAnimal);
+                    player.getPlayerAnimals().remove(selectedAnimal);
+                    App.getInstance().getCurrentGame().getAnimals().remove(selectedAnimal.getName());
+                    MessageSystem.showInfo(selectedAnimal.getName() + " sold for " + sellingPrice + " gold!", 5.0f);
+                    System.out.println("Selling " + selectedAnimal.getName());
+                }
                 break;
             case "Harvest":
                 ArrayList<AnimalProduct> productsToHarvest = new ArrayList<>(selectedAnimal.getProducedProducts());
