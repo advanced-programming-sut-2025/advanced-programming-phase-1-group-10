@@ -157,7 +157,7 @@ public class GiftHistoryController {
                             int newRate = h + 1;
                             g.setRate(newRate);
                             propagateRatingToSender(g);
-                            MessageSystem.showMessage("You rate a gift from" + senderName, 2f, Color.GREEN);// mirror into sender's sent gift
+                            MessageSystem.showMessage("You rate a gift from " + senderName, 2f, Color.GREEN);// mirror into sender's sent gift
                         }
                     }
                 }
