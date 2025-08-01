@@ -124,7 +124,6 @@ public class AnimalBuildingController {
     }
 
     public void update(SpriteBatch batch, float delta) {
-
         if (feedingAnimal != null) {
             feedingTime += delta;
             feedingAnimal.setStateTime(feedingTime);
@@ -136,18 +135,15 @@ public class AnimalBuildingController {
                 feedingTime = 0;
             }
         }
-
         if (isShowingInterior()) {
             renderInterior(batch);
-
-            if (animalController != null && animalController.isMenuVisible()) {
+            if (animalController != null && (animalController.isMenuVisible() || animalController.isInfoBoxVisible())) {
                 animalController.render(delta);
             }
         } else {
             renderBuildings(batch);
             renderPlacingBuilding(batch);
         }
-
         handleInput(delta);
         updateInteriorDisplayTime(delta);
     }
@@ -296,10 +292,17 @@ public class AnimalBuildingController {
         if (button == 1) {
             for (AnimalPosition animalPos : visibleAnimals) {
                 if (animalPos.contains(screenX, worldY)) {
+
                     return animalController.handleRightClick(screenX, screenY, animalPos.animal, animalPos.x, animalPos.y);
                 }
             }
         } else if (button == 0) {
+            for (AnimalPosition animalPos : visibleAnimals) {
+                if (animalPos.contains(screenX, worldY)) {
+
+                    return animalController.handleLeftClick(screenX, screenY, animalPos.animal, animalPos.x, animalPos.y);
+                }
+            }
             for (ProductPosition productPos : visibleProducts) {
                 if (productPos.contains(screenX, worldY)) {
                     Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
