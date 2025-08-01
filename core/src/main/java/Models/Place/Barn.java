@@ -80,4 +80,18 @@ public class Barn extends Place{
     public void setDeluxe(boolean deluxe) {
         Deluxe = deluxe;
     }
+
+    public boolean isFull(){
+        if(isBig() && animalCount == 8){
+            return true;
+        } else if (isBig() && animalCount < 8){
+            return false;
+        }
+        else if(isDeluxe() && animalCount == 12){
+            return true;
+        } else if(isDeluxe() && animalCount < 12){
+            return false;
+        }
+        else return animalCount == 4;
+    }
 }

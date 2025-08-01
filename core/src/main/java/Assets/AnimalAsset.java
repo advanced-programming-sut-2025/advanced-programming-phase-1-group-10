@@ -37,10 +37,11 @@ public class AnimalAsset {
         int cols = 4;
 
 
-        // if (animalName.equals("Sheep")) {
-        //     rows = 2;
-        //     cols = 4;
-        // }
+         if (animalName.equals("Rabbit") || animalName.equals("Chicken") || animalName.equals("Dinosaur")) {
+             rows = 7;
+         } else if(animalName.equals("Duck")){
+             rows = 14;
+         }
 
         int frameWidth = spriteSheet.getWidth() / cols;
         int frameHeight = spriteSheet.getHeight() / rows;
@@ -54,16 +55,25 @@ public class AnimalAsset {
         animalData.idleFrame = tmp[0][0];
 
 
-        if (rows >= 3) {
+        if (animalName.equals("Cow") || animalName.equals("Goat") ||
+            animalName.equals("Sheep") || animalName.equals("Pig") ||
+            animalName.equals("Rabbit") || animalName.equals("Dinosaur")) {
             animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, 4);
             animalData.walkLeftAnimation = createFlippedAnimation(tmp[1], 0, 4);
             animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
             animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
-        } else {
-            animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, cols);
-            animalData.walkUpAnimation = createExactAnimation(tmp[0], 0, cols);
-            animalData.walkLeftAnimation = createFlippedAnimation(tmp[0], 0, cols);
-            animalData.walkRightAnimation = createExactAnimation(tmp[0], 0, cols);
+        }
+        else if(animalName.equals("Chicken")){
+            animalData.walkLeftAnimation = createExactAnimation(tmp[0],0,4);
+            animalData.walkRightAnimation = createExactAnimation(tmp[1],0,4);
+            animalData.walkUpAnimation = createExactAnimation(tmp[2],0,4);
+            animalData.walkDownAnimation = createExactAnimation(tmp[6],0,4);
+        }
+        else if (animalName.equals("Duck")){
+            animalData.walkLeftAnimation = createExactAnimation(tmp[0],0,4);
+            animalData.walkRightAnimation = createFlippedAnimation(tmp[0],0,4);
+            animalData.walkUpAnimation = createExactAnimation(tmp[2],0,4);
+            animalData.walkDownAnimation = createFlippedAnimation(tmp[2],0,4);
         }
 
         animalAssetsMap.put(animalName, animalData);

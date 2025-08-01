@@ -352,11 +352,11 @@ public class AnimalBuildingController {
             switch (selectedCoopType) {
                 case 1:
                     newCoop.setBig();
-                    newCoop.setBig(true);
+//                    newCoop.setBig(true);
                     break;
                 case 2:
                     newCoop.setDeluxe();
-                    newCoop.setDeluxe(true);
+//                    newCoop.setDeluxe(true);
                     break;
             }
 
@@ -411,16 +411,16 @@ public class AnimalBuildingController {
             switch (selectedBarnType) {
                 case 1:
                     newBarn.setBig();
-                    newBarn.setBig(true);
+//                    newBarn.setBig(true);
                     break;
                 case 2:
                     newBarn.setDeluxe();
-                    newBarn.setDeluxe(true);
+//                    newBarn.setDeluxe(true);
                     break;
             }
 
             placedBarns.add(newBarn);
-            MessageSystem.showInfo("Barn added to map!" , 4.0f);
+            MessageSystem.showInfo("Barn added to map!", 4.0f);
 
             int tileSize = Map.tileSize;
             int startTileX = (int) Math.floor(tempBarnX / tileSize);
@@ -732,10 +732,16 @@ public class AnimalBuildingController {
                     }
                 }
 
-                coop.addAnimal(animal);
-                App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-                MessageSystem.showInfo("A " + animalName + "added to COOP!", 5.0f);
-                System.out.println(animalName + " placed in Coop at: " + pos.getX() + ", " + pos.getY());
+                if(!coop.isFull()) {
+                    coop.addAnimal(animal);
+                    coop.setAnimalCount(coop.getAnimalCount() + 1);
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+                    MessageSystem.showInfo("A " + animalName + "added to COOP!", 5.0f);
+                    System.out.println(animalName + " placed in Coop at: " + pos.getX() + ", " + pos.getY());
+                }
+                else {
+                    MessageSystem.showError("The selected coop is FULL!", 5.0f);
+                }
                 return true;
             }
         }
@@ -753,10 +759,16 @@ public class AnimalBuildingController {
                         animal = new Animal(animalType,animalName);
                     }
                 }
-                barn.addAnimal(animal);
-                App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-                MessageSystem.showInfo("A " + animalName + "added to BARN!", 5.0f);
-                System.out.println(animalName + " placed in Barn at: " + pos.getX() + ", " + pos.getY());
+                if(!barn.isFull()) {
+                    barn.addAnimal(animal);
+                    barn.setAnimalCount(barn.getAnimalCount() + 1);
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
+                    MessageSystem.showInfo("A " + animalName + "added to BARN!", 5.0f);
+                    System.out.println(animalName + " placed in Barn at: " + pos.getX() + ", " + pos.getY());
+                }
+                else {
+                    MessageSystem.showError("The selected barn is FULL!", 5.0f);
+                }
                 return true;
             }
         }
