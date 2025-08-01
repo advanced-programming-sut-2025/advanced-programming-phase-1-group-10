@@ -1,6 +1,8 @@
 package Controllers.FinalControllers;
 
+import Controllers.MessageSystem;
 import Models.Animal.Animal;
+import Models.Animal.AnimalProduct;
 import Models.App;
 import Models.Map;
 import Models.PlayerStuff.Player;
@@ -20,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.util.ArrayList;
 
 public class AnimalController {
 
@@ -176,6 +180,33 @@ public class AnimalController {
                 System.out.println("Selling " + selectedAnimal.getName());
                 break;
             case "Harvest":
+                ArrayList<AnimalProduct> productsToHarvest = new ArrayList<>(selectedAnimal.getProducedProducts());
+                if (productsToHarvest.isEmpty()) {
+                    MessageSystem.showInfo("No products to harvest!", 3.0f);
+                    break;
+                }
+
+                int harvestedCount = 0;
+                ArrayList<AnimalProduct> successfullyHarvested = new ArrayList<>();
+
+                for (AnimalProduct product : productsToHarvest) {
+                    boolean added = player.getInventory().getBackPack().addItem(product);
+                    if (added) {
+                        successfullyHarvested.add(product);
+                        harvestedCount++;
+                    } else {
+                        MessageSystem.showError("Not enough space in backpack to harvest all products!", 5.0f);
+                        break;
+                    }
+                }
+
+                for(AnimalProduct product : successfullyHarvested) {
+                    selectedAnimal.removeProduct(product);
+                }
+
+                if (harvestedCount > 0) {
+                    MessageSystem.showInfo(harvestedCount + " products harvested from " + selectedAnimal.getName() + "!", 5.0f);
+                }
                 System.out.println("Harvesting products from " + selectedAnimal.getName());
                 break;
         }
