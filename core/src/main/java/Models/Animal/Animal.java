@@ -8,6 +8,7 @@ import Models.Position;
 import Models.Tile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static Controllers.GameController.getTileByPosition;
 
@@ -18,7 +19,7 @@ public class Animal {
     private final ArrayList<AnimalProductType> animalProductTypes = new ArrayList<>();
     private String name;
     private int friendShip;
-    private AnimalProduct currentProduct;
+    private List<AnimalProduct> producedProducts;
     private Position position;
     private boolean petted = false;
     private boolean fed = false;
@@ -45,6 +46,7 @@ public class Animal {
         this.animalType = animalType;
         this.name = name;
         this.friendShip = 0;
+        this.producedProducts = new ArrayList<>();
         switch (animalType) {
             case CHICKEN -> {
                 this.animalProductTypes.add(AnimalProductType.EGG);
@@ -122,28 +124,30 @@ public class Animal {
         }
     }
 
+    // this methode should be fixed
     public void produce() {
-        if (friendShip > 20 && animalProductTypes.size() > 1) {
+        AnimalProduct newProduct;
+        if (friendShip > 10 && animalProductTypes.size() > 1) {
             double random = 0.5 + Math.random();
             double probability = (friendShip + 150 * random) / 1500;
-
-            if (probability > 0.1) {
-                currentProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(), 1);
+            if (probability > 0.05) {
+                newProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(), 1);
             } else {
-                currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
+                newProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
             }
         } else {
-            currentProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
+            newProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
         }
-        System.out.println("current peoduct : " + currentProduct.getName());
+        producedProducts.add(newProduct);
+        System.out.println("new product : " + newProduct.getName());
     }
 
-    public AnimalProduct getCurrentProduct() {
-        return currentProduct;
+    public List<AnimalProduct> getProducedProducts() {
+        return producedProducts;
     }
 
-    public void setCurrentProduct(AnimalProduct currentProduct) {
-        this.currentProduct = currentProduct;
+    public void removeProduct(AnimalProduct product) {
+        producedProducts.remove(product);
     }
 
     public void setFriendShip(int friendShip) {
@@ -171,7 +175,7 @@ public class Animal {
         return null;
     }
 
-    // should be complete
+    // this method should be complete
     public static void updateAnimalState(Animal animal) {
         DateTime dateAndTime = App.getInstance().getCurrentGame().getGameTime();
 //        if (!animal.isFed()) {
@@ -186,8 +190,6 @@ public class Animal {
 
         if (true) {
             animal.produce();
-        } else {
-            animal.setCurrentProduct(null);
         }
 //        animal.petted = false;
 //        animal.fed = false;

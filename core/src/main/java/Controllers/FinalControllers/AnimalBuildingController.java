@@ -8,8 +8,8 @@ import Models.*;
 import Models.Animal.Animal;
 import Models.Animal.AnimalProduct;
 import Models.Animal.AnimalType;
-import Models.Place.*;
 import Models.PlayerStuff.Player;
+import Models.Place.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -222,15 +222,18 @@ public class AnimalBuildingController {
                 batch.draw(animalTexture, x, y, animalSize, animalSize);
                 visibleAnimals.add(new AnimalPosition(animal, x, y, animalSize, animalSize));
 
-                // draw products
-                if (animal.getCurrentProduct() != null) {
+                // draw all prudycts
+                List<AnimalProduct> products = animal.getProducedProducts();
+                for (int j = 0; j < products.size(); j++) {
+                    AnimalProduct product = products.get(j);
                     float productSize = 48f;
                     float productX = x + (animalSize - productSize) / 2f;
-                    float productY = y - productSize - 10;
-                    Sprite productSprite = animal.getCurrentProduct().show();
+
+                    float productY = y - productSize - 10 - (j * (productSize + 5));
+                    Sprite productSprite = animalProductAsset.getSprite(product.getName());
 
                     batch.draw(productSprite, productX, productY, productSize, productSize);
-                    visibleProducts.add(new ProductPosition(animal, animal.getCurrentProduct(), productX, productY, productSize, productSize));
+                    visibleProducts.add(new ProductPosition(animal, product, productX, productY, productSize, productSize));
                 }
             }
         }
@@ -255,7 +258,7 @@ public class AnimalBuildingController {
                     Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
                     boolean added = currentPlayer.getInventory().getBackPack().addItem(productPos.product);
                     if (added) {
-                        productPos.animal.setCurrentProduct(null);
+                        productPos.animal.removeProduct(productPos.product);
                         MessageSystem.showInfo(productPos.product.getName() + " was harvested!", 3.0f);
                     } else {
                         MessageSystem.showError("Not enough space in backpack!", 3.0f);

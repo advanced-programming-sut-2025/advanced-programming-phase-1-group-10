@@ -360,54 +360,54 @@ public class GameController {
         return true;
     }
 
-    public Result collectAnimalProducts(String name){
-        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
-
-        if(animal == null){
-            return new Result(false, "there is not animal with this name.");
-        }
-
-        if(!App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().contains(animal)){
-            return new Result(false, "you don't have this animal.");
-        }
-
-        if(!isPlayerAdjacentToTile(animal.getPosition(),App.getInstance().getCurrentGame().getCurrentPlayer())){
-            return new Result(false, "you are not enough close to this animal.");
-        }
-
-        if(animal.getCurrentProduct() == null) {
-            return new Result(false, "no product is available for this animal!");
-        }
-
-        if(animal.getAnimalType().equals(AnimalType.COW) || animal.getAnimalType().equals(AnimalType.GOAT)) {
-            return new Result(false, "you have to use milk pail to collect these products.");
-        }
-
-        if(animal.getAnimalType().equals(AnimalType.SHEEP)) {
-            return new Result(false, "you have to use shear to collect this product.");
-        }
-
-        App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(animal.getCurrentProduct());
-        String produceName = animal.getCurrentProduct().getName();
-        App.getInstance().getCurrentGame().getCurrentPlayer().setFarmingAbility(
-            App.getInstance().getCurrentGame().getCurrentPlayer().getFarmingAbility() + 5);
-        animal.setCurrentProduct(null);
-        return new Result(true, "produce " + produceName + "added to Inventory.");
-    }
-
-    public Result showAnimalProducts() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Available animal products: \n");
-        for(Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
-            if(animal.getCurrentProduct() != null) {
-                sb.append(animal.getName()).append("    ");
-                sb.append(animal.getCurrentProduct().getName()).append("  quality: ");
-                sb.append(animal.getCurrentProduct().getProductQuality()).append("\n");
-            }
-        }
-
-        return new Result(true, sb.toString());
-    }
+//    public Result collectAnimalProducts(String name){
+//        Animal animal = App.getInstance().getCurrentGame().getAnimals().get(name);
+//
+//        if(animal == null){
+//            return new Result(false, "there is not animal with this name.");
+//        }
+//
+//        if(!App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().contains(animal)){
+//            return new Result(false, "you don't have this animal.");
+//        }
+//
+//        if(!isPlayerAdjacentToTile(animal.getPosition(),App.getInstance().getCurrentGame().getCurrentPlayer())){
+//            return new Result(false, "you are not enough close to this animal.");
+//        }
+//
+//        if(animal.getCurrentProduct() == null) {
+//            return new Result(false, "no product is available for this animal!");
+//        }
+//
+//        if(animal.getAnimalType().equals(AnimalType.COW) || animal.getAnimalType().equals(AnimalType.GOAT)) {
+//            return new Result(false, "you have to use milk pail to collect these products.");
+//        }
+//
+//        if(animal.getAnimalType().equals(AnimalType.SHEEP)) {
+//            return new Result(false, "you have to use shear to collect this product.");
+//        }
+//
+//        App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(animal.getCurrentProduct());
+//        String produceName = animal.getCurrentProduct().getName();
+//        App.getInstance().getCurrentGame().getCurrentPlayer().setFarmingAbility(
+//            App.getInstance().getCurrentGame().getCurrentPlayer().getFarmingAbility() + 5);
+//        animal.setCurrentProduct(null);
+//        return new Result(true, "produce " + produceName + "added to Inventory.");
+//    }
+//
+//    public Result showAnimalProducts() {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("Available animal products: \n");
+//        for(Animal animal : App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals()) {
+//            if(animal.getCurrentProduct() != null) {
+//                sb.append(animal.getName()).append("    ");
+//                sb.append(animal.getCurrentProduct().getName()).append("  quality: ");
+//                sb.append(animal.getCurrentProduct().getProductQuality()).append("\n");
+//            }
+//        }
+//
+//        return new Result(true, sb.toString());
+//    }
 
     public Place getPlaceByType(String placeType) {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();

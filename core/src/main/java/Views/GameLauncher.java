@@ -114,9 +114,10 @@ public class GameLauncher implements AppMenu{
                     matcher.group("y"),
                     matcher.group("size")
             ));
-        } else if((matcher = GameCommands.PRODUCES.getMatcher(input)) != null){
-            System.out.println(controller.showAnimalProducts().message());
         }
+//        else if((matcher = GameCommands.PRODUCES.getMatcher(input)) != null){
+//            System.out.println(controller.showAnimalProducts().message());
+//        }
         else if((matcher = GameCommands.MEET_NPC.getMatcher(input)) != null){
             //System.out.println(controller.meetNPC(matcher.group("npcName")));
         } else if((matcher = GameCommands.GIFT_NPC.getMatcher(input)) != null){
@@ -172,11 +173,13 @@ public class GameLauncher implements AppMenu{
             System.out.println(WeatherManagement.showWeather());
         } else if((matcher = GameCommands.SHOW_WEATHER_FORECAST.getMatcher(input)) != null){
             System.out.println(WeatherManagement.showWeatherForecast());
-        } else if((matcher = GameCommands.COLLECT_PRODUCTS.getMatcher(input)) != null){
-            System.out.println(controller.collectAnimalProducts(
-                    matcher.group("name")
-            ));
-        } else if((matcher = GameCommands.GIFT_HISTORY.getMatcher(input)) != null){
+        }
+//        else if((matcher = GameCommands.COLLECT_PRODUCTS.getMatcher(input)) != null){
+//            System.out.println(controller.collectAnimalProducts(
+//                    matcher.group("name")
+//            ));
+//        }
+        else if((matcher = GameCommands.GIFT_HISTORY.getMatcher(input)) != null){
             System.out.println(controller.showGiftHistory(
                     matcher.group("username")
             ));
