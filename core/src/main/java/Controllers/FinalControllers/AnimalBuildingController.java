@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -66,6 +67,11 @@ public class AnimalBuildingController {
     private final List<AnimalPosition> visibleAnimals = new ArrayList<>();
     private final List<ProductPosition> visibleProducts = new ArrayList<>();
 
+
+    private Animal feedingAnimal = null;
+    private float feedingTime = 0;
+    private static final float FEEDING_DURATION = 2.0f;
+
     private static class AnimalPosition {
         Animal animal;
         float x, y, width, height;
@@ -113,6 +119,19 @@ public class AnimalBuildingController {
     }
 
     public void update(SpriteBatch batch, float delta) {
+
+        if (feedingAnimal != null) {
+            feedingTime += delta;
+            feedingAnimal.setStateTime(feedingTime);
+
+            if (feedingTime >= FEEDING_DURATION) {
+                feedingAnimal.feed();
+                MessageSystem.showInfo(feedingAnimal.getName() + " was fed!", 4.0f);
+                feedingAnimal = null;
+                feedingTime = 0;
+            }
+        }
+
         if (isShowingInterior()) {
             renderInterior(batch);
 
@@ -207,9 +226,15 @@ public class AnimalBuildingController {
 
         for (int i = 0; i < animals.size(); i++) {
             Animal animal = animals.get(i);
-            Texture animalTexture = animalAsset.getSingleTexture(animal.getAnimalType().getType());
+            TextureRegion currentFrame;
 
-            if (animalTexture != null) {
+            if (animal == feedingAnimal) {
+                currentFrame = animalAsset.getFeedAnimation(animal.getAnimalType().getType()).getKeyFrame(feedingTime, false);
+            } else {
+                currentFrame = animalAsset.getIdleFrame(animal.getAnimalType().getType());
+            }
+
+            if (currentFrame != null) {
                 int row = i / animalsPerRow;
                 int col = i % animalsPerRow;
                 float x = interiorX + padding + col * (animalSize + padding) + 500;
@@ -219,16 +244,14 @@ public class AnimalBuildingController {
                     continue;
                 }
 
-                batch.draw(animalTexture, x, y, animalSize, animalSize);
+                batch.draw(currentFrame, x, y, animalSize, animalSize);
                 visibleAnimals.add(new AnimalPosition(animal, x, y, animalSize, animalSize));
 
-                // draw all prudycts
                 List<AnimalProduct> products = animal.getProducedProducts();
                 for (int j = 0; j < products.size(); j++) {
                     AnimalProduct product = products.get(j);
                     float productSize = 48f;
                     float productX = x + (animalSize - productSize) / 2f;
-
                     float productY = y - productSize - 10 - (j * (productSize + 5));
                     Sprite productSprite = animalProductAsset.getSprite(product.getName());
 
@@ -237,6 +260,12 @@ public class AnimalBuildingController {
                 }
             }
         }
+    }
+
+    public void startFeeding(Animal animal) {
+        this.feedingAnimal = animal;
+        this.feedingTime = 0;
+        this.feedingAnimal.setStateTime(0);
     }
 
     public boolean handleInteriorClick(float screenX, float screenY, int button) {
@@ -320,6 +349,9 @@ public class AnimalBuildingController {
     }
 
     private void handleInput(float delta) {
+        if (feedingAnimal != null) {
+            return;
+        }
         if (isShowingInterior()) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 closeInteriorView();

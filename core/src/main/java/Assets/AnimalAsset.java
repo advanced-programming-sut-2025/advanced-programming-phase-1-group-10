@@ -62,23 +62,28 @@ public class AnimalAsset {
                 animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
                 animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
                 if (animalName.equals("Rabbit") || animalName.equals("Dinosaur")) {
-                    animalData.petAnimation = createExactAnimation(tmp[6], 0, 4);
-                } else
                     animalData.petAnimation = createExactAnimation(tmp[4], 0, 4);
+                    animalData.feedAnimation = createExactAnimation(tmp[6],0,4);
+                } else {
+                    animalData.feedAnimation = createExactAnimation(tmp[4],0,4);
+                    animalData.petAnimation = createExactAnimation(tmp[3], 0, 4);
+                }
             }
             case "Chicken" -> {
                 animalData.walkLeftAnimation = createExactAnimation(tmp[0], 0, 4);
                 animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
                 animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
-                animalData.walkDownAnimation = createExactAnimation(tmp[6], 0, 4);
+                animalData.walkDownAnimation = createExactAnimation(tmp[3], 0, 4);
                 animalData.petAnimation = createExactAnimation(tmp[4],0,4);
+                animalData.feedAnimation = createExactAnimation(tmp[6],0,4);
             }
             case "Duck" -> {
                 animalData.walkLeftAnimation = createExactAnimation(tmp[0], 0, 4);
                 animalData.walkRightAnimation = createFlippedAnimation(tmp[0], 0, 4);
                 animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
                 animalData.walkDownAnimation = createFlippedAnimation(tmp[2], 0, 4);
-                animalData.petAnimation = createExactAnimation(tmp[13],0,4);
+                animalData.petAnimation = createExactAnimation(tmp[12],0,4);
+                animalData.feedAnimation = createExactAnimation(tmp[13],0,4);
             }
         }
 
@@ -124,6 +129,7 @@ public class AnimalAsset {
         Animation<TextureRegion> walkRightAnimation;
         Animation<TextureRegion> walkUpAnimation;
         Animation<TextureRegion> petAnimation;
+        Animation<TextureRegion> feedAnimation;
     }
 
     public Animation<TextureRegion> getWalkDownAnimation(String animalName) {
@@ -152,6 +158,10 @@ public class AnimalAsset {
 
     public Animation<TextureRegion> getPetAnimation(String animalName){
         return animalAssetsMap.get(animalName).petAnimation;
+    }
+
+    public Animation<TextureRegion> getFeedAnimation(String animalName){
+        return animalAssetsMap.get(animalName).feedAnimation;
     }
 
     public void dispose() {

@@ -135,6 +135,7 @@ public class AnimalController {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         switch (buttonText) {
             case "Feed":
+                App.getInstance().getGameControllerFinal().getAnimalBuildingController().startFeeding(selectedAnimal);
                 System.out.println("Feeding " + selectedAnimal.getName());
                 break;
             case "Pet":
