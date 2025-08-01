@@ -1,6 +1,7 @@
 package Controllers.FinalControllers;
 
 import Assets.AnimalAsset;
+import Controllers.MessageSystem;
 import Models.Animal.Animal;
 import Models.App;
 import Models.Map;
@@ -11,18 +12,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnimalMovementController {
-    private static final float DIRECTION_CHANGE_INTERVAL = 2.0f;
 
+    private static final float DIRECTION_CHANGE_INTERVAL = 2.0f;
     private static final float MAX_DISTANCE = 5 * Map.tileSize;
+    private static final float PETTING_DURATION = 2.0f;
 
     private final AnimalAsset animalAsset;
     private final Map gameMap;
     private final List<Animal> freeAnimals = new ArrayList<>();
+
+    private Animal pettingAnimal = null;
+    private float pettingTime = 0;
 
     public AnimalMovementController(AnimalAsset animalAsset, Map gameMap) {
         this.animalAsset = animalAsset;
@@ -30,27 +34,44 @@ public class AnimalMovementController {
     }
 
     public void update(float delta) {
-        for (Animal animal : freeAnimals) {
-            if (animal.isFree()) {
-                animal.setStateTime(animal.getStateTime() + delta);
+        if (pettingAnimal != null) {
 
+            pettingAnimal.setStateTime(pettingAnimal.getStateTime() + delta);
+            pettingTime += delta;
 
-                if (animal.getStateTime() - animal.getLastMoveTime() >= DIRECTION_CHANGE_INTERVAL) {
-                    chooseRandomDirection(animal);
-                    animal.setLastMoveTime(animal.getStateTime());
-                }
+            if (pettingTime >= PETTING_DURATION) {
 
-                if (animal.isMoving()) {
-                    updateAnimalPosition(animal, delta);
+                pettingAnimal.pet();
+                MessageSystem.showInfo("Animal petted successfully!", 4.0f);
+                returnAnimalToBuilding(pettingAnimal);
+                pettingAnimal = null;
+                pettingTime = 0;
+            }
+        } else {
+
+            for (Animal animal : freeAnimals) {
+                if (animal.isFree()) {
+                    animal.setStateTime(animal.getStateTime() + delta);
+                    if (animal.getStateTime() - animal.getLastMoveTime() >= DIRECTION_CHANGE_INTERVAL) {
+                        chooseRandomDirection(animal);
+                        animal.setLastMoveTime(animal.getStateTime());
+                    }
+                    if (animal.isMoving()) {
+                        updateAnimalPosition(animal, delta);
+                    }
                 }
             }
         }
     }
 
     public void render(SpriteBatch batch) {
-        for (Animal animal : freeAnimals) {
-            if (animal.isFree()) {
-                renderAnimal(animal, batch);
+        if (pettingAnimal != null) {
+            renderPettingAnimal(batch);
+        } else {
+            for (Animal animal : freeAnimals) {
+                if (animal.isFree()) {
+                    renderAnimal(animal, batch);
+                }
             }
         }
     }
@@ -93,6 +114,21 @@ public class AnimalMovementController {
         }
     }
 
+    private void renderPettingAnimal(SpriteBatch batch) {
+        if (pettingAnimal != null) {
+            TextureRegion currentFrame = animalAsset.getPetAnimation(pettingAnimal.getAnimalType().getType()).getKeyFrame(pettingAnimal.getStateTime(), false);
+            if (currentFrame != null) {
+                batch.draw(
+                    currentFrame,
+                    pettingAnimal.getX(),
+                    pettingAnimal.getY(),
+                    Animal.ANIMAL_WIDTH,
+                    Animal.ANIMAL_HEIGHT
+                );
+            }
+        }
+    }
+
     private void chooseRandomDirection(Animal animal) {
         int direction = MathUtils.random(0, 4);
         Animal.Direction newDirection;
@@ -103,7 +139,6 @@ public class AnimalMovementController {
             case 2: newDirection = Animal.Direction.LEFT; break;
             case 3: newDirection = Animal.Direction.RIGHT; break;
             default:
-
                 animal.setMoving(false);
                 return;
         }
@@ -117,16 +152,13 @@ public class AnimalMovementController {
         float currentY = animal.getY();
         float nextX = currentX;
         float nextY = currentY;
-
         float moveAmount = animal.getSpeed() * delta;
-
         switch (animal.getDirection()) {
             case UP: nextY += moveAmount; break;
             case DOWN: nextY -= moveAmount; break;
             case LEFT: nextX -= moveAmount; break;
             case RIGHT: nextX += moveAmount; break;
         }
-
 
         Position homePos = animal.getHomePosition();
         float homeX = homePos.getX() * Map.tileSize;
@@ -137,7 +169,6 @@ public class AnimalMovementController {
             animal.setX(nextX);
             animal.setY(nextY);
         } else {
-
             animal.setMoving(false);
             chooseRandomDirection(animal);
         }
@@ -146,7 +177,6 @@ public class AnimalMovementController {
     private boolean canMoveTo(float nextX, float nextY, Map map) {
         float width = Animal.ANIMAL_WIDTH;
         float height = Animal.ANIMAL_HEIGHT;
-
         int[] rows = {
             (int) (nextY / Map.tileSize),
             (int) ((nextY + height - 1) / Map.tileSize)
@@ -170,11 +200,22 @@ public class AnimalMovementController {
         return true;
     }
 
+    public void startPetting(Animal animal, float x, float y) {
+        if (!freeAnimals.contains(animal)) {
+            freeAnimals.add(animal);
+        }
+        animal.setFree(true);
+        animal.setX(x);
+        animal.setY(y);
+        animal.setStateTime(0);
+        animal.setMoving(false);
+        this.pettingAnimal = animal;
+    }
+
     public void releaseAnimal(Animal animal, float x, float y) {
         if (!freeAnimals.contains(animal)) {
             freeAnimals.add(animal);
         }
-
         animal.setFree(true);
         animal.setX(x);
         animal.setY(y);
@@ -183,13 +224,13 @@ public class AnimalMovementController {
         animal.setLastMoveTime(0);
         animal.setMoving(false);
         animal.setDirection(Animal.Direction.DOWN);
-
         System.out.println("Animal " + animal.getName() + " released at: " + x + ", " + y);
     }
 
     public void returnAnimalToBuilding(Animal animal) {
         animal.setFree(false);
         freeAnimals.remove(animal);
+        App.getInstance().getGameControllerFinal().getAnimalBuildingController().closeInteriorView();
     }
 
     public List<Animal> getFreeAnimals() {

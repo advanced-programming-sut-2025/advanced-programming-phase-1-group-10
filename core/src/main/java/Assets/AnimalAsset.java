@@ -55,25 +55,31 @@ public class AnimalAsset {
         animalData.idleFrame = tmp[0][0];
 
 
-        if (animalName.equals("Cow") || animalName.equals("Goat") ||
-            animalName.equals("Sheep") || animalName.equals("Pig") ||
-            animalName.equals("Rabbit") || animalName.equals("Dinosaur")) {
-            animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, 4);
-            animalData.walkLeftAnimation = createFlippedAnimation(tmp[1], 0, 4);
-            animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
-            animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
-        }
-        else if(animalName.equals("Chicken")){
-            animalData.walkLeftAnimation = createExactAnimation(tmp[0],0,4);
-            animalData.walkRightAnimation = createExactAnimation(tmp[1],0,4);
-            animalData.walkUpAnimation = createExactAnimation(tmp[2],0,4);
-            animalData.walkDownAnimation = createExactAnimation(tmp[6],0,4);
-        }
-        else if (animalName.equals("Duck")){
-            animalData.walkLeftAnimation = createExactAnimation(tmp[0],0,4);
-            animalData.walkRightAnimation = createFlippedAnimation(tmp[0],0,4);
-            animalData.walkUpAnimation = createExactAnimation(tmp[2],0,4);
-            animalData.walkDownAnimation = createFlippedAnimation(tmp[2],0,4);
+        switch (animalName) {
+            case "Cow", "Goat", "Sheep", "Pig", "Rabbit", "Dinosaur" -> {
+                animalData.walkDownAnimation = createExactAnimation(tmp[0], 0, 4);
+                animalData.walkLeftAnimation = createFlippedAnimation(tmp[1], 0, 4);
+                animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
+                animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
+                if (animalName.equals("Rabbit") || animalName.equals("Dinosaur")) {
+                    animalData.petAnimation = createExactAnimation(tmp[6], 0, 4);
+                } else
+                    animalData.petAnimation = createExactAnimation(tmp[4], 0, 4);
+            }
+            case "Chicken" -> {
+                animalData.walkLeftAnimation = createExactAnimation(tmp[0], 0, 4);
+                animalData.walkRightAnimation = createExactAnimation(tmp[1], 0, 4);
+                animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
+                animalData.walkDownAnimation = createExactAnimation(tmp[6], 0, 4);
+                animalData.petAnimation = createExactAnimation(tmp[4],0,4);
+            }
+            case "Duck" -> {
+                animalData.walkLeftAnimation = createExactAnimation(tmp[0], 0, 4);
+                animalData.walkRightAnimation = createFlippedAnimation(tmp[0], 0, 4);
+                animalData.walkUpAnimation = createExactAnimation(tmp[2], 0, 4);
+                animalData.walkDownAnimation = createFlippedAnimation(tmp[2], 0, 4);
+                animalData.petAnimation = createExactAnimation(tmp[13],0,4);
+            }
         }
 
         animalAssetsMap.put(animalName, animalData);
@@ -117,6 +123,7 @@ public class AnimalAsset {
         Animation<TextureRegion> walkLeftAnimation;
         Animation<TextureRegion> walkRightAnimation;
         Animation<TextureRegion> walkUpAnimation;
+        Animation<TextureRegion> petAnimation;
     }
 
     public Animation<TextureRegion> getWalkDownAnimation(String animalName) {
@@ -141,6 +148,10 @@ public class AnimalAsset {
 
     public Texture getSingleTexture(String animalName) {
         return animalAssetsMap.get(animalName).singleTexture;
+    }
+
+    public Animation<TextureRegion> getPetAnimation(String animalName){
+        return animalAssetsMap.get(animalName).petAnimation;
     }
 
     public void dispose() {

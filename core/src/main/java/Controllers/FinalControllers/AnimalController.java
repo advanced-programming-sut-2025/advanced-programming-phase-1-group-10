@@ -48,60 +48,36 @@ public class AnimalController {
     private final InputAdapter outsideClickListener;
 
     public AnimalController() {
-
         stage = new Stage(new ScreenViewport());
-
-
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/mainFont.ttf"));
-
         FreeTypeFontGenerator.FreeTypeFontParameter paramSmall = new FreeTypeFontGenerator.FreeTypeFontParameter();
         paramSmall.size = 40;
         paramSmall.color = Color.BROWN;
         smallFont = generator.generateFont(paramSmall);
-
         FreeTypeFontGenerator.FreeTypeFontParameter paramLarge = new FreeTypeFontGenerator.FreeTypeFontParameter();
         paramLarge.size = 60;
         paramLarge.color = Color.BROWN;
         largeFont = generator.generateFont(paramLarge);
-
         generator.dispose();
-
-
         menuTable = new Table();
         menuTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("friendship/button.png")))));
         menuTable.pad(10);
-
-
         createButtons();
-
-
         stage.addActor(menuTable);
-
-
         menuTable.setVisible(false);
-
-
         outsideClickListener = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
                 Vector2 stageCoords = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
-
-
                 Actor hitActor = stage.hit(stageCoords.x, stageCoords.y, true);
-
-
                 if (hitActor == null || !menuTable.isAscendantOf(hitActor)) {
                     hideMenu();
                     return true;
                 }
-
                 return false;
             }
-
             @Override
             public boolean keyDown(int keycode) {
-
                 if (keycode == Input.Keys.ESCAPE) {
                     hideMenu();
                     return true;
@@ -112,118 +88,97 @@ public class AnimalController {
     }
 
     private void createButtons() {
-
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = smallFont;
         buttonStyle.fontColor = Color.BROWN;
-
-
-
-
-
         feedButton = createButton("Feed", buttonStyle);
         petButton = createButton("Pet", buttonStyle);
         removeButton = createButton("Remove", buttonStyle);
         sellButton = createButton("Sell", buttonStyle);
         harvestButton = createButton("Harvest", buttonStyle);
-
-
         menuTable.add(new Label("Animal Menu", new Label.LabelStyle(largeFont, Color.BROWN))).colspan(1).pad(5).row();
         menuTable.add(feedButton).pad(3).fillX().width(300).row();
         menuTable.add(petButton).pad(3).fillX().width(300).row();
         menuTable.add(removeButton).pad(3).fillX().width(300).row();
         menuTable.add(sellButton).pad(3).fillX().width(300).row();
         menuTable.add(harvestButton).pad(3).fillX().width(300);
-
-
         menuTable.pack();
     }
 
     private TextButton createButton(String text, TextButton.TextButtonStyle style) {
         TextButton button = new TextButton(text, style);
-
-
         button.pad(8);
         button.align(Align.center);
-
-
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 button.setColor(buttonHoverColor);
             }
-
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 button.setColor(buttonColor);
             }
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 handleButtonClick(text);
             }
         });
-
         return button;
     }
 
     private void handleButtonClick(String buttonText) {
         if (selectedAnimal == null) return;
-
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-
         switch (buttonText) {
             case "Feed":
-
                 System.out.println("Feeding " + selectedAnimal.getName());
                 break;
-
             case "Pet":
 
-                System.out.println("Petting " + selectedAnimal.getName());
-                break;
-
-            case "Remove":
-
                 if (!selectedAnimal.isFree()) {
-
                     float releaseX, releaseY;
-                    float offset = 2 * Map.tileSize;
-
+                    float offset = Map.tileSize;
 
                     if (App.getInstance().getGameControllerFinal().getAnimalBuildingController().isShowingCoopInterior()) {
                         Position coopPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedCoop().getPosition();
+                        releaseX = coopPos.getX() + offset;
+                        releaseY = coopPos.getY();
+                    } else {
+                        Position barnPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedBarn().getPosition();
+                        releaseX = barnPos.getX() + offset;
+                        releaseY = barnPos.getY();
+                    }
 
+                    App.getInstance().getGameControllerFinal().getAnimalMovementController().startPetting(selectedAnimal, releaseX, releaseY);
+                    App.getInstance().getGameControllerFinal().getAnimalBuildingController().closeInteriorView();
+                    System.out.println("Started petting " + selectedAnimal.getName() + " outside its building" );
+                }
+                break;
+            case "Remove":
+                if (!selectedAnimal.isFree()) {
+                    float releaseX, releaseY;
+                    float offset = 2 * Map.tileSize;
+                    if (App.getInstance().getGameControllerFinal().getAnimalBuildingController().isShowingCoopInterior()) {
+                        Position coopPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedCoop().getPosition();
                         releaseX = coopPos.getX() + offset;
                         releaseY = coopPos.getY() + offset;
                     } else {
-
                         Position barnPos = App.getInstance().getGameControllerFinal().getAnimalBuildingController().getSelectedBarn().getPosition();
-
                         releaseX = barnPos.getX() + offset;
                         releaseY = barnPos.getY() + offset;
                     }
-
-
                     App.getInstance().getGameControllerFinal().getAnimalMovementController().releaseAnimal(selectedAnimal, releaseX, releaseY);
                     System.out.println("Removed " + selectedAnimal.getName() + " from building");
-
-
                     App.getInstance().getGameControllerFinal().getAnimalBuildingController().closeInteriorView();
                 }
                 break;
-
             case "Sell":
-
                 System.out.println("Selling " + selectedAnimal.getName());
                 break;
-
             case "Harvest":
-
                 System.out.println("Harvesting products from " + selectedAnimal.getName());
                 break;
         }
-
         hideMenu();
     }
 
@@ -235,42 +190,28 @@ public class AnimalController {
     }
 
     public boolean handleRightClick(float screenX, float screenY, Animal animal, float worldX, float worldY) {
-
         if (showMenu) {
             hideMenu();
             return true;
         }
-
         if (animal == null) return false;
-
         selectedAnimal = animal;
         showMenu = true;
-
-
         menuX = screenX;
         menuY = Gdx.graphics.getHeight() - screenY;
-
-
         if (menuX + menuTable.getWidth() > Gdx.graphics.getWidth()) {
             menuX = Gdx.graphics.getWidth() - menuTable.getWidth();
         }
         if (menuY + menuTable.getHeight() > Gdx.graphics.getHeight()) {
             menuY = Gdx.graphics.getHeight() - menuTable.getHeight();
         }
-
         menuTable.setPosition(menuX, menuY);
         menuTable.setVisible(true);
-
-
         previousInputProcessor = Gdx.input.getInputProcessor();
-
-
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(outsideClickListener);
-
         Gdx.input.setInputProcessor(multiplexer);
-
         System.out.println("Showing menu for " + animal.getName() + " at position: " + worldX + ", " + worldY);
         return true;
     }
@@ -279,8 +220,6 @@ public class AnimalController {
         showMenu = false;
         menuTable.setVisible(false);
         selectedAnimal = null;
-
-
         if (previousInputProcessor != null) {
             Gdx.input.setInputProcessor(previousInputProcessor);
         } else {
