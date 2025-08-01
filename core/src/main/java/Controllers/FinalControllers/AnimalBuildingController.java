@@ -72,6 +72,9 @@ public class AnimalBuildingController {
     private float feedingTime = 0;
     private static final float FEEDING_DURATION = 2.0f;
 
+    private Texture hayHopperFullTexture;
+    private Texture hayHopperTexture;
+
     private static class AnimalPosition {
         Animal animal;
         float x, y, width, height;
@@ -116,6 +119,8 @@ public class AnimalBuildingController {
         this.animalAsset = animalAsset;
         this.animalProductAsset = new AnimalProductAsset();
         this.animalController = new AnimalController();
+        this.hayHopperFullTexture = new Texture(Gdx.files.internal("Animals/Hay_Hopper_Full.png"));
+        this.hayHopperTexture = new Texture(Gdx.files.internal("Animals/Hay_Hopper.png"));
     }
 
     public void update(SpriteBatch batch, float delta) {
@@ -126,7 +131,7 @@ public class AnimalBuildingController {
 
             if (feedingTime >= FEEDING_DURATION) {
                 feedingAnimal.feed();
-                MessageSystem.showInfo(feedingAnimal.getName() + " was fed!", 4.0f);
+                MessageSystem.showInfo(feedingAnimal.getName() + " was fed!", 5.0f);
                 feedingAnimal = null;
                 feedingTime = 0;
             }
@@ -226,24 +231,37 @@ public class AnimalBuildingController {
 
         for (int i = 0; i < animals.size(); i++) {
             Animal animal = animals.get(i);
+
+            int row = i / animalsPerRow;
+            int col = i % animalsPerRow;
+            float x = interiorX + padding + col * (animalSize + padding) + 500;
+            float y = interiorY + startYOffset + drawableHeight - padding - animalSize - row * (animalSize + padding) - 230;
+
+            if (y < interiorY + padding) {
+                continue;
+            }
+
             TextureRegion currentFrame;
 
             if (animal == feedingAnimal) {
                 currentFrame = animalAsset.getFeedAnimation(animal.getAnimalType().getType()).getKeyFrame(feedingTime, false);
+
+
+                float hopperSize = 64f;
+                float hopperX = x + (animalSize - hopperSize) / 2f;
+                float hopperY = y - hopperSize ;
+
+                if (feedingTime < FEEDING_DURATION / 2) {
+                    batch.draw(hayHopperFullTexture, hopperX, hopperY, hopperSize, hopperSize);
+                } else if (feedingTime < FEEDING_DURATION) {
+                    batch.draw(hayHopperTexture, hopperX, hopperY, hopperSize, hopperSize);
+                }
+
             } else {
                 currentFrame = animalAsset.getIdleFrame(animal.getAnimalType().getType());
             }
 
             if (currentFrame != null) {
-                int row = i / animalsPerRow;
-                int col = i % animalsPerRow;
-                float x = interiorX + padding + col * (animalSize + padding) + 500;
-                float y = interiorY + startYOffset + drawableHeight - padding - animalSize - row * (animalSize + padding) - 230;
-
-                if (y < interiorY + padding) {
-                    continue;
-                }
-
                 batch.draw(currentFrame, x, y, animalSize, animalSize);
                 visibleAnimals.add(new AnimalPosition(animal, x, y, animalSize, animalSize));
 
@@ -720,6 +738,8 @@ public class AnimalBuildingController {
             animalController.dispose();
         }
         animalProductAsset.dispose();
+        hayHopperFullTexture.dispose();
+        hayHopperTexture.dispose();
     }
 
     public boolean placeAnimalOnBuilding(String animalName, float worldX, float worldY) {
@@ -740,7 +760,7 @@ public class AnimalBuildingController {
                     coop.setAnimalCount(coop.getAnimalCount() + 1);
                     App.getInstance().getCurrentGame().getAnimals().put(animalName,animal);
                     App.getInstance().getCurrentGame().getCurrentPlayer().getPlayerAnimals().add(animal);
-                    MessageSystem.showInfo("A " + animalName + "added to COOP!", 5.0f);
+                    MessageSystem.showInfo("A " + animalName + " added to COOP!", 5.0f);
                     System.out.println(animalName + " placed in Coop at: " + pos.getX() + ", " + pos.getY());
                 }
                 else {
