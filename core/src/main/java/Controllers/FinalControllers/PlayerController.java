@@ -1,5 +1,6 @@
 package Controllers.FinalControllers;
 
+import Assets.FaintAsset;
 import Assets.PlayerAsset;
 import Models.App;
 import Models.Map;
@@ -12,10 +13,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayerController {
 
     private int currentPlayerIndex = 0;
+    private final FaintAsset faintAsset = new FaintAsset(0.1f); // adjust speed
+    private final HashMap<Player,Float> faintStateTimes = new HashMap<>();
 
     public PlayerController(Map map) {
         this.map = map;
@@ -24,6 +28,10 @@ public class PlayerController {
     private final ArrayList<Player> players = App.getInstance().getCurrentGame().getPlayers();
     private final PlayerAsset movementAnimation = new PlayerAsset();
     private final Map map;
+
+    private float faintStateTime = 0f;
+
+
 
     public void updatePosition(Player player, float delta) {
         boolean moving = false;
@@ -86,6 +94,7 @@ public class PlayerController {
         batch.draw(currentFrame, player.getX(), player.getY(), Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
     }
 
+
     private boolean canMoveTo(float nextX, float nextY, Map map) {
         float width = Player.PLAYER_WIDTH;
         float height = Player.PLAYER_HEIGHT / 2f;
@@ -136,7 +145,34 @@ public class PlayerController {
 
         for (Player player : players) {
             render(player, batch);
+            updateFaint(batch,player);
         }
     }
+
+    public void updateFaint(SpriteBatch batch, Player player) {
+        double energy = player.getEnergy().getEnergyAmount();
+
+        // get or initialize this player's faint time
+        float faintStateTime = faintStateTimes.getOrDefault(player, 0f);
+
+        if (energy < 0) {
+            // Advance animation time per player
+            faintStateTime += Gdx.graphics.getDeltaTime();
+            faintStateTimes.put(player, faintStateTime);
+
+            // Prevent movement while fainted
+            player.setMoving(false);
+
+            // Draw current faint frame, forcing looping
+            TextureRegion frame = faintAsset.getAnimation().getKeyFrame(faintStateTime, true);
+            float drawX = player.getX();
+            float drawY = player.getY() + Player.PLAYER_HEIGHT; // above head
+            batch.draw(frame, drawX - 18, drawY - 10, 70, 20);
+        } else {
+            // Reset when not fainted
+            faintStateTimes.put(player, 0f);
+        }
+    }
+
 
 }

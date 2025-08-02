@@ -19,7 +19,9 @@ public class InteractController {
     public void update(){
         try{
             this.currentItem = player.getIventoryBarItems().get(player.getSelectedSlot());
-        } catch (Exception ignored){}
+        } catch (Exception exception){
+            this.currentItem = null;
+        }
 
         player = App.getInstance().getCurrentGame().getCurrentPlayer();
 

@@ -6,14 +6,13 @@ import Models.FriendShip.Friendship;
 import Models.Item;
 import Models.PlayerStuff.Gender;
 import Models.PlayerStuff.Player;
-import Models.Result;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 import java.util.List;
@@ -101,13 +100,10 @@ public class PlayersNearbyActionController {
                 batch.draw(buttonSprite, bx, by, BUTTON_WIDTH, BUTTON_HEIGHT);
                 font.setColor(Color.WHITE);
                 font.draw(batch, labels[i], textX, textY);
-            } else {
-                // draw disabled look
-                batch.setColor(0.5f, 0.5f, 0.5f, 1f);
-                batch.draw(buttonSprite, bx, by, BUTTON_WIDTH, BUTTON_HEIGHT);
-                batch.setColor(1f, 1f, 1f, 1f);
-                font.setColor(Color.DARK_GRAY);
-                font.draw(batch, labels[i], textX, textY);
+
+                String info = "Target: " + targetPlayer.getName();
+                font.setColor(Color.GOLD);
+                font.draw(batch, info, baseX, baseY + BUTTON_HEIGHT + 20);
             }
 
             boolean hovered = mouseX >= bx && mouseX <= bx + BUTTON_WIDTH &&
@@ -116,14 +112,9 @@ public class PlayersNearbyActionController {
             if (hasTarget && hovered && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                 actions[i].accept(targetPlayer);
             }
+
         }
 
-        // Indicate target
-        if (hasTarget) {
-            String info = "Target: " + targetPlayer.getName();
-            font.setColor(Color.GOLD);
-            font.draw(batch, info, baseX, baseY + BUTTON_HEIGHT + 20);
-        }
     }
 
     private void hugPlayer(Player other) {
@@ -169,39 +160,39 @@ public class PlayersNearbyActionController {
 
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
 
-        if(currentPlayer.getGender() != Gender.Male){
-            MessageSystem.showMessage("Only a male can ask for marriage!",2f,Color.RED);
+        if (currentPlayer.getGender() != Gender.Male) {
+            MessageSystem.showMessage("Only a male can ask for marriage!", 2f, Color.RED);
             return;
         }
 
 
-        if(currentPlayer.getGender() == other.getGender()){
-            MessageSystem.showMessage( "Same-sex marriage is illegal at the moment.", 2f, Color.RED);
+        if (currentPlayer.getGender() == other.getGender()) {
+            MessageSystem.showMessage("Same-sex marriage is illegal.", 2f, Color.RED);
             return;
         }
 
-        if(currentPlayer.getCouple() != null || other.getCouple() != null){
-           MessageSystem.showMessage("Both Players need to be single", 2f, Color.RED);
-           return;
+        if (currentPlayer.getCouple() != null || other.getCouple() != null) {
+            MessageSystem.showMessage("Both Players need to be single", 2f, Color.RED);
+            return;
         }
 
         Friendship fs1 = getFriendship(currentPlayer, other);
         Friendship fs2 = getFriendship(other, currentPlayer);
 
-        if (fs1.getLevel() != 3 || fs2.getLevel() != 3){
-            MessageSystem.showMessage("In this friendship level, marriage is not allowed!",2f,Color.RED);
+        if (fs1.getLevel() != 3 || fs2.getLevel() != 3) {
+            MessageSystem.showMessage("In this friendship level, marriage is not allowed!", 2f, Color.RED);
             return;
         }
 
 
         Item ring = null;
-        for(Item item: currentPlayer.getInventory().getBackPack().getItems()){
-            if(item.getName().equals("Ring")){
+        for (Item item : currentPlayer.getInventory().getBackPack().getItems()) {
+            if (item.getName().equals("Ring")) {
                 ring = item;
             }
         }
 
-        if(ring == null){
+        if (ring == null) {
             MessageSystem.showMessage("No ring found!", 2f, Color.RED);
             return;
         }
@@ -211,20 +202,19 @@ public class PlayersNearbyActionController {
         other.setCouple(currentPlayer);
         currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
         other.getInventory().getBackPack().addItem(ring);
-        fs1.setMarried(true); fs2.setMarried(true);
+        fs1.setMarried(true);
+        fs2.setMarried(true);
         MessageSystem.showMessage("Happy your Marriage!", 2f, Color.GREEN);
 
 
         /*
-        *     fs1.setXp(-fs1.getXp());
-        *     fs2.setXp(-fs2.getXp());
-        *     return new Result(true, "Inshallah next time!");
-        *
-        * */
+         *     fs1.setXp(-fs1.getXp());
+         *     fs2.setXp(-fs2.getXp());
+         *     return new Result(true, "Inshallah next time!");
+         *
+         * */
 
     }
-
-
 
     public void addXpToPlayers(Player player, int xp) {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
@@ -244,7 +234,7 @@ public class PlayersNearbyActionController {
         }
     }
 
-    public Friendship getFriendship(Player player, Player goal){
+    public Friendship getFriendship(Player player, Player goal) {
         return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
     }
 }
