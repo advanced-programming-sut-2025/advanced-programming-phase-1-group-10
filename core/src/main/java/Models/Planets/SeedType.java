@@ -43,10 +43,22 @@ public enum SeedType {
     POWDERMELON_SEED("Powdermelon seed",Season.WINTER),
     ANCIENT_SEED("Ancient seed", null),
     MIXED_SEED("Mixed seed", null),
-    ACORN("Acron", null),
-    MAPLE_SEED("Maple seed", null),
-    PINE_CONE("Pine cone", null),
-    MAHOGANY_SEED("Mahogany seed", null)
+
+    // Trees
+    APRICOT_SAPLING("Apricot Sapling", Season.SPRING),
+    CHERRY_SAPLING("Cherry Sapling", Season.SPRING),
+    BANANA_SAPLING("Banana Sapling", Season.SUMMER),
+    MANGO_SAPLING("Mango Sapling", Season.SUMMER),
+    ORANGE_SAPLING("Orange Sapling", Season.SUMMER),
+    PEACH_SAPLING("Peach Sapling", Season.SUMMER),
+    APPLE_SAPLING("Apple Sapling", Season.FALL),
+    POMEGRANATE_SAPLING("Pomegranate Sapling", Season.FALL),
+    MUSHROOM_TREE_SEEDS("Mushroom Tree Seeds", Season.SPRING),
+    MYSTIC_TREE_SEEDS("Mystic Tree Seeds", Season.SPRING),
+    ACORNS("Acorns", null),
+    MAPLE_SEED("Maple Seeds", null),
+    PINE_CONE("Pine Cones", null),
+    MAHOGANY_SEED("Mahogany Seeds", null)
     ;
     private final String name;
     private final Season season;

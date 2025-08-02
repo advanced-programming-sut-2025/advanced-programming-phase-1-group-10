@@ -1,15 +1,18 @@
 package Models.Planets;
 
+import Assets.TreesAsset;
 import Models.Item;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Seed implements Item {
     private SeedType seedType;
     private int numberOfSeed;
+    private TreesAsset treesAsset;
 
     public Seed(SeedType seedType, int numberOfSeed) {
         this.seedType = seedType;
         this.numberOfSeed = numberOfSeed;
+        this.treesAsset = new TreesAsset();
     }
 
     @Override
@@ -19,6 +22,12 @@ public class Seed implements Item {
 
     @Override
     public Sprite show() {
+        for(TreeCropType treeCropType : TreeCropType.values()){
+            if(treeCropType.getSource().equals(seedType.getName())){
+                return treesAsset.getSaplingSprite(treeCropType.getName());
+            }
+        }
+        // should add for other seeds
         return null;
     }
 

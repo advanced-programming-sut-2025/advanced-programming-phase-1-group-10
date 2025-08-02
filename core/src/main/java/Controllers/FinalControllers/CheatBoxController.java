@@ -178,6 +178,10 @@ public class CheatBoxController {
                 MessageSystem.showInfo(result.message(),5.0f);
             else
                 MessageSystem.showError(result.message(),4.0f);
+        } else if((matcher = CheatCodeCommands.ADD_SEED.getMatcher(input)) != null){
+            cheatCodeController.addSeedToInventory(
+                matcher.group("seedname")
+            );
         }
     }
 

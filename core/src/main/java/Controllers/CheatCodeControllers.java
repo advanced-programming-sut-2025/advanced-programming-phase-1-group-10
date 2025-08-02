@@ -6,6 +6,8 @@ import Models.Mineral.Mineral;
 import Models.Mineral.MineralTypes;
 import Models.Place.GreenHouse;
 import Models.Planets.Crop.Crop;
+import Models.Planets.Seed;
+import Models.Planets.SeedType;
 import Models.Planets.Tree;
 import Models.Position;
 import Models.Result;
@@ -108,5 +110,25 @@ public class CheatCodeControllers {
         }
         App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().getCurrentGame().getCurrentPlayer().getGold() + money);
         return new Result(true, "Money added successfully.");
+    }
+
+    public void addSeedToInventory(String seedName){
+        SeedType seed = null ;
+        for(SeedType seedType : SeedType.values()) {
+            if (seedName.equals(seedType.getName())) {
+                seed = seedType;
+                break;
+            }
+        }
+        if(seed == null){
+            MessageSystem.showError("Doesn't exist the seed with this name.",5.0f);
+            return;
+        }
+        Seed newSeed = new Seed(seed,1);
+        boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(newSeed);
+        if(added)
+            MessageSystem.showInfo(seedName + " added successfully!" ,4.0f);
+        else
+            MessageSystem.showError("Can't added seed!",4.0f);
     }
 }

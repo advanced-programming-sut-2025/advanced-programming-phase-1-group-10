@@ -2,6 +2,7 @@ package Assets;
 
 import Models.DateTime.Season;
 import Models.Planets.FruitType;
+import Models.Planets.SeedType;
 import Models.Planets.TreeCropType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -32,10 +33,11 @@ public class TreesAsset {
 
         TreeData data = new TreeData();
 
+        String seedName = treeCropType.getSource().replaceAll(" ","_");
         // Load Sapling
-        FileHandle saplingFile = Gdx.files.internal(treeFolderPath + treeName + "_Sapling.png");
+        FileHandle saplingFile = Gdx.files.internal(treeFolderPath + seedName + ".png");
         if (saplingFile.exists()) {
-            data.saplingTexture = new Texture(saplingFile);
+            data.saplingSprite = new Sprite(new Texture(saplingFile));
         }
 
         // Load stages 1-4
@@ -101,15 +103,15 @@ public class TreesAsset {
     }
 
     private static class TreeData {
-        Texture saplingTexture;
+        Sprite saplingSprite;
         Map<Integer, Texture> stageTextures = new HashMap<>();
         Texture stage5FruitTexture;
         Texture stage5SeasonalSheet;
         Map<Season, TextureRegion> stage5SeasonalTextures = new HashMap<>();
     }
 
-    public Texture getSaplingTexture(String treeName) {
-        return treeAssetsMap.get(treeName).saplingTexture;
+    public Sprite getSaplingSprite(String treeName) {
+        return treeAssetsMap.get(treeName).saplingSprite;
     }
 
     public Texture getStageTexture(String treeName, int stage) {
@@ -133,8 +135,8 @@ public class TreesAsset {
 
     public void dispose() {
         for (TreeData data : treeAssetsMap.values()) {
-            if (data.saplingTexture != null) data.saplingTexture.dispose();
             for (Texture texture : data.stageTextures.values()) {
+                if (data.saplingSprite != null) data.saplingSprite.getTexture().dispose();
                 texture.dispose();
             }
             if (data.stage5FruitTexture != null) data.stage5FruitTexture.dispose();

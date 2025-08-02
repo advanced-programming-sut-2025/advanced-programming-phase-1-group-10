@@ -1,15 +1,18 @@
 package Models.Planets;
 
+import Assets.TreesAsset;
 import Models.Item;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Fruit implements Item {
     private FruitType fruitType;
     private int numberOfFruit;
+    private TreesAsset treesAsset;
 
     public Fruit(FruitType fruitType, int numberOfFruit) {
         this.fruitType = fruitType;
         this.numberOfFruit = numberOfFruit;
+        this.treesAsset = new TreesAsset();
     }
 
     @Override
@@ -19,6 +22,11 @@ public class Fruit implements Item {
 
     @Override
     public Sprite show() {
+        for(TreeCropType treeCropType : TreeCropType.values()){
+            if(treeCropType.getFruitType().equals(fruitType)){
+                return treesAsset.getFruitSprite(treeCropType.getFruitType().getName());
+            }
+        }
         return null;
     }
 
