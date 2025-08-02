@@ -54,11 +54,11 @@ public class GameControllerFinal {
         this.interactController = new InteractController();
         this.energyController = new EnergyController();
         this.timeController = new TimeController();
-        this.cheatBoxController = new CheatBoxController();
         this.storeController = new StoreController();
         this.skillController = new SkillController();
         this.npcController = new NpcController();
         this.weatherController = new WeatherController();
+        this.cheatBoxController = new CheatBoxController(this);
         this.inventoryController = new InventoryController();
         this.dialogueController = new DialogueController();
         this.npcMenuController = new NpcMenuController();

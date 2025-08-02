@@ -3,7 +3,7 @@ package Controllers.FinalControllers;
 import Controllers.CheatCodeControllers;
 import Controllers.MessageSystem;
 import Models.Commands.CheatCodeCommands;
-import Models.Commands.GameCommands;
+import Models.Map;
 import Models.Position;
 import Models.Result;
 import com.Fianl.Main;
@@ -11,8 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -25,6 +23,7 @@ public class CheatBoxController {
 
     private InputProcessor previousInputProcessor;
     CheatCodeControllers cheatCodeController = new CheatCodeControllers();
+    private final GameControllerFinal gameController;
 
     private boolean isVisible = false;
     private final Stage stage;
@@ -36,7 +35,10 @@ public class CheatBoxController {
 
     private String lastEnteredText = "";
 
-    public CheatBoxController() {
+    public CheatBoxController(GameControllerFinal gameController) {
+
+        this.gameController = gameController;
+
         stage = new Stage(new ScreenViewport());
 
         Skin skin = Main.getInstance().getSkin();
@@ -142,12 +144,21 @@ public class CheatBoxController {
             else
                 MessageSystem.showError(result.message(),4.0f);
 
-        } else if((matcher = CheatCodeCommands.THOR_TILE.getMatcher(input)) != null){
-            System.out.println(cheatCodeController.thorTile(new Position(
-                    Integer.parseInt(matcher.group("x")),
-                    Integer.parseInt(matcher.group("y"))
-                )
-            ));
+        } else if ((matcher = CheatCodeCommands.THOR_TILE.getMatcher(input)) != null) {
+            int tileX = Integer.parseInt(matcher.group("x"));
+            int tileY = Integer.parseInt(matcher.group("y"));
+            Position pos = new Position(tileX, tileY);
+            MessageSystem.showMessage(cheatCodeController.thorTile(pos).message(),2f,Color.GREEN);
+
+
+
+            // Convert tile position to world coordinates (center of tile)
+            float worldX = tileX * Map.tileSize + Map.tileSize * 0.5f;
+            float worldY = tileY * Map.tileSize + Map.tileSize * 0.5f;
+            WeatherController weatherController = gameController.getWeatherController();
+
+            weatherController.spawnThunderAt(worldX, worldY);
+
         } else if((matcher = CheatCodeCommands.ADD_MONEY.getMatcher(input)) != null){
             Result result = cheatCodeController.addMoney(
                 matcher.group("count")
