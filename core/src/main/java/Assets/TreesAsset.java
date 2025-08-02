@@ -1,6 +1,7 @@
 package Assets;
 
 import Models.DateTime.Season;
+import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.FruitType;
 import Models.Planets.SeedType;
 import Models.Planets.TreeCropType;
@@ -17,13 +18,34 @@ public class TreesAsset {
 
     private final Map<String, TreeData> treeAssetsMap;
     private final Map<String, Sprite> fruitSprites;
+    private final Map<String, Sprite> seedSpries;
 
     public TreesAsset() {
         treeAssetsMap = new HashMap<>();
         fruitSprites = new HashMap<>();
+        seedSpries = new HashMap<>();
 
         for (TreeCropType treeCropType : TreeCropType.values()) {
             loadTreeAssets(treeCropType);
+        }
+
+        for (CropTypeNormal cropTypeNormal : CropTypeNormal.values()){
+            loadCropSeedsAssets(cropTypeNormal.getSource());
+        }
+    }
+
+    private void loadCropSeedsAssets(SeedType seedType){
+        String seedName = seedType.getName().replaceAll(" ", "_");
+        String path = "Crops/" + seedName + ".png";
+
+        try {
+            Sprite newSeed = new Sprite(new Texture(path));
+            if(newSeed != null){
+                seedSpries.put(seedType.getName(),newSeed);
+            }
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
         }
     }
 
@@ -131,6 +153,10 @@ public class TreesAsset {
 
     public Sprite getFruitSprite(String fruitName) {
         return fruitSprites.get(fruitName);
+    }
+
+    public Sprite getCropSeedSprite(String cropSeedName){
+        return seedSpries.get(cropSeedName);
     }
 
     public void dispose() {
