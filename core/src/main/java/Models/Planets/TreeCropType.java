@@ -8,20 +8,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum TreeCropType implements CropType {
-    APRICOT_TREE("Apricot Tree", "Apricot Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.APRICOT, 1, 59, true, 38, 17, List.of(Season.SPRING)),
-    CHERRY_TREE("Cherry Tree", "Cherry Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.CHERRY, 1, 80, true, 38, 17, List.of(Season.SPRING)),
-    BANANA_TREE("Banana Tree", "Banana Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.BANANA, 1, 150, true, 75, 33, List.of(Season.SUMMER)),
-    MANGO_TREE("Mango Tree", "Mango Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MANGO, 1, 130, true, 100, 45, List.of(Season.SUMMER)),
-    ORANGE_TREE("Orange Tree", "Orange Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.ORANGE, 1, 100, true, 38, 17, List.of(Season.SUMMER)),
-    PEACH_TREE("Peach Tree", "Peach Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.PEACH, 1, 140, true, 38, 17, List.of(Season.SUMMER)),
-    APPLE_TREE("Apple Tree", "Apple Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.APPLE, 1, 100, true, 38, 17, List.of(Season.FALL)),
-    POMEGRANATE_TREE("Pomegranate Tree", "Pomegranate Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.POMEGRANATE, 1, 140, true, 38, 17, List.of(Season.FALL)),
-    OAK_TREE("Oak Tree", "Acorns", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.OAK_RESIN, 7, 150, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
-    MAPLE_TREE("Maple Tree", "Maple Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MAPLE_SYRUP, 9, 200, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
-    PINE_TREE("Pine Tree", "Pine Cones", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.PINE_TAR, 5, 100, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
-    MAHOGANY_TREE("Mahogany Tree", "Mahogany Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.SAP, 1, 2, true, -2, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
-    MUSHROOM_TREE("Mushroom Tree", "Mushroom Tree Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.COMMON_MUSHROOM, 1, 40, true, 38, 17, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
-    MYSTIC_TREE("Mystic Tree", "Mystic Tree Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MYSTIC_SYRUP, 7, 1000, true, 500, 225, List.of(Season.SPRING, Season.SUMMER, Season.FALL));
+    APRICOT_TREE("Apricot", "Apricot Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.APRICOT, 1, 59, true, 38, 17, List.of(Season.SPRING)),
+    CHERRY_TREE("Cherry", "Cherry Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.CHERRY, 1, 80, true, 38, 17, List.of(Season.SPRING)),
+    BANANA_TREE("Banana", "Banana Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.BANANA, 1, 150, true, 75, 33, List.of(Season.SUMMER)),
+    MANGO_TREE("Mango", "Mango Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MANGO, 1, 130, true, 100, 45, List.of(Season.SUMMER)),
+    ORANGE_TREE("Orange", "Orange Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.ORANGE, 1, 100, true, 38, 17, List.of(Season.SUMMER)),
+    PEACH_TREE("Peach", "Peach Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.PEACH, 1, 140, true, 38, 17, List.of(Season.SUMMER)),
+    APPLE_TREE("Apple", "Apple Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.APPLE, 1, 100, true, 38, 17, List.of(Season.FALL)),
+    POMEGRANATE_TREE("Pomegranate", "Pomegranate Sapling", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.POMEGRANATE, 1, 140, true, 38, 17, List.of(Season.FALL)),
+    OAK_TREE("Oak", "Acorns", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.OAK_RESIN, 7, 150, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
+    MAPLE_TREE("Maple", "Maple Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MAPLE_SYRUP, 9, 200, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
+    PINE_TREE("Pine", "Pine Cones", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.PINE_TAR, 5, 100, false, 0, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
+    MAHOGANY_TREE("Mahogany", "Mahogany Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.SAP, 1, 2, true, -2, 0, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
+    MUSHROOM_TREE("Mushroom", "Mushroom Tree Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.COMMON_MUSHROOM, 1, 40, true, 38, 17, List.of(Season.SPRING, Season.SUMMER, Season.FALL)),
+    MYSTIC_TREE("Mystic", "Mystic Tree Seeds", new ArrayList<>(Arrays.asList(7, 7, 7, 7)), 28, FruitType.MYSTIC_SYRUP, 7, 1000, true, 500, 225, List.of(Season.SPRING, Season.SUMMER, Season.FALL));
 
     private final String name;
     private final String source;
