@@ -1,8 +1,6 @@
 package Assets;
 
 import Models.Planets.Crop.ForagingCropType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -15,7 +13,6 @@ public class ForagingCropAsset {
     public ForagingCropAsset() {
         cropSprites = new HashMap<>();
 
-
         for (ForagingCropType cropType : ForagingCropType.values()) {
             loadCropAsset(cropType);
         }
@@ -26,9 +23,8 @@ public class ForagingCropAsset {
         String filePath = "ForagingCrops/" + cropName + ".png";
 
         try {
-            FileHandle fileHandle = Gdx.files.internal(filePath);
-            if (fileHandle.exists()) {
-                Texture texture = new Texture(fileHandle);
+            if (TextureCache.exists(filePath)) {
+                Texture texture = TextureCache.get(filePath);
                 Sprite sprite = new Sprite(texture);
                 cropSprites.put(cropType.getName(), sprite);
                 System.out.println("Loaded crop asset: " + filePath);
@@ -50,12 +46,7 @@ public class ForagingCropAsset {
     }
 
     public void dispose() {
-        for (Sprite sprite : cropSprites.values()) {
-            if (sprite != null && sprite.getTexture() != null) {
-                sprite.getTexture().dispose();
-            }
-        }
-
+        // فقط اسپریت‌ها پاک می‌شوند، تکسچرها توسط TextureCache مدیریت می‌شوند
         cropSprites.clear();
     }
 }
