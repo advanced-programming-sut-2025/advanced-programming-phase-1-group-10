@@ -2,6 +2,7 @@ package Controllers;
 
 import Assets.GreenHouseAsset;
 import Assets.HouseAsset;
+import Controllers.FinalControllers.TreeController;
 import Models.*;
 import Models.Config.FarmConfig;
 import Models.FriendShip.Friendship;
@@ -289,7 +290,6 @@ public class GameMenuControllers {
 //            if(treeType.isForaging()){
 //                Tree newTree = new Tree(treeType);
 //                planets.add(newTree);
-//                newTree.setPlantedDate(App.getInstance().getCurrentGame().getGameTime());
 //            }
 //        }
 

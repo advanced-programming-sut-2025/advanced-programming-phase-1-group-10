@@ -65,15 +65,13 @@ public class InteractController {
         Tile tile = map.getMap()[pos.getX()][pos.getY()];
         tile.setPosition(pos);
 
-        System.out.println("tile pos  = " + pos.getX() + "  "+ pos.getY());
         if (currentItem == null) {
             return;
         }
 
         if (currentItem instanceof Tool) {
             ((Tool) currentItem).use(tile);
-        }
-        else if(currentItem instanceof Seed){
+        } else if(currentItem instanceof Seed){
             ((Seed) currentItem) .use(tile);
         }
     }

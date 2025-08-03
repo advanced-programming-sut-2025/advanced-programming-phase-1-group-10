@@ -1,6 +1,7 @@
 package Models.Planets;
 
 import Assets.TreesAsset;
+import Controllers.MessageSystem;
 import Models.App;
 import Models.Item;
 import Models.Planets.Crop.CropTypeNormal;
@@ -54,17 +55,21 @@ public class Seed implements Item {
     public void use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         if (seedType.getTreeCropType() != null) {
+            if(!tile.getisPlow()){
+                MessageSystem.showError("You sould plow this tile to plant a tree!",5.0f);
+                return;
+            }
             if (tile.getPlace() == null && tile.getItem() == null && tile.getCrop() == null && tile.getTree() == null) {
                 String treeType = seedType.getTreeCropType().getName() + "_TREE" ;
                 Tree newTree = new Tree(TreeType.valueOf(treeType.toUpperCase()));
                 newTree.setPosition(new Position(tile.getPosition().getX(), tile.getPosition().getY()));
                 tile.setTree(newTree);
                 App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
-//                newTree.setPlantedDate(App.getInstance().getCurrentGame().getGameTime().getCopy());
-                System.out.println("tree pos " + newTree.getPosition().getX() + " " + newTree.getPosition().getY());
+                MessageSystem.showInfo("The new tree planted successfully!",5.0f);
                 this.numberOfSeed--;
                 if (this.numberOfSeed <= 0) {
                     player.getInventory().getBackPack().removeItem(this);
+                    player.getIventoryBarItems().remove(this);
                 }
             }
         }

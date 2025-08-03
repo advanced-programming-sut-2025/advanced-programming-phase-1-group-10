@@ -64,23 +64,14 @@ public class TreeController {
         for (Tree tree : placedTrees) {
             Sprite treeSprite = tree.getSprite(currentSeason);
             if (treeSprite != null) {
-
-
-
-
                 float x = tree.getPosition().getX();
                 float y = tree.getPosition().getY();
-
-
-                    x *= Map.tileSize;
-                    y *= Map.tileSize;
-
-
-                batch.draw(treeSprite, x, y, treeSprite.getWidth(), treeSprite.getHeight());
+                x *= Map.tileSize;
+                y *= Map.tileSize;
+                batch.draw(treeSprite, y - 32, x, treeSprite.getWidth(), treeSprite.getHeight());
             }
         }
     }
-
 
     public List<Tree> getPlacedTrees() {
         return placedTrees;

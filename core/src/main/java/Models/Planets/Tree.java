@@ -50,8 +50,6 @@ public class Tree implements Item {
 
     public void updateGrowth() {
         int daysPassed = DateTime.daysDifference(plantedDate, App.getInstance().getCurrentGame().getGameTime());
-        System.out.println("growthStage = " + growthStage);
-
         if (growthStage < 5) {
 
             int newGrowthStage = 1;
@@ -59,10 +57,8 @@ public class Tree implements Item {
 
             for (int i = 0; i < treeType.getItems().size() && newGrowthStage < 5; i++) {
                 int stageTime = treeType.getItems().get(i);
-                System.out.println("stage time " + stageTime);
 
                 totalGrowthTime += stageTime;
-                System.out.println("totalgroth time = " + totalGrowthTime + " day passed = " + daysPassed);
 
                 if (daysPassed >= totalGrowthTime) {
 
@@ -72,13 +68,9 @@ public class Tree implements Item {
                     break;
                 }
             }
-
-
             newGrowthStage = Math.min(5, newGrowthStage);
 
-
             if (newGrowthStage > growthStage) {
-                System.out.println("last growth Stage " + growthStage + "new growth Stage " + newGrowthStage);
                 growthStage = newGrowthStage;
             }
         }
