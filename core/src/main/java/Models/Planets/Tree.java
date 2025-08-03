@@ -1,8 +1,12 @@
 package Models.Planets;
 
+import Assets.TreesAsset;
 import Models.App;
 import Models.DateTime.DateTime;
+import Models.DateTime.Season;
 import Models.Item;
+import Models.Position;
+import Models.Tile;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
@@ -13,13 +17,24 @@ public class Tree implements Item {
     private int numberOfTree = 1;
     private ArrayList<Fruit> fruits = new ArrayList<>();
     private DateTime plantedDate;
-    private int growthStage = 0;
+    private int growthStage ;
     private int daysSinceLastFruit = 0;
+    private TreesAsset treesAsset;
+    private Position position;
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
 
     public Tree(TreeType treeType) {
         this.treeType = treeType;
-        this.plantedDate = App.getInstance().getCurrentGame().getGameTime();
-
+        this.plantedDate = App.getInstance().getCurrentGame().getGameTime().copy();
+        this.treesAsset = new TreesAsset();
+        this.growthStage = 1;
     }
 
     @Override
@@ -29,9 +44,62 @@ public class Tree implements Item {
 
     @Override
     public Sprite show() {
-        return null;
+        return treesAsset.getSaplingSprite(treeType.getName());
     }
 
+
+    public void updateGrowth() {
+        int daysPassed = DateTime.daysDifference(plantedDate, App.getInstance().getCurrentGame().getGameTime());
+        System.out.println("growthStage = " + growthStage);
+
+        if (growthStage < 5) {
+
+            int newGrowthStage = 1;
+            int totalGrowthTime = 0;
+
+            for (int i = 0; i < treeType.getItems().size() && newGrowthStage < 5; i++) {
+                int stageTime = treeType.getItems().get(i);
+                System.out.println("stage time " + stageTime);
+
+                totalGrowthTime += stageTime;
+                System.out.println("totalgroth time = " + totalGrowthTime + " day passed = " + daysPassed);
+
+                if (daysPassed >= totalGrowthTime) {
+
+                    newGrowthStage++;
+                } else {
+
+                    break;
+                }
+            }
+
+
+            newGrowthStage = Math.min(5, newGrowthStage);
+
+
+            if (newGrowthStage > growthStage) {
+                System.out.println("last growth Stage " + growthStage + "new growth Stage " + newGrowthStage);
+                growthStage = newGrowthStage;
+            }
+        }
+    }
+
+
+
+    public Sprite getSprite(Season currentSeason) {
+        if (growthStage == 0) {
+            return treesAsset.getSaplingSprite(treeType.getName());
+        } else if (growthStage >= 1 && growthStage <= 4) {
+            return new Sprite(treesAsset.getStageTexture(treeType.getName(), growthStage));
+        } else if (growthStage == 5) {
+            if (treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
+                return new Sprite(treesAsset.getStage5FruitTexture(treeType.getName()));
+            } else {
+                return new Sprite(treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason));
+            }
+        }
+        return null;
+    }
 
     @Override
     public int getNumber() {

@@ -277,16 +277,21 @@ public class GameMenuControllers {
         ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream)
             .filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
         ArrayList<Item> planets = new ArrayList<>();
-        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
-            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
-                planets.add(new Crop(foragingCropType, 1));
-        }
 
-        for(TreeType treeType : TreeType.values()) {
-            if(treeType.isForaging()){
-                planets.add(new Tree(treeType));
-            }
-        }
+        // should added
+
+//        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
+//            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
+//                planets.add(new Crop(foragingCropType, 1));
+//        }
+
+//        for(TreeType treeType : TreeType.values()) {
+//            if(treeType.isForaging()){
+//                Tree newTree = new Tree(treeType);
+//                planets.add(newTree);
+//                newTree.setPlantedDate(App.getInstance().getCurrentGame().getGameTime());
+//            }
+//        }
 
         for (int i = 0; i < numberOfRandom; i++) {
             Item randomItem = getRandomItem(planets);

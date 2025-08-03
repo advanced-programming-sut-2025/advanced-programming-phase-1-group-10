@@ -1,8 +1,12 @@
 package Models.Planets;
 
 import Assets.TreesAsset;
+import Models.App;
 import Models.Item;
 import Models.Planets.Crop.CropTypeNormal;
+import Models.PlayerStuff.Player;
+import Models.Position;
+import Models.Tile;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Seed implements Item {
@@ -28,12 +32,8 @@ public class Seed implements Item {
                 return treesAsset.getSaplingSprite(treeCropType.getName());
             }
         }
-        for(CropTypeNormal cropTypeNormal : CropTypeNormal.values()){
-            if(cropTypeNormal.getSource().equals(seedType))
-                return treesAsset.getCropSeedSprite(seedType.getName());
-        }
+        return treesAsset.getCropSeedSprite(seedType.getName());
         // should add for other seeds
-        return null;
     }
 
     @Override
@@ -49,5 +49,24 @@ public class Seed implements Item {
     @Override
     public Item copyItem(int number) {
         return new Seed(seedType, number);
+    }
+
+    public void use(Tile tile) {
+        Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        if (seedType.getTreeCropType() != null) {
+            if (tile.getPlace() == null && tile.getItem() == null && tile.getCrop() == null && tile.getTree() == null) {
+                String treeType = seedType.getTreeCropType().getName() + "_TREE" ;
+                Tree newTree = new Tree(TreeType.valueOf(treeType.toUpperCase()));
+                newTree.setPosition(new Position(tile.getPosition().getX(), tile.getPosition().getY()));
+                tile.setTree(newTree);
+                App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
+//                newTree.setPlantedDate(App.getInstance().getCurrentGame().getGameTime().getCopy());
+                System.out.println("tree pos " + newTree.getPosition().getX() + " " + newTree.getPosition().getY());
+                this.numberOfSeed--;
+                if (this.numberOfSeed <= 0) {
+                    player.getInventory().getBackPack().removeItem(this);
+                }
+            }
+        }
     }
 }

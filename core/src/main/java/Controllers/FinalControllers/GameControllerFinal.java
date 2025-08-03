@@ -43,7 +43,7 @@ public class GameControllerFinal {
     private GiftHistoryController giftHistoryController;
     private PlayersNearbyActionController playersNearbyActionController;
     private MapLayerController mapLayerController;
-
+    private TreeController treeController;
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -72,6 +72,7 @@ public class GameControllerFinal {
         this.animalMovementController = new AnimalMovementController(new AnimalAsset(), App.getInstance().getCurrentGame().getGameMap());
         this.playersNearbyActionController = new PlayersNearbyActionController();
         this.mapLayerController = new MapLayerController();
+        this.treeController = new TreeController();
 
 
 
@@ -103,6 +104,8 @@ public class GameControllerFinal {
         if (fishController != null) {
             fishController.update(batch, delta);
         }
+        treeController.update(delta);
+        treeController.render(batch);
         animalMovementController.update(delta);
         animalMovementController.render(batch);
     }
@@ -144,6 +147,9 @@ public class GameControllerFinal {
         fishingMiniGameActive = active;
     }
 
+    public TreeController getTreeController() {
+        return treeController;
+    }
 
     public boolean isFishingMiniGameActive() {
         return fishingMiniGameActive;

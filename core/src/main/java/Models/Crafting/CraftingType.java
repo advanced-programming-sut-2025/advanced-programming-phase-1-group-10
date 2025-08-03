@@ -128,10 +128,10 @@ public enum CraftingType {
     }),
 
     MysticTreeSeed("Mystic Tree Seed", "foraging", 4, null, new Item[] {
-            new Seed(SeedType.ACORNS, 5),
-            new Seed(SeedType.MAPLE_SEED, 5),
-            new Seed(SeedType.PINE_CONE, 5),
-            new Seed(SeedType.MAHOGANY_SEED, 5)
+            new Seed(SeedType.PINE_TREE, 5),
+            new Seed(SeedType.MAPLE_TREE, 5),
+            new Seed(SeedType.PINE_TREE, 5),
+            new Seed(SeedType.MAHOGANY_TREE, 5)
     });
 
     private final String name;

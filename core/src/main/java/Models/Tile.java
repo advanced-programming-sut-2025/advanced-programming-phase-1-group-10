@@ -4,7 +4,9 @@ import Assets.GrassAssets;
 import Assets.OtherAssets;
 import Models.Animal.Animal;
 import Models.Place.Place;
+import Models.Planets.Crop.Crop;
 import Models.Planets.Seed;
+import Models.Planets.Tree;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,6 +23,8 @@ public class Tile {
     private Farm farm;
     private Place place;
     private Animal animal;
+    private Crop crop;
+    private Tree tree;
 
     private Position position;
     private TileType tileType;
@@ -104,6 +108,10 @@ public class Tile {
         return position;
     }
 
+    public Seed getPlantedSeed() {
+        return plantedSeed;
+    }
+
     public void setPlantedSeed(Seed plantedSeed) {
         this.plantedSeed = plantedSeed;
     }
@@ -151,7 +159,20 @@ public class Tile {
     public boolean isRenderInside() {
         return renderInside;
     }
+
+    public Crop getCrop() {
+        return crop;
+    }
+
+    public void setCrop(Crop crop) {
+        this.crop = crop;
+    }
+
+    public Tree getTree() {
+        return tree;
+    }
+
+    public void setTree(Tree tree) {
+        this.tree = tree;
+    }
 }
-
-
-

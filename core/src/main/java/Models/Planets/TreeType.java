@@ -12,7 +12,7 @@ public enum TreeType{
     PEACH_TREE("Peach",FruitType.PEACH,false),
     APPLE_TREE("Apple",FruitType.APPLE,false),
     POMEGRANATE_TREE("Pomegranate",FruitType.POMEGRANATE,false),
-    OAK_TREE("Oak Tree",FruitType.OAK_RESIN,true),
+    OAK_TREE("Oak",FruitType.OAK_RESIN,true),
     MAPLE_TREE("Maple",FruitType.MAPLE_SYRUP,true),
     PINE_TREE("Pine",FruitType.PINE_TAR,true),
     MAHOGANY_TREE("Mahogany",FruitType.SAP,true),

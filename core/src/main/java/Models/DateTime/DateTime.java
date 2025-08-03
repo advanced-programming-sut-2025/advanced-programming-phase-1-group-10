@@ -98,4 +98,15 @@ public class DateTime {
         calendar.set(this.year, this.month - 1, this.day, this.hour, 0, 0);
         return calendar.getTime();
     }
+
+    public DateTime copy() {
+        return new DateTime(this.season, this.year, this.month, this.day, this.hour);
+    }
+
+    public static int daysDifference(DateTime startDate, DateTime endDate) {
+        int startTotalDays = startDate.getYear() * 12 * 28 + (startDate.getMonth() - 1) * 28 + startDate.getDay();
+        int endTotalDays = endDate.getYear() * 12 * 28 + (endDate.getMonth() - 1) * 28 + endDate.getDay();
+
+        return Math.abs(endTotalDays - startTotalDays);
+    }
 }

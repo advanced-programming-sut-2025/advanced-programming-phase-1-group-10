@@ -75,24 +75,29 @@ public class TreesAsset {
         if (fruitFile.exists()) {
             data.stage5FruitTexture = new Texture(fruitFile);
         } else {
-            FileHandle seasonalFile = Gdx.files.internal(treeFolderPath + treeName + "_Stage_5.png");
-            if (seasonalFile.exists()) {
-                Texture seasonalSheet = new Texture(seasonalFile);
-                data.stage5SeasonalSheet = seasonalSheet;
+            if(treeCropType.equals(TreeCropType.MUSHROOM_TREE)){
+                data.stage5FruitTexture = new Texture("Trees/Mushroom/Mushroom_Stage_5.png");
+            }
+            else {
+                FileHandle seasonalFile = Gdx.files.internal(treeFolderPath + treeName + "_Stage_5.png");
+                if (seasonalFile.exists()) {
+                    Texture seasonalSheet = new Texture(seasonalFile);
+                    data.stage5SeasonalSheet = seasonalSheet;
 
-                int frameWidth = seasonalSheet.getWidth() / 4;
-                int frameHeight = seasonalSheet.getHeight();
-                TextureRegion[] frames = new TextureRegion[4];
+                    int frameWidth = seasonalSheet.getWidth() / 4;
+                    int frameHeight = seasonalSheet.getHeight();
+                    TextureRegion[] frames = new TextureRegion[4];
 
-                frames[0] = new TextureRegion(seasonalSheet, 3 * frameWidth, 0, frameWidth, frameHeight);
-                frames[1] = new TextureRegion(seasonalSheet, 2 * frameWidth, 0, frameWidth, frameHeight);
-                frames[2] = new TextureRegion(seasonalSheet, 1 * frameWidth, 0, frameWidth, frameHeight);
-                frames[3] = new TextureRegion(seasonalSheet, 0, 0, frameWidth, frameHeight);
+                    frames[0] = new TextureRegion(seasonalSheet, 3 * frameWidth, 0, frameWidth, frameHeight);
+                    frames[1] = new TextureRegion(seasonalSheet, 2 * frameWidth, 0, frameWidth, frameHeight);
+                    frames[2] = new TextureRegion(seasonalSheet, 1 * frameWidth, 0, frameWidth, frameHeight);
+                    frames[3] = new TextureRegion(seasonalSheet, 0, 0, frameWidth, frameHeight);
 
-                data.stage5SeasonalTextures.put(Season.WINTER, frames[0]);
-                data.stage5SeasonalTextures.put(Season.FALL, frames[1]);
-                data.stage5SeasonalTextures.put(Season.SPRING, frames[2]);
-                data.stage5SeasonalTextures.put(Season.SUMMER, frames[3]);
+                    data.stage5SeasonalTextures.put(Season.WINTER, frames[0]);
+                    data.stage5SeasonalTextures.put(Season.FALL, frames[1]);
+                    data.stage5SeasonalTextures.put(Season.SPRING, frames[2]);
+                    data.stage5SeasonalTextures.put(Season.SUMMER, frames[3]);
+                }
             }
         }
         treeAssetsMap.put(treeCropType.getName(), data);

@@ -2277,7 +2277,7 @@ public class GameController {
         }
 
         // Update all plants and trees regardless of watering status
-        updateAllPlantsAndTrees();
+//        updateAllPlantsAndTrees();
 
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
