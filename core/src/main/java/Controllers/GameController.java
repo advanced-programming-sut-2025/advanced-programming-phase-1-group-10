@@ -2296,7 +2296,6 @@ public class GameController {
 
     private void updateRandomTrees(){
         DateTime currentTime = App.getInstance().getCurrentGame().getGameTime();
-        System.out.println(plants.size());
         if (!isSameDate(currentTime, lastUpdatedDate)) {
             for(Item item : plants){
                 if(item instanceof Tree){

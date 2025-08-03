@@ -1,5 +1,6 @@
 package Models.Planets.Crop;
 
+import Assets.ForagingCropAsset;
 import Models.DateTime.DateTime;
 import Models.Item;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,6 +13,11 @@ public class Crop implements Item {
     private DateTime whenPlanted;
     private boolean isFertilized;
     private boolean isHarvestable;
+    private static ForagingCropAsset cropAsset;
+
+    static {
+        cropAsset = new ForagingCropAsset();
+    }
 
     public Crop(CropType cropType, int numberOfCrop) {
         this.cropType = cropType;
@@ -28,6 +34,10 @@ public class Crop implements Item {
 
     @Override
     public Sprite show() {
+        if (cropType instanceof ForagingCropType) {
+            return cropAsset.getCropSprite((ForagingCropType) cropType);
+        }
+        // add for other crops
         return null;
     }
 

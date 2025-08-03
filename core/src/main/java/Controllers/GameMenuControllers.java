@@ -281,10 +281,10 @@ public class GameMenuControllers {
 
         // should added
 
-//        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
-//            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
-//                planets.add(new Crop(foragingCropType, 1));
-//        }
+        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
+            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
+                planets.add(new Crop(foragingCropType, 1));
+        }
 
         for(TreeType treeType : TreeType.values()) {
             if(treeType.isForaging()){
@@ -378,7 +378,7 @@ public class GameMenuControllers {
 
             // Setup resources on the farm
             putRandomMineral(farm, 2);
-            putRandomForagingPlanet(farm, 2);
+            putRandomForagingPlanet(farm, 3);
 
             // Assign the farm to the player
             player.setFarm(farm);
