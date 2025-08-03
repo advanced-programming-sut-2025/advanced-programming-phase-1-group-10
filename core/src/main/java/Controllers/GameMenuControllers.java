@@ -286,12 +286,13 @@ public class GameMenuControllers {
 //                planets.add(new Crop(foragingCropType, 1));
 //        }
 
-//        for(TreeType treeType : TreeType.values()) {
-//            if(treeType.isForaging()){
-//                Tree newTree = new Tree(treeType);
-//                planets.add(newTree);
-//            }
-//        }
+        for(TreeType treeType : TreeType.values()) {
+            if(treeType.isForaging()){
+                Tree newTree = new Tree(treeType);
+                planets.add(newTree);
+                GameController.plants.add(newTree);
+            }
+        }
 
         for (int i = 0; i < numberOfRandom; i++) {
             Item randomItem = getRandomItem(planets);
@@ -376,8 +377,8 @@ public class GameMenuControllers {
             getTileByPosition(playerPos).setPerson(player);
 
             // Setup resources on the farm
-            putRandomMineral(farm, 4);
-            putRandomForagingPlanet(farm, 10);
+            putRandomMineral(farm, 2);
+            putRandomForagingPlanet(farm, 2);
 
             // Assign the farm to the player
             player.setFarm(farm);

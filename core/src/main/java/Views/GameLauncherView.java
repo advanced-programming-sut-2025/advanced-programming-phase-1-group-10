@@ -1,5 +1,6 @@
 package Views;
 
+import Assets.TextureCache;
 import Controllers.FinalControllers.AnimalListController;
 import Controllers.FinalControllers.GameControllerFinal;
 import Controllers.MessageSystem;
@@ -163,6 +164,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             controller.getFishController().dispose();
         }
         controller.getFishingMiniGameController().dispose();
+        TextureCache.disposeAll();
     }
 
     @Override

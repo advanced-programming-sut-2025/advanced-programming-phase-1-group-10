@@ -43,13 +43,13 @@ public class TreeController {
     }
 
 
-    private boolean isSameDate(DateTime date1, DateTime date2) {
+    public static boolean isSameDate(DateTime date1, DateTime date2) {
         return date1.getYear() == date2.getYear() &&
             date1.getMonth() == date2.getMonth() &&
             date1.getDay() == date2.getDay();
     }
 
-    private DateTime copyDateTime(DateTime original) {
+    public static DateTime copyDateTime(DateTime original) {
         return new DateTime(
             original.getSeason(),
             original.getYear(),

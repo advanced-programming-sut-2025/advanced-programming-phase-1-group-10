@@ -1,13 +1,11 @@
 package Models.Planets;
 
 import Assets.TreesAsset;
-import Models.App;
+import Models.*;
 import Models.DateTime.DateTime;
 import Models.DateTime.Season;
-import Models.Item;
-import Models.Position;
-import Models.Tile;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 
@@ -19,7 +17,7 @@ public class Tree implements Item {
     private DateTime plantedDate;
     private int growthStage ;
     private int daysSinceLastFruit = 0;
-    private TreesAsset treesAsset;
+    private final TreesAsset treesAsset = new TreesAsset();
     private Position position;
 
     public Position getPosition() {
@@ -33,7 +31,6 @@ public class Tree implements Item {
     public Tree(TreeType treeType) {
         this.treeType = treeType;
         this.plantedDate = App.getInstance().getCurrentGame().getGameTime().copy();
-        this.treesAsset = new TreesAsset();
         this.growthStage = 1;
     }
 
@@ -44,8 +41,45 @@ public class Tree implements Item {
 
     @Override
     public Sprite show() {
-        return treesAsset.getSaplingSprite(treeType.getName());
+        Sprite sprite = null;
+
+        if (growthStage == 0) {
+            sprite = treesAsset.getSaplingSprite(treeType.getName());
+        } else if (growthStage >= 1 && growthStage <= 4) {
+            if (treesAsset.getStageTexture(treeType.getName(), growthStage) != null) {
+                sprite = new Sprite(treesAsset.getStageTexture(treeType.getName(), growthStage));
+            }
+        } else if (growthStage == 5) {
+            if (treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
+                sprite = new Sprite(treesAsset.getStage5FruitTexture(treeType.getName()));
+            } else {
+                Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+                if (treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason) != null) {
+                    sprite = new Sprite(treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason));
+                }
+            }
+        }
+
+        if (sprite != null) {
+
+            float width = 32;
+            float height = 64;
+
+            if (growthStage >= 3) {
+
+                width = 64;
+                height = 96;
+            }
+
+            sprite.setSize(width, height);
+
+
+            sprite.setOrigin(width / 2, 0);
+        }
+
+        return sprite;
     }
+
 
 
     public void updateGrowth() {
@@ -73,6 +107,26 @@ public class Tree implements Item {
             if (newGrowthStage > growthStage) {
                 growthStage = newGrowthStage;
             }
+        }
+    }
+
+    public void renderAt(SpriteBatch batch, int tileX, int tileY) {
+        Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+        Sprite treeSprite = getSprite(currentSeason);
+
+        if (treeSprite != null) {
+
+            float x = tileX * Map.tileSize;
+            float y = tileY * Map.tileSize;
+
+
+            float offsetY = 32;
+            if (growthStage >= 3) {
+                offsetY = 48;
+            }
+
+
+            batch.draw(treeSprite, y - offsetY, x, treeSprite.getWidth(), treeSprite.getHeight());
         }
     }
 

@@ -38,9 +38,19 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static Controllers.FinalControllers.TreeController.copyDateTime;
+import static Controllers.FinalControllers.TreeController.isSameDate;
+
 public class GameController {
 
     private final Random random = new Random();
+    public static ArrayList<Item> plants = new ArrayList<>();
+    private DateTime lastUpdatedDate;
+
+    public GameController(){
+        this.lastUpdatedDate = new DateTime(Season.SPRING, 1990, 1, 1, 9);
+    }
+
 
     public Result showEnergy() {
         final double energy = App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount();
@@ -2257,8 +2267,8 @@ public class GameController {
                 player.getEnergy().setEnergyAmount(200);
             }
             //put random crops
-            setRandoms.putRandomMineral(player.getFarm(),3);
-            setRandoms.putRandomForagingPlanet(player.getFarm(),3);
+            setRandoms.putRandomMineral(player.getFarm(),2);
+            setRandoms.putRandomForagingPlanet(player.getFarm(),2);
         }
         //Handle Weather
         game.setWeather(game.getNextDayWeather());
@@ -2278,9 +2288,25 @@ public class GameController {
 
         // Update all plants and trees regardless of watering status
 //        updateAllPlantsAndTrees();
+        updateRandomTrees();
 
         //Set Player to current player
         game.setCurrentPlayer(game.getPlayers().get(0));
+    }
+
+    private void updateRandomTrees(){
+        DateTime currentTime = App.getInstance().getCurrentGame().getGameTime();
+        System.out.println(plants.size());
+        if (!isSameDate(currentTime, lastUpdatedDate)) {
+            for(Item item : plants){
+                if(item instanceof Tree){
+                    ((Tree) item).updateGrowth();
+                }
+            }
+            lastUpdatedDate = copyDateTime(currentTime);
+            System.out.println("trees updated at date : " +
+                currentTime.getYear() + "/" + currentTime.getMonth() + "/" + currentTime.getDay());
+        }
     }
 
     private void updateAllPlantsAndTrees() {

@@ -38,14 +38,9 @@ public class TreesAsset {
         String seedName = seedType.getName().replaceAll(" ", "_");
         String path = "Crops/" + seedName + ".png";
 
-        try {
-            Sprite newSeed = new Sprite(new Texture(path));
-            if(newSeed != null){
-                seedSpries.put(seedType.getName(),newSeed);
-            }
-        }
-        catch (Exception e){
-            System.err.println(e.getMessage());
+        if (TextureCache.exists(path)) {
+            Sprite newSeed = new Sprite(TextureCache.get(path));
+            seedSpries.put(seedType.getName(), newSeed);
         }
     }
 
@@ -57,31 +52,34 @@ public class TreesAsset {
 
         String seedName = treeCropType.getSource().replaceAll(" ","_");
         // Load Sapling
-        FileHandle saplingFile = Gdx.files.internal(treeFolderPath + seedName + ".png");
-        if (saplingFile.exists()) {
-            data.saplingSprite = new Sprite(new Texture(saplingFile));
+        String saplingPath = treeFolderPath + seedName + ".png";
+        if (TextureCache.exists(saplingPath)) {
+            data.saplingSprite = new Sprite(TextureCache.get(saplingPath));
         }
 
         // Load stages 1-4
         for (int i = 1; i <= 4; i++) {
-            FileHandle stageFile = Gdx.files.internal(treeFolderPath + treeName + "_Stage_" + i + ".png");
-            if (stageFile.exists()) {
-                data.stageTextures.put(i, new Texture(stageFile));
+            String stagePath = treeFolderPath + treeName + "_Stage_" + i + ".png";
+            if (TextureCache.exists(stagePath)) {
+                data.stageTextures.put(i, TextureCache.get(stagePath));
             }
         }
 
         // Load Stage 5 with conditional logic
-        FileHandle fruitFile = Gdx.files.internal(treeFolderPath + treeName + "_Stage_5_Fruit.png");
-        if (fruitFile.exists()) {
-            data.stage5FruitTexture = new Texture(fruitFile);
+        String fruitStagePath = treeFolderPath + treeName + "_Stage_5_Fruit.png";
+        if (TextureCache.exists(fruitStagePath)) {
+            data.stage5FruitTexture = TextureCache.get(fruitStagePath);
         } else {
             if(treeCropType.equals(TreeCropType.MUSHROOM_TREE)){
-                data.stage5FruitTexture = new Texture("Trees/Mushroom/Mushroom_Stage_5.png");
+                String mushroomPath = "Trees/Mushroom/Mushroom_Stage_5.png";
+                if (TextureCache.exists(mushroomPath)) {
+                    data.stage5FruitTexture = TextureCache.get(mushroomPath);
+                }
             }
             else {
-                FileHandle seasonalFile = Gdx.files.internal(treeFolderPath + treeName + "_Stage_5.png");
-                if (seasonalFile.exists()) {
-                    Texture seasonalSheet = new Texture(seasonalFile);
+                String seasonalPath = treeFolderPath + treeName + "_Stage_5.png";
+                if (TextureCache.exists(seasonalPath)) {
+                    Texture seasonalSheet = TextureCache.get(seasonalPath);
                     data.stage5SeasonalSheet = seasonalSheet;
 
                     int frameWidth = seasonalSheet.getWidth() / 4;
@@ -100,19 +98,19 @@ public class TreesAsset {
                 }
             }
         }
+
         treeAssetsMap.put(treeCropType.getName(), data);
 
         // Load Fruit Asset
         FruitType fruitType = treeCropType.getFruitType();
         if (fruitType != null && !fruitSprites.containsKey(fruitType.getName())) {
             String fruitName = fruitType.getName().replace(" ", "_");
-            String fruitFilePath = "Trees/" + treeName + "/" + fruitName +".png";
-            try {
-                Texture fruitTexture = new Texture(Gdx.files.internal(fruitFilePath));
-                Sprite fruitSprite = new Sprite(fruitTexture);
+            String fruitFilePath = "Trees/" + treeName + "/" + fruitName + ".png";
+            if (TextureCache.exists(fruitFilePath)) {
+                Sprite fruitSprite = new Sprite(TextureCache.get(fruitFilePath));
                 fruitSprites.put(fruitType.getName(), fruitSprite);
-            } catch (Exception e) {
-                Gdx.app.error("TreesAsset", "Failed to load fruit texture for: " + fruitName + " at " + fruitFilePath, e);
+            } else {
+                Gdx.app.error("TreesAsset", "Failed to load fruit texture for: " + fruitName + " at " + fruitFilePath);
             }
         }
     }
@@ -166,17 +164,39 @@ public class TreesAsset {
 
     public void dispose() {
         for (TreeData data : treeAssetsMap.values()) {
-            for (Texture texture : data.stageTextures.values()) {
-                if (data.saplingSprite != null) data.saplingSprite.getTexture().dispose();
-                texture.dispose();
+            if (data.saplingSprite != null && data.saplingSprite.getTexture() != null) {
+                data.saplingSprite.getTexture().dispose();
             }
-            if (data.stage5FruitTexture != null) data.stage5FruitTexture.dispose();
-            if (data.stage5SeasonalSheet != null) data.stage5SeasonalSheet.dispose();
+
+            for (Texture texture : data.stageTextures.values()) {
+                if (texture != null) {
+                    texture.dispose();
+                }
+            }
+
+            if (data.stage5FruitTexture != null) {
+                data.stage5FruitTexture.dispose();
+            }
+
+            if (data.stage5SeasonalSheet != null) {
+                data.stage5SeasonalSheet.dispose();
+            }
         }
+
         for (Sprite sprite : fruitSprites.values()) {
-            if (sprite.getTexture() != null) {
+            if (sprite != null && sprite.getTexture() != null) {
                 sprite.getTexture().dispose();
             }
         }
+
+        for (Sprite sprite : seedSpries.values()) {
+            if (sprite != null && sprite.getTexture() != null) {
+                sprite.getTexture().dispose();
+            }
+        }
+
+        treeAssetsMap.clear();
+        fruitSprites.clear();
+        seedSpries.clear();
     }
 }
