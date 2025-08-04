@@ -1,6 +1,5 @@
 package Assets;
 
-import Models.App;
 import Models.Tools.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -48,6 +47,11 @@ public class ToolAsset {
     private final Sprite fiberglasspole = new Sprite(new Texture("tools/fishingpole/fiberglass.png"));
     private final Sprite iridiumpole = new Sprite(new Texture("tools/fishingpole/iridium.png"));
 
+    //SHEARS
+    private final Sprite shears = new Sprite(new Texture("tools/shears.png"));
+
+    //MILKPAIL
+    private final Sprite milkPail = new Sprite(new Texture("tools/MilkPail.png"));
 
     public Sprite show(Tool tool) {
         Quality q = tool.getQuality();
@@ -99,6 +103,10 @@ public class ToolAsset {
                 case STEEL -> fiberglasspole;
                 case GOLD, IRIDIUM -> iridiumpole;
             };
+        } else if(tool instanceof Shear){
+            return shears;
+        } else if(tool instanceof MilkPail){
+            return milkPail;
         }
 
         return null; // Unknown tool type

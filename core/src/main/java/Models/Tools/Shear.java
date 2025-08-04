@@ -1,5 +1,7 @@
 package Models.Tools;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class Shear extends Tool {
     public Shear(Quality quality, int energyUsage) {
         super(quality, energyUsage);
@@ -10,5 +12,10 @@ public class Shear extends Tool {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Sprite show() {
+        return toolAsset.show(this);
     }
 }

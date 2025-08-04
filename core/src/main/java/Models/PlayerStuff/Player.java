@@ -79,7 +79,9 @@ public class Player implements Person {
                 new Axe(Quality.STARTER,5),
                 new WateringCan(Quality.STARTER,5),
                 new Seythe(Quality.STARTER,2),
-                new FishingPole(Quality.STARTER,5)
+                new FishingPole(Quality.STARTER,5),
+                new Shear(Quality.STARTER,2),
+                new MilkPail(Quality.STARTER,2)
         ));
         this.gender = ThreadLocalRandom.current().nextBoolean() ? Gender.Male : Gender.Female;
     }

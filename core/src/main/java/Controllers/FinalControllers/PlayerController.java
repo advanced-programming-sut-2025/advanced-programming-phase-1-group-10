@@ -64,6 +64,7 @@ public class PlayerController {
         if (moving && canMoveTo(nextX, nextY, map)) {
             player.setX(nextX);
             player.setY(nextY);
+            player.getEnergy().setEnergyAmount(player.getEnergy().getEnergyAmount() - 0.01);
         } else {
             moving = false; // cancel animation if blocked
         }

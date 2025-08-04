@@ -1,5 +1,7 @@
 package Models.Tools;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class MilkPail extends Tool {
 
     public MilkPail(Quality quality, int energyUsage) {
@@ -11,5 +13,10 @@ public class MilkPail extends Tool {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Sprite show() {
+        return toolAsset.show(this);
     }
 }
