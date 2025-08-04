@@ -1,5 +1,6 @@
 package Models.Tools;
 
+import Controllers.MessageSystem;
 import Models.App;
 import Models.Planets.Fruit;
 import Models.Planets.Tree;
@@ -7,7 +8,7 @@ import Models.PlayerStuff.Player;
 import Models.Tile;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class Axe extends Tool {
 
@@ -31,19 +32,32 @@ public class Axe extends Tool {
         boolean isUsed = false;
 
         if (tile.getItem() instanceof Tree) {
-            player.getInventory().getBackPack().addItem(new Fruit(((Tree) tile.getItem()).getTreeType().getFruitType(), ThreadLocalRandom.current().nextInt(1, 3)));
+            Tree tree = (Tree) tile.getItem();
+            if (tree.hasFruits()) {
+                Fruit harvestedFruit = tree.harvestFruit();
+                if (harvestedFruit != null) {
+                    player.getInventory().getBackPack().addItem(harvestedFruit);
+                }
+            }
+
+            tree.setChoped(true);
+            int woodAmount = new Random().nextInt(5,15);
+            Wood wood = new Wood(woodAmount);
+            boolean added = player.getInventory().getBackPack().addItem(wood);
+            if (added) {
+                MessageSystem.showInfo("Got " + woodAmount + " wood from tree!", 4.0f);
+            }
+
             player.setForagingAbility(player.getForagingAbility() + 10);
             tile.setItem(null);
+            tile.setTree(null);
             isUsed = true;
-            //TODO ADD WOOD
         }
 
         int energyCost = (int) ((getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         player.getEnergy().setEnergyAmount(
             player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
-
-
     }
 
 }

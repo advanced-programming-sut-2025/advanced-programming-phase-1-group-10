@@ -24,6 +24,7 @@ public class Tree implements Item {
     private final TreesAsset treesAsset = new TreesAsset();
     private Position position;
     private boolean hasFruits = false;
+    private boolean choped;
 
     public Position getPosition() {
         return position;
@@ -37,6 +38,7 @@ public class Tree implements Item {
         this.treeType = treeType;
         this.plantedDate = App.getInstance().getCurrentGame().getGameTime().copy();
         this.growthStage = 1;
+        this.choped = false;
     }
 
     @Override
@@ -236,6 +238,14 @@ public class Tree implements Item {
 
     public void resetDaysSinceLastFruit() {
         daysSinceLastFruit = 0;
+    }
+
+    public void setChoped(boolean choped) {
+        this.choped = choped;
+    }
+
+    public boolean isChoped() {
+        return choped;
     }
 
     public boolean hasFruits() {

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TreeController {
@@ -35,12 +36,25 @@ public class TreeController {
                 tree.updateGrowth();
             }
 
+            removeChoppedTrees();
+
             lastUpdatedDate = copyDateTime(currentTime);
 
             System.out.println("trees updated at date : " +
                 currentTime.getYear() + "/" + currentTime.getMonth() + "/" + currentTime.getDay());
         }
     }
+
+    public void removeChoppedTrees() {
+        Iterator<Tree> iterator = placedTrees.iterator();
+        while (iterator.hasNext()) {
+            Tree tree = iterator.next();
+            if (tree.isChoped()) {
+                iterator.remove();
+            }
+        }
+    }
+
 
 
     public static boolean isSameDate(DateTime date1, DateTime date2) {
@@ -68,7 +82,9 @@ public class TreeController {
                 float y = tree.getPosition().getY();
                 x *= Map.tileSize;
                 y *= Map.tileSize;
-                batch.draw(treeSprite, y - 32, x, treeSprite.getWidth(), treeSprite.getHeight());
+                if(tree != null && !tree.isChoped()) {
+                    batch.draw(treeSprite, y - 32, x, treeSprite.getWidth(), treeSprite.getHeight());
+                }
             }
         }
     }
