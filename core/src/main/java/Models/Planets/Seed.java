@@ -4,6 +4,7 @@ import Assets.TreesAsset;
 import Controllers.MessageSystem;
 import Models.App;
 import Models.Item;
+import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.PlayerStuff.Player;
 import Models.Position;
@@ -34,7 +35,7 @@ public class Seed implements Item {
             }
         }
         return treesAsset.getCropSeedSprite(seedType.getName());
-        // should add for other seeds
+
     }
 
     @Override
@@ -54,24 +55,61 @@ public class Seed implements Item {
 
     public void use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if (!tile.getisPlow()) {
+            MessageSystem.showError("You should plow this tile to plant!", 5.0f);
+            return;
+        }
+
+        if (tile.getPlace() != null || tile.getItem() != null || tile.getCrop() != null || tile.getTree() != null) {
+            MessageSystem.showError("This tile is not empty!", 5.0f);
+            return;
+        }
+
         if (seedType.getTreeCropType() != null) {
-            if(!tile.getisPlow()){
-                MessageSystem.showError("You sould plow this tile to plant a tree!",5.0f);
-                return;
-            }
-            if (tile.getPlace() == null && tile.getItem() == null && tile.getCrop() == null && tile.getTree() == null) {
-                String treeType = seedType.getTreeCropType().getName() + "_TREE" ;
+            String treeType = seedType.getTreeCropType().getName() + "_TREE";
+            try {
                 Tree newTree = new Tree(TreeType.valueOf(treeType.toUpperCase()));
                 newTree.setPosition(new Position(tile.getPosition().getX(), tile.getPosition().getY()));
                 tile.setTree(newTree);
                 App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
-                MessageSystem.showInfo("The new tree planted successfully!",5.0f);
-                this.numberOfSeed--;
-                if (this.numberOfSeed <= 0) {
-                    player.getInventory().getBackPack().removeItem(this);
-                    player.getIventoryBarItems().remove(this);
+                MessageSystem.showInfo("The new tree planted successfully!", 5.0f);
+            } catch (IllegalArgumentException e) {
+                MessageSystem.showError("Invalid tree type: " + treeType, 5.0f);
+                return;
+            }
+        }
+        else {
+            CropTypeNormal cropType = null;
+
+            for (CropTypeNormal type : CropTypeNormal.values()) {
+                if (type.getSource() == seedType) {
+                    cropType = type;
+                    break;
                 }
             }
+
+            if (cropType != null) {
+                if (!cropType.getSeasons().contains(App.getInstance().getCurrentGame().getGameTime().getSeason())) {
+                    MessageSystem.showError("You can't plant " + cropType.getName() + " in this season!", 5.0f);
+                    return;
+                }
+
+                Crop newCrop = new Crop(cropType, 1);
+                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
+                tile.setCrop(newCrop);
+                MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
+            } else {
+                MessageSystem.showError("Invalid seed type!", 5.0f);
+                return;
+            }
+        }
+
+
+        this.numberOfSeed--;
+        if (this.numberOfSeed <= 0) {
+            player.getInventory().getBackPack().removeItem(this);
+            player.getIventoryBarItems().remove(this);
         }
     }
 }

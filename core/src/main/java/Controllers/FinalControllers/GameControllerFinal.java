@@ -44,6 +44,8 @@ public class GameControllerFinal {
     private PlayersNearbyActionController playersNearbyActionController;
     private MapLayerController mapLayerController;
     private TreeController treeController;
+    private CropController cropController;
+
 
     public void setView(GameLauncherView gameLauncherView) {
         this.gameLauncherView = gameLauncherView;
@@ -73,6 +75,7 @@ public class GameControllerFinal {
         this.playersNearbyActionController = new PlayersNearbyActionController();
         this.mapLayerController = new MapLayerController();
         this.treeController = new TreeController();
+        this.cropController = new CropController();
 
 
 
@@ -106,6 +109,7 @@ public class GameControllerFinal {
         }
         treeController.update(delta);
         treeController.render(batch);
+        cropController.update(delta);
         animalMovementController.update(delta);
         animalMovementController.render(batch);
     }
@@ -155,6 +159,9 @@ public class GameControllerFinal {
         return fishingMiniGameActive;
     }
 
+    public CropController getCropController() {
+        return cropController;
+    }
 
     public FishingMiniGameController getFishingMiniGameController() {
         return fishingMiniGameController;

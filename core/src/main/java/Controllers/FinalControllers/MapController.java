@@ -5,6 +5,7 @@ import Assets.OtherAssets;
 import Models.*;
 import Models.Place.Lake;
 import Models.Place.Quarry;
+import Models.Planets.Crop.Crop;
 import Models.Planets.Tree;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,8 +25,12 @@ public class MapController {
     public void update(SpriteBatch batch) {
         int playerX = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getX();
         int playerY = App.getInstance().getCurrentGame().getCurrentPlayer().getPosition().getY();
+
         List<Tree> treesToRender = new ArrayList<>();
         List<int[]> treePositions = new ArrayList<>();
+
+        List<Crop> cropsToRender = new ArrayList<>();
+        List<int[]> cropPositions = new ArrayList<>();
 
         for (int y = 0; y < Map.mapHeight; y++) {
             for (int x = 0; x < Map.mapWidth; x++) {
@@ -36,8 +41,10 @@ public class MapController {
                     tile.getPlace().contains(new Position(playerX, playerY))) {
                     tile.setRenderInside(true);
                 }
+
                 updateTileType(tile);
                 renderTile(batch, tile, x * Map.tileSize, y * Map.tileSize);
+
                 try {
                     if (tile.getItem() instanceof Tree) {
                         treesToRender.add((Tree) tile.getItem());
@@ -45,8 +52,22 @@ public class MapController {
                     } else if (tile.getItem() != null) {
                         batch.draw(tile.getItem().show(), x * Map.tileSize, y * Map.tileSize);
                     }
+
+                    if (tile.getCrop() != null) {
+                        cropsToRender.add(tile.getCrop());
+                        cropPositions.add(new int[]{y, x});
+                    }
                 } catch (NullPointerException ignored) {}
             }
+        }
+
+        for (int i = 0; i < cropsToRender.size(); i++) {
+            Crop crop = cropsToRender.get(i);
+            int[] position = cropPositions.get(i);
+            int y = position[0];
+            int x = position[1];
+
+            crop.renderAt(batch, y, x);
         }
 
         for (int i = 0; i < treesToRender.size(); i++) {
@@ -57,6 +78,7 @@ public class MapController {
             tree.renderAt(batch, y, x);
         }
     }
+
 
 
     public void updateTileType(Tile tile) {

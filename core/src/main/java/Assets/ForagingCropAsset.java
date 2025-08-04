@@ -46,7 +46,6 @@ public class ForagingCropAsset {
     }
 
     public void dispose() {
-        // فقط اسپریت‌ها پاک می‌شوند، تکسچرها توسط TextureCache مدیریت می‌شوند
         cropSprites.clear();
     }
 }
