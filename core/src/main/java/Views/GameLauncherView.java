@@ -5,7 +5,10 @@ import Controllers.FinalControllers.AnimalListController;
 import Controllers.FinalControllers.GameControllerFinal;
 import Controllers.MessageSystem;
 import Models.App;
+import Models.Item;
 import Models.Map;
+import Models.Planets.Crop.Crop;
+import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.Fruit;
 import Models.Planets.Tree;
 import Models.PlayerStuff.Player;
@@ -276,6 +279,28 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                     boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedFruit);
                     if(added) {
                         MessageSystem.showInfo("Fruit " + harvestedFruit.getName() + " harvested!", 4.0f);
+                    }
+                    return true;
+                }
+            }
+        }
+
+        if (clickedTile.getItem() instanceof Crop) {
+            Crop crop = (Crop) clickedTile.getItem();
+            if (crop.isHarvestable()) {
+                Item harvestedItem = crop.harvestCrop();
+                if (harvestedItem != null) {
+                    boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedItem);
+                    if (added) {
+                        MessageSystem.showInfo(harvestedItem.getName() + " harvested!", 4.0f);
+                    }
+
+                    if (crop.getCropType() instanceof CropTypeNormal) {
+                        CropTypeNormal normalCrop = (CropTypeNormal) crop.getCropType();
+                        if (normalCrop.isOneTime()) {
+                            clickedTile.setItem(null);
+                            clickedTile.setCrop(null);
+                        }
                     }
                     return true;
                 }

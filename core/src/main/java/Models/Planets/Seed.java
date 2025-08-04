@@ -99,6 +99,7 @@ public class Seed implements Item {
                 Crop newCrop = new Crop(cropType, 1);
                 newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
                 tile.setCrop(newCrop);
+                tile.setItem(newCrop);
                 MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
             } else {
                 MessageSystem.showError("Invalid seed type!", 5.0f);

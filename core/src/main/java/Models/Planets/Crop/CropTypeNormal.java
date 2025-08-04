@@ -41,7 +41,7 @@ public enum CropTypeNormal implements CropType {
     BEET("Beet", SeedType.BEET_SEED, new ArrayList<>(Arrays.asList(1, 1, 2, 2)), 6, true, -1, 100, true, 30, List.of(Season.FALL), false),
     BOK_CHOY("Bok Choy", SeedType.BOK_CHOY_SEED, new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 4, true, -1, 80, true, 25, List.of(Season.FALL), false),
     BROCCOLI("Broccoli", SeedType.BROCCOLI_SEED, new ArrayList<>(Arrays.asList(2, 2, 2, 2)), 8, false, 4, 70, true, 63, List.of(Season.FALL), false),
-    CRANBERRIES("Cranberries", SeedType.CRANBERRY_SEED, new ArrayList<>(Arrays.asList(1, 2, 1, 1, 2)), 7, false, 5, 75, true, 38, List.of(Season.FALL), false),
+    CRANBERRY("Cranberry", SeedType.CRANBERRY_SEED, new ArrayList<>(Arrays.asList(1, 2, 1, 1, 2)), 7, false, 5, 75, true, 38, List.of(Season.FALL), false),
     EGGPLANT("Eggplant", SeedType.EGGPLANT_SEED, new ArrayList<>(Arrays.asList(1, 1, 1, 1)), 5, false, 5, 60, true, 20, List.of(Season.FALL), false),
     FAIRY_ROSE("Fairy Rose", SeedType.FAIRY_SEED, new ArrayList<>(Arrays.asList(1, 4, 4, 3)), 12, true, -1, 290, true, 45, List.of(Season.FALL), false),
     GRAPE("Grape", SeedType.GRAPE_STARTER_SEED, new ArrayList<>(Arrays.asList(1, 1, 2, 3, 3)), 10, false, 3, 80, true, 38, List.of(Season.FALL), false),

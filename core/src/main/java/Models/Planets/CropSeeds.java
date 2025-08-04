@@ -78,7 +78,7 @@ public enum CropSeeds {
             case BEET_SEED: return CropTypeNormal.BEET;
             case BOK_CHOY_SEED: return CropTypeNormal.BOK_CHOY;
             case BROCCOLI_SEED: return CropTypeNormal.BROCCOLI;
-            case CRANBERRY_SEED: return CropTypeNormal.CRANBERRIES;
+            case CRANBERRY_SEED: return CropTypeNormal.CRANBERRY;
             case EGGPLANT_SEED: return CropTypeNormal.EGGPLANT;
             case FAIRY_SEED: return CropTypeNormal.FAIRY_ROSE;
             case GRAPE_STARTER_SEED: return CropTypeNormal.GRAPE;

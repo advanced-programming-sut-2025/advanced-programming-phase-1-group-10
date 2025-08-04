@@ -17,8 +17,11 @@ public class Crop implements Item {
     private DateTime whenPlanted;
     private boolean isFertilized;
     private boolean isHarvestable;
+    private boolean wasHarvested;
+    private int daysSinceLastHarvest;
     private static ForagingCropAsset foragingCropAsset;
     private static CropAsset cropAsset;
+    private boolean showCrop;
 
     static {
         foragingCropAsset = new ForagingCropAsset();
@@ -31,6 +34,9 @@ public class Crop implements Item {
         this.currentStageIndex = 0;
         this.isFertilized = false;
         this.isHarvestable = false;
+        this.wasHarvested = false;
+        this.daysSinceLastHarvest = 0;
+        this.showCrop = true;
     }
 
     @Override
@@ -43,28 +49,44 @@ public class Crop implements Item {
         if (cropType instanceof ForagingCropType) {
             return foragingCropAsset.getCropSprite((ForagingCropType) cropType);
         } else if (cropType instanceof CropTypeNormal) {
+            CropTypeNormal normalCrop = (CropTypeNormal) cropType;
+            if (isHarvestable) {
+                Sprite fruitSprite = cropAsset.getFruitSprite(cropType.getName());
+                if (fruitSprite != null) {
+                    return fruitSprite;
+                }
+            }
 
             if (currentStageIndex == 0) {
-                CropTypeNormal normalCrop = (CropTypeNormal) cropType;
                 return cropAsset.getSeedSprite(normalCrop.getSource().getName());
             }
+
             return cropAsset.getCropStageSprite(cropType.getName(), currentStageIndex);
         }
         return null;
     }
 
-        public void updateGrowth() {
+    public void updateGrowth() {
         if (whenPlanted == null) return;
-
-
         DateTime currentDate = Models.App.getInstance().getCurrentGame().getGameTime();
         int daysPassed = calculateDaysDifference(whenPlanted, currentDate);
+        if (wasHarvested && cropType instanceof CropTypeNormal) {
+            CropTypeNormal normalCrop = (CropTypeNormal) cropType;
+            if (normalCrop.isOneTime()) {
+                return;
+            }
+            daysSinceLastHarvest++;
+
+            if (daysSinceLastHarvest >= normalCrop.getRegrowthTime()) {
+                isHarvestable = true;
+                System.out.println(cropType.getName() + " is ready for harvest again!");
+            }
+            return;
+        }
 
         if (cropType instanceof CropTypeNormal) {
             CropTypeNormal normalCrop = (CropTypeNormal) cropType;
             ArrayList<Integer> stages = normalCrop.getCropTypes();
-
-
             int totalDays = 0;
             int newStage = 0;
 
@@ -78,11 +100,9 @@ public class Crop implements Item {
                 }
             }
 
-
             if (newStage >= stages.size()) {
                 isHarvestable = true;
             }
-
 
             if (newStage > currentStageIndex) {
                 currentStageIndex = newStage;
@@ -91,28 +111,42 @@ public class Crop implements Item {
         }
     }
 
-        private int calculateDaysDifference(DateTime startDate, DateTime endDate) {
+    public Item harvestCrop() {
+        if (isHarvestable && cropType instanceof CropTypeNormal) {
+            CropTypeNormal normalCrop = (CropTypeNormal) cropType;
+            CropFruit harvestedFruit = new CropFruit(cropType, 1);
+
+            if (normalCrop.isOneTime()) {
+                showCrop = false;
+                return harvestedFruit;
+            } else {
+                wasHarvested = true;
+                isHarvestable = false;
+                daysSinceLastHarvest = 0;
+                return harvestedFruit;
+            }
+        }
+
+        return null;
+    }
+
+    private int calculateDaysDifference(DateTime startDate, DateTime endDate) {
         int startTotalDays = startDate.getYear() * 12 * 28 + (startDate.getMonth() - 1) * 28 + startDate.getDay();
         int endTotalDays = endDate.getYear() * 12 * 28 + (endDate.getMonth() - 1) * 28 + endDate.getDay();
         return endTotalDays - startTotalDays;
     }
 
-        public void renderAt(SpriteBatch batch, int tileY, int tileX) {
+    public void renderAt(SpriteBatch batch, int tileY, int tileX) {
         Sprite cropSprite = show();
-
         if (cropSprite != null) {
-
             float x = tileX * 32;
             float y = tileY * 32;
-
             cropSprite.setSize(32, 32);
-
             float offsetX = (cropSprite.getWidth() - 32) / 2;
             float offsetY = (cropSprite.getHeight() - 32) / 2;
-
-
             cropSprite.setPosition(x - offsetX, y - offsetY);
-            cropSprite.draw(batch);
+            if(showCrop)
+                cropSprite.draw(batch);
         }
     }
 
@@ -173,16 +207,5 @@ public class Crop implements Item {
 
     public void setWhenPlanted(DateTime whenPlanted) {
         this.whenPlanted = whenPlanted;
-    }
-
-    public static void disposeAssets() {
-        if (foragingCropAsset != null) {
-            foragingCropAsset.dispose();
-            foragingCropAsset = null;
-        }
-        if (cropAsset != null) {
-            cropAsset.dispose();
-            cropAsset = null;
-        }
     }
 }

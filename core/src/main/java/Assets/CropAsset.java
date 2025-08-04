@@ -3,11 +3,7 @@ package Assets;
 import Models.DateTime.Season;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.SeedType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,35 +11,33 @@ import java.util.Map;
 public class CropAsset {
     private final Map<String, Map<Integer, Sprite>> cropStageSprites;
     private final Map<String, Sprite> seedSprites;
+    private final Map<String, Sprite> fruitSprites;
     private final int MAX_STAGES = 10;
 
     public CropAsset() {
         cropStageSprites = new HashMap<>();
         seedSprites = new HashMap<>();
-
+        fruitSprites = new HashMap<>();
 
         for (CropTypeNormal cropType : CropTypeNormal.values()) {
             loadCropAssets(cropType);
+            loadFruitAsset(cropType);
         }
     }
 
     private void loadCropAssets(CropTypeNormal cropType) {
-        String cropName = cropType.getName().replaceAll(" ", "_").toLowerCase();
+        String cropName = cropType.getName().replaceAll(" ", "_");
         Map<Integer, Sprite> stageSprites = new HashMap<>();
-
 
         loadSeedSprite(cropType.getSource());
 
-
         for (int stage = 1; stage <= MAX_STAGES; stage++) {
             String stagePath = "Crops/" + cropName + "_Stage_" + stage + ".png";
-
             if (TextureCache.exists(stagePath)) {
                 Sprite stageSprite = new Sprite(TextureCache.get(stagePath));
                 stageSprites.put(stage, stageSprite);
                 System.out.println("Loaded crop stage: " + stagePath);
             } else {
-
                 if (stage > cropType.getCropTypes().size()) {
                     System.out.println("No more stages found for: " + cropName + " after stage " + (stage - 1));
                     break;
@@ -53,9 +47,21 @@ public class CropAsset {
             }
         }
 
-
         if (!stageSprites.isEmpty()) {
             cropStageSprites.put(cropType.getName(), stageSprites);
+        }
+    }
+
+    private void loadFruitAsset(CropTypeNormal cropType) {
+        String cropName = cropType.getName().replaceAll(" ", "_");
+        String fruitPath = "Crops/" + cropName + ".png";
+
+        if (TextureCache.exists(fruitPath)) {
+            Sprite fruitSprite = new Sprite(TextureCache.get(fruitPath));
+            fruitSprites.put(cropType.getName(), fruitSprite);
+            System.out.println("Loaded crop fruit: " + fruitPath);
+        } else {
+            System.err.println("Crop fruit sprite not found: " + fruitPath);
         }
     }
 
@@ -74,7 +80,7 @@ public class CropAsset {
         }
     }
 
-        public Sprite getCropStageSprite(String cropName, int stage) {
+    public Sprite getCropStageSprite(String cropName, int stage) {
         Map<Integer, Sprite> stages = cropStageSprites.get(cropName);
         if (stages != null) {
             return stages.get(stage);
@@ -82,16 +88,20 @@ public class CropAsset {
         return null;
     }
 
-        public Sprite getSeedSprite(String seedName) {
+    public Sprite getSeedSprite(String seedName) {
         return seedSprites.get(seedName);
     }
 
-        public boolean hasStageSprite(String cropName, int stage) {
+    public Sprite getFruitSprite(String cropName) {
+        return fruitSprites.get(cropName);
+    }
+
+    public boolean hasStageSprite(String cropName, int stage) {
         Map<Integer, Sprite> stages = cropStageSprites.get(cropName);
         return stages != null && stages.containsKey(stage);
     }
 
-        public int getMaxStage(String cropName) {
+    public int getMaxStage(String cropName) {
         Map<Integer, Sprite> stages = cropStageSprites.get(cropName);
         if (stages == null || stages.isEmpty()) {
             return 0;
@@ -103,28 +113,15 @@ public class CropAsset {
                 maxStage = stage;
             }
         }
-
         return maxStage;
     }
 
-        public void dispose() {
-
+    public void dispose() {
         for (Map<Integer, Sprite> stages : cropStageSprites.values()) {
-            for (Sprite sprite : stages.values()) {
-                if (sprite != null && sprite.getTexture() != null) {
-                    sprite.getTexture().dispose();
-                }
-            }
             stages.clear();
         }
         cropStageSprites.clear();
-
-
-        for (Sprite sprite : seedSprites.values()) {
-            if (sprite != null && sprite.getTexture() != null) {
-                sprite.getTexture().dispose();
-            }
-        }
         seedSprites.clear();
+        fruitSprites.clear();
     }
 }
