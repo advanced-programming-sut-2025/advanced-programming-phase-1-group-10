@@ -72,6 +72,7 @@ public class Seed implements Item {
                 Tree newTree = new Tree(TreeType.valueOf(treeType.toUpperCase()));
                 newTree.setPosition(new Position(tile.getPosition().getX(), tile.getPosition().getY()));
                 tile.setTree(newTree);
+                tile.setItem(newTree);
                 App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
                 MessageSystem.showInfo("The new tree planted successfully!", 5.0f);
             } catch (IllegalArgumentException e) {
@@ -104,7 +105,6 @@ public class Seed implements Item {
                 return;
             }
         }
-
 
         this.numberOfSeed--;
         if (this.numberOfSeed <= 0) {

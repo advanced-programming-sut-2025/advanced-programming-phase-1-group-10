@@ -1,13 +1,17 @@
 package Models.Planets;
 
 import Assets.TreesAsset;
-import Models.*;
+import Models.App;
 import Models.DateTime.DateTime;
 import Models.DateTime.Season;
+import Models.Item;
+import Models.Map;
+import Models.Position;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Tree implements Item {
 
@@ -15,10 +19,11 @@ public class Tree implements Item {
     private int numberOfTree = 1;
     private ArrayList<Fruit> fruits = new ArrayList<>();
     private DateTime plantedDate;
-    private int growthStage ;
+    private int growthStage;
     private int daysSinceLastFruit = 0;
     private final TreesAsset treesAsset = new TreesAsset();
     private Position position;
+    private boolean hasFruits = false;
 
     public Position getPosition() {
         return position;
@@ -41,51 +46,24 @@ public class Tree implements Item {
 
     @Override
     public Sprite show() {
-        Sprite sprite = null;
-
         if (growthStage == 0) {
-            sprite = treesAsset.getSaplingSprite(treeType.getName());
+            return treesAsset.getSaplingSprite(treeType.getName());
         } else if (growthStage >= 1 && growthStage <= 4) {
-            if (treesAsset.getStageTexture(treeType.getName(), growthStage) != null) {
-                sprite = new Sprite(treesAsset.getStageTexture(treeType.getName(), growthStage));
-            }
+            return new Sprite(treesAsset.getStageTexture(treeType.getName(), growthStage));
         } else if (growthStage == 5) {
-            if (treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
-                sprite = new Sprite(treesAsset.getStage5FruitTexture(treeType.getName()));
+            if (hasFruits && treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
+                return new Sprite(treesAsset.getStage5FruitTexture(treeType.getName()));
             } else {
-                Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
-                if (treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason) != null) {
-                    sprite = new Sprite(treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason));
-                }
+                return new Sprite(treesAsset.getStage5SeasonalTexture(treeType.getName(), App.getInstance().getCurrentGame().getGameTime().getSeason()));
             }
         }
-
-        if (sprite != null) {
-
-            float width = 32;
-            float height = 64;
-
-            if (growthStage >= 3) {
-
-                width = 64;
-                height = 96;
-            }
-
-            sprite.setSize(width, height);
-
-
-            sprite.setOrigin(width / 2, 0);
-        }
-
-        return sprite;
+        return null;
     }
 
-
-
     public void updateGrowth() {
-        int daysPassed = DateTime.daysDifference(plantedDate, App.getInstance().getCurrentGame().getGameTime());
-        if (growthStage < 5) {
+        int daysPassed = calculateDaysDifference(plantedDate, App.getInstance().getCurrentGame().getGameTime());
 
+        if (growthStage < 5) {
             int newGrowthStage = 1;
             int totalGrowthTime = 0;
 
@@ -95,42 +73,78 @@ public class Tree implements Item {
                 totalGrowthTime += stageTime;
 
                 if (daysPassed >= totalGrowthTime) {
-
                     newGrowthStage++;
                 } else {
-
                     break;
                 }
             }
-            newGrowthStage = Math.min(5, newGrowthStage);
 
+            newGrowthStage = Math.min(5, newGrowthStage);
             if (newGrowthStage > growthStage) {
                 growthStage = newGrowthStage;
+
+                if (growthStage == 5) {
+                    produceFruit();
+                }
+            }
+        } else if (growthStage == 5) {
+
+            updateFruitProduction();
+        }
+    }
+
+    private void updateFruitProduction() {
+        if (!hasFruits) {
+            daysSinceLastFruit++;
+
+            TreeCropType treeCropType = null;
+            for (TreeCropType type : TreeCropType.values()) {
+                if (type.getName().equalsIgnoreCase(treeType.getName())) {
+                    treeCropType = type;
+                    break;
+                }
+            }
+
+            if (treeCropType != null) {
+                int fruitCycle = treeCropType.getFruitHarvestCycle();
+
+                if (daysSinceLastFruit >= fruitCycle) {
+                    produceFruit();
+                }
             }
         }
     }
 
-    public void renderAt(SpriteBatch batch, int tileX, int tileY) {
-        Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
-        Sprite treeSprite = getSprite(currentSeason);
-
-        if (treeSprite != null) {
-
-            float x = tileX * Map.tileSize;
-            float y = tileY * Map.tileSize;
-
-
-            float offsetY = 32;
-            if (growthStage >= 3) {
-                offsetY = 48;
+    private void produceFruit() {
+        TreeCropType treeCropType = null;
+        for (TreeCropType type : TreeCropType.values()) {
+            if (type.getName().equalsIgnoreCase(treeType.getName())) {
+                treeCropType = type;
+                break;
             }
+        }
 
+        if (treeCropType != null && treeCropType.getFruitType() != null) {
 
-            batch.draw(treeSprite, y - offsetY, x, treeSprite.getWidth(), treeSprite.getHeight());
+            Fruit fruit = new Fruit(treeCropType.getFruitType(), new Random().nextInt(2,3));
+            fruits.add(fruit);
+            hasFruits = true;
         }
     }
 
+        public Fruit harvestFruit() {
+        if (!fruits.isEmpty() && hasFruits) {
+            Fruit fruit = fruits.remove(0);
 
+            if (fruits.isEmpty()) {
+                hasFruits = false;
+                daysSinceLastFruit = 0;
+            }
+            return fruit;
+        }
+
+        return null;
+    }
 
     public Sprite getSprite(Season currentSeason) {
         if (growthStage == 0) {
@@ -138,13 +152,24 @@ public class Tree implements Item {
         } else if (growthStage >= 1 && growthStage <= 4) {
             return new Sprite(treesAsset.getStageTexture(treeType.getName(), growthStage));
         } else if (growthStage == 5) {
-            if (treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
+            if (hasFruits && treesAsset.getStage5FruitTexture(treeType.getName()) != null) {
                 return new Sprite(treesAsset.getStage5FruitTexture(treeType.getName()));
             } else {
                 return new Sprite(treesAsset.getStage5SeasonalTexture(treeType.getName(), currentSeason));
             }
         }
         return null;
+    }
+
+        public void renderAt(SpriteBatch batch, int tileY, int tileX) {
+        Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+        Sprite treeSprite = getSprite(currentSeason);
+
+        if (treeSprite != null) {
+            float x = tileX * Map.tileSize;
+            float y = tileY * Map.tileSize;
+            batch.draw(treeSprite, y - 32, x, treeSprite.getWidth(), treeSprite.getHeight());
+        }
     }
 
     @Override
@@ -172,6 +197,7 @@ public class Tree implements Item {
 
     public void setFruits(ArrayList<Fruit> fruits) {
         this.fruits = fruits;
+        this.hasFruits = !fruits.isEmpty();
     }
 
     public DateTime getPlantedDate() {
@@ -191,8 +217,12 @@ public class Tree implements Item {
     }
 
     public void incrementGrowthStage() {
-        if (growthStage < 4) {
+        if (growthStage < 5) {
             growthStage++;
+
+            if (growthStage == 5) {
+                produceFruit();
+            }
         }
     }
 
@@ -206,5 +236,15 @@ public class Tree implements Item {
 
     public void resetDaysSinceLastFruit() {
         daysSinceLastFruit = 0;
+    }
+
+    public boolean hasFruits() {
+        return hasFruits;
+    }
+
+    private int calculateDaysDifference(DateTime startDate, DateTime endDate) {
+        int startTotalDays = startDate.getYear() * 12 * 28 + (startDate.getMonth() - 1) * 28 + startDate.getDay();
+        int endTotalDays = endDate.getYear() * 12 * 28 + (endDate.getMonth() - 1) * 28 + endDate.getDay();
+        return endTotalDays - startTotalDays;
     }
 }

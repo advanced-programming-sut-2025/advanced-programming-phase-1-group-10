@@ -297,7 +297,13 @@ public class GameMenuControllers {
         for (int i = 0; i < numberOfRandom; i++) {
             Item randomItem = getRandomItem(planets);
             Tile tile = getRandomTileArrayList(tiles);
-            if (tile != null && randomItem != null) tile.setItem(randomItem);
+            if (tile != null && randomItem != null) {
+                tile.setItem(randomItem);
+                if(randomItem instanceof Tree){
+                    tile.setTree((Tree) randomItem);
+                    tile.setItem((Tree) randomItem);
+                }
+            }
         }
 
         ArrayList<Item> fiberAndMushroom = new ArrayList<>(Arrays.asList(

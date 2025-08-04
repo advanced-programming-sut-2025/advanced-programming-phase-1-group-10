@@ -69,6 +69,25 @@ public class TreesAsset {
         String fruitStagePath = treeFolderPath + treeName + "_Stage_5_Fruit.png";
         if (TextureCache.exists(fruitStagePath)) {
             data.stage5FruitTexture = TextureCache.get(fruitStagePath);
+            String seasonalPath = treeFolderPath + treeName + "_Stage_5.png";
+            if (TextureCache.exists(seasonalPath)) {
+                Texture seasonalSheet = TextureCache.get(seasonalPath);
+                data.stage5SeasonalSheet = seasonalSheet;
+
+                int frameWidth = seasonalSheet.getWidth() / 4;
+                int frameHeight = seasonalSheet.getHeight();
+                TextureRegion[] frames = new TextureRegion[4];
+
+                frames[0] = new TextureRegion(seasonalSheet, 3 * frameWidth, 0, frameWidth, frameHeight);
+                frames[1] = new TextureRegion(seasonalSheet, 2 * frameWidth, 0, frameWidth, frameHeight);
+                frames[2] = new TextureRegion(seasonalSheet, 1 * frameWidth, 0, frameWidth, frameHeight);
+                frames[3] = new TextureRegion(seasonalSheet, 0, 0, frameWidth, frameHeight);
+
+                data.stage5SeasonalTextures.put(Season.WINTER, frames[0]);
+                data.stage5SeasonalTextures.put(Season.FALL, frames[1]);
+                data.stage5SeasonalTextures.put(Season.SPRING, frames[2]);
+                data.stage5SeasonalTextures.put(Season.SUMMER, frames[3]);
+            }
         } else {
             if(treeCropType.equals(TreeCropType.MUSHROOM_TREE)){
                 String mushroomPath = "Trees/Mushroom/Mushroom_Stage_5.png";
