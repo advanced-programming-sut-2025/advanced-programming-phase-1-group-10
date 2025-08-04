@@ -273,8 +273,10 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             if (tree.hasFruits()) {
                 Fruit harvestedFruit = tree.harvestFruit();
                 if (harvestedFruit != null) {
-                    App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedFruit);
-                    MessageSystem.showInfo("Fruit " + harvestedFruit.getName() + " harvested!", 4.0f);
+                    boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedFruit);
+                    if(added) {
+                        MessageSystem.showInfo("Fruit " + harvestedFruit.getName() + " harvested!", 4.0f);
+                    }
                     return true;
                 }
             }

@@ -75,7 +75,9 @@ public class MapController {
             int[] position = treePositions.get(i);
             int y = position[0];
             int x = position[1];
-            tree.renderAt(batch, y, x);
+            if(tree.getTreeType().isForaging()) {
+                tree.renderAt(batch, y, x);
+            }
         }
     }
 

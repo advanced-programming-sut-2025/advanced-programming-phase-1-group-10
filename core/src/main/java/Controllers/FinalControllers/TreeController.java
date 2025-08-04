@@ -18,6 +18,7 @@ public class TreeController {
 
     public TreeController() {
         this.placedTrees = new ArrayList<>();
+
         this.lastUpdatedDate = new DateTime(Season.SPRING, 1990, 1, 1, 9);
     }
 
@@ -27,6 +28,7 @@ public class TreeController {
 
     public void update(float delta) {
         DateTime currentTime = App.getInstance().getCurrentGame().getGameTime();
+
 
         if (!isSameDate(currentTime, lastUpdatedDate)) {
             for (Tree tree : placedTrees) {
@@ -39,6 +41,7 @@ public class TreeController {
                 currentTime.getYear() + "/" + currentTime.getMonth() + "/" + currentTime.getDay());
         }
     }
+
 
     public static boolean isSameDate(DateTime date1, DateTime date2) {
         return date1.getYear() == date2.getYear() &&
