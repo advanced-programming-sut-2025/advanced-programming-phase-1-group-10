@@ -1886,34 +1886,34 @@ public class GameController {
         }
     }
 
-    public Result fertilize(String fertilizerName, String direction) {
-        Item fertilizerItem = getItemInInventory(fertilizerName);
-        if (!(fertilizerItem instanceof Fertilizer)) {
-            return new Result(false, "You don't have this fertilizer in your inventory.");
-        }
-
-        Tile targetTile = getTileByDirection(direction);
-        if (targetTile == null) {
-            return new Result(false, "Invalid direction.");
-        }
-
-        if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop)) {
-            return new Result(false, "There is no plant on this tile.");
-        }
-
-        if (targetTile.isFertilizer()) {
-            return new Result(false, "This tile is already fertilized.");
-        }
-
-        targetTile.setFertilizer(true);
-        BackPack backPack =  App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack();
-        int fertilizerNumber = fertilizerItem.getNumber();
-        backPack.setItemNumber(fertilizerItem, fertilizerNumber - 1);
-        if(fertilizerNumber - 1 == 0)
-            backPack.removeItem(fertilizerItem);
-
-        return new Result(true, fertilizerName + " applied to the plant.");
-    }
+//    public Result fertilize(String fertilizerName, String direction) {
+//        Item fertilizerItem = getItemInInventory(fertilizerName);
+//        if (!(fertilizerItem instanceof Fertilizer)) {
+//            return new Result(false, "You don't have this fertilizer in your inventory.");
+//        }
+//
+//        Tile targetTile = getTileByDirection(direction);
+//        if (targetTile == null) {
+//            return new Result(false, "Invalid direction.");
+//        }
+//
+//        if (targetTile.getItem() == null || !(targetTile.getItem() instanceof Crop)) {
+//            return new Result(false, "There is no plant on this tile.");
+//        }
+//
+//        if (targetTile.isFertilizer()) {
+//            return new Result(false, "This tile is already fertilized.");
+//        }
+//
+//        targetTile.setFertilizer(true);
+//        BackPack backPack =  App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack();
+//        int fertilizerNumber = fertilizerItem.getNumber();
+//        backPack.setItemNumber(fertilizerItem, fertilizerNumber - 1);
+//        if(fertilizerNumber - 1 == 0)
+//            backPack.removeItem(fertilizerItem);
+//
+//        return new Result(true, fertilizerName + " applied to the plant.");
+//    }
 
     public Result howMuchWater() {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();

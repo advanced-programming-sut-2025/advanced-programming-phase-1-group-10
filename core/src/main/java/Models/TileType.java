@@ -9,6 +9,7 @@ public enum TileType {
     Plowed(new Sprite(new Texture("tiles/plowed.png")),true),
     Watered(new Sprite(new Texture("tiles/watered.png")),true),
     Lake(new Sprite(new Texture("tiles/lake.png")),false),
+    Fertilized(new Sprite(new Texture("tiles/Fertilized.png")),true),
     Quarry(new Sprite(new Texture("tiles/quarry.png")),true);
 
     private final Sprite sprite;

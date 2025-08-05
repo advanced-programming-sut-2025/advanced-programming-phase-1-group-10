@@ -231,12 +231,14 @@ public class GameLauncher implements AppMenu{
             ));
         } else if((matcher = GameCommands.TRADE_HISTORY.getMatcher(input)) != null){
             System.out.println(controller.tradeHistory());
-        } else if((matcher = GameCommands.FERTILIZER.getMatcher(input)) != null){
-            System.out.println(controller.fertilize(
-                    matcher.group("fertilizer"),
-                    matcher.group("direction")
-            ));
-        } else if((matcher = GameCommands.HOW_MACH_WATER.getMatcher(input)) != null){
+        }
+//        else if((matcher = GameCommands.FERTILIZER.getMatcher(input)) != null){
+//            System.out.println(controller.fertilize(
+//                matcher.group("fertilizer"),
+//                matcher.group("direction")
+//            ));
+//        }
+        else if((matcher = GameCommands.HOW_MACH_WATER.getMatcher(input)) != null){
             System.out.println(controller.howMuchWater());
         } else if((matcher = GameCommands.HELP_READING_MAP.getMatcher(input)) != null){
             System.out.println(controller.helpReadingMap());

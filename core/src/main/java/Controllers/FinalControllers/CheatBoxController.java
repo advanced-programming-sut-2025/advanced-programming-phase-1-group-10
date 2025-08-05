@@ -193,6 +193,8 @@ public class CheatBoxController {
             cheatCodeController.addSeedToInventory(
                 matcher.group("seedname")
             );
+        } else if((matcher = CheatCodeCommands.ADD_FERTILIZER.getMatcher(input)) != null){
+            cheatCodeController.addFertilizerToInventory();
         }
     }
 

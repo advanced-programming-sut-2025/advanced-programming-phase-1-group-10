@@ -3,6 +3,7 @@ package Controllers.FinalControllers;
 import Models.*;
 import Models.Planets.Seed;
 import Models.PlayerStuff.Player;
+import Models.Tools.Fertilizer;
 import Models.Tools.Tool;
 
 public class InteractController {
@@ -77,9 +78,10 @@ public class InteractController {
 
         if (currentItem instanceof Tool) {
             ((Tool) currentItem).use(tile);
-
-        } else if(currentItem instanceof Seed){
+        } else if (currentItem instanceof Seed){
             ((Seed) currentItem).use(tile);
+        } else if (currentItem instanceof Fertilizer){
+            ((Fertilizer) currentItem).use(tile);
         }
     }
 }

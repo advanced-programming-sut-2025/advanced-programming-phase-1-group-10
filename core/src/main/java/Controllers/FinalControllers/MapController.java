@@ -92,10 +92,12 @@ public class MapController {
             tile.setTileType(TileType.Wall);
         } else if (!tile.getisPlow() && !tile.isWatered()) {
             tile.setTileType(TileType.Grass);
-        } else if (tile.getisPlow() && !tile.isWatered()) {
+        } else if (tile.getisPlow() && !tile.isWatered() && !tile.isFertilizer()) {
             tile.setTileType(TileType.Plowed);
         } else if (tile.getisPlow() && tile.isWatered()) {
             tile.setTileType(TileType.Watered);
+        } else if (tile.getisPlow() && tile.isFertilizer()){
+            tile.setTileType(TileType.Fertilized);
         }
     }
 

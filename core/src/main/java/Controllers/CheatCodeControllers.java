@@ -12,6 +12,7 @@ import Models.Planets.Tree;
 import Models.Position;
 import Models.Result;
 import Models.Tile;
+import Models.Tools.Fertilizer;
 import Models.Weather.Weather;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -125,10 +126,27 @@ public class CheatCodeControllers {
             return;
         }
         Seed newSeed = new Seed(seed,2);
-        boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(newSeed);
-        if(added)
-            MessageSystem.showInfo(seedName + " added successfully!" ,4.0f);
+        boolean added = App.getInstance().getCurrentGame().
+            getCurrentPlayer().getInventory().getBackPack().addItem(newSeed);
+        if(added) {
+            MessageSystem.showInfo(seedName + " added successfully!", 4.0f);
+            App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().
+                getCurrentGame().getCurrentPlayer().getGold() - 100);
+        }
         else
             MessageSystem.showError("Can't added seed!",4.0f);
+    }
+
+    public void addFertilizerToInventory(){
+        Fertilizer fertilizer = new Fertilizer(2);
+        boolean added = App.getInstance().getCurrentGame().
+            getCurrentPlayer().getInventory().getBackPack().addItem(fertilizer);
+        if(added) {
+            MessageSystem.showInfo("Fertilizer added successfully!", 4.0f);
+            App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().
+                getCurrentGame().getCurrentPlayer().getGold() - 500);
+        }
+            else
+            MessageSystem.showError("Cant't add fertilizer!",4.0f);
     }
 }
