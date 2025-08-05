@@ -267,46 +267,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float clickX = worldCoords.x;
         float clickY = worldCoords.y;
 
-        int tileX = (int)(clickX / Map.tileSize);
-        int tileY = (int)(clickY / Map.tileSize);
-
-        Tile clickedTile = App.getInstance().getCurrentGame().getGameMap().getMap()[tileY][tileX];
-        if (clickedTile.getItem() instanceof Tree) {
-            Tree tree = (Tree) clickedTile.getItem();
-            if (tree.hasFruits()) {
-                Fruit harvestedFruit = tree.harvestFruit();
-                if (harvestedFruit != null) {
-                    boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedFruit);
-                    if(added) {
-                        MessageSystem.showInfo("Fruit " + harvestedFruit.getName() + " harvested!", 4.0f);
-                    }
-                    return true;
-                }
-            }
-        }
-
-        if (clickedTile.getItem() instanceof Crop) {
-            Crop crop = (Crop) clickedTile.getItem();
-            if (crop.isHarvestable()) {
-                Item harvestedItem = crop.harvestCrop();
-                if (harvestedItem != null) {
-                    boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(harvestedItem);
-                    if (added) {
-                        MessageSystem.showInfo(harvestedItem.getName() + " harvested!", 4.0f);
-                    }
-
-                    if (crop.getCropType() instanceof CropTypeNormal) {
-                        CropTypeNormal normalCrop = (CropTypeNormal) crop.getCropType();
-                        if (normalCrop.isOneTime()) {
-                            clickedTile.setItem(null);
-                            clickedTile.setCrop(null);
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-
         boolean buildingClicked = controller.getAnimalBuildingController().handleClick(clickX, clickY);
         if (buildingClicked) {
             return true;

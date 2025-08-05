@@ -205,6 +205,10 @@ public class Crop implements Item {
         return whenPlanted;
     }
 
+    public void setShowCrop(boolean showCrop) {
+        this.showCrop = showCrop;
+    }
+
     public void setWhenPlanted(DateTime whenPlanted) {
         this.whenPlanted = whenPlanted;
     }
