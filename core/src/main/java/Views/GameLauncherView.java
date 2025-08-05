@@ -4,17 +4,11 @@ import Assets.TextureCache;
 import Controllers.FinalControllers.AnimalListController;
 import Controllers.FinalControllers.GameControllerFinal;
 import Controllers.MessageSystem;
-import Models.App;
-import Models.Item;
-import Models.Map;
-import Models.Planets.Crop.Crop;
-import Models.Planets.Crop.CropTypeNormal;
-import Models.Planets.Fruit;
-import Models.Planets.Tree;
+import Models.*;
 import Models.PlayerStuff.Player;
-import Models.Tile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,9 +16,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.Fianl.Main;
 
 import java.util.Scanner;
 
@@ -48,20 +46,117 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     private float elapsedTime;
 
+    // setting variables
+    private final TextButton settingsButton;
+    private final Table settingsTable;
+    private final TextButton subButton1;
+    private final TextButton subButton2;
+    private boolean areSubButtonsVisible = false;
+
     public GameLauncherView(Skin skin) {
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        this.stage = new Stage(viewport);
+        this.hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.batch = new SpriteBatch();
+        this.stage = new Stage(new ScreenViewport(hudCamera), batch);
         this.controller = new GameControllerFinal();
         App.getInstance().setGameControllerFinal(controller);
         this.controller.setView(this);
-        this.batch = (SpriteBatch) stage.getBatch();
-        this.hudCamera = new OrthographicCamera();
-        hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         hudCamera.update();
         viewport.apply();
-        Gdx.input.setInputProcessor(this);
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
+
         this.skin = skin;
+        settingsTable = new Table(Main.getInstance().getSkin());
+        stage.addActor(settingsTable);
+
+        this.settingsButton = new TextButton("Settings", skin);
+        this.subButton1 = new TextButton("Exit Game",skin);
+        this.subButton2 = new TextButton("Remove Player",skin);
+
+        settingsTable.add(settingsButton).pad(5).row();
+        settingsTable.add(subButton1).pad(5).row();
+        settingsTable.add(subButton2).pad(5);
+        subButton1.setVisible(false);
+        subButton2.setVisible(false);
+
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                areSubButtonsVisible = !areSubButtonsVisible;
+                subButton1.setVisible(areSubButtonsVisible);
+                subButton2.setVisible(areSubButtonsVisible);
+            }
+        });
+
+        subButton1.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new Dialog("Exit Game", Main.getInstance().getSkin()) {
+                    {
+                        text("Are you sure you want to exit?");
+                        button("Yes", true);
+                        button("No", false);
+                    }
+                    @Override
+                    protected void result(Object object) {
+                        if ((Boolean) object) {
+                            Gdx.app.exit();
+                        }
+                    }
+                }.show(stage);
+            }
+        });
+
+        subButton2.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new Dialog("Remove Player", Main.getInstance().getSkin()) {
+                    private final TextField nameField;
+
+                    {
+                        nameField = new TextField("", Main.getInstance().getSkin());
+                        nameField.setMessageText("Enter player name...");
+                        getContentTable().add(nameField).pad(10).width(300).row();
+                        button("Remove", true);
+                        button("Cancel", false);
+                    }
+
+                    @Override
+                    protected void result(Object object) {
+                        if ((Boolean) object) {
+                            String playerName = nameField.getText().trim();
+                            if (playerName.isEmpty()) {
+                                MessageSystem.showError("Please enter a player name.", 3.0f);
+                                return;
+                            }
+                            Game currentGame = App.getInstance().getCurrentGame();
+                            Player playerToRemove = currentGame.getPlayerByName(playerName);
+
+                            if (playerToRemove == null) {
+                                MessageSystem.showError("Player '" + playerName + "' not found.", 3.0f);
+                                return;
+                            }
+                            if (playerToRemove.getName().equals(currentGame.getGameOwner())) {
+                                MessageSystem.showError("Cannot remove the game owner!", 3.0f);
+                                return;
+                            }
+                            if (playerToRemove.getName().equals(currentGame.getCurrentPlayer().getName())) {
+                                MessageSystem.showError("Cannot remove yourself!", 3.0f);
+                                return;
+                            }
+                            currentGame.getPlayers().remove(playerToRemove);
+                            MessageSystem.showInfo("Player '" + playerName + "' has been removed.", 3.0f);
+                        }
+                    }
+                }.show(stage);
+            }
+        });
     }
 
     @Override
@@ -84,6 +179,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             controller.getAnimalBuildingController().update(batch, delta);
             batch.end();
             elapsedTime += delta;
+
+            stage.act(delta);
+            stage.draw();
             return;
         }
 
@@ -127,6 +225,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         }
         batch.end();
 
+        // ----- Render Stage and its actors -----
         stage.act(delta);
         stage.draw();
 
@@ -134,7 +233,6 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         if (controller.getFriendshipController().isMenuOpen()) {
             controller.getFriendshipController().render(delta);
         }
-
 
         controller.getCheatBoxController().render();
         elapsedTime += delta;
@@ -144,6 +242,10 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     public void resize(int width, int height) {
         viewport.update(width, height);
         hudCamera.setToOrtho(false, width, height);
+        stage.getViewport().update(width, height, true);
+        float tableWidth = settingsTable.getPrefWidth();
+        float tableHeight = settingsTable.getPrefHeight();
+        settingsTable.setPosition(width - tableWidth + 30, height - tableHeight -100);
     }
 
     @Override
@@ -171,6 +273,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         }
         controller.getFishingMiniGameController().dispose();
         TextureCache.disposeAll();
+        stage.dispose();
     }
 
     @Override
@@ -245,6 +348,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (stage.touchDown(screenX, screenY, pointer, button)) {
+            return true;
+        }
         if (controller.getAnimalBuildingController().isShowingInterior()) {
             boolean handled = controller.getAnimalBuildingController().handleInteriorClick(screenX, screenY, button);
             if (handled) {
@@ -258,7 +364,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                 isDraggingAnimal = true;
                 draggedAnimalName = animalData.name;
                 draggedAnimalX = screenX;
-                draggedAnimalY = screenY;
+                draggedAnimalY = Gdx.graphics.getHeight() - screenY;
                 return true;
             }
         }
