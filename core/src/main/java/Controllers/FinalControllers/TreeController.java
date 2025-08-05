@@ -55,8 +55,6 @@ public class TreeController {
         }
     }
 
-
-
     public static boolean isSameDate(DateTime date1, DateTime date2) {
         return date1.getYear() == date2.getYear() &&
             date1.getMonth() == date2.getMonth() &&

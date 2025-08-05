@@ -170,7 +170,7 @@ public class Tree implements Item {
         if (treeSprite != null) {
             float x = tileX * Map.tileSize;
             float y = tileY * Map.tileSize;
-            batch.draw(treeSprite, y - 32, x, treeSprite.getWidth(), treeSprite.getHeight());
+            batch.draw(treeSprite, x, y, treeSprite.getWidth(), treeSprite.getHeight());
         }
     }
 

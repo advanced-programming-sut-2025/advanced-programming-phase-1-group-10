@@ -124,7 +124,7 @@ public class CheatCodeControllers {
             MessageSystem.showError("Doesn't exist the seed with this name.",5.0f);
             return;
         }
-        Seed newSeed = new Seed(seed,1);
+        Seed newSeed = new Seed(seed,2);
         boolean added = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(newSeed);
         if(added)
             MessageSystem.showInfo(seedName + " added successfully!" ,4.0f);

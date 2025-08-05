@@ -10,7 +10,7 @@ public class InteractController {
     private Item currentItem;
     private Player player;
     private final Map map;
-
+    private final int INTERACTION_RANGE = 2; // you can change this to interact tiles
 
     public InteractController() {
         this.player = App.getInstance().getCurrentGame().getCurrentPlayer();
@@ -25,57 +25,61 @@ public class InteractController {
         }
 
         player = App.getInstance().getCurrentGame().getCurrentPlayer();
-
     }
 
     public void useItemInDirection(String direction) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         Position playerPos = player.getPosition();
-        Position targetPos = new Position(playerPos.getX(), playerPos.getY());
 
         switch (direction) {
             case "UP":
-                targetPos.setX(targetPos.getX() + 1);
+                for (int i = 1; i <= INTERACTION_RANGE; i++) {
+                    Position targetPos = new Position(playerPos.getX() + i, playerPos.getY());
+                    if(isValidPosition(targetPos))
+                        useItemOnTile(targetPos);
+                }
                 break;
             case "DOWN":
-                targetPos.setX(targetPos.getX() - 1);
+                for (int i = 1; i <= INTERACTION_RANGE; i++) {
+                    Position targetPos = new Position(playerPos.getX() - i, playerPos.getY());
+                    if(isValidPosition(targetPos))
+                        useItemOnTile(targetPos);
+                }
                 break;
             case "LEFT":
-                targetPos.setY(targetPos.getY() - 1);
+                for (int i = 1; i <= INTERACTION_RANGE; i++) {
+                    Position targetPos = new Position(playerPos.getX(), playerPos.getY() - i);
+                    if(isValidPosition(targetPos))
+                        useItemOnTile(targetPos);
+                }
                 break;
             case "RIGHT":
-                targetPos.setY(targetPos.getY() + 1);
+                for (int i = 1; i <= INTERACTION_RANGE; i++) {
+                    Position targetPos = new Position(playerPos.getX(), playerPos.getY() + i);
+                    if(isValidPosition(targetPos))
+                        useItemOnTile(targetPos);
+                }
                 break;
         }
-
-        // Then trigger useItem at targetPos
-        useItemOnTile(targetPos);
     }
 
-    public void useItemOnTile(Position pos) {
+    private boolean isValidPosition(Position pos) {
         int mapWidth = map.getMap().length;
         int mapHeight = map.getMap()[0].length;
 
-        // Validate bounds
-        if (pos.getX() < 0 || pos.getX() >= mapWidth ||
-            pos.getY() < 0 || pos.getY() >= mapHeight) {
-            return;
-        }
+        return pos.getX() >= 0 && pos.getX() < mapWidth &&
+            pos.getY() >= 0 && pos.getY() < mapHeight;
+    }
 
+    private void useItemOnTile(Position pos) {
         Tile tile = map.getMap()[pos.getX()][pos.getY()];
         tile.setPosition(pos);
 
-        if (currentItem == null) {
-            return;
-        }
-
         if (currentItem instanceof Tool) {
             ((Tool) currentItem).use(tile);
+
         } else if(currentItem instanceof Seed){
-            ((Seed) currentItem) .use(tile);
+            ((Seed) currentItem).use(tile);
         }
     }
-
-
-
 }
