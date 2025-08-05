@@ -1,8 +1,10 @@
 package Models.Planets;
 
+import Assets.CropAsset;
 import Assets.TreesAsset;
 import Controllers.MessageSystem;
 import Models.App;
+import Models.DateTime.Season;
 import Models.Item;
 import Models.Planets.Crop.Crop;
 import Models.Planets.Crop.CropTypeNormal;
@@ -11,15 +13,21 @@ import Models.Position;
 import Models.Tile;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class Seed implements Item {
     private SeedType seedType;
     private int numberOfSeed;
     private TreesAsset treesAsset;
+    private boolean mixed;
 
     public Seed(SeedType seedType, int numberOfSeed) {
         this.seedType = seedType;
         this.numberOfSeed = numberOfSeed;
         this.treesAsset = new TreesAsset();
+        this.mixed = false;
     }
 
     @Override
@@ -29,6 +37,8 @@ public class Seed implements Item {
 
     @Override
     public Sprite show() {
+        if(mixed)
+            return CropAsset.mixedSeedSprite;
         for(TreeCropType treeCropType : TreeCropType.values()){
             if(treeCropType.getSource().equals(seedType.getName())){
                 return treesAsset.getSaplingSprite(treeCropType.getName());
@@ -51,6 +61,10 @@ public class Seed implements Item {
     @Override
     public Item copyItem(int number) {
         return new Seed(seedType, number);
+    }
+
+    public void setMixed(boolean mixed) {
+        this.mixed = mixed;
     }
 
     public void use(Tile tile) {
@@ -101,7 +115,24 @@ public class Seed implements Item {
                 tile.setCrop(newCrop);
                 tile.setItem(newCrop);
                 MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
-            } else {
+            } else if(mixed){
+                Season season = App.getInstance().getCurrentGame().getGameTime().getSeason();
+                List<CropTypeNormal> crops = new ArrayList<>();
+                for(CropTypeNormal cropTypeNormal : CropTypeNormal.values()){
+                    for(Season season1 : cropTypeNormal.getSeasons()){
+                        if(season1.equals(season))
+                            crops.add(cropTypeNormal);
+                    }
+                }
+                int index = new Random().nextInt(0,crops.size() - 1);
+                cropType = crops.get(index);
+                Crop newCrop = new Crop(cropType,1);
+                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
+                tile.setCrop(newCrop);
+                tile.setItem(newCrop);
+                MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
+            }
+            else if(cropType == null) {
                 MessageSystem.showError("Invalid seed type!", 5.0f);
                 return;
             }

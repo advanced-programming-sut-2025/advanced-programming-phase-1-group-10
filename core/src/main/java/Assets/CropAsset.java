@@ -3,6 +3,7 @@ package Assets;
 import Models.DateTime.Season;
 import Models.Planets.Crop.CropTypeNormal;
 import Models.Planets.SeedType;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ public class CropAsset {
     private final Map<String, Sprite> seedSprites;
     private final Map<String, Sprite> fruitSprites;
     private final int MAX_STAGES = 10;
+    public static final Sprite mixedSeedSprite = new Sprite(new Texture("Crops/Mixed_Seeds.png"));
+
 
     public CropAsset() {
         cropStageSprites = new HashMap<>();
@@ -68,7 +71,7 @@ public class CropAsset {
     private void loadSeedSprite(SeedType seedType) {
         if (seedType == null) return;
 
-        String seedName = seedType.getName().replaceAll(" ", "_").toLowerCase();
+        String seedName = seedType.getName().replaceAll(" ", "_");
         String seedPath = "Crops/" + seedName + ".png";
 
         if (TextureCache.exists(seedPath)) {

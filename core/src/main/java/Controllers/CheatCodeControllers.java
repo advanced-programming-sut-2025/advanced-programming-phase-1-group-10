@@ -126,6 +126,9 @@ public class CheatCodeControllers {
             return;
         }
         Seed newSeed = new Seed(seed,2);
+        if(seedName.equalsIgnoreCase("mixed seeds")){
+            newSeed.setMixed(true);
+        }
         boolean added = App.getInstance().getCurrentGame().
             getCurrentPlayer().getInventory().getBackPack().addItem(newSeed);
         if(added) {
