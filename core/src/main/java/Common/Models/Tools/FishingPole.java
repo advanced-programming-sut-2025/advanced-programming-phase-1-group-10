@@ -1,6 +1,7 @@
 package Common.Models.Tools;
 
 import Client.Controllers.MessageSystem;
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
@@ -27,7 +28,7 @@ public class FishingPole extends Tool {
     }
 
     @Override
-    public void use(Tile tile) {
+    public Message use(Tile tile) {
         Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
 
 
@@ -44,6 +45,7 @@ public class FishingPole extends Tool {
         } else {
             MessageSystem.showError("You need to be near a lake to fish!", 3.0f);
         }
+        return null;
     }
 
     private boolean isPlayerNearLake() {

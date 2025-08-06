@@ -1,4 +1,4 @@
-package Client.Network;
+package Common.Network.Send;
 
 public abstract class Message {
     protected MessageType type;
@@ -13,6 +13,7 @@ public abstract class Message {
 
     public enum MessageType {
         MOVE_PLAYER,
+        TOOL_USED;
         ;
     }
 }

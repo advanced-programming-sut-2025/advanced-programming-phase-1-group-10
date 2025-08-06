@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
@@ -23,7 +24,7 @@ public class Hoe extends Tool {
     }
 
     @Override
-    public void use(Tile tile) {
+    public Message use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         int energyCost = (int)( (getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
         if(tile.getPlace() == null && tile.getItem() == null && tile.getFarm() != null && tile.getPerson() == null && tile.getTileType() == TileType.Grass){
@@ -32,5 +33,6 @@ public class Hoe extends Tool {
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - energyCost
         );
+        return null;
     }
 }

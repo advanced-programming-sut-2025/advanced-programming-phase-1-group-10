@@ -1,6 +1,7 @@
 package Common.Models.Tools;
 
 import Client.Controllers.MessageSystem;
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Planets.Crop.Crop;
@@ -30,7 +31,7 @@ public class Seythe extends Tool {
     }
 
     @Override
-    public void use(Tile tile){
+    public Message use(Tile tile){
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         player.setEnergy((int) (player.getEnergy().getEnergyAmount() - 2));
         if(tile.getItem() instanceof Crop){
@@ -82,5 +83,6 @@ public class Seythe extends Tool {
             else
                 MessageSystem.showWarning("This tree has no fruit to harvest yet!",3.0f);
         }
+        return null;
     }
 }

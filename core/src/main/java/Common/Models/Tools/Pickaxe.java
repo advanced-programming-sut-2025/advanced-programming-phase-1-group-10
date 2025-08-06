@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Mineral.Mineral;
@@ -23,7 +24,7 @@ public class Pickaxe extends Tool {
     }
 
     @Override
-    public void use(Tile tile) {
+    public Message use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         boolean isUsed = false;
 
@@ -61,6 +62,7 @@ public class Pickaxe extends Tool {
         player.getEnergy().setEnergyAmount(
             player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
+        return null;
     }
 
 }

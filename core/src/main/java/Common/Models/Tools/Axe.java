@@ -1,6 +1,7 @@
 package Common.Models.Tools;
 
 import Client.Controllers.MessageSystem;
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;
@@ -27,7 +28,7 @@ public class Axe extends Tool {
     }
 
     @Override
-    public void use(Tile tile) {
+    public Message use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         boolean isUsed = false;
 
@@ -58,6 +59,7 @@ public class Axe extends Tool {
         player.getEnergy().setEnergyAmount(
             player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
+        return null;
     }
 
 }

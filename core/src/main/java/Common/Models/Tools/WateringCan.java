@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
@@ -27,7 +28,7 @@ public class WateringCan extends Tool {
     }
 
     @Override
-    public void use(Tile tile) {
+    public Message use(Tile tile) {
         Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
         boolean isUsed = false;
         if(tile.getPlace() instanceof Lake){
@@ -46,7 +47,7 @@ public class WateringCan extends Tool {
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
-
+        return null;
     }
 
     public int getCapacityByQuality(Quality quality) {
