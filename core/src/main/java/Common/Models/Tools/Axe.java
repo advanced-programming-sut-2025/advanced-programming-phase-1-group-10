@@ -1,12 +1,12 @@
 package Common.Models.Tools;
 
 import Client.Controllers.MessageSystem;
-import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Send.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Random;

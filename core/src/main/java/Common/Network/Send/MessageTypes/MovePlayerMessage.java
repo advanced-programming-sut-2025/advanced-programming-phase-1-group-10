@@ -1,6 +1,8 @@
 package Common.Network.Send.MessageTypes;
 
 import Common.Models.PlayerStuff.Player;
+import Common.Network.Send.Message;
+
 
 public class MovePlayerMessage extends Message {
     private final String playerId;

@@ -1,11 +1,11 @@
 package Common.Models.Tools;
 
-import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Mineral.Mineral;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Send.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Pickaxe extends Tool {

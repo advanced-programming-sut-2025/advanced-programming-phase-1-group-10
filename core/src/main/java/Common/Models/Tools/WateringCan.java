@@ -1,10 +1,10 @@
 package Common.Models.Tools;
 
-import Client.Network.Send.MessageTypes.Message;
 import Common.Models.App;
 import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Send.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class WateringCan extends Tool {
