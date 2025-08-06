@@ -1,8 +1,8 @@
-import Controllers.ProfileMenuControllers;
-import Models.App;
-import Models.PlayerStuff.Gender;
-import Models.Result;
-import Models.User;
+import Server.Controllers.ProfileMenuControllers;
+import Common.Models.App;
+import Common.Models.PlayerStuff.Gender;
+import Common.Models.Result;
+import Common.Models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

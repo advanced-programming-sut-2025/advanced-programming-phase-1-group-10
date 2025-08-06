@@ -1,10 +1,7 @@
 package com.Fianl;
 
-import Controllers.MessageSystem;
-import Models.App;
-import Views.LoginMenuView;
-import Views.MainMenuView;
-import Views.RegisterMenuView;
+import Client.Views.MainMenuView;
+import Server.Controllers.MessageSystem;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

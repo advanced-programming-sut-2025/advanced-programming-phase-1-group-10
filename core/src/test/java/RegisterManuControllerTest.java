@@ -1,6 +1,6 @@
-import Controllers.RegisterManuController;
-import Models.App;
-import Models.Result;
+import Server.Controllers.RegisterManuController;
+import Common.Models.App;
+import Common.Models.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

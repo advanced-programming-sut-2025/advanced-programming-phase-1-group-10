@@ -1,8 +1,8 @@
-import Controllers.MainMenuControllers;
-import Models.App;
-import Models.Menu;
-import Models.Result;
-import Models.User;
+import Server.Controllers.MainMenuControllers;
+import Common.Models.App;
+import Common.Models.Menu;
+import Common.Models.Result;
+import Common.Models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
