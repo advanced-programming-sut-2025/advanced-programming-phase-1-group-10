@@ -12,6 +12,7 @@ public abstract class Message {
     }
 
     public enum MessageType {
+        JOIN_REQUEST,
         MOVE_PLAYER,
         TOOL_USED;
         ;
