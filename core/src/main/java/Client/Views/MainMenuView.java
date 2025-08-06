@@ -156,6 +156,7 @@ public class MainMenuView implements Screen, AppMenu {
 
         createMenuButton("Game Menu", "game menu");
         createMenuButton("Profile Menu", "profile menu");
+        createMenuButton("Go To Lobby","lobby menu");
 
         TextButton quickGame = new TextButton("quick game", skin);
         quickGame.addListener(new ClickListener(){
@@ -275,6 +276,8 @@ public class MainMenuView implements Screen, AppMenu {
             Main.getInstance().switchScreen(new GameMenuView());
         } else if (menuName.equalsIgnoreCase("profile menu")) {
             Main.getInstance().switchScreen(new ProfileMenuView());
+        } else if(menuName.equalsIgnoreCase("lobby menu")){
+            Main.getInstance().switchScreen(new LobbyMenuView(skin));
         }
     }
 
