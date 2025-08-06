@@ -20,6 +20,9 @@ public class MainMenuControllers {
             App.getInstance().setCurrentMenu(Menu.ProfileMenu);
             return new Result(true, "you are now in PROFILE MENU.");
         }
+        else if(menuName.equalsIgnoreCase("lobby menu")){
+            return new Result(true,"you are now in lobby menu.");
+        }
         else
             return new Result(false, "enter the correct MENU NAME\nlogin(register) menu\nmain menu\nprofile menu\ngame menu");
     }
