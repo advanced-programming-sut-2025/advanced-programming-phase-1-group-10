@@ -12,9 +12,10 @@ public abstract class Message {
     }
 
     public enum MessageType {
+        START_GAME,
         JOIN_REQUEST,
         MOVE_PLAYER,
-        TOOL_USED;
+        TOOL_USED,
         ;
     }
 }

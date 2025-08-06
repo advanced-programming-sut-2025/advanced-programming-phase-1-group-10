@@ -3,6 +3,7 @@ package Server.Network;
 import Common.Network.Send.Message;
 import Common.Network.Send.Message.MessageType;
 import Common.Network.Send.MessageTypes.JoinRequestMessage;
+import Common.Network.Send.MessageTypes.StartGameMessage;
 import Common.Utilis.JsonUtils;
 
 import java.io.DataInputStream;
@@ -26,14 +27,18 @@ public class ListenerThread extends Thread {
         System.out.println("Lobby Listener started on port " + port +
             (serverPassword != null ? " (password protected)" : ""));
 
-        while (!serverSocket.isClosed()) {
+        while (!serverSocket.isClosed() && !ServerApp.gameStarted) {
             try {
                 Socket socket = serverSocket.accept();
-                System.out.println("Incoming connection from " + socket.getInetAddress());
+
+                if (ServerApp.playerUsernames.size() >= ServerApp.MAX_PLAYERS) {
+                    System.out.println("Lobby full. Rejecting connection from " + socket.getInetAddress());
+                    socket.close();
+                    continue;
+                }
 
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 String json = input.readUTF();
-
                 Message message = JsonUtils.fromJson(json);
 
                 if (message.getType() == MessageType.JOIN_REQUEST) {
@@ -42,27 +47,51 @@ public class ListenerThread extends Thread {
                     String username = joinRequest.getUsername();
                     String clientPassword = joinRequest.getPassword();
 
-                    // Validate username
                     if (username == null || username.isEmpty()) {
-                        System.out.println("Join failed: username is missing.");
+                        System.out.println("Join failed: missing username.");
                         socket.close();
                         continue;
                     }
 
-                    // Validate password if server requires one
-                    if (serverPassword != null && (clientPassword == null || !serverPassword.equals(clientPassword))) {
+                    if (serverPassword != null &&
+                        (clientPassword == null || !serverPassword.equals(clientPassword))) {
                         System.out.println("Join failed for user " + username + ": incorrect password.");
                         socket.close();
                         continue;
                     }
 
-                    // Accept the connection
-                    System.out.println("Join accepted: " + username);
-                    ServerToClientConnection connection = new ServerToClientConnection(socket, username);
-                    connection.start();
+                    ServerApp.playerUsernames.add(username);
+                    ServerApp.playerSockets.add(socket);
+                    System.out.println("Player joined: " + username +
+                        (ServerApp.playerUsernames.size() == 1 ? " (Admin)" : ""));
 
+                } else if (message.getType() == MessageType.START_GAME) {
+                    StartGameMessage start = (StartGameMessage) JsonUtils.fromJson(json);
+                    String requester = start.getUsername();
+
+                    if (!ServerApp.playerUsernames.isEmpty() &&
+                        ServerApp.playerUsernames.get(0).equals(requester)) {
+
+                        if (ServerApp.playerUsernames.size() == ServerApp.MAX_PLAYERS) {
+                            System.out.println("Game is starting...");
+
+                            ServerApp.gameStarted = true;
+
+                            for (int i = 0; i < ServerApp.MAX_PLAYERS; i++) {
+                                String username = ServerApp.playerUsernames.get(i);
+                                Socket s = ServerApp.playerSockets.get(i);
+                                ServerToClientConnection conn = new ServerToClientConnection(s, username);
+                                conn.start();
+                            }
+
+                        } else {
+                            System.out.println("Not enough players to start the game.");
+                        }
+                    } else {
+                        System.out.println("Start request denied: only admin can start the game.");
+                    }
                 } else {
-                    System.out.println("Invalid message type. Connection closed.");
+                    System.out.println("Invalid message type from " + socket.getInetAddress());
                     socket.close();
                 }
 
