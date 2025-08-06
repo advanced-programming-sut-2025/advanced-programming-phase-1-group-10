@@ -10,7 +10,7 @@ import Common.Models.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Server.Controllers.GameController.getTileByPosition;
+import static Client.Controllers.GameController.getTileByPosition;
 
 public class Animal {
 

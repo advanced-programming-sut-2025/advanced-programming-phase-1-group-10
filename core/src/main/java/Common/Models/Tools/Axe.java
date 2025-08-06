@@ -1,6 +1,6 @@
 package Common.Models.Tools;
 
-import Server.Controllers.MessageSystem;
+import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;

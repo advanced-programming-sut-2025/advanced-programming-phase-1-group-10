@@ -2,7 +2,7 @@ package Common.Models.Planets;
 
 import Client.Assets.CropAsset;
 import Client.Assets.TreesAsset;
-import Server.Controllers.MessageSystem;
+import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.DateTime.Season;
 import Common.Models.Item;

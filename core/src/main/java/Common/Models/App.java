@@ -1,6 +1,6 @@
 package Common.Models;
 
-import Server.Controllers.FinalControllers.GameControllerFinal;
+import Client.Controllers.FinalControllers.GameControllerFinal;
 
 import java.util.ArrayList;
 

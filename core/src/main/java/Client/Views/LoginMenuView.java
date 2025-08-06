@@ -1,9 +1,9 @@
 package Client.Views;
 
 import Common.Models.*;
-import Server.Controllers.RegisterManuController;
+import Client.Controllers.RegisterManuController;
 
-import com.Fianl.Main;
+import Client.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

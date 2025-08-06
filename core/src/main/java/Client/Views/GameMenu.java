@@ -2,7 +2,7 @@ package Client.Views;
 
 import Common.Models.Farm;
 import Common.Models.Position;
-import Server.Controllers.GameMenuControllers;
+import Client.Controllers.GameMenuControllers;
 import Common.Models.Commands.GameMenuCommands;
 import Common.Models.PlayerStuff.Player;
 

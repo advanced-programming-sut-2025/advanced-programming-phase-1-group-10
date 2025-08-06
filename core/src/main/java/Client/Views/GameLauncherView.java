@@ -1,13 +1,12 @@
 package Client.Views;
 
 import Client.Assets.TextureCache;
-import Client.Views.AppMenu;
 import Common.Models.App;
 import Common.Models.Game;
 import Common.Models.Map;
-import Server.Controllers.FinalControllers.AnimalListController;
-import Server.Controllers.FinalControllers.GameControllerFinal;
-import Server.Controllers.MessageSystem;
+import Client.Controllers.FinalControllers.AnimalListController;
+import Client.Controllers.FinalControllers.GameControllerFinal;
+import Client.Controllers.MessageSystem;
 import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -25,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.Fianl.Main;
+import Client.Main;
 
 import java.util.Scanner;
 

@@ -1,6 +1,6 @@
 package Client.Views;
 
-import Server.Controllers.MainMenuControllers;
+import Client.Controllers.MainMenuControllers;
 import Common.Models.Commands.MainMenuCommands;
 import Common.Models.Result;
 

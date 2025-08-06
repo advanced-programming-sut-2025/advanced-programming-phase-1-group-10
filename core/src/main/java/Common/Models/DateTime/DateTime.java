@@ -1,6 +1,6 @@
 package Common.Models.DateTime;
 
-import Server.Controllers.GameController;
+import Client.Controllers.GameController;
 
 import java.util.Calendar;
 import java.util.Date;

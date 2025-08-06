@@ -1,9 +1,9 @@
 package Client.Views;
 
 import Common.Models.Result;
-import Server.Controllers.GameMenuControllers;
+import Client.Controllers.GameMenuControllers;
 
-import com.Fianl.Main;
+import Client.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

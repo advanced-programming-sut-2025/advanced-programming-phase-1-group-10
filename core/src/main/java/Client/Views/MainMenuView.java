@@ -4,10 +4,10 @@ import Common.Models.App;
 import Common.Models.Result;
 import Common.Models.SaveData;
 import Common.Models.User;
-import Server.Controllers.GameMenuControllers;
-import Server.Controllers.MainMenuControllers;
+import Client.Controllers.GameMenuControllers;
+import Client.Controllers.MainMenuControllers;
 
-import com.Fianl.Main;
+import Client.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

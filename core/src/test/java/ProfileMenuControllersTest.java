@@ -1,4 +1,4 @@
-import Server.Controllers.ProfileMenuControllers;
+import Client.Controllers.ProfileMenuControllers;
 import Common.Models.App;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.Result;

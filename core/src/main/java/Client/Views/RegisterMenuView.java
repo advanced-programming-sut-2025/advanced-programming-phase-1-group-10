@@ -2,12 +2,12 @@
 
 package Client.Views;
 
-import Server.Controllers.RegisterManuController;
+import Client.Controllers.RegisterManuController;
 import Common.Models.App;
 import Common.Models.Menu;
 import Common.Models.Result;
 
-import com.Fianl.Main;
+import Client.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;

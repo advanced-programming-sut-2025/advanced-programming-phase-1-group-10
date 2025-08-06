@@ -1,7 +1,7 @@
 package Client.Views;
 
 
-import Server.Controllers.RegisterManuController;
+import Client.Controllers.RegisterManuController;
 import Common.Models.App;
 import Common.Models.Commands.RegisterMenuCommands;
 import Common.Models.Result;
