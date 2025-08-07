@@ -1,5 +1,7 @@
 package Client.Views;
 
+import Client.Network.ClientNetworkManager;
+import Client.Network.ConnectionSettings;
 import Common.Models.App;
 import Common.Models.Result;
 import Common.Models.SaveData;
@@ -37,6 +39,7 @@ public class MainMenuView implements Screen, AppMenu {
     private User currentUser;
 
     long sharedSeed;
+    private TextButton serverSettingsButton;
 
 
 
@@ -162,6 +165,26 @@ public class MainMenuView implements Screen, AppMenu {
         createMenuButton("Profile Menu", "profile menu");
         createMenuButton("Go To Lobby","lobby menu");
 
+        serverSettingsButton = new TextButton("Server Settings", skin);
+        serverSettingsButton.addListener(new ClickListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                serverSettingsButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                serverSettingsButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showServerSettingsDialog();
+            }
+        });
+        mainTable.add(serverSettingsButton).colspan(2).width(300).height(60).padBottom(20).row();
+
+
         TextButton quickGame = new TextButton("quick game", skin);
         quickGame.addListener(new ClickListener(){
             @Override
@@ -226,18 +249,18 @@ public class MainMenuView implements Screen, AppMenu {
 
     private void createMenuButton(String text, final String menuName) {
         TextButton button = new TextButton(text, skin);
-        //styleButton(button, color);
+
 
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                //button.setColor(BUTTON_HOVER_COLOR);
+
                 button.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                //button.setColor(color);
+
                 button.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
 
@@ -258,7 +281,6 @@ public class MainMenuView implements Screen, AppMenu {
     }
 
     private void handleMenuNavigation(String menuName) {
-
         if (currentUser == null && (menuName.equals("profile menu") || menuName.equals("game menu"))) {
             showErrorMessage("You need to login first!");
             return;
@@ -267,12 +289,126 @@ public class MainMenuView implements Screen, AppMenu {
         Result result = controller.enterMenu(menuName);
 
         if (result.state()) {
-
-            navigateToMenu(menuName);
+            if (menuName.equalsIgnoreCase("lobby menu")) {
+                showLoginForLobbyDialog();
+            } else {
+                navigateToMenu(menuName);
+            }
         } else {
             showErrorMessage(result.message());
         }
     }
+
+    private void showServerSettingsDialog() {
+        Dialog settingsDialog = new Dialog("Server Settings", skin) {
+            private TextField hostField;
+            private TextField portField;
+
+            {
+                getContentTable().pad(20);
+
+                hostField = new TextField(ConnectionSettings.getHost(), skin);
+                portField = new TextField(String.valueOf(ConnectionSettings.getPort()), skin);
+
+                getContentTable().add(new Label("Server Host:", skin)).align(Align.left).padRight(10);
+                getContentTable().add(hostField).width(200).pad(10).row();
+
+                getContentTable().add(new Label("Server Port:", skin)).align(Align.left).padRight(10);
+                getContentTable().add(portField).width(200).pad(10).row();
+
+                button("Save", "save");
+                button("Cancel", "cancel");
+            }
+
+            @Override
+            protected void result(Object object) {
+                if (object.equals("save")) {
+                    try {
+                        String host = hostField.getText().trim();
+                        int port = Integer.parseInt(portField.getText().trim());
+
+                        if (host.isEmpty()) {
+                            showErrorMessage("Host cannot be empty.");
+                            return;
+                        }
+
+                        ConnectionSettings.setHost(host);
+                        ConnectionSettings.setPort(port);
+                        showSuccessMessage("Server settings saved.");
+
+                    } catch (NumberFormatException e) {
+                        showErrorMessage("Port must be a valid number.");
+                    }
+                }
+            }
+        };
+
+        settingsDialog.show(stage);
+    }
+
+    private void showLoginForLobbyDialog() {
+        Dialog loginDialog = new Dialog("Enter Username for Lobby", skin) {
+            private TextField usernameField;
+
+            {
+                usernameField = new TextField("", skin);
+                usernameField.setMessageText("Enter your username...");
+
+
+                if (currentUser != null) {
+                    usernameField.setText(currentUser.getNickname());
+                }
+
+                getContentTable().pad(20);
+                getContentTable().add(new Label("Username:", skin)).padRight(10);
+                getContentTable().add(usernameField).width(200).pad(10).row();
+
+                button("Connect", "connect");
+                button("Cancel", "cancel");
+            }
+
+            @Override
+            protected void result(Object object) {
+                if (object.equals("connect")) {
+                    String username = usernameField.getText().trim();
+                    if (!username.isEmpty()) {
+                        connectToLobbyServer(username);
+                    } else {
+                        showErrorMessage("Username cannot be empty.");
+                    }
+                }
+            }
+        };
+
+        loginDialog.show(stage);
+    }
+
+    private void connectToLobbyServer(String username) {
+        Dialog connectingDialog = new Dialog("Connecting", skin);
+        connectingDialog.text("Connecting to server...");
+        connectingDialog.show(stage);
+
+
+        new Thread(() -> {
+            final boolean success = ClientNetworkManager.getInstance().connect(
+                ConnectionSettings.getHost(),
+                ConnectionSettings.getPort(),
+                username
+            );
+
+
+            Gdx.app.postRunnable(() -> {
+                connectingDialog.hide();
+
+                if (success) {
+                    Main.getInstance().switchScreen(new LobbyMenuView(skin));
+                } else {
+                    showErrorMessage("Failed to connect to server. Please check the server is running and try again.");
+                }
+            });
+        }).start();
+    }
+
 
     private void navigateToMenu(String menuName) {
         if (menuName.equalsIgnoreCase("login menu") || menuName.equalsIgnoreCase("signup menu")) {

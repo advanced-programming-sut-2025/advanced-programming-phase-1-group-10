@@ -1,6 +1,9 @@
 package Client.Views;
 
 import Client.Main;
+import Client.Network.ClientNetworkManager;
+import Common.Network.Send.MessageTypes.JoinLobbyResponseMessage;
+import Common.Network.Send.MessageTypes.ListLobbiesResponseMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -9,11 +12,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.util.List;
 
 public class LobbyMenuView implements Screen {
 
@@ -21,12 +27,18 @@ public class LobbyMenuView implements Screen {
     private final Skin skin;
     private Texture backgroundTexture;
     private final Table mainTable;
+    private final ClientNetworkManager networkManager;
+
+
+    private Dialog loadingDialog;
 
     private final Color TITLE_COLOR = new Color(0.4f, 0.2f, 0.1f, 1f);
 
     public LobbyMenuView(Skin skin) {
         this.skin = skin;
         this.stage = new Stage(new ScreenViewport());
+        this.networkManager = ClientNetworkManager.getInstance();
+        this.loadingDialog = null;
 
         try {
             this.backgroundTexture = new Texture(Gdx.files.internal("backgrounds/LobbyMenu.png"));
@@ -36,6 +48,41 @@ public class LobbyMenuView implements Screen {
 
         this.mainTable = new Table();
         createUI();
+        setupNetworkCallbacks();
+    }
+
+    private void setupNetworkCallbacks() {
+
+        networkManager.setOnLobbyJoined(response -> {
+            Gdx.app.postRunnable(() -> {
+
+                hideLoadingDialog();
+
+                if (response.isSuccess()) {
+                    Main.getInstance().switchScreen(new LobbyView(skin, response));
+                } else {
+                    showErrorDialog(response.getErrorMessage());
+                }
+            });
+        });
+
+
+        networkManager.setOnError(errorMessage -> {
+            Gdx.app.postRunnable(() -> {
+
+                hideLoadingDialog();
+
+                showErrorDialog(errorMessage);
+            });
+        });
+    }
+
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null) {
+            loadingDialog.hide();
+            loadingDialog = null;
+        }
     }
 
     private void createUI() {
@@ -56,7 +103,6 @@ public class LobbyMenuView implements Screen {
         });
         mainTable.add(createLobbyButton).width(300).height(80).padBottom(20).row();
 
-
         TextButton listLobbiesButton = new TextButton("List Lobbies", skin);
         listLobbiesButton.addListener(new ClickListener() {
             @Override
@@ -65,7 +111,6 @@ public class LobbyMenuView implements Screen {
             }
         });
         mainTable.add(listLobbiesButton).width(300).height(80).padBottom(20).row();
-
 
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
@@ -88,7 +133,6 @@ public class LobbyMenuView implements Screen {
             private final Table passwordTable;
 
             {
-
                 getContentTable().pad(20);
 
                 lobbyNameField = new TextField("", skin);
@@ -141,13 +185,26 @@ public class LobbyMenuView implements Screen {
                         if (isPrivate && password.isEmpty()) {
                             showErrorDialog("Password is required for private lobbies.");
                         } else {
-                            // TODO: add creat lobby logic
-                            System.out.println("Lobby '" + lobbyName + "' created.");
-                            System.out.println("Private: " + isPrivate);
-                            System.out.println("Visible: " + isVisible);
-                            if (isPrivate) {
-                                System.out.println("Password: " + password);
-                            }
+
+                            showLoadingDialog("Creating Lobby", "Creating lobby, please wait...");
+
+
+                            stage.addAction(Actions.sequence(
+                                Actions.delay(15f),
+                                Actions.run(() -> {
+
+                                    if (loadingDialog != null) {
+                                        hideLoadingDialog();
+                                        showErrorDialog("Timeout: No response from server. Please try again.");
+                                    }
+                                })
+                            ));
+
+
+                            networkManager.createLobby(lobbyName, isPrivate, isVisible, password);
+
+
+                            hide();
                         }
                     } else {
                         showErrorDialog("Lobby name cannot be empty.");
@@ -159,9 +216,20 @@ public class LobbyMenuView implements Screen {
         createLobbyDialog.show(stage);
         createLobbyDialog.setSize(700, 500);
         createLobbyDialog.setPosition(
-                (Gdx.graphics.getWidth() - createLobbyDialog.getWidth()) / 2,
-                (Gdx.graphics.getHeight() - createLobbyDialog.getHeight()) / 2
+            (Gdx.graphics.getWidth() - createLobbyDialog.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - createLobbyDialog.getHeight()) / 2
         );
+    }
+
+
+    private void showLoadingDialog(String title, String message) {
+
+        hideLoadingDialog();
+
+
+        loadingDialog = new Dialog(title, skin);
+        loadingDialog.text(message);
+        loadingDialog.show(stage);
     }
 
     private void showErrorDialog(String message) {
@@ -172,27 +240,137 @@ public class LobbyMenuView implements Screen {
     }
 
     private void showLobbyListDialog() {
-        Dialog lobbyListDialog = new Dialog("Lobby List", skin) {
-            {
-                // TODO: add list off lobbies
-                getContentTable().add(new Label("Loading lobbies...", skin)).row();
 
-                // TODO: join lobby logic
+        showLoadingDialog("Loading Lobbies", "Loading lobbies, please wait...");
+
+
+        networkManager.requestLobbiesList();
+
+        Dialog lobbyListDialog = new Dialog("Lobby List", skin) {
+            private Table lobbiesTable;
+
+            {
+                lobbiesTable = new Table(skin);
+                lobbiesTable.defaults().pad(10);
+
+
+                lobbiesTable.add(new Label("Name", skin)).width(250);
+                lobbiesTable.add(new Label("Players", skin)).width(100);
+                lobbiesTable.add(new Label("Status", skin)).width(100);
+                lobbiesTable.add(new Label("Actions", skin)).width(150).row();
+
+                ScrollPane scrollPane = new ScrollPane(lobbiesTable, skin);
+                scrollPane.setFadeScrollBars(false);
+                scrollPane.setScrollingDisabled(true, false);
+
+                getContentTable().add(scrollPane).width(600).height(350).pad(20);
+
+
+                networkManager.setOnLobbiesListUpdated(lobbies -> {
+
+                    Gdx.app.postRunnable(() -> {
+
+                        hideLoadingDialog();
+
+
+                        updateLobbyList(lobbies);
+                        show(stage);
+                    });
+                });
 
                 button("Refresh", "refresh");
                 button("Close", "close");
             }
 
+            private void updateLobbyList(List<ListLobbiesResponseMessage.LobbyInfo> lobbies) {
+
+                lobbiesTable.clear();
+
+
+                lobbiesTable.defaults().pad(10);
+                lobbiesTable.add(new Label("Name", skin)).width(250);
+                lobbiesTable.add(new Label("Players", skin)).width(100);
+                lobbiesTable.add(new Label("Status", skin)).width(100);
+                lobbiesTable.add(new Label("Actions", skin)).width(150).row();
+
+                if (lobbies == null || lobbies.isEmpty()) {
+                    lobbiesTable.add("No lobbies available").colspan(4).row();
+                    return;
+                }
+
+                for (ListLobbiesResponseMessage.LobbyInfo lobby : lobbies) {
+                    lobbiesTable.add(lobby.getName()).width(250);
+                    lobbiesTable.add(lobby.getPlayerCount() + "/4").width(100);
+
+                    String status = lobby.isPrivate() ? "Private" : "Public";
+                    lobbiesTable.add(status).width(100);
+
+                    Table actionsTable = new Table();
+                    TextButton joinButton = new TextButton("Join", skin);
+
+                    joinButton.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            if (lobby.isPrivate()) {
+                                showPasswordDialog(lobby.getLobbyId());
+                            } else {
+
+                                showLoadingDialog("Joining Lobby", "Joining lobby, please wait...");
+                                networkManager.joinLobby(lobby.getLobbyId(), null);
+                                hide();
+                            }
+                        }
+                    });
+
+                    actionsTable.add(joinButton).width(100);
+                    lobbiesTable.add(actionsTable).width(150).row();
+                }
+            }
+
+            private void showPasswordDialog(String lobbyId) {
+                Dialog passwordDialog = new Dialog("Enter Password", skin) {
+                    private TextField passwordField;
+
+                    {
+                        passwordField = new TextField("", skin);
+                        passwordField.setPasswordMode(true);
+                        passwordField.setPasswordCharacter('*');
+
+                        getContentTable().add(new Label("Password:", skin)).padRight(10);
+                        getContentTable().add(passwordField).width(200).pad(10).row();
+
+                        button("Join", "join");
+                        button("Cancel", "cancel");
+                    }
+
+                    @Override
+                    protected void result(Object object) {
+                        if (object.equals("join")) {
+                            String password = passwordField.getText();
+
+                            showLoadingDialog("Joining Lobby", "Joining lobby, please wait...");
+                            networkManager.joinLobby(lobbyId, password);
+                            hide();
+                        }
+                    }
+                };
+
+                passwordDialog.show(stage);
+            }
+
             @Override
             protected void result(Object object) {
                 if (object.equals("refresh")) {
-                    // TODO: add refresh lobbies logic
+
+                    showLoadingDialog("Loading Lobbies", "Loading lobbies, please wait...");
+                    networkManager.requestLobbiesList();
                 }
             }
         };
 
-        lobbyListDialog.show(stage);
-        lobbyListDialog.setSize(800,500);
+
+
+        lobbyListDialog.setSize(800, 500);
         lobbyListDialog.setPosition(
             (Gdx.graphics.getWidth() - lobbyListDialog.getWidth()) / 2,
             (Gdx.graphics.getHeight() - lobbyListDialog.getHeight()) / 2
@@ -231,7 +409,15 @@ public class LobbyMenuView implements Screen {
     public void resume() {}
 
     @Override
-    public void hide() {}
+    public void hide() {
+
+        networkManager.setOnLobbiesListUpdated(null);
+        networkManager.setOnLobbyJoined(null);
+        networkManager.setOnError(null);
+
+
+        hideLoadingDialog();
+    }
 
     @Override
     public void dispose() {
