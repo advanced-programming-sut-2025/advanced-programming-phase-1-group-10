@@ -1,8 +1,8 @@
+
 package Client.Views;
 
 import Client.Main;
 import Client.Network.ClientNetworkManager;
-import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.MessageTypes.JoinLobbyResponseMessage;
 import Common.Network.Send.MessageTypes.LobbyUpdateMessage;
 import com.badlogic.gdx.Gdx;
@@ -31,7 +31,7 @@ public class LobbyView implements Screen {
 
     private final String lobbyId;
     private final String lobbyName;
-    private final boolean isAdmin;
+    private boolean isAdmin;
 
     private final Color TITLE_COLOR = new Color(0.4f, 0.2f, 0.1f, 1f);
     private final Color ADMIN_COLOR = new Color(0.8f, 0.6f, 0.1f, 1f);
@@ -91,7 +91,6 @@ public class LobbyView implements Screen {
                 updatePlayersTable(updateMessage.getPlayers(), updateMessage.getReadyStatus());
             });
         });
-
     }
 
     private void showErrorDialog(String message) {
@@ -99,7 +98,6 @@ public class LobbyView implements Screen {
         errorDialog.text(message);
         errorDialog.button("OK");
         errorDialog.show(stage);
-
 
         errorDialog.setSize(600, 300);
         centerDialog(errorDialog);
@@ -118,11 +116,9 @@ public class LobbyView implements Screen {
         successDialog.button("OK");
         successDialog.show(stage);
 
-
         successDialog.setSize(600, 300);
         centerDialog(successDialog);
     }
-
 
     private void centerDialog(Dialog dialog) {
         dialog.setPosition(
@@ -133,39 +129,27 @@ public class LobbyView implements Screen {
 
     private void createUI(ArrayList<String> players) {
         mainTable.setFillParent(true);
-
         mainTable.pad(80);
-
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("Impact"), TITLE_COLOR);
         Label titleLabel = new Label("Lobby: " + lobbyName, titleStyle);
-
         titleLabel.setFontScale(2.5f);
         mainTable.add(titleLabel).colspan(2).padBottom(40).row();
 
-
         statusLabel = new Label(isAdmin ? "You are the lobby admin" : "Waiting for the game to start...", skin);
         statusLabel.setColor(isAdmin ? ADMIN_COLOR : PLAYER_COLOR);
-
         statusLabel.setFontScale(1.3f);
         mainTable.add(statusLabel).colspan(2).padBottom(30).row();
-
 
         Label playersLabel = new Label("Players", skin);
         playersLabel.setFontScale(1.8f);
         mainTable.add(playersLabel).colspan(2).padBottom(20).padTop(30).row();
 
-
         playersTable.defaults().pad(15);
-
-
         Label playerHeaderLabel = new Label("Player", skin);
         playerHeaderLabel.setFontScale(1.3f);
-
         Label statusHeaderLabel = new Label("Status", skin);
         statusHeaderLabel.setFontScale(1.3f);
-
-
         playersTable.add(playerHeaderLabel).width(350);
         playersTable.add(statusHeaderLabel).width(200).row();
 
@@ -175,13 +159,10 @@ public class LobbyView implements Screen {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-
         mainTable.add(scrollPane).colspan(2).width(800).height(400).padBottom(40).row();
-
 
         CheckBox readyCheckbox = new CheckBox(" I'm ready", skin);
         readyCheckbox.setName("readyCheckbox");
-
         readyCheckbox.getLabel().setFontScale(1.3f);
         readyCheckbox.addListener(new ClickListener() {
             @Override
@@ -193,18 +174,24 @@ public class LobbyView implements Screen {
 
         Table buttonsTable = new Table();
 
-        if (isAdmin) {
-            startGameButton = new TextButton("Start Game", skin);
-            startGameButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    networkManager.startGame();
-                }
-            });
-            startGameButton.setDisabled(true);
 
-            startGameButton.getLabel().setFontScale(1.3f);
+        startGameButton = new TextButton("Start Game", skin);
+        startGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                networkManager.startGame();
+            }
+        });
+        startGameButton.setDisabled(true);
+        startGameButton.getLabel().setFontScale(1.3f);
+        startGameButton.setVisible(isAdmin);
+
+        if (isAdmin) {
             buttonsTable.add(startGameButton).width(250).height(80).padRight(30);
+        } else {
+
+            buttonsTable.add(startGameButton).width(250).height(80).padRight(30);
+            startGameButton.setVisible(false);
         }
 
         TextButton leaveButton = new TextButton("Leave Lobby", skin);
@@ -215,7 +202,6 @@ public class LobbyView implements Screen {
                 Main.getInstance().switchScreen(new LobbyMenuView(skin));
             }
         });
-
         leaveButton.getLabel().setFontScale(1.3f);
         buttonsTable.add(leaveButton).width(250).height(80);
 
@@ -225,18 +211,12 @@ public class LobbyView implements Screen {
     }
 
     private void updatePlayersTable(ArrayList<String> players, Map<String, Boolean> readyStatus) {
-
         playersTable.clear();
-
-
         playersTable.defaults().pad(15);
-
         Label playerHeaderLabel = new Label("Player", skin);
         playerHeaderLabel.setFontScale(1.3f);
-
         Label statusHeaderLabel = new Label("Status", skin);
         statusHeaderLabel.setFontScale(1.3f);
-
         playersTable.add(playerHeaderLabel).width(350);
         playersTable.add(statusHeaderLabel).width(200).row();
 
@@ -244,10 +224,8 @@ public class LobbyView implements Screen {
 
         boolean allReady = true;
 
-
         for (int i = 0; i < players.size(); i++) {
             String playerName = players.get(i);
-
 
             String displayName = playerName;
             if (i == 0) {
@@ -255,27 +233,22 @@ public class LobbyView implements Screen {
             }
 
             Label nameLabel = new Label(displayName, skin);
-
             nameLabel.setFontScale(1.1f);
             if (i == 0) {
                 nameLabel.setColor(ADMIN_COLOR);
             }
-
             playersTable.add(nameLabel).width(350);
 
-
             boolean isReady = readyStatus.getOrDefault(playerName, false);
-
             if (!isReady) {
                 allReady = false;
             }
 
-            Label statusLabel = new Label(isReady ? "Ready" : "Not Ready", skin);
 
-            statusLabel.setFontScale(1.1f);
-            statusLabel.setColor(isReady ? new Color(0.2f, 0.8f, 0.2f, 1f) : new Color(0.8f, 0.2f, 0.2f, 1f));
-            playersTable.add(statusLabel).width(200).row();
-
+            Label rowStatusLabel = new Label(isReady ? "Ready" : "Not Ready", skin);
+            rowStatusLabel.setFontScale(1.1f);
+            rowStatusLabel.setColor(isReady ? new Color(0.2f, 0.8f, 0.2f, 1f) : new Color(0.8f, 0.2f, 0.2f, 1f));
+            playersTable.add(rowStatusLabel).width(200).row();
 
             if (playerName.equals(networkManager.getUsername())) {
                 CheckBox checkbox = (CheckBox) mainTable.findActor("readyCheckbox");
@@ -287,15 +260,27 @@ public class LobbyView implements Screen {
         }
 
 
-        if (isAdmin && startGameButton != null) {
-            startGameButton.setDisabled(!allReady || players.size() < 2);
+        boolean nowAdmin = !players.isEmpty() && players.get(0).equals(networkManager.getUsername());
+        if (nowAdmin != isAdmin) {
+            isAdmin = nowAdmin;
+            startGameButton.setVisible(isAdmin);
+            statusLabel.setText(isAdmin ? "You are the lobby admin" : "Waiting for the game to start...");
+            statusLabel.setColor(isAdmin ? ADMIN_COLOR : PLAYER_COLOR);
+        }
 
-            if (players.size() < 2) {
-                statusLabel.setText("Need at least 2 players to start");
-            } else if (!allReady) {
-                statusLabel.setText("Waiting for all players to be ready");
-            } else {
-                statusLabel.setText("All players ready! You can start the game");
+
+        if (startGameButton != null) {
+            startGameButton.setDisabled(!isAdmin || !allReady || players.size() < 2);
+
+
+            if (isAdmin) {
+                if (players.size() < 2) {
+                    this.statusLabel.setText("Need at least 2 players to start");
+                } else if (!allReady) {
+                    this.statusLabel.setText("Waiting for all players to be ready");
+                } else {
+                    this.statusLabel.setText("All players ready! You can start the game");
+                }
             }
         }
     }
@@ -305,7 +290,6 @@ public class LobbyView implements Screen {
         dialog.text(message);
         dialog.button("OK");
         dialog.show(stage);
-
 
         dialog.setSize(600, 300);
         centerDialog(dialog);

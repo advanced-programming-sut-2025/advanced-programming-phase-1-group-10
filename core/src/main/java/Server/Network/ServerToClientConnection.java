@@ -1,10 +1,13 @@
 package Server.Network;
 
+import Client.Views.MainMenuView;
 import Common.Models.Lobby;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
+import Server.Main;
+import com.badlogic.gdx.Gdx;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -181,6 +184,28 @@ public class ServerToClientConnection extends ConnectionThread {
         }
 
         return false;
+    }
+
+    @Override
+    protected void onConnectionClosed() {
+        System.out.println("Connection closed for client: " + username + " (" + clientId + ")");
+
+        if (currentLobbyId != null) {
+            LobbyManager lobbyManager = LobbyManager.getInstance();
+
+            lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
+
+            Lobby lobby = lobbyManager.getLobby(currentLobbyId);
+            if (lobby != null) {
+                LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
+                    currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
+                );
+                lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
+            }
+            Client.Main.getInstance().switchScreen(new MainMenuView());
+
+            currentLobbyId = null;
+        }
     }
 
     public String getClientId() {

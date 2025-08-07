@@ -47,7 +47,7 @@ public class ClientNetworkManager {
             connection = new ClientToServerConnection(socket);
             this.username = username;
             connection.start();
-            JoinRequestMessage joinRequest = new JoinRequestMessage(username, ""); // اگر سرورت رمز نمی‌خواد
+            JoinRequestMessage joinRequest = new JoinRequestMessage(username, "");
             connection.sendMessage(joinRequest);
             return true;
         } catch (IOException e) {
@@ -88,6 +88,7 @@ public class ClientNetworkManager {
         }
     }
 
+
     public void startGame() {
         if (connection != null && currentLobbyId != null && isAdmin) {
             StartGameMessage message = new StartGameMessage(username);
@@ -102,9 +103,17 @@ public class ClientNetworkManager {
 
     public void disconnect() {
         if (connection != null) {
+            if (currentLobbyId != null) {
+                leaveLobby();
+                currentLobbyId = null;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             connection.end();
             connection = null;
-            currentLobbyId = null;
         }
     }
 
@@ -170,6 +179,7 @@ public class ClientNetworkManager {
                 case LOBBY_UPDATE:
                     LobbyUpdateMessage updateMsg = (LobbyUpdateMessage) message;
                     lobbyPlayers = updateMsg.getPlayers();
+                    isAdmin = !lobbyPlayers.isEmpty() && lobbyPlayers.get(0).equals(username);
 
                     if (onLobbyUpdated != null) {
                         onLobbyUpdated.accept(updateMsg);
