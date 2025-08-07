@@ -3,7 +3,6 @@ package Common.Network;
 import Common.Network.Send.Message;
 import Common.Utilis.JsonUtils;
 
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -48,7 +47,7 @@ abstract public class ConnectionThread extends Thread {
     public void run() {
         initialized = false;
         if (!initialHandshake()) {
-            System.err.println("Inital HandShake failed with remote device.");
+            System.err.println("Initial Handshake failed with remote device.");
             end();
             return;
         }
@@ -57,12 +56,21 @@ abstract public class ConnectionThread extends Thread {
         while (!end.get()) {
             try {
                 String receivedStr = dataInputStream.readUTF();
-                Message message = JsonUtils.fromJson(receivedStr);
+                System.out.println("Received raw JSON: " + receivedStr);
+                Message message = JsonUtils.fromJsonWithType(receivedStr);
+
                 boolean handled = handleMessage(message);
-                if (!handled) try {
-                    receivedMessagesQueue.put(message);
-                } catch (InterruptedException e) {}
+                if (!handled) {
+                    try {
+                        receivedMessagesQueue.put(message);
+                    } catch (InterruptedException e) {
+                        System.err.println("Interrupted while putting message into queue: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
             } catch (Exception e) {
+                System.err.println("Exception in connection thread: " + e.getMessage());
+                e.printStackTrace();
                 break;
             }
         }

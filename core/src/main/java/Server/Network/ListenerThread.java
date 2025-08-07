@@ -10,6 +10,7 @@ import Common.Utilis.JsonUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -66,14 +67,13 @@ public class ListenerThread extends Thread {
         }
     }
 
-    private void handleClientConnection(Socket socket) {
-        try {
-            while (!socket.isClosed()) {
-                DataInputStream input = new DataInputStream(socket.getInputStream());
-                String json = input.readUTF();
-                System.out.println("Received JSON: " + json);
-
+     private void handleClientConnection(Socket socket) {
+        try (DataInputStream input = new DataInputStream(socket.getInputStream())) {
+            while (true) {
                 try {
+                    String json = input.readUTF();  // will throw if socket is closed
+                    System.out.println("Received JSON: " + json);
+
                     Message message = JsonUtils.fromJsonWithType(json);
                     System.out.println("Message type: " + message.getType());
 
@@ -108,22 +108,24 @@ public class ListenerThread extends Thread {
 
                         default:
                             System.out.println("Invalid message type from " + socket.getInetAddress() + ": " + message.getType());
-                             socket.close();
+                            return;
                     }
+
+                } catch (EOFException eof) {
+                    System.out.println("Client disconnected: " + socket.getInetAddress());
+                    break;
                 } catch (Exception e) {
                     System.err.println("Error processing message: " + e.getMessage());
                     e.printStackTrace();
-                     socket.close();
+                    break;
                 }
             }
         } catch (IOException e) {
             System.err.println("Error reading from socket: " + e.getMessage());
-            try {
-                socket.close();
-            }
-            catch (IOException ignored) {}
+            e.printStackTrace();
         }
     }
+
 
 
     private void handleJoinRequest(Socket socket, JoinRequestMessage joinRequest) throws IOException {

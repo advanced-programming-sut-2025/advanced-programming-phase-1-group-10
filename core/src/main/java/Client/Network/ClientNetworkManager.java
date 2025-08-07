@@ -199,7 +199,11 @@ public class ClientNetworkManager {
             CreateLobbyMessage message = new CreateLobbyMessage(
                 lobbyName, isPrivate, isVisible, password, username
             );
-            connection.sendMessage(message);
+            try{
+                connection.sendMessage(message);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         } else {
             System.err.println("Cannot create lobby: not connected to server");
             if (onError != null) {
