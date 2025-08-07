@@ -2251,28 +2251,43 @@ public class GameController {
     public void handleNextDay() {
         Game game = App.getInstance().getCurrentGame();
         GameMenuControllers setRandoms = new GameMenuControllers();
-        for(Player player: game.getPlayers()) {
-            //Set Player to their house
+
+        long daySeed = System.currentTimeMillis();  // Or any deterministic seed you prefer (e.g., game day count)
+        // For consistency across clients, better to use a game-day-based seed, e.g.:
+        // long daySeed = game.getCurrentDay();
+
+        List<Player> players = game.getPlayers();
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
             game.setCurrentPlayer(player);
             walkPlayer(getPlaceByType("House").getPosition());
-            //Set Player Energy
-            if(player.isFainted()){
+
+            if (player.isFainted()) {
                 player.setFainted(false);
                 player.getEnergy().setEnergyAmount(100);
             } else {
                 player.getEnergy().setEnergyAmount(200);
             }
-            //put random crops
-            setRandoms.putRandomMineral(player.getFarm(),2);
-            setRandoms.putRandomForagingPlanet(player.getFarm(),2);
+
+            // Deterministic seeds per player for minerals and plants
+            long mineralSeed = daySeed + i * 17L + 0xBEEF;
+            long foragingSeed = daySeed + i * 31L + 0xCAFE;
+
+            // Put random crops and minerals deterministically
+            setRandoms.putRandomMineral(player.getFarm(), 2, mineralSeed);
+            setRandoms.putRandomForagingPlanet(player.getFarm(), 2, foragingSeed);
         }
-        //Handle Weather
+
+        // Handle Weather
         game.setWeather(game.getNextDayWeather());
+
+        Random random = new Random(daySeed); // Use seeded random for weather selection too
         game.setNextDayWeather(chooseNextDayWeather().get(random.nextInt(chooseNextDayWeather().size())));
-        //Handle Weather
+
         if (game.getWeather() == Weather.STORM) {
             handleStorm(game);
-        } else if(game.getWeather() == Weather.RAIN){
+        } else if (game.getWeather() == Weather.RAIN) {
             setWatered();
         } else {
             resetWatered();
@@ -2282,13 +2297,13 @@ public class GameController {
             Animal.updateAnimalState(animal);
         }
 
-        // Update all plants and trees regardless of watering status
-//        updateAllPlantsAndTrees();
+        // Update trees/plants for the day
         updateRandomTrees();
 
-        //Set Player to current player
-        game.setCurrentPlayer(game.getPlayers().get(0));
+        // Set current player back to the first player
+        game.setCurrentPlayer(players.get(0));
     }
+
 
     private void updateRandomTrees(){
         DateTime currentTime = App.getInstance().getCurrentGame().getGameTime();

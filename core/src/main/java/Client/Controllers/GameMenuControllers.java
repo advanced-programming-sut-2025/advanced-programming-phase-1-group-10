@@ -229,96 +229,118 @@ public class GameMenuControllers {
         return map[row][col];
     }
 
-    public boolean isAvailableTileForMineral(Tile tile) {
-        return tile.getItem() == null;
-    }
-
-    public Item getRandomItem(ArrayList<Item> list) {
+    public Item getRandomItem(ArrayList<Item> list, Random random) {
         if (list.isEmpty()) return null;
-        Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
 
-    public Tile getRandomTileArrayList(ArrayList<Tile> list) {
+    public Tile getRandomTileArrayList(ArrayList<Tile> list, Random random) {
         if (list.isEmpty()) return null;
-        Random random = new Random();
         return list.get(random.nextInt(list.size()));
     }
 
-    public void putRandomMineral(Farm farm, int numberOfRandom) {
+    public Tile getRandomTile(Tile[][] tiles, Random random) {
+        int height = tiles.length;
+        int width = tiles[0].length;
+        Tile tile;
+        do {
+            int x = random.nextInt(height);
+            int y = random.nextInt(width);
+            tile = tiles[x][y];
+        } while (tile == null);
+        return tile;
+    }
+
+    public void putRandomMineral(Farm farm, int numberOfRandom, long seed) {
+        Random random = new Random(seed);
+
         Tile[][] tiles = getPlaceByName(farm.getPlaces(), "Quarry").getPlaceTiles();
         ArrayList<Item> minerals = new ArrayList<>();
         for (MineralTypes type : MineralTypes.values()) {
             minerals.add(new Mineral(type, 1));
         }
+
         for (int i = 0; i < numberOfRandom; i++) {
-            Tile randomTile = getRandomTile(tiles);
-            Mineral mineral = new Mineral(MineralTypes.STONE,1);
-            if (!isAvailableTileForMineral(randomTile)) {
-                continue;
-            }
+            Tile randomTile = getRandomTile(tiles, random);
+            Mineral mineral = new Mineral(MineralTypes.STONE, 1);
+            if (!isAvailableTileForMineral(randomTile)) continue;
             randomTile.setItem(mineral);
         }
+
         for (int i = 0; i < numberOfRandom; i++) {
-            Tile randomTile = getRandomTile(tiles);
-            Mineral mineral = (Mineral) getRandomItem(minerals);
-            if (!isAvailableTileForMineral(randomTile)) {
-                continue;
-            }
+            Tile randomTile = getRandomTile(tiles, random);
+            Mineral mineral = (Mineral) getRandomItem(minerals, random);
+            if (!isAvailableTileForMineral(randomTile)) continue;
             randomTile.setItem(mineral);
         }
+    }
+
+    public boolean isAvailableTileForMineral(Tile tile) {
+        return tile != null && tile.getItem() == null && tile.getTileType() != TileType.Wall;
     }
 
     public boolean isAvailableForPlant(Tile tile) {
         return tile.getItem() == null && tile.getPlace() == null && tile.getTileType() != TileType.Wall;
     }
 
-    public void putRandomForagingPlanet(Farm farm, int numberOfRandom) {
-        ArrayList<Tile> tiles = Arrays.stream(farm.getTiles()).flatMap(Arrays::stream)
-            .filter(this::isAvailableForPlant).collect(Collectors.toCollection(ArrayList::new));
-        ArrayList<Item> planets = new ArrayList<>();
+    public void putRandomForagingPlanet(Farm farm, int numberOfRandom, long seed) {
+        Random random = new Random(seed);
 
-        // should added
+        ArrayList<Tile> tiles = Arrays.stream(farm.getTiles())
+            .flatMap(Arrays::stream)
+            .filter(this::isAvailableForPlant)
+            .collect(Collectors.toCollection(ArrayList::new));
 
-        for (ForagingCropType foragingCropType : ForagingCropType.values()) {
-            if (foragingCropType.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason())
-                planets.add(new Crop(foragingCropType, 1));
+        ArrayList<Item> plants = new ArrayList<>();
+
+        for (ForagingCropType type : ForagingCropType.values()) {
+            if (type.getSeason() == App.getInstance().getCurrentGame().getGameTime().getSeason()) {
+                plants.add(new Crop(type, 1));
+            }
         }
 
-        for(TreeType treeType : TreeType.values()) {
-            if(treeType.isForaging()){
+        for (TreeType treeType : TreeType.values()) {
+            if (treeType.isForaging()) {
                 Tree newTree = new Tree(treeType);
-                planets.add(newTree);
-                GameController.plants.add(newTree);
+                plants.add(newTree);
+                GameController.plants.add(newTree); // Optional: consider moving this out for syncing
             }
         }
 
         for (int i = 0; i < numberOfRandom; i++) {
-            Item randomItem = getRandomItem(planets);
-            Tile tile = getRandomTileArrayList(tiles);
+            Item randomItem = getRandomItem(plants, random);
+            Tile tile = getRandomTileArrayList(tiles, random);
             if (tile != null && randomItem != null) {
                 tile.setItem(randomItem);
-                if(randomItem instanceof Tree){
+                if (randomItem instanceof Tree) {
                     tile.setTree((Tree) randomItem);
-                    tile.setItem((Tree) randomItem);
+                    tile.setItem((Tree) randomItem); // Optional duplicate, check your logic
                 }
             }
         }
 
         ArrayList<Item> fiberAndMushroom = new ArrayList<>(Arrays.asList(
-                new Crop(ForagingCropType.FIBER, ThreadLocalRandom.current().nextInt(0,2)),
-                new Crop(ForagingCropType.COMMON_MUSHROOM, 1)
+            new Crop(ForagingCropType.FIBER, random.nextInt(2)), // 0 or 1
+            new Crop(ForagingCropType.COMMON_MUSHROOM, 1)
         ));
 
-        // 2/3 of items are common mushroom and fiber
         for (int i = 0; i < 2 * numberOfRandom; i++) {
-            Item randomItem = getRandomItem(fiberAndMushroom);
-            Tile tile = getRandomTileArrayList(tiles);
-            if (tile != null && randomItem != null) tile.setItem(randomItem);
+            Item randomItem = getRandomItem(fiberAndMushroom, random);
+            Tile tile = getRandomTileArrayList(tiles, random);
+            if (tile != null && randomItem != null) {
+                tile.setItem(randomItem);
+            }
         }
-
-
     }
+
+    // Dummy for compatibility – implement based on your structure
+    private Place getPlaceByName(List<Place> places, String name) {
+        for (Place place : places) {
+            if (place.getPlaceName().equalsIgnoreCase(name)) return place;
+        }
+        return null;
+    }
+
 
     public static boolean setUpPlace(Game game, int placeHeight, int placeWidth, Position position, Place place) {
         if (position.getX() < 0 || position.getY() < 0 ||
@@ -354,7 +376,7 @@ public class GameMenuControllers {
     }
 
 
-    public void setUpFarms(ArrayList<String> farmTypes) {
+    public void setUpFarms(ArrayList<String> farmTypes, long worldSeed) {
         Game game = getInstance().getCurrentGame();
         List<Player> players = game.getPlayers();
 
@@ -381,9 +403,13 @@ public class GameMenuControllers {
             // Place the player into the map
             getTileByPosition(playerPos).setPerson(player);
 
-            // Setup resources on the farm
-            putRandomMineral(farm, 2);
-            putRandomForagingPlanet(farm, 3);
+            // === Deterministic Resource Placement ===
+            long farmSeed = worldSeed + i * 31L; // unique but deterministic per player
+            long mineralSeed = farmSeed ^ 0xABCDEF; // different for each purpose
+            long foragingSeed = farmSeed ^ 0x123456;
+
+            putRandomMineral(farm, 2, mineralSeed);
+            putRandomForagingPlanet(farm, 3, foragingSeed);
 
             // Assign the farm to the player
             player.setFarm(farm);
@@ -392,6 +418,7 @@ public class GameMenuControllers {
             setUpFriendShip(player);
         }
     }
+
 
 
 }

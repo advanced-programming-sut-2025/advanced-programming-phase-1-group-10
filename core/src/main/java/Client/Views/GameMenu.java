@@ -47,8 +47,8 @@ public class GameMenu implements AppMenu {
                             player.getPosition().setX(playerPostion.getX() - 1);
                             player.getPosition().setY(playerPostion.getY() - 1);
                             controller.getTileByPosition(player.getPosition()).setPerson(player);
-                            controller.putRandomMineral(farm,4);
-                            controller.putRandomForagingPlanet(farm,10);
+                            //controller.putRandomMineral(farm,4);
+                            //controller.putRandomForagingPlanet(farm,10);
                             //Give farm to player
                             player.setFarm(farm);
                             //Set up Realation with players

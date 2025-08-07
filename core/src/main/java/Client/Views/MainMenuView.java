@@ -165,7 +165,8 @@ public class MainMenuView implements Screen, AppMenu {
                 GameMenuControllers controllers  = new GameMenuControllers();
                 Result result = controllers.quickGame();
                 if(result.state()) {
-                    controllers.setUpFarms(new ArrayList<>(Arrays.asList("1","2","2","1")));
+                    long sharedSeed = System.currentTimeMillis();
+                    controllers.setUpFarms(new ArrayList<>(Arrays.asList("1","2","2","1")), sharedSeed);
                     Main.getInstance().switchScreen(new GameLauncherView(skin));
                 }
             }

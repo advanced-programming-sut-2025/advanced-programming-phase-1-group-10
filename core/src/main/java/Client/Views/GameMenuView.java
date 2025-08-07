@@ -224,15 +224,17 @@ public class GameMenuView implements Screen, AppMenu {
                 );
 
                 if (result.state()) {
-                    //App.getInstance().setCurrentMenu(Menu.GameLauncher);
-                    controller.setUpFarms(farmTypes);
+                    // Generate a shared seed for farm setup, e.g., current time or from server
+                    long sharedSeed = System.currentTimeMillis(); // Or get from server for consistency
+
+                    controller.setUpFarms(farmTypes, sharedSeed);
                     Main.getInstance().switchScreen(new GameLauncherView(skin));
-//                    showSuccessMessage("game created!");
-                    // going to the game
+                    // newGameDialog.hide(); // Hide dialog after switching screen
                     newGameDialog.hide();
                 } else {
                     showErrorMessage(result.message());
                 }
+
             }
         });
 
