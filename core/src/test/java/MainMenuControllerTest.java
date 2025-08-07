@@ -15,7 +15,7 @@ public class MainMenuControllerTest {
     @BeforeEach
     void setUp() {
         controller = new MainMenuControllers();
-        App.getInstance().setCurrentUser(null);
+//        App.getInstance().setCurrentUser(null);
         App.getInstance().setCurrentMenu(null);
     }
 

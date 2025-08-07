@@ -5,10 +5,9 @@ public class TrashCan extends Tool {
         super(quality, energyUsage);
     }
 
-    private final String name = "Trash Can";
 
     @Override
     public String getName() {
-        return name;
+        return "Trash Can";
     }
 }

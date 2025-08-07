@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Assets.ToolAsset;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.Planets.Fruit;
@@ -24,7 +25,7 @@ public class Axe extends Tool {
 
     @Override
     public Sprite show() {
-        return toolAsset.show(this);
+        return ToolAsset.show(this);
     }
 
     @Override

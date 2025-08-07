@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Assets.ToolAsset;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Mineral.Mineral;
@@ -20,7 +21,7 @@ public class Pickaxe extends Tool {
 
     @Override
     public Sprite show() {
-        return toolAsset.show(this);
+        return ToolAsset.show(this);
     }
 
     @Override

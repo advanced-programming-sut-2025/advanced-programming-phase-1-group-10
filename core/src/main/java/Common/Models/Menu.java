@@ -1,28 +1,34 @@
 package Common.Models;
 
-
-
-
 import Client.Views.*;
 
 import java.util.Scanner;
+import java.util.function.Supplier;
 
 public enum Menu {
+    LoginMenu(LoginMenu::new),
+    GameMenu(GameMenu::new),
+    RegisterMenu(RegisterMenuView::new),
+    LoginMenuView(LoginMenuView::new),
+    ProfileMenu(ProfileMenu::new),
+    MainMenu(MainMenuView::new),
+    ExitMenu(ExitMenu::new);
 
-    LoginMenu(new LoginMenu()),
-    GameMenu(new GameMenu()),
-    RegisterMenu(new RegisterMenuView()),
-    LoginMenuView(new LoginMenuView()),
-    ProfileMenu(new ProfileMenu()),
-    MainMenu(new MainMenuView()),
-    //GameLauncher(new GameLauncherView()),
-    ExitMenu(new ExitMenu());
-    ;
-    private final AppMenu menu;
-    Menu(AppMenu menu) {
-        this.menu = menu;
+    private final Supplier<AppMenu> menuSupplier;
+    private AppMenu menuInstance;
+
+    Menu(Supplier<AppMenu> supplier) {
+        this.menuSupplier = supplier;
     }
+
+    public AppMenu getMenu() {
+        if (menuInstance == null) {
+            menuInstance = menuSupplier.get();
+        }
+        return menuInstance;
+    }
+
     public void check(Scanner scanner) {
-        this.menu.checkCommand(scanner);
+        getMenu().checkCommand(scanner);
     }
 }

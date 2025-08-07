@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Assets.ToolAsset;
 import Common.Models.App;
 import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
@@ -24,7 +25,7 @@ public class WateringCan extends Tool {
 
     @Override
     public Sprite show() {
-        return toolAsset.show(this);
+        return ToolAsset.show(this);
     }
 
     @Override

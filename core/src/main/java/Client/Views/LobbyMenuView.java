@@ -200,9 +200,7 @@ public class LobbyMenuView implements Screen {
                                 })
                             ));
 
-
                             networkManager.createLobby(lobbyName, isPrivate, isVisible, password);
-
 
                             hide();
                         }

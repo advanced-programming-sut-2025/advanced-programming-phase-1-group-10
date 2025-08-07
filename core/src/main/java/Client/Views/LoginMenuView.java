@@ -207,7 +207,7 @@ public class LoginMenuView implements Screen, AppMenu {
     }
 
     private void handleLogin() {
-        String username = usernameField.getText();
+        String username = usernameField.getText().trim();
         User user = App.getInstance().getUserByUserName(username);
 
         if (user == null) {
@@ -215,6 +215,7 @@ public class LoginMenuView implements Screen, AppMenu {
             return;
         }
 
+        App.getInstance().setCurrentUser(user);
         String password = passwordField.getText();
         String stayLoggedIn = stayLoggedInCheckbox.isChecked() ? "true" : "";
 
@@ -222,8 +223,6 @@ public class LoginMenuView implements Screen, AppMenu {
 
         if (result.state()) {
             showSuccessMessage(result.message());
-
-
             App.getInstance().setCurrentUser(user);
             stage.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence(
                 com.badlogic.gdx.scenes.scene2d.actions.Actions.delay(1.5f),

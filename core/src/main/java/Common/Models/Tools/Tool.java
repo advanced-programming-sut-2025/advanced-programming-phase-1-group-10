@@ -15,7 +15,6 @@ public abstract class Tool implements Item {
     public Tool(Quality quality, int energyUsage) {
         this.quality = quality;
         this.energyUsage = energyUsage;
-        this.toolAsset = new ToolAsset();
     }
 
     @Override
@@ -25,8 +24,9 @@ public abstract class Tool implements Item {
 
     @Override
     public Sprite show() {
-        return null;
+        return ToolAsset.show(this);
     }
+
 
     @Override
     public int getNumber() {

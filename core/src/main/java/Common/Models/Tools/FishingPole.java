@@ -1,5 +1,6 @@
 package Common.Models.Tools;
 
+import Client.Assets.ToolAsset;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.Place.Lake;
@@ -15,16 +16,15 @@ public class FishingPole extends Tool {
         super(quality, energyUsage);
     }
 
-    private final String name = "Fishing Pole";
 
     @Override
     public String getName() {
-        return name;
+        return "Fishing Pole";
     }
 
     @Override
     public Sprite show() {
-        return toolAsset.show(this);
+        return ToolAsset.show(this);
     }
 
     @Override

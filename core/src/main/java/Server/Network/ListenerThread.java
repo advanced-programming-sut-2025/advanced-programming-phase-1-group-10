@@ -2,6 +2,7 @@ package Server.Network;
 
 import Common.Models.App;
 import Common.Models.Lobby;
+import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.Message;
 import Common.Network.Send.Message.MessageType;
 import Common.Network.Send.MessageTypes.*;
@@ -50,6 +51,24 @@ public class ListenerThread extends Thread {
                     continue;
                 }
 
+                new Thread(() -> {
+                    try {
+                        handleClientConnection(socket);
+                    } catch (Exception e) {
+                        System.err.println("Error handling client connection: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }).start();
+
+            } catch (IOException e) {
+                System.err.println("Listener error: " + e.getMessage());
+            }
+        }
+    }
+
+    private void handleClientConnection(Socket socket) {
+        try {
+            while (!socket.isClosed()) {
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 String json = input.readUTF();
                 System.out.println("Received JSON: " + json);
@@ -89,17 +108,20 @@ public class ListenerThread extends Thread {
 
                         default:
                             System.out.println("Invalid message type from " + socket.getInetAddress() + ": " + message.getType());
-                            socket.close();
+                             socket.close();
                     }
                 } catch (Exception e) {
                     System.err.println("Error processing message: " + e.getMessage());
                     e.printStackTrace();
-                    socket.close();
+                     socket.close();
                 }
-
-            } catch (IOException e) {
-                System.err.println("Listener error: " + e.getMessage());
             }
+        } catch (IOException e) {
+            System.err.println("Error reading from socket: " + e.getMessage());
+            try {
+                socket.close();
+            }
+            catch (IOException ignored) {}
         }
     }
 
@@ -110,14 +132,14 @@ public class ListenerThread extends Thread {
 
         if (username == null || username.isEmpty()) {
             System.out.println("Join failed: missing username.");
-            socket.close();
+//            socket.close();
             return;
         }
 
         if (serverPassword != null &&
             (clientPassword == null || !serverPassword.equals(clientPassword))) {
             System.out.println("Join failed for user " + username + ": incorrect password.");
-            socket.close();
+//            socket.close();
             return;
         }
 
@@ -156,9 +178,9 @@ public class ListenerThread extends Thread {
         lobbySockets.put(lobbyId, new ArrayList<>());
 
         // add player to lobby
-//        Common.Models.PlayerStuff.Player player = App.getInstance().getCurrentGame().getCurrentPlayer();
-//        lobby.getPlayers().add(player);
-//        lobby.getPlayersReadyStatus().put(player, false);
+        Common.Models.PlayerStuff.Player player = new Player("isal456",10);
+        lobby.getPlayers().add(player);
+        lobby.getPlayersReadyStatus().put(player, false);
         lobbySockets.get(lobbyId).add(socket);
         userToLobbyId.put(username, lobbyId);
 
@@ -184,7 +206,6 @@ public class ListenerThread extends Thread {
         output.writeUTF(json);
         output.flush();
     }
-
 
     private void handleListLobbiesRequest(Socket socket, ListLobbiesRequestMessage listMsg) throws IOException {
         String username = socketToUsername.get(socket);

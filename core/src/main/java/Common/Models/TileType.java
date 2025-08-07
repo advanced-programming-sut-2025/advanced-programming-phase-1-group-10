@@ -2,25 +2,30 @@ package Common.Models;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.Gdx;
 
 public enum TileType {
-    Wall(new Sprite(new Texture("tiles/grass.png")),false),
-    Grass(new Sprite(new Texture("tiles/grass.png")),true),
-    Plowed(new Sprite(new Texture("tiles/plowed.png")),true),
-    Watered(new Sprite(new Texture("tiles/watered.png")),true),
-    Lake(new Sprite(new Texture("tiles/lake.png")),false),
-    Fertilized(new Sprite(new Texture("tiles/Fertilized.png")),true),
-    Quarry(new Sprite(new Texture("tiles/quarry.png")),true);
+    Wall("tiles/grass.png", false),
+    Grass("tiles/grass.png", true),
+    Plowed("tiles/plowed.png", true),
+    Watered("tiles/watered.png", true),
+    Lake("tiles/lake.png", false),
+    Fertilized("tiles/Fertilized.png", true),
+    Quarry("tiles/quarry.png", true);
 
-    private final Sprite sprite;
+    private final String texturePath;
+    private Sprite sprite;
     private final boolean isWalkable;
 
-    TileType(Sprite sprite, boolean isWalkable) {
-        this.sprite = sprite;
+    TileType(String texturePath, boolean isWalkable) {
+        this.texturePath = texturePath;
         this.isWalkable = isWalkable;
     }
 
     public Sprite getSprite() {
+        if (sprite == null) {
+            sprite = new Sprite(new Texture(Gdx.files.internal(texturePath)));
+        }
         return sprite;
     }
 

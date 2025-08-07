@@ -1,6 +1,5 @@
 package Common.Network.Send.MessageTypes;
 
-import Common.Models.Lobby;
 import Common.Network.Send.Message;
 
 public class CreateLobbyMessage extends Message {
