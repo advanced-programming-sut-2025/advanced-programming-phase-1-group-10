@@ -67,7 +67,7 @@ public class ListenerThread extends Thread {
         }
     }
 
-     private void handleClientConnection(Socket socket) {
+    private void handleClientConnection(Socket socket) {
         try (DataInputStream input = new DataInputStream(socket.getInputStream())) {
             while (true) {
                 try {
@@ -126,22 +126,18 @@ public class ListenerThread extends Thread {
         }
     }
 
-
-
     private void handleJoinRequest(Socket socket, JoinRequestMessage joinRequest) throws IOException {
         String username = joinRequest.getUsername();
         String clientPassword = joinRequest.getPassword();
 
         if (username == null || username.isEmpty()) {
             System.out.println("Join failed: missing username.");
-//            socket.close();
             return;
         }
 
         if (serverPassword != null &&
             (clientPassword == null || !serverPassword.equals(clientPassword))) {
             System.out.println("Join failed for user " + username + ": incorrect password.");
-//            socket.close();
             return;
         }
 
@@ -179,17 +175,15 @@ public class ListenerThread extends Thread {
         lobbies.put(lobbyId, lobby);
         lobbySockets.put(lobbyId, new ArrayList<>());
 
-        // add player to lobby
-        Common.Models.PlayerStuff.Player player = new Player("isal456",10);
-        lobby.getPlayers().add(player);
-        lobby.getPlayersReadyStatus().put(player, false);
+        lobby.getPlayerNames().add(username);
+        lobby.getPlayersReadyStatus().put(username, false);
         lobbySockets.get(lobbyId).add(socket);
         userToLobbyId.put(username, lobbyId);
 
         System.out.println("Lobby created: " + lobbyName + " (ID: " + lobbyId + ") by " + username);
 
         JoinLobbyResponseMessage response = new JoinLobbyResponseMessage(
-            true, null, lobbyId, lobbyName, lobby.getPlayers(), true
+            true, null, lobbyId, lobbyName, lobby.getPlayerNames(), true
         );
 
         try {
@@ -224,7 +218,7 @@ public class ListenerThread extends Thread {
                 lobbyInfoList.add(new ListLobbiesResponseMessage.LobbyInfo(
                     lobby.getLobbyId(),
                     lobby.getName(),
-                    lobby.getPlayers().size(),
+                    lobby.getPlayerNames().size(),
                     lobby.isPrivate(),
                     true
                 ));
@@ -261,17 +255,16 @@ public class ListenerThread extends Thread {
             }
         }
 
-        Common.Models.PlayerStuff.Player player = new Common.Models.PlayerStuff.Player(username,10);
-        lobby.getPlayers().add(player);
-        lobby.getPlayersReadyStatus().put(player, false);
+        lobby.getPlayerNames().add(username);
+        lobby.getPlayersReadyStatus().put(username, false);
         lobbySockets.get(lobbyId).add(socket);
         userToLobbyId.put(username, lobbyId);
 
-        boolean isAdmin = lobby.getPlayers().size() == 1;
+        boolean isAdmin = lobby.getPlayerNames().size() == 1;
         System.out.println(username + " joined lobby: " + lobby.getName() + " (ID: " + lobbyId + ")");
 
         JoinLobbyResponseMessage response = new JoinLobbyResponseMessage(
-            true, null, lobbyId, lobby.getName(), lobby.getPlayers(), isAdmin
+            true, null, lobbyId, lobby.getName(), lobby.getPlayerNames(), isAdmin
         );
         sendMessage(socket, response);
 
@@ -294,10 +287,9 @@ public class ListenerThread extends Thread {
         }
 
         Lobby lobby = lobbies.get(lobbyId);
-        Common.Models.PlayerStuff.Player player = findPlayerByUsername(lobby, username);
 
-        if (player != null) {
-            lobby.getPlayersReadyStatus().put(player, readyMsg.isReady());
+        if (lobby.getPlayerNames().contains(username)) {
+            lobby.getPlayersReadyStatus().put(username, readyMsg.isReady());
             System.out.println(username + " is now " + (readyMsg.isReady() ? "ready" : "not ready") + " in lobby: " + lobby.getName());
 
             broadcastLobbyUpdate(lobbyId);
@@ -320,17 +312,16 @@ public class ListenerThread extends Thread {
         }
 
         Lobby lobby = lobbies.get(lobbyId);
-        Common.Models.PlayerStuff.Player player = findPlayerByUsername(lobby, username);
 
-        if (player != null) {
-            lobby.getPlayers().remove(player);
-            lobby.getPlayersReadyStatus().remove(player);
+        if (lobby.getPlayerNames().contains(username)) {
+            lobby.getPlayerNames().remove(username);
+            lobby.getPlayersReadyStatus().remove(username);
             lobbySockets.get(lobbyId).remove(socket);
             userToLobbyId.remove(username);
 
             System.out.println(username + " left lobby: " + lobby.getName());
 
-            if (lobby.getPlayers().isEmpty()) {
+            if (lobby.getPlayerNames().isEmpty()) {
                 lobbies.remove(lobbyId);
                 lobbySockets.remove(lobbyId);
                 System.out.println("Lobby " + lobby.getName() + " removed (empty)");
@@ -357,13 +348,13 @@ public class ListenerThread extends Thread {
 
         Lobby lobby = lobbies.get(lobbyId);
 
-        if (lobby.getPlayers().isEmpty() || !lobby.getPlayers().get(0).getName().equals(username)) {
+        if (lobby.getPlayerNames().isEmpty() || !lobby.getPlayerNames().get(0).equals(username)) {
             sendError(socket, "Only the lobby admin can start the game.");
             return;
         }
 
         boolean allReady = true;
-        for (Map.Entry<Common.Models.PlayerStuff.Player, Boolean> entry : lobby.getPlayersReadyStatus().entrySet()) {
+        for (Map.Entry<String, Boolean> entry : lobby.getPlayersReadyStatus().entrySet()) {
             if (!entry.getValue()) {
                 allReady = false;
                 break;
@@ -375,7 +366,7 @@ public class ListenerThread extends Thread {
             return;
         }
 
-        if (lobby.getPlayers().size() < 2) {
+        if (lobby.getPlayerNames().size() < 2) {
             sendError(socket, "Need at least 2 players to start the game.");
             return;
         }
@@ -389,21 +380,12 @@ public class ListenerThread extends Thread {
         // TODO start game logic
     }
 
-    private Common.Models.PlayerStuff.Player findPlayerByUsername(Lobby lobby, String username) {
-        for (Common.Models.PlayerStuff.Player player : lobby.getPlayers()) {
-            if (player.getName().equals(username)) {
-                return player;
-            }
-        }
-        return null;
-    }
-
     private void broadcastLobbyUpdate(String lobbyId) {
         Lobby lobby = lobbies.get(lobbyId);
 
         if (lobby != null) {
             LobbyUpdateMessage updateMsg = new LobbyUpdateMessage(
-                lobbyId, lobby.getPlayers(), lobby.getPlayersReadyStatus()
+                lobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
             );
 
             for (Socket playerSocket : lobbySockets.get(lobbyId)) {

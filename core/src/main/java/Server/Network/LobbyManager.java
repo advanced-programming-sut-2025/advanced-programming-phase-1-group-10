@@ -1,7 +1,6 @@
 package Server.Network;
 
 import Common.Models.Lobby;
-import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.MessageTypes.ListLobbiesResponseMessage;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class LobbyManager {
             .map(lobby -> new ListLobbiesResponseMessage.LobbyInfo(
                 lobby.getLobbyId(),
                 lobby.getName(),
-                lobby.getPlayers().size(),
+                lobby.getPlayerNames().size(),
                 lobby.isPrivate(),
                 true
             ))
@@ -60,14 +59,15 @@ public class LobbyManager {
         return lobbies.get(lobbyId);
     }
 
-    public boolean addPlayerToLobby(String lobbyId, Player player, ServerToClientConnection connection) {
+
+    public boolean addPlayerToLobby(String lobbyId, String username, ServerToClientConnection connection) {
         Lobby lobby = lobbies.get(lobbyId);
         if (lobby == null) {
             return false;
         }
 
-        lobby.getPlayers().add(player);
-        lobby.getPlayersReadyStatus().put(player, false);
+        lobby.getPlayerNames().add(username);
+        lobby.getPlayersReadyStatus().put(username, false);
 
         List<ServerToClientConnection> connections = lobbyConnections.get(lobbyId);
         connections.add(connection);
@@ -75,35 +75,37 @@ public class LobbyManager {
         return true;
     }
 
-    public void removePlayerFromLobby(String lobbyId, Player player, ServerToClientConnection connection) {
+
+    public void removePlayerFromLobby(String lobbyId, String username, ServerToClientConnection connection) {
         Lobby lobby = lobbies.get(lobbyId);
         if (lobby != null) {
-            lobby.getPlayers().remove(player);
-            lobby.getPlayersReadyStatus().remove(player);
+            lobby.getPlayerNames().remove(username);
+            lobby.getPlayersReadyStatus().remove(username);
 
             List<ServerToClientConnection> connections = lobbyConnections.get(lobbyId);
             connections.remove(connection);
 
-            if (lobby.getPlayers().isEmpty()) {
-                // If lobby is empty, remove it
+            if (lobby.getPlayerNames().isEmpty()) {
+
                 lobbies.remove(lobbyId);
                 lobbyConnections.remove(lobbyId);
             }
         }
     }
 
-    public void setPlayerReady(String lobbyId, Player player, boolean isReady) {
+
+    public void setPlayerReady(String lobbyId, String username, boolean isReady) {
         Lobby lobby = lobbies.get(lobbyId);
         if (lobby != null) {
-            lobby.getPlayersReadyStatus().put(player, isReady);
+            lobby.getPlayersReadyStatus().put(username, isReady);
         }
     }
 
     public boolean areAllPlayersReady(String lobbyId) {
         Lobby lobby = lobbies.get(lobbyId);
         if (lobby != null) {
-            return !lobby.getPlayers().isEmpty() &&
-                   lobby.getPlayersReadyStatus().values().stream().allMatch(ready -> ready);
+            return !lobby.getPlayerNames().isEmpty() &&
+                lobby.getPlayersReadyStatus().values().stream().allMatch(ready -> ready);
         }
         return false;
     }

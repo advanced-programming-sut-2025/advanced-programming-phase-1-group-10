@@ -19,7 +19,7 @@ public class ClientNetworkManager {
     private String currentLobbyId;
     private boolean isAdmin;
     private List<ListLobbiesResponseMessage.LobbyInfo> availableLobbies;
-    private ArrayList<Player> lobbyPlayers;
+    private ArrayList<String> lobbyPlayers;
 
     // Callbacks
     private Consumer<List<ListLobbiesResponseMessage.LobbyInfo>> onLobbiesListUpdated;
@@ -229,7 +229,7 @@ public class ClientNetworkManager {
         return availableLobbies;
     }
 
-    public ArrayList<Player> getLobbyPlayers() {
+    public ArrayList<String> getLobbyPlayers() {
         return lobbyPlayers;
     }
 }

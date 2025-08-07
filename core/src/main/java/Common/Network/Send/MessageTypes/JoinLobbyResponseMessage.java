@@ -1,6 +1,5 @@
 package Common.Network.Send.MessageTypes;
 
-import Common.Models.Lobby;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.Message;
 
@@ -11,11 +10,11 @@ public class JoinLobbyResponseMessage extends Message {
     private String errorMessage;
     private String lobbyId;
     private String lobbyName;
-    private ArrayList<Player> players;
+    private ArrayList<String> players;
     private boolean isAdmin;
 
     public JoinLobbyResponseMessage(boolean success, String errorMessage, String lobbyId,
-                                   String lobbyName, ArrayList<Player> players, boolean isAdmin) {
+                                    String lobbyName, ArrayList<String> players, boolean isAdmin) {
         super(MessageType.JOIN_LOBBY_RESPONSE);
         this.success = success;
         this.errorMessage = errorMessage;
@@ -41,7 +40,7 @@ public class JoinLobbyResponseMessage extends Message {
         return lobbyName;
     }
 
-    public ArrayList<Player> getPlayers() {
+    public ArrayList<String> getPlayers() {
         return players;
     }
 

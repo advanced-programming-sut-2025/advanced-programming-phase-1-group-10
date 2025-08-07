@@ -9,8 +9,8 @@ import java.util.Map;
 public class Lobby {
     private final String lobbyId;
     private final String name;
-    private ArrayList<Player> players ;
-    private Map<Player, Boolean> playersReadyStatus;
+    private ArrayList<String> playerNames;
+    private Map<String, Boolean> playersReadyStatus;
     private boolean isPrivate;
     private String password;
     private boolean isVisible;
@@ -18,7 +18,7 @@ public class Lobby {
     public Lobby(String lobbyId, String name){
         this.lobbyId = lobbyId;
         this.name = name;
-        this.players = new ArrayList<>();
+        this.playerNames = new ArrayList<>();
         this.playersReadyStatus = new HashMap<>();
         this.isPrivate = false;
         this.isVisible = true;
@@ -32,11 +32,11 @@ public class Lobby {
         return name;
     }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
+    public ArrayList<String> getPlayerNames() {
+        return playerNames;
     }
 
-    public Map<Player, Boolean> getPlayersReadyStatus() {
+    public Map<String, Boolean> getPlayersReadyStatus() {
         return playersReadyStatus;
     }
 

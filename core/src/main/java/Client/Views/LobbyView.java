@@ -66,13 +66,10 @@ public class LobbyView implements Screen {
     }
 
     private void setupNetworkCallbacks() {
-
         networkManager.setOnLobbyJoined(response -> {
             if (response.isSuccess()) {
                 Gdx.app.postRunnable(() -> {
-
                     showSuccessMessage("Lobby created successfully!", () -> {
-
                         Main.getInstance().switchScreen(new LobbyView(skin, response));
                     });
                 });
@@ -82,7 +79,6 @@ public class LobbyView implements Screen {
                 });
             }
         });
-
 
         networkManager.setOnError(errorMessage -> {
             Gdx.app.postRunnable(() -> {
@@ -96,6 +92,10 @@ public class LobbyView implements Screen {
         errorDialog.text(message);
         errorDialog.button("OK");
         errorDialog.show(stage);
+
+
+        errorDialog.setSize(600, 300);
+        centerDialog(errorDialog);
     }
 
     private void showSuccessMessage(String message, Runnable onClose) {
@@ -110,33 +110,57 @@ public class LobbyView implements Screen {
         successDialog.text(message);
         successDialog.button("OK");
         successDialog.show(stage);
+
+
+        successDialog.setSize(600, 300);
+        centerDialog(successDialog);
     }
 
 
-    private void createUI(ArrayList<Player> players) {
+    private void centerDialog(Dialog dialog) {
+        dialog.setPosition(
+            (Gdx.graphics.getWidth() - dialog.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - dialog.getHeight()) / 2
+        );
+    }
+
+    private void createUI(ArrayList<String> players) {
         mainTable.setFillParent(true);
-        mainTable.pad(50);
+
+        mainTable.pad(80);
 
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("Impact"), TITLE_COLOR);
         Label titleLabel = new Label("Lobby: " + lobbyName, titleStyle);
-        titleLabel.setFontScale(2.0f);
-        mainTable.add(titleLabel).colspan(2).padBottom(30).row();
+
+        titleLabel.setFontScale(2.5f);
+        mainTable.add(titleLabel).colspan(2).padBottom(40).row();
 
 
         statusLabel = new Label(isAdmin ? "You are the lobby admin" : "Waiting for the game to start...", skin);
         statusLabel.setColor(isAdmin ? ADMIN_COLOR : PLAYER_COLOR);
-        mainTable.add(statusLabel).colspan(2).padBottom(20).row();
+
+        statusLabel.setFontScale(1.3f);
+        mainTable.add(statusLabel).colspan(2).padBottom(30).row();
 
 
         Label playersLabel = new Label("Players", skin);
-        playersLabel.setFontScale(1.5f);
-        mainTable.add(playersLabel).colspan(2).padBottom(10).padTop(20).row();
+        playersLabel.setFontScale(1.8f);
+        mainTable.add(playersLabel).colspan(2).padBottom(20).padTop(30).row();
 
 
-        playersTable.defaults().pad(10);
-        playersTable.add(new Label("Player", skin)).width(250);
-        playersTable.add(new Label("Status", skin)).width(150).row();
+        playersTable.defaults().pad(15);
+
+
+        Label playerHeaderLabel = new Label("Player", skin);
+        playerHeaderLabel.setFontScale(1.3f);
+
+        Label statusHeaderLabel = new Label("Status", skin);
+        statusHeaderLabel.setFontScale(1.3f);
+
+
+        playersTable.add(playerHeaderLabel).width(350);
+        playersTable.add(statusHeaderLabel).width(200).row();
 
         updatePlayersTable(players, new HashMap<>());
 
@@ -144,18 +168,21 @@ public class LobbyView implements Screen {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-        mainTable.add(scrollPane).colspan(2).width(400).height(200).padBottom(30).row();
+
+        mainTable.add(scrollPane).colspan(2).width(800).height(400).padBottom(40).row();
 
 
         CheckBox readyCheckbox = new CheckBox(" I'm ready", skin);
+        readyCheckbox.setName("readyCheckbox");
+
+        readyCheckbox.getLabel().setFontScale(1.3f);
         readyCheckbox.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 networkManager.setPlayerReady(readyCheckbox.isChecked());
             }
         });
-        mainTable.add(readyCheckbox).colspan(2).padBottom(30).row();
-
+        mainTable.add(readyCheckbox).colspan(2).padBottom(40).row();
 
         Table buttonsTable = new Table();
 
@@ -168,7 +195,9 @@ public class LobbyView implements Screen {
                 }
             });
             startGameButton.setDisabled(true);
-            buttonsTable.add(startGameButton).width(200).height(60).padRight(20);
+
+            startGameButton.getLabel().setFontScale(1.3f);
+            buttonsTable.add(startGameButton).width(250).height(80).padRight(30);
         }
 
         TextButton leaveButton = new TextButton("Leave Lobby", skin);
@@ -179,29 +208,38 @@ public class LobbyView implements Screen {
                 Main.getInstance().switchScreen(new LobbyMenuView(skin));
             }
         });
-        buttonsTable.add(leaveButton).width(200).height(60);
 
-        mainTable.add(buttonsTable).colspan(2).padTop(20).row();
+        leaveButton.getLabel().setFontScale(1.3f);
+        buttonsTable.add(leaveButton).width(250).height(80);
+
+        mainTable.add(buttonsTable).colspan(2).padTop(30).row();
 
         stage.addActor(mainTable);
     }
 
-    private void updatePlayersTable(ArrayList<Player> players, Map<Player, Boolean> readyStatus) {
+    private void updatePlayersTable(ArrayList<String> players, Map<String, Boolean> readyStatus) {
 
         playersTable.clear();
 
 
-        playersTable.defaults().pad(10);
-        playersTable.add(new Label("Player", skin)).width(250);
-        playersTable.add(new Label("Status", skin)).width(150).row();
+        playersTable.defaults().pad(15);
+
+        Label playerHeaderLabel = new Label("Player", skin);
+        playerHeaderLabel.setFontScale(1.3f);
+
+        Label statusHeaderLabel = new Label("Status", skin);
+        statusHeaderLabel.setFontScale(1.3f);
+
+        playersTable.add(playerHeaderLabel).width(350);
+        playersTable.add(statusHeaderLabel).width(200).row();
 
         readyStatusCheckboxes.clear();
 
         boolean allReady = true;
 
+
         for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            String playerName = player.getName();
+            String playerName = players.get(i);
 
 
             String displayName = playerName;
@@ -210,21 +248,26 @@ public class LobbyView implements Screen {
             }
 
             Label nameLabel = new Label(displayName, skin);
+
+            nameLabel.setFontScale(1.1f);
             if (i == 0) {
                 nameLabel.setColor(ADMIN_COLOR);
             }
 
-            playersTable.add(nameLabel).width(250);
+            playersTable.add(nameLabel).width(350);
 
 
-            boolean isReady = readyStatus.containsKey(player) ? readyStatus.get(player) : false;
+            boolean isReady = readyStatus.getOrDefault(playerName, false);
+
             if (!isReady) {
                 allReady = false;
             }
 
             Label statusLabel = new Label(isReady ? "Ready" : "Not Ready", skin);
+
+            statusLabel.setFontScale(1.1f);
             statusLabel.setColor(isReady ? new Color(0.2f, 0.8f, 0.2f, 1f) : new Color(0.8f, 0.2f, 0.2f, 1f));
-            playersTable.add(statusLabel).width(150).row();
+            playersTable.add(statusLabel).width(200).row();
 
 
             if (playerName.equals(networkManager.getUsername())) {
@@ -250,12 +293,15 @@ public class LobbyView implements Screen {
         }
     }
 
-
     private void showMessage(String message) {
         Dialog dialog = new Dialog("Message", skin);
         dialog.text(message);
         dialog.button("OK");
         dialog.show(stage);
+
+
+        dialog.setSize(600, 300);
+        centerDialog(dialog);
     }
 
     @Override
@@ -291,7 +337,6 @@ public class LobbyView implements Screen {
 
     @Override
     public void hide() {
-
         ClientNetworkManager networkManager = ClientNetworkManager.getInstance();
         networkManager.setOnLobbiesListUpdated(null);
         networkManager.setOnLobbyJoined(null);
@@ -299,12 +344,10 @@ public class LobbyView implements Screen {
         networkManager.setOnError(null);
         networkManager.setOnGameStarted(null);
 
-
         if (!networkManager.isInGame()) {
             networkManager.disconnect();
         }
     }
-
 
     @Override
     public void dispose() {

@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class LobbyUpdateMessage extends Message {
     private String lobbyId;
-    private ArrayList<Player> players;
-    private Map<Player, Boolean> readyStatus;
+    private ArrayList<String> players;
+    private Map<String, Boolean> readyStatus;
 
-    public LobbyUpdateMessage(String lobbyId, ArrayList<Player> players, Map<Player, Boolean> readyStatus) {
+    public LobbyUpdateMessage(String lobbyId, ArrayList<String> players, Map<String, Boolean> readyStatus) {
         super(MessageType.LOBBY_UPDATE);
         this.lobbyId = lobbyId;
         this.players = players;
@@ -22,11 +22,11 @@ public class LobbyUpdateMessage extends Message {
         return lobbyId;
     }
 
-    public ArrayList<Player> getPlayers() {
+    public ArrayList<String> getPlayers() {
         return players;
     }
 
-    public Map<Player, Boolean> getReadyStatus() {
+    public Map<String, Boolean> getReadyStatus() {
         return readyStatus;
     }
 }

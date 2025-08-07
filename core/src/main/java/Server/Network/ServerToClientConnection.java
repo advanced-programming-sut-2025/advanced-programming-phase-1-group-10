@@ -13,13 +13,13 @@ import java.util.ArrayList;
 public class ServerToClientConnection extends ConnectionThread {
 
     private final String clientId;
-    private Player player;
+    private String username;
     private String currentLobbyId;
 
     public ServerToClientConnection(Socket clientSocket, String clientId) throws IOException {
         super(clientSocket);
         this.clientId = clientId;
-        this.player = new Player(clientId,10);
+        this.username = clientId;
         this.setOtherSideIP(clientSocket.getInetAddress().getHostAddress());
         this.setOtherSidePort(clientSocket.getPort());
     }
@@ -37,6 +37,10 @@ public class ServerToClientConnection extends ConnectionThread {
         switch (message.getType()) {
             case CREATE_LOBBY:
                 CreateLobbyMessage createMsg = (CreateLobbyMessage) message;
+
+
+                this.username = createMsg.getCreatorUsername();
+
                 Lobby newLobby = lobbyManager.createLobby(
                     createMsg.getLobbyName(),
                     createMsg.isPrivate(),
@@ -44,21 +48,26 @@ public class ServerToClientConnection extends ConnectionThread {
                     createMsg.getPassword()
                 );
 
-                // Add creator to the lobby
-//                player = new Player(createMsg.getCreatorUsername(),10);
-//                lobbyManager.addPlayerToLobby(newLobby.getLobbyId(), player, this);
+
+                lobbyManager.addPlayerToLobby(newLobby.getLobbyId(), username, this);
                 currentLobbyId = newLobby.getLobbyId();
 
-                // Send response to client
+
                 JoinLobbyResponseMessage response = new JoinLobbyResponseMessage(
                     true, null, newLobby.getLobbyId(), newLobby.getName(),
-                    newLobby.getPlayers(), true
+                    newLobby.getPlayerNames(), true
                 );
                 sendMessage(response);
                 return true;
 
             case LIST_LOBBIES_REQUEST:
                 ListLobbiesRequestMessage listMsg = (ListLobbiesRequestMessage) message;
+
+
+                if (this.username == null || this.username.equals(clientId)) {
+                    this.username = listMsg.getUsername();
+                }
+
                 ListLobbiesResponseMessage listResponse = new ListLobbiesResponseMessage(
                     lobbyManager.getVisibleLobbies()
                 );
@@ -85,21 +94,23 @@ public class ServerToClientConnection extends ConnectionThread {
                     return true;
                 }
 
-                player = new Player(joinMsg.getUsername(),10);
-                boolean isAdmin = targetLobby.getPlayers().isEmpty();
-                lobbyManager.addPlayerToLobby(targetLobby.getLobbyId(), player, this);
+
+                this.username = joinMsg.getUsername();
+
+                boolean isAdmin = targetLobby.getPlayerNames().isEmpty();
+                lobbyManager.addPlayerToLobby(targetLobby.getLobbyId(), username, this);
                 currentLobbyId = targetLobby.getLobbyId();
 
-                // Send response to the joining player
+
                 JoinLobbyResponseMessage joinResponse = new JoinLobbyResponseMessage(
                     true, null, targetLobby.getLobbyId(), targetLobby.getName(),
-                    targetLobby.getPlayers(), isAdmin
+                    targetLobby.getPlayerNames(), isAdmin
                 );
                 sendMessage(joinResponse);
 
-                // Notify other players in the lobby about the new player
+
                 LobbyUpdateMessage updateMessage = new LobbyUpdateMessage(
-                    targetLobby.getLobbyId(), targetLobby.getPlayers(), targetLobby.getPlayersReadyStatus()
+                    targetLobby.getLobbyId(), targetLobby.getPlayerNames(), targetLobby.getPlayersReadyStatus()
                 );
                 lobbyManager.broadcastToLobby(targetLobby.getLobbyId(), updateMessage);
                 return true;
@@ -107,12 +118,12 @@ public class ServerToClientConnection extends ConnectionThread {
             case PLAYER_READY:
                 PlayerReadyMessage readyMsg = (PlayerReadyMessage) message;
                 if (currentLobbyId != null) {
-                    lobbyManager.setPlayerReady(currentLobbyId, player, readyMsg.isReady());
+                    lobbyManager.setPlayerReady(currentLobbyId, username, readyMsg.isReady());
 
-                    // Notify all players about the ready status change
+
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
                     LobbyUpdateMessage readyUpdateMsg = new LobbyUpdateMessage(
-                        currentLobbyId, lobby.getPlayers(), lobby.getPlayersReadyStatus()
+                        currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
                     );
                     lobbyManager.broadcastToLobby(currentLobbyId, readyUpdateMsg);
                 }
@@ -120,13 +131,13 @@ public class ServerToClientConnection extends ConnectionThread {
 
             case LEAVE_LOBBY:
                 if (currentLobbyId != null) {
-                    lobbyManager.removePlayerFromLobby(currentLobbyId, player, this);
+                    lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
 
-                    // Notify remaining players
+
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
                     if (lobby != null) {
                         LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
-                            currentLobbyId, lobby.getPlayers(), lobby.getPlayersReadyStatus()
+                            currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
                         );
                         lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
                     }
@@ -140,17 +151,17 @@ public class ServerToClientConnection extends ConnectionThread {
                 if (currentLobbyId != null) {
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
 
-                    // Check if sender is admin (first player)
-                    if (!lobby.getPlayers().isEmpty() &&
-                        lobby.getPlayers().get(0).getName().equals(player.getName())) {
 
-                        // Check if all players are ready
+                    if (!lobby.getPlayerNames().isEmpty() &&
+                        lobby.getPlayerNames().get(0).equals(username)) {
+
+
                         if (lobbyManager.areAllPlayersReady(currentLobbyId)) {
-                            // Start game
+
                             lobbyManager.broadcastToLobby(currentLobbyId, message);
                             return true;
                         } else {
-                            // Send error - not all players ready
+
                             ErrorMessage errorMsg = new ErrorMessage(
                                 "Not all players are ready to start the game."
                             );
@@ -158,7 +169,7 @@ public class ServerToClientConnection extends ConnectionThread {
                             return true;
                         }
                     } else {
-                        // Send error - not admin
+
                         ErrorMessage errorMsg = new ErrorMessage(
                             "Only the lobby admin can start the game."
                         );
@@ -176,7 +187,7 @@ public class ServerToClientConnection extends ConnectionThread {
         return clientId;
     }
 
-    public Player getPlayer() {
-        return player;
+    public String getUsername() {
+        return username;
     }
 }
