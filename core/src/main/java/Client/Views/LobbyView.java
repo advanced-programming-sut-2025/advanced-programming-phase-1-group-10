@@ -85,6 +85,13 @@ public class LobbyView implements Screen {
                 showErrorDialog(errorMessage);
             });
         });
+
+        networkManager.setOnLobbyUpdated((LobbyUpdateMessage updateMessage) -> {
+            Gdx.app.postRunnable(() -> {
+                updatePlayersTable(updateMessage.getPlayers(), updateMessage.getReadyStatus());
+            });
+        });
+
     }
 
     private void showErrorDialog(String message) {

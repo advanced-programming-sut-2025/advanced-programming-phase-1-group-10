@@ -47,6 +47,8 @@ public class ClientNetworkManager {
             connection = new ClientToServerConnection(socket);
             this.username = username;
             connection.start();
+            JoinRequestMessage joinRequest = new JoinRequestMessage(username, ""); // اگر سرورت رمز نمی‌خواد
+            connection.sendMessage(joinRequest);
             return true;
         } catch (IOException e) {
             System.err.println("Failed to connect to server: " + e.getMessage());

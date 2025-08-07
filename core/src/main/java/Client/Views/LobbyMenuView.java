@@ -261,7 +261,7 @@ public class LobbyMenuView implements Screen {
                 scrollPane.setFadeScrollBars(false);
                 scrollPane.setScrollingDisabled(true, false);
 
-                getContentTable().add(scrollPane).width(600).height(350).pad(20);
+                getContentTable().add(scrollPane).width(900).height(550).pad(20);
 
 
                 networkManager.setOnLobbiesListUpdated(lobbies -> {
@@ -368,7 +368,7 @@ public class LobbyMenuView implements Screen {
 
 
 
-        lobbyListDialog.setSize(800, 500);
+        lobbyListDialog.setSize(1200, 800);
         lobbyListDialog.setPosition(
             (Gdx.graphics.getWidth() - lobbyListDialog.getWidth()) / 2,
             (Gdx.graphics.getHeight() - lobbyListDialog.getHeight()) / 2
