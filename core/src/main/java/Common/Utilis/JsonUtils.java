@@ -24,10 +24,6 @@ public class JsonUtils {
         return gson.fromJson(json, Message.class);
     }
 
-    public synchronized static <T extends Message> T fromJsonTyped(String json, Class<T> classOfT) {
-        return gson.fromJson(json, classOfT);
-    }
-
     public synchronized static Message fromJsonWithType(String json) {
         try {
             // pars json as jsonobject

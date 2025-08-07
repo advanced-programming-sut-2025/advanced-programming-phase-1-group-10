@@ -1,7 +1,5 @@
 package Client.Network;
 
-import Common.Models.Lobby;
-import Common.Models.PlayerStuff.Player;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
@@ -26,7 +24,7 @@ public class ClientNetworkManager {
     private Consumer<JoinLobbyResponseMessage> onLobbyJoined;
     private Consumer<LobbyUpdateMessage> onLobbyUpdated;
     private Consumer<String> onError;
-    private Runnable onGameStarted;
+    private Consumer<StartGameMessage> onGameStarted;
 
     private ClientNetworkManager() {
         availableLobbies = new ArrayList<>();
@@ -52,7 +50,6 @@ public class ClientNetworkManager {
             return true;
         } catch (IOException e) {
             System.err.println("Failed to connect to server: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
@@ -135,7 +132,7 @@ public class ClientNetworkManager {
         this.onError = callback;
     }
 
-    public void setOnGameStarted(Runnable callback) {
+    public void setOnGameStarted(Consumer<StartGameMessage> callback) {
         this.onGameStarted = callback;
     }
 
@@ -194,8 +191,9 @@ public class ClientNetworkManager {
                     return true;
 
                 case START_GAME:
+                    StartGameMessage startGameMsg = (StartGameMessage) message;
                     if (onGameStarted != null) {
-                        onGameStarted.run();
+                        onGameStarted.accept(startGameMsg);
                     }
                     return true;
                 default:
@@ -214,7 +212,7 @@ public class ClientNetworkManager {
             try{
                 connection.sendMessage(message);
             } catch (Exception e){
-                e.printStackTrace();
+                System.err.println("Error: cannot send the message");
             }
         } else {
             System.err.println("Cannot create lobby: not connected to server");

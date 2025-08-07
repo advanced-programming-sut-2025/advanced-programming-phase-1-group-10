@@ -1,10 +1,7 @@
 package Server.Network;
 
-import Common.Models.App;
 import Common.Models.Lobby;
-import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.Message;
-import Common.Network.Send.Message.MessageType;
 import Common.Network.Send.MessageTypes.*;
 import Common.Utilis.JsonUtils;
 
@@ -14,11 +11,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ListenerThread extends Thread {
     private final int port;
@@ -29,6 +23,8 @@ public class ListenerThread extends Thread {
     private final Map<String, List<Socket>> lobbySockets = new HashMap<>();
     private final Map<Socket, String> socketToUsername = new HashMap<>();
     private final Map<String, String> userToLobbyId = new HashMap<>();
+
+
 
     public ListenerThread(int port, String password) throws IOException {
         this.port = port;
@@ -373,11 +369,14 @@ public class ListenerThread extends Thread {
 
         System.out.println("Game is starting in lobby: " + lobby.getName());
 
+        //Assign a seed for creating map and the name of other players
+        startMsg.setWorldSeed(ThreadLocalRandom.current().nextLong());
+        startMsg.setPlayerNames(lobby.getPlayerNames());
+
         for (Socket playerSocket : lobbySockets.get(lobbyId)) {
             sendMessage(playerSocket, startMsg);
         }
 
-        // TODO start game logic
     }
 
     private void broadcastLobbyUpdate(String lobbyId) {

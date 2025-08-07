@@ -2,6 +2,7 @@ package Client.Controllers;
 
 import Client.Assets.GreenHouseAsset;
 import Client.Assets.HouseAsset;
+import Client.Network.ClientNetworkManager;
 import Common.Models.*;
 import Common.Models.NPC.*;
 import Common.Models.Place.*;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static Common.Models.App.getInstance;
@@ -29,19 +29,26 @@ import static Common.Models.App.getInstance;
 public class GameMenuControllers {
 
 
-    public Result createGame(String username1, String username2, String username3, String username4, long seed) {
-        final ArrayList<String> names = new ArrayList<>(Arrays.asList(username1, username2, username3, username4));
+    public Result createGame(List<String> names, long seed) {
         for (String name : names)
             if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
 
-        Game game = new Game(username1);
+        String admin;
+        try{
+             admin = names.get(0);
+        } catch (Exception e) {
+            return new Result(false, "No player to play");
+        }
+
+
+        Game game = new Game(admin);
 
         for (String name : names) {
             game.getPlayers().add(new Player(name, seed));
         }
 
         App.getInstance().setCurrentGame(game);
-        App.getInstance().getCurrentGame().setCurrentPlayer(game.getPlayerByName(username1));
+        App.getInstance().getCurrentGame().setCurrentPlayer(game.getPlayerByName(admin));
         setUpCity(game);
         setUpNPCs(game);
 
@@ -49,7 +56,7 @@ public class GameMenuControllers {
     }
 
     public Result quickGame(long seed){
-        return createGame("user1","user2","user3","user4",seed);
+        return createGame(Arrays.asList("user1","user2"),seed);
     }
 
     public boolean isUsernameExist(String username) {
@@ -407,6 +414,15 @@ public class GameMenuControllers {
             setUpFriendShip(player);
         }
     }
+
+    public void setUpcallBack(){
+        ClientNetworkManager.getInstance().setOnGameStarted(
+            (startGameMessage) -> {
+
+            }
+        );
+    }
+
 
 
 

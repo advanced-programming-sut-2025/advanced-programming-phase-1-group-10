@@ -74,7 +74,7 @@ public class FishController implements Disposable {
         Game game = App.getInstance().getCurrentGame();
 
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < App.getInstance().getCurrentGame().getPlayers().size(); i++) {
             Farm farm = game.getPlayers().get(i).getFarm();
             if (farm != null) {
                 for (Place place : farm.getPlaces()) {
