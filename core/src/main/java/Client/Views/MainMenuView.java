@@ -36,6 +36,9 @@ public class MainMenuView implements Screen, AppMenu {
     private Texture avatarTexture;
     private User currentUser;
 
+    long sharedSeed;
+
+
 
     private final Color TITLE_COLOR = new Color(0.4f, 0.2f, 0.1f, 1f);
     private final Color BUTTON_COLOR = new Color(0.55f, 0.78f, 0.25f, 1f);
@@ -49,6 +52,7 @@ public class MainMenuView implements Screen, AppMenu {
         controller = new MainMenuControllers();
         stage = new Stage(new ScreenViewport());
 
+        sharedSeed = System.currentTimeMillis();
 
         Main main = (Main)Gdx.app.getApplicationListener();
         skin = main.getSkin();
@@ -163,7 +167,7 @@ public class MainMenuView implements Screen, AppMenu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 GameMenuControllers controllers  = new GameMenuControllers();
-                Result result = controllers.quickGame();
+                Result result = controllers.quickGame(sharedSeed);
                 if(result.state()) {
                     long sharedSeed = System.currentTimeMillis();
                     controllers.setUpFarms(new ArrayList<>(Arrays.asList("1","2","2","1")), sharedSeed);

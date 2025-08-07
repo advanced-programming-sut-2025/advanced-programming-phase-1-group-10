@@ -21,12 +21,12 @@ public class GameMenu implements AppMenu {
 
 
         if ((matcher = GameMenuCommands.NEW_GAME.getMatcher(input)) != null) {
-            System.out.println(controller.createGame(
-                    getInstance().getCurrentUser().getUsername(),
-                    matcher.group("username1").trim(),
-                    matcher.group("username2").trim(),
-                    matcher.group("username3").trim()
-            ));
+            //System.out.println(controller.createGame(
+            //        getInstance().getCurrentUser().getUsername(),
+            //        matcher.group("username1").trim(),
+           //         matcher.group("username2").trim(),
+            //        matcher.group("username3").trim()
+            //));
             if (getInstance().getCurrentGame() != null) {
                 for (Player player : getInstance().getCurrentGame().getPlayers()) {
                     while (true) {

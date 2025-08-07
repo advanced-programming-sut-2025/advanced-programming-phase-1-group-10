@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Player implements Person {
@@ -66,7 +67,7 @@ public class Player implements Person {
     private Quest currentQuest;
 
 
-    public Player(String name) {
+    public Player(String name , long seed) {
         this.name = name;
         this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
         this.isFainted = false;
@@ -83,7 +84,7 @@ public class Player implements Person {
                 new Shear(Quality.STARTER,2),
                 new MilkPail(Quality.STARTER,2)
         ));
-        this.gender = ThreadLocalRandom.current().nextBoolean() ? Gender.Male : Gender.Female;
+        this.gender = new Random(seed).nextBoolean() ? Gender.Male : Gender.Female;
     }
 
 

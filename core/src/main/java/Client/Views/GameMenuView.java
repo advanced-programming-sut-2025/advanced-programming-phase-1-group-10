@@ -39,6 +39,9 @@ public class GameMenuView implements Screen, AppMenu {
     private final Color ERROR_COLOR = new Color(0.8f, 0.2f, 0.2f, 1f);
     private final Color SUCCESS_COLOR = new Color(0.2f, 0.6f, 0.3f, 1f);
 
+    long sharedSeed = System.currentTimeMillis();
+
+
     public GameMenuView() {
         controller = new GameMenuControllers();
         stage = new Stage(new ScreenViewport());
@@ -67,6 +70,7 @@ public class GameMenuView implements Screen, AppMenu {
         mainTable.pad(50);
 
 
+
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("BoldImpact"), TITLE_COLOR);
         Label titleLabel = new Label("GAME MENU", titleStyle);
         titleLabel.setFontScale(2.0f);
@@ -87,7 +91,7 @@ public class GameMenuView implements Screen, AppMenu {
         quickGame.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Result result = controller.quickGame();
+                Result result = controller.quickGame(sharedSeed);
                 if(result.state()) {
                     System.out.println("game startttt!!!!");
                     Main.getInstance().switchScreen(new GameLauncherView(skin));
@@ -220,12 +224,13 @@ public class GameMenuView implements Screen, AppMenu {
                     usernames.size() > 0 ? usernames.get(0) : "",
                     usernames.size() > 1 ? usernames.get(1) : "",
                     usernames.size() > 2 ? usernames.get(2) : "",
-                    usernames.size() > 3 ? usernames.get(3) : ""
+                    usernames.size() > 3 ? usernames.get(3) : "",
+                    sharedSeed
                 );
 
                 if (result.state()) {
                     // Generate a shared seed for farm setup, e.g., current time or from server
-                    long sharedSeed = System.currentTimeMillis(); // Or get from server for consistency
+                     // Or get from server for consistency
 
                     controller.setUpFarms(farmTypes, sharedSeed);
                     Main.getInstance().switchScreen(new GameLauncherView(skin));

@@ -29,16 +29,15 @@ import static Common.Models.App.getInstance;
 public class GameMenuControllers {
 
 
-    public Result createGame(String username1, String username2, String username3, String username4) {
+    public Result createGame(String username1, String username2, String username3, String username4, long seed) {
         final ArrayList<String> names = new ArrayList<>(Arrays.asList(username1, username2, username3, username4));
         for (String name : names)
             if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
 
-
         Game game = new Game(username1);
 
         for (String name : names) {
-            game.getPlayers().add(new Player(name));
+            game.getPlayers().add(new Player(name, seed));
         }
 
         App.getInstance().setCurrentGame(game);
@@ -49,8 +48,8 @@ public class GameMenuControllers {
         return new Result(true, "Game created.");
     }
 
-    public Result quickGame(){
-        return createGame("user1","user2","user3","user4");
+    public Result quickGame(long seed){
+        return createGame("user1","user2","user3","user4",seed);
     }
 
     public boolean isUsernameExist(String username) {
@@ -218,16 +217,6 @@ public class GameMenuControllers {
         return App.getInstance().getCurrentGame().getGameMap().getMap()[position.getX()][position.getY()];
     }
 
-    public Tile getRandomTile(Tile[][] map) {
-        int height = map.length;
-        int width = map[0].length;
-
-        Random random = new Random();
-        int row = random.nextInt(height);
-        int col = random.nextInt(width);
-
-        return map[row][col];
-    }
 
     public Item getRandomItem(ArrayList<Item> list, Random random) {
         if (list.isEmpty()) return null;
