@@ -1,6 +1,5 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Send.MessageTypes.LobbyMessages;
 
-import Common.Models.Lobby;
 import Common.Network.Send.Message;
 
 import java.util.List;

@@ -3,6 +3,7 @@ package Client.Network;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
+import Common.Network.Send.MessageTypes.LobbyMessages.*;
 
 import java.io.IOException;
 import java.net.Socket;

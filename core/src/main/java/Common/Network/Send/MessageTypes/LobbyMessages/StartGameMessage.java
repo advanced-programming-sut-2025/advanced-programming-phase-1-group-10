@@ -1,8 +1,7 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Send.MessageTypes.LobbyMessages;
 
 import Common.Network.Send.Message;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class StartGameMessage extends Message {

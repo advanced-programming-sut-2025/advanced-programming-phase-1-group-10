@@ -2,7 +2,7 @@ package Server.Network;
 
 import Common.Models.Lobby;
 import Common.Network.Send.Message;
-import Common.Network.Send.MessageTypes.ListLobbiesResponseMessage;
+import Common.Network.Send.MessageTypes.LobbyMessages.ListLobbiesResponseMessage;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,5 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Send.MessageTypes.LobbyMessages;
 
-import Common.Models.PlayerStuff.Player;
 import Common.Network.Send.Message;
 
 import java.util.ArrayList;

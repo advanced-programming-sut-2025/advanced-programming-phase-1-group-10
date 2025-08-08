@@ -1,4 +1,4 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Send.MessageTypes.LobbyMessages;
 
 import Common.Network.Send.Message;
 

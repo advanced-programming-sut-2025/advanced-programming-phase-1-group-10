@@ -1,7 +1,7 @@
 package Common.Network;
 
 import Common.Network.Send.Message;
-import Common.Network.Send.MessageTypes.LeavelobbyMessage;
+import Common.Network.Send.MessageTypes.LobbyMessages.LeavelobbyMessage;
 import Common.Utilis.JsonUtils;
 
 import java.io.DataInputStream;

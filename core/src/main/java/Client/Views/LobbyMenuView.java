@@ -2,8 +2,7 @@ package Client.Views;
 
 import Client.Main;
 import Client.Network.ClientNetworkManager;
-import Common.Network.Send.MessageTypes.JoinLobbyResponseMessage;
-import Common.Network.Send.MessageTypes.ListLobbiesResponseMessage;
+import Common.Network.Send.MessageTypes.LobbyMessages.ListLobbiesResponseMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
