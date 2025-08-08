@@ -8,6 +8,7 @@ import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.HoeUsedMessage;
 import Common.Network.Messages.MessageTypes.MovePlayerMessage;
 import Common.Network.Messages.MessageTypes.PickaxeUsedMessage;
+import Common.Network.Messages.MessageTypes.WateringCanUsedMessage;
 
 public class ClientHandler {
     public void movePlayerHandle(MovePlayerMessage movePlayerMsg) {
@@ -23,14 +24,6 @@ public class ClientHandler {
         player.setPosition(movePlayerMsg.getPosition());
     }
 
-
-    public void handleTool(Message message) {
-        if (message instanceof HoeUsedMessage) {
-            handleHoe((HoeUsedMessage) message);
-        } else if (message instanceof PickaxeUsedMessage) {
-            handlePickaxe((PickaxeUsedMessage) message);
-        }
-    }
 
     public void handleHoe(HoeUsedMessage message) {
         Game game = App.getInstance().getCurrentGame();
@@ -51,4 +44,13 @@ public class ClientHandler {
             tile.setPlow(message.isPlowed()); // Optional
         }
     }
+
+    public void handleWateringCan(WateringCanUsedMessage message) {
+        Game game = App.getInstance().getCurrentGame();
+        Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
+        if (tile != null) {
+            tile.setWatered(message.isWatered());
+        }
+    }
+
 }

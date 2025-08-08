@@ -220,6 +220,10 @@ public class ClientNetworkManager {
                     PickaxeUsedMessage pickaxeUsedMsg = (PickaxeUsedMessage) message;
                     clientHandler.handlePickaxe(pickaxeUsedMsg);
                 }
+                case WATERING_CAN_USED -> {
+                    WateringCanUsedMessage wateringCanUsedMsg = (WateringCanUsedMessage) message;
+                    clientHandler.handleWateringCan(wateringCanUsedMsg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

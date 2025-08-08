@@ -1,11 +1,13 @@
 package Common.Models.Tools;
 
 import Client.Assets.ToolAsset;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.WateringCanUsedMessage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class WateringCan extends Tool {
@@ -48,6 +50,13 @@ public class WateringCan extends Tool {
         player.getEnergy().setEnergyAmount(
                 player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
+
+        ClientNetworkManager.getInstance().sendMessage(new WateringCanUsedMessage(
+            tile.getPosition().getX(),
+            tile.getPosition().getY(),
+            tile.isWatered()
+        ));
+
         return null;
     }
 

@@ -2,12 +2,14 @@ package Client.Controllers.FinalControllers;
 
 import Client.Assets.FaintAsset;
 import Client.Assets.PlayerAsset;
+import Client.Controllers.MessageSystem;
 import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Map;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
 import Common.Models.Tile;
+import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.MovePlayerMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -146,6 +148,12 @@ public class PlayerController {
     }
 
     public void handlePlayerSwitching() {
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
+            return;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) { // '.'
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
             App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));

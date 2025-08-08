@@ -1,9 +1,11 @@
 package Common.Models.FriendShip;
 
 
+import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Gift {
@@ -21,7 +23,7 @@ public class Gift {
         this.rate = 0;
         this.item = item;
         this.isNotified = isNotified;
-        this.seed =  ThreadLocalRandom.current().nextInt(0,100000);
+        this.seed =  (new Random()).nextInt(0,10000);
     }
 
     public Player getSender() {

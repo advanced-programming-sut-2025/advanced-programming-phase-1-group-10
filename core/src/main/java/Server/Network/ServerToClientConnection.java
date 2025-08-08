@@ -48,7 +48,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case LEAVE_LOBBY -> { handleLeaveLobby(); yield true; }
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
             case MOVE_PLAYER -> {handleMovePlayer((MovePlayerMessage) message); yield true; }
-            case HOE_USED, PICKAXE_USED ->  {handleToolUsage(message); yield true; }
+            case HOE_USED, PICKAXE_USED,WATERING_CAN_USED ->  {handleToolUsage(message); yield true; }
             default -> false;
         };
     }

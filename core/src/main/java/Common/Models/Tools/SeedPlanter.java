@@ -26,7 +26,7 @@ public class SeedPlanter extends Tool {
 //
 //        if (selectedItem instanceof Seed) {
 //            Seed seed = (Seed) selectedItem;
-//            if (tile.isPlowed() && tile.getCrop() == null) {
+//            if (tile.isWatered() && tile.getCrop() == null) {
 //                int energyCost = (int) ((getEnergyUsage() - getQuality().getValue()) * App.getInstance().getCurrentGame().getWeather().getToolEnergyModifer());
 //                if (player.getEnergy().getEnergyAmount() >= energyCost) {
 //                    player.getEnergy().setEnergyAmount(player.getEnergy().getEnergyAmount() - energyCost);
