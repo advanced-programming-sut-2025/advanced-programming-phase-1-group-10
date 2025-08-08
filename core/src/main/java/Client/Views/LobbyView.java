@@ -1,9 +1,13 @@
 package Client.Views;
 
+import Client.Controllers.GameMenuControllers;
 import Client.Main;
 import Client.Network.ClientNetworkManager;
+import Common.Models.App;
+import Common.Models.Result;
 import Common.Network.Send.MessageTypes.JoinLobbyResponseMessage;
 import Common.Network.Send.MessageTypes.LobbyUpdateMessage;
+import Common.Network.Send.MessageTypes.StartGameMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -39,10 +42,12 @@ public class LobbyView implements Screen {
     private final Color ADMIN_COLOR = new Color(0.8f, 0.6f, 0.1f, 1f);
     private final Color PLAYER_COLOR = new Color(0.2f, 0.6f, 0.8f, 1f);
 
-    private Map<String, CheckBox> readyStatusCheckboxes;
-    private Map<String, SelectBox<String>> farmTypeSelectBoxes;
+    private final Map<String, CheckBox> readyStatusCheckboxes;
+    private final Map<String, SelectBox<String>> farmTypeSelectBoxes;
     private Label statusLabel;
     private TextButton startGameButton;
+
+    private final GameMenuControllers gameMenuControllers = new GameMenuControllers();
 
     public LobbyView(Skin skin, JoinLobbyResponseMessage lobbyInfo) {
         this.skin = skin;
@@ -101,12 +106,17 @@ public class LobbyView implements Screen {
             });
         });
 
-//        networkManager.setOnGameStarted(() -> {
-//            Gdx.app.postRunnable(() -> {
-//                showMessage("Game is starting...");
-//                TODO
-//            });
-//        });
+         networkManager.setOnGameStarted((StartGameMessage startGameMessage) -> {
+              Gdx.app.postRunnable(() -> {
+                  java.util.Map<String,String> players = startGameMessage.getPlayers();
+                  Result result = gameMenuControllers.createGame(new ArrayList<>(players.keySet()),startGameMessage.getWorldSeed());
+                  if(result.state()){
+                      gameMenuControllers.setUpFarms(new ArrayList<>(players.values()),startGameMessage.getWorldSeed());
+                      Main.getInstance().switchScreen(new GameLauncherView(Main.getInstance().getSkin()));
+                  }
+                  App.getInstance().getCurrentGame().setCurrentPlayer(App.getInstance().getCurrentGame().getPlayers().get(startGameMessage.getIndex()));
+              });
+          });
     }
 
     private void showErrorDialog(String message) {

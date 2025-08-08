@@ -30,8 +30,8 @@ public class GameMenuControllers {
 
 
     public Result createGame(List<String> names, long seed) {
-        for (String name : names)
-            if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
+        //for (String name : names)
+        //    if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
 
         String admin;
         try{
@@ -415,17 +415,6 @@ public class GameMenuControllers {
         }
     }
 
-    public void setUpcallBack(){
-        ClientNetworkManager.getInstance().setOnGameStarted(
-            (startGameMessage) -> {
-                java.util.Map<String,String> players = startGameMessage.getPlayers();
-                Result result = createGame(new ArrayList<>(players.keySet()),startGameMessage.getWorldSeed());
-                if(result.state()){
-                    setUpFarms(new ArrayList<>(players.values()),startGameMessage.getWorldSeed());
-                    Main.getInstance().switchScreen(new GameLauncherView(Main.getInstance().getSkin()));
-                }
-            }
-        );
-    }
+
 
 }

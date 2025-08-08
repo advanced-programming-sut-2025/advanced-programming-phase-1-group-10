@@ -94,7 +94,7 @@ public class ClientNetworkManager {
 
 
     public void startGame() {
-        if (connection != null && currentLobbyId != null && isAdmin) {
+        if (connection != null && currentLobbyId != null) {
             StartGameMessage message = new StartGameMessage(username);
             connection.sendMessage(message);
         }

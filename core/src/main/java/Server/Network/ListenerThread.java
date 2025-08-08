@@ -418,8 +418,11 @@ public class ListenerThread extends Thread {
         startMsg.setWorldSeed(ThreadLocalRandom.current().nextLong());
         startMsg.setPlayers(lobby.getPlayerFarmTypes());
 
+        int index = 0;
         for (Socket playerSocket : lobbySockets.get(lobbyId)) {
+            startMsg.setIndex(index);
             sendMessage(playerSocket, startMsg);
+            index++;
         }
 
     }

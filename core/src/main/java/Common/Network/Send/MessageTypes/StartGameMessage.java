@@ -9,6 +9,7 @@ public class StartGameMessage extends Message {
     private String username;
     private  long worldSeed;
     private Map<String,String> players;
+    private int index;
 
     public StartGameMessage() {
         super(MessageType.START_GAME);
@@ -41,5 +42,13 @@ public class StartGameMessage extends Message {
 
     public Map<String, String> getPlayers() {
         return players;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }
