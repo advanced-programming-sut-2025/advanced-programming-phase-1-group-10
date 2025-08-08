@@ -1,4 +1,4 @@
-package Common.Network.Send;
+package Common.Network.Messages;
 
 import java.util.Map;
 
@@ -26,7 +26,6 @@ public class Message {
         START_GAME,
         JOIN_REQUEST,
         MOVE_PLAYER,
-        TOOL_USED,
         CREATE_LOBBY,
         LIST_LOBBIES_REQUEST,
         LIST_LOBBIES_RESPONSE,
@@ -37,6 +36,8 @@ public class Message {
         LEAVE_LOBBY,
         PLAYER_FARM_TYPE_UPDATE,
         ERROR,
+        HOE_USED,
+        PICKAXE_USED,
         ;
     }
 }

@@ -1,6 +1,6 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Messages.MessageTypes;
 
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 
 public class HoeUsedMessage extends Message {
     private int x, y;
@@ -8,15 +8,14 @@ public class HoeUsedMessage extends Message {
     private int newEnergy;
 
     public HoeUsedMessage() {
-        super(MessageType.TOOL_USED);
+        super(MessageType.HOE_USED);
     }
 
-    public HoeUsedMessage(int x, int y, boolean plowed, int newEnergy) {
-        super(MessageType.TOOL_USED);
+    public HoeUsedMessage(int x, int y, boolean plowed) {
+        super(MessageType.HOE_USED);
         this.x = x;
         this.y = y;
         this.plowed = plowed;
-        this.newEnergy = newEnergy;
     }
 
     public int getX() {

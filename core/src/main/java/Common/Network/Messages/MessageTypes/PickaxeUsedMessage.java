@@ -1,6 +1,6 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Messages.MessageTypes;
 
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 
 public class PickaxeUsedMessage extends Message {
     private int x, y;
@@ -9,16 +9,14 @@ public class PickaxeUsedMessage extends Message {
     private int newXP;
 
     public PickaxeUsedMessage() {
-        super(MessageType.TOOL_USED);
+        super(MessageType.PICKAXE_USED);
     }
 
-    public PickaxeUsedMessage(int x, int y, boolean plowed, int newEnergy, int newXP) {
-        super(MessageType.TOOL_USED);
+    public PickaxeUsedMessage(int x, int y, boolean plowed) {
+        super(MessageType.PICKAXE_USED);
         this.x = x;
         this.y = y;
         this.plowed = plowed;
-        this.newEnergy = newEnergy;
-        this.newXP = newXP;
     }
 
     public int getX() {

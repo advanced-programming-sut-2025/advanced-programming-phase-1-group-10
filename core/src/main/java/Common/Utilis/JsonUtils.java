@@ -1,8 +1,8 @@
 package Common.Utilis;
 
-import Common.Network.Send.Message;
-import Common.Network.Send.MessageTypes.*;
-import Common.Network.Send.MessageTypes.LobbyMessages.*;
+import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.*;
+import Common.Network.Messages.MessageTypes.LobbyMessages.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -60,6 +60,10 @@ public class JsonUtils {
                     return gson.fromJson(json, PlayerFarmTypeUpdateMessage.class);
                 case MOVE_PLAYER:
                     return gson.fromJson(json, MovePlayerMessage.class);
+                case HOE_USED:
+                    return gson.fromJson(json,  HoeUsedMessage.class);
+                case PICKAXE_USED:
+                    return gson.fromJson(json, PickaxeUsedMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

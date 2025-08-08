@@ -1,12 +1,14 @@
 package Common.Models.Tools;
 
 import Client.Assets.ToolAsset;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Mineral.Mineral;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.PickaxeUsedMessage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Pickaxe extends Tool {
@@ -63,6 +65,13 @@ public class Pickaxe extends Tool {
         player.getEnergy().setEnergyAmount(
             player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
+
+        ClientNetworkManager.getInstance().sendMessage(new PickaxeUsedMessage(
+            tile.getPosition().getX(),
+            tile.getPosition().getY(),
+            tile.getisPlow()
+        ));
+
         return null;
     }
 

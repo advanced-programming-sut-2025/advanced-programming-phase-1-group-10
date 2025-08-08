@@ -2,11 +2,13 @@ package Client.Controllers.FinalControllers;
 
 import Client.Controllers.CheatCodeControllers;
 import Client.Controllers.MessageSystem;
+import Common.Models.App;
 import Common.Models.Commands.CheatCodeCommands;
 import Common.Models.Map;
 import Common.Models.Position;
 import Common.Models.Result;
 import Client.Main;
+import Common.Network.Messages.Message;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -123,6 +125,13 @@ public class CheatBoxController {
     }
 
     private void processCheatCode(String input) {
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            MessageSystem.showError("Cheating in Online games ?!",2f);
+            return;
+        }
+
+
         System.out.println("Processing cheat code: " + input);
         Matcher matcher;
         if ((matcher = CheatCodeCommands.CHEAT_HOUR.getMatcher(input)) != null) {

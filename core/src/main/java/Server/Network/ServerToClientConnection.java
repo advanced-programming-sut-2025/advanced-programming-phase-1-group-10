@@ -2,9 +2,9 @@ package Server.Network;
 
 import Common.Models.Lobby;
 import Common.Network.ConnectionThread;
-import Common.Network.Send.Message;
-import Common.Network.Send.MessageTypes.*;
-import Common.Network.Send.MessageTypes.LobbyMessages.*;
+import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.*;
+import Common.Network.Messages.MessageTypes.LobbyMessages.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -48,6 +48,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case LEAVE_LOBBY -> { handleLeaveLobby(); yield true; }
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
             case MOVE_PLAYER -> {handleMovePlayer((MovePlayerMessage) message); yield true; }
+            case HOE_USED, PICKAXE_USED ->  {handleToolUsage(message); yield true; }
             default -> false;
         };
     }
@@ -163,15 +164,21 @@ public class ServerToClientConnection extends ConnectionThread {
         }
     }
 
+
     public void handleMovePlayer(MovePlayerMessage msg) {
         if (!isInLobby()) return;
-
         for (ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(msg.getPlayerName())) {continue;}
             connection.sendMessage(msg);
-            System.out.println("Send Message To: " + connection.getUsername());
         }
+    }
 
+
+    public void handleToolUsage(Message message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
+            connection.sendMessage(message);
+        }
     }
     /* ---------------------- Utility ---------------------- */
 

@@ -3,7 +3,7 @@ package Common.Models.Tools;
 import Client.Assets.ToolAsset;
 import Common.Models.Item;
 import Common.Models.Tile;
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public abstract class Tool implements Item {

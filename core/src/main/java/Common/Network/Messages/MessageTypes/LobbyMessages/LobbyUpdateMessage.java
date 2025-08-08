@@ -1,6 +1,6 @@
-package Common.Network.Send.MessageTypes.LobbyMessages;
+package Common.Network.Messages.MessageTypes.LobbyMessages;
 
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 
 import java.util.ArrayList;
 import java.util.Map;

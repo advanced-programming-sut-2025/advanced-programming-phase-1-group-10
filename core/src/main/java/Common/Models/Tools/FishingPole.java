@@ -7,7 +7,7 @@ import Common.Models.Place.Lake;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
 import Common.Models.Tile;
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class FishingPole extends Tool {

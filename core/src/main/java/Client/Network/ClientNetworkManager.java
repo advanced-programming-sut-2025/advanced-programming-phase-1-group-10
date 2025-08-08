@@ -2,9 +2,9 @@ package Client.Network;
 
 import Client.Network.Handlers.ClientHandler;
 import Common.Network.ConnectionThread;
-import Common.Network.Send.Message;
-import Common.Network.Send.MessageTypes.*;
-import Common.Network.Send.MessageTypes.LobbyMessages.*;
+import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.*;
+import Common.Network.Messages.MessageTypes.LobbyMessages.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -211,7 +211,14 @@ public class ClientNetworkManager {
                 case MOVE_PLAYER -> {
                     MovePlayerMessage movePlayerMsg = (MovePlayerMessage) message;
                     clientHandler.movePlayerHandle(movePlayerMsg);
-
+                }
+                case HOE_USED -> {
+                    HoeUsedMessage hoeUsedMsg = (HoeUsedMessage) message;
+                    clientHandler.handleHoe(hoeUsedMsg);
+                }
+                case PICKAXE_USED -> {
+                    PickaxeUsedMessage pickaxeUsedMsg = (PickaxeUsedMessage) message;
+                    clientHandler.handlePickaxe(pickaxeUsedMsg);
                 }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());

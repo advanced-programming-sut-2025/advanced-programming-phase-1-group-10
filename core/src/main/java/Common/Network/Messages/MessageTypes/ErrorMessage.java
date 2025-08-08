@@ -1,6 +1,6 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Messages.MessageTypes;
 
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 
 public class ErrorMessage extends Message {
     private String errorMessage;

@@ -7,7 +7,7 @@ import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Random;

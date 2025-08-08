@@ -1,8 +1,8 @@
-package Common.Network.Send.MessageTypes;
+package Common.Network.Messages.MessageTypes;
 
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
-import Common.Network.Send.Message;
+import Common.Network.Messages.Message;
 
 
 public class MovePlayerMessage extends Message {
