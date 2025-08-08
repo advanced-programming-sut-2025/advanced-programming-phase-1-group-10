@@ -37,4 +37,8 @@ public class StartGameMessage extends Message {
     public void setPlayerNames(ArrayList<String> playerNames) {
         this.playerNames = playerNames;
     }
+
+    public ArrayList<String> getPlayerNames() {
+        return playerNames;
+    }
 }

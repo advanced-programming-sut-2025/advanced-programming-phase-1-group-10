@@ -2,7 +2,9 @@ package Client.Controllers;
 
 import Client.Assets.GreenHouseAsset;
 import Client.Assets.HouseAsset;
+import Client.Main;
 import Client.Network.ClientNetworkManager;
+import Client.Views.GameLauncherView;
 import Common.Models.*;
 import Common.Models.NPC.*;
 import Common.Models.Place.*;
@@ -56,7 +58,7 @@ public class GameMenuControllers {
     }
 
     public Result quickGame(long seed){
-        return createGame(Arrays.asList("user1","user2"),seed);
+        return createGame(Arrays.asList("user1","user2","user3","user4"),seed);
     }
 
     public boolean isUsernameExist(String username) {
@@ -372,7 +374,7 @@ public class GameMenuControllers {
     }
 
 
-    public void setUpFarms(ArrayList<String> farmTypes, long worldSeed) {
+    public void setUpFarms(List<String> farmTypes, long worldSeed) {
         Game game = getInstance().getCurrentGame();
         List<Player> players = game.getPlayers();
 
@@ -418,12 +420,14 @@ public class GameMenuControllers {
     public void setUpcallBack(){
         ClientNetworkManager.getInstance().setOnGameStarted(
             (startGameMessage) -> {
-
+                ArrayList<String> playerNames = startGameMessage.getPlayerNames();
+                Result result = createGame(playerNames,startGameMessage.getWorldSeed());
+                if(result.state()){
+                    setUpFarms(Arrays.asList("1","1"),startGameMessage.getWorldSeed());
+                    Main.getInstance().switchScreen(new GameLauncherView(Main.getInstance().getSkin()));
+                }
             }
         );
     }
-
-
-
 
 }
