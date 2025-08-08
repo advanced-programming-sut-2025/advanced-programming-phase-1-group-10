@@ -11,6 +11,7 @@ public class Lobby {
     private final String name;
     private ArrayList<String> playerNames;
     private Map<String, Boolean> playersReadyStatus;
+    private Map<String, String> playerFarmTypes;
     private boolean isPrivate;
     private String password;
     private boolean isVisible;
@@ -20,6 +21,7 @@ public class Lobby {
         this.name = name;
         this.playerNames = new ArrayList<>();
         this.playersReadyStatus = new HashMap<>();
+        this.playerFarmTypes = new HashMap<>();
         this.isPrivate = false;
         this.isVisible = true;
     }
@@ -38,6 +40,10 @@ public class Lobby {
 
     public Map<String, Boolean> getPlayersReadyStatus() {
         return playersReadyStatus;
+    }
+
+    public Map<String, String> getPlayerFarmTypes() {
+        return playerFarmTypes;
     }
 
     public boolean isPrivate() {

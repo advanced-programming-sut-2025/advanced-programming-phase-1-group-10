@@ -9,12 +9,14 @@ public class LobbyUpdateMessage extends Message {
     private String lobbyId;
     private ArrayList<String> players;
     private Map<String, Boolean> readyStatus;
+    private Map<String, String> farmTypes;
 
     public LobbyUpdateMessage(String lobbyId, ArrayList<String> players, Map<String, Boolean> readyStatus) {
         super(MessageType.LOBBY_UPDATE);
         this.lobbyId = lobbyId;
         this.players = players;
         this.readyStatus = readyStatus;
+
     }
 
     public String getLobbyId() {
@@ -27,5 +29,14 @@ public class LobbyUpdateMessage extends Message {
 
     public Map<String, Boolean> getReadyStatus() {
         return readyStatus;
+    }
+
+    public Map<String, String> getFarmTypes() {
+        return farmTypes;
+    }
+
+
+    public void setFarmTypes(Map<String, String> farmTypes) {
+        this.farmTypes = farmTypes;
     }
 }

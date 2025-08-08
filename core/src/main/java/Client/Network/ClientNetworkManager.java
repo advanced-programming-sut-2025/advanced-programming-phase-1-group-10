@@ -85,6 +85,13 @@ public class ClientNetworkManager {
         }
     }
 
+    public void sendFarmTypeUpdate(String farmType) {
+        if (connection != null && currentLobbyId != null) {
+            PlayerFarmTypeUpdateMessage message = new PlayerFarmTypeUpdateMessage(username, farmType);
+            connection.sendMessage(message);
+        }
+    }
+
 
     public void startGame() {
         if (connection != null && currentLobbyId != null && isAdmin) {

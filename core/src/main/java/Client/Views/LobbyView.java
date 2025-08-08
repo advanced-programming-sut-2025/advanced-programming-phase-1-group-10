@@ -1,4 +1,3 @@
-
 package Client.Views;
 
 import Client.Main;
@@ -11,10 +10,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class LobbyView implements Screen {
     private final Color PLAYER_COLOR = new Color(0.2f, 0.6f, 0.8f, 1f);
 
     private Map<String, CheckBox> readyStatusCheckboxes;
+    private Map<String, SelectBox<String>> farmTypeSelectBoxes;
     private Label statusLabel;
     private TextButton startGameButton;
 
@@ -51,6 +54,7 @@ public class LobbyView implements Screen {
         this.isAdmin = lobbyInfo.isAdmin();
 
         readyStatusCheckboxes = new HashMap<>();
+        farmTypeSelectBoxes = new HashMap<>();
 
         try {
             this.backgroundTexture = new Texture(Gdx.files.internal("backgrounds/LobbyBackground.png"));
@@ -61,11 +65,15 @@ public class LobbyView implements Screen {
         this.mainTable = new Table();
         this.playersTable = new Table(skin);
 
-        createUI(lobbyInfo.getPlayers());
+
+
+
+        createUI(lobbyInfo.getPlayers(), new HashMap<>(), new HashMap<>());
         setupNetworkCallbacks();
     }
 
     private void setupNetworkCallbacks() {
+
         networkManager.setOnLobbyJoined(response -> {
             if (response.isSuccess()) {
                 Gdx.app.postRunnable(() -> {
@@ -88,9 +96,17 @@ public class LobbyView implements Screen {
 
         networkManager.setOnLobbyUpdated((LobbyUpdateMessage updateMessage) -> {
             Gdx.app.postRunnable(() -> {
-                updatePlayersTable(updateMessage.getPlayers(), updateMessage.getReadyStatus());
+
+                updatePlayersTable(updateMessage.getPlayers(), updateMessage.getReadyStatus(), updateMessage.getFarmTypes());
             });
         });
+
+//        networkManager.setOnGameStarted(() -> {
+//            Gdx.app.postRunnable(() -> {
+//                showMessage("Game is starting...");
+//                TODO
+//            });
+//        });
     }
 
     private void showErrorDialog(String message) {
@@ -127,39 +143,45 @@ public class LobbyView implements Screen {
         );
     }
 
-    private void createUI(ArrayList<String> players) {
+
+    private void createUI(ArrayList<String> players, Map<String, Boolean> readyStatus, Map<String, String> farmTypes) {
         mainTable.setFillParent(true);
         mainTable.pad(80);
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("Impact"), TITLE_COLOR);
         Label titleLabel = new Label("Lobby: " + lobbyName, titleStyle);
         titleLabel.setFontScale(2.5f);
-        mainTable.add(titleLabel).colspan(2).padBottom(40).row();
+        mainTable.add(titleLabel).colspan(3).padBottom(40).row();
 
         statusLabel = new Label(isAdmin ? "You are the lobby admin" : "Waiting for the game to start...", skin);
         statusLabel.setColor(isAdmin ? ADMIN_COLOR : PLAYER_COLOR);
         statusLabel.setFontScale(1.3f);
-        mainTable.add(statusLabel).colspan(2).padBottom(30).row();
+        mainTable.add(statusLabel).colspan(3).padBottom(30).row();
 
         Label playersLabel = new Label("Players", skin);
         playersLabel.setFontScale(1.8f);
-        mainTable.add(playersLabel).colspan(2).padBottom(20).padTop(30).row();
+        mainTable.add(playersLabel).colspan(3).padBottom(20).padTop(30).row();
 
         playersTable.defaults().pad(15);
         Label playerHeaderLabel = new Label("Player", skin);
         playerHeaderLabel.setFontScale(1.3f);
         Label statusHeaderLabel = new Label("Status", skin);
         statusHeaderLabel.setFontScale(1.3f);
-        playersTable.add(playerHeaderLabel).width(350);
-        playersTable.add(statusHeaderLabel).width(200).row();
+        Label farmTypeHeaderLabel = new Label("Farm Type", skin);
+        farmTypeHeaderLabel.setFontScale(1.3f);
 
-        updatePlayersTable(players, new HashMap<>());
+        playersTable.add(playerHeaderLabel).width(300);
+        playersTable.add(statusHeaderLabel).width(150);
+        playersTable.add(farmTypeHeaderLabel).width(150).row();
+
+
+        updatePlayersTable(players, readyStatus, farmTypes);
 
         ScrollPane scrollPane = new ScrollPane(playersTable, skin);
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-        mainTable.add(scrollPane).colspan(2).width(800).height(400).padBottom(40).row();
+        mainTable.add(scrollPane).colspan(3).width(1100).height(500).padBottom(40).row();
 
         CheckBox readyCheckbox = new CheckBox(" I'm ready", skin);
         readyCheckbox.setName("readyCheckbox");
@@ -170,10 +192,9 @@ public class LobbyView implements Screen {
                 networkManager.setPlayerReady(readyCheckbox.isChecked());
             }
         });
-        mainTable.add(readyCheckbox).colspan(2).padBottom(40).row();
+        mainTable.add(readyCheckbox).colspan(3).padBottom(40).row();
 
         Table buttonsTable = new Table();
-
 
         startGameButton = new TextButton("Start Game", skin);
         startGameButton.addListener(new ClickListener() {
@@ -189,7 +210,6 @@ public class LobbyView implements Screen {
         if (isAdmin) {
             buttonsTable.add(startGameButton).width(250).height(80).padRight(30);
         } else {
-
             buttonsTable.add(startGameButton).width(250).height(80).padRight(30);
             startGameButton.setVisible(false);
         }
@@ -205,22 +225,28 @@ public class LobbyView implements Screen {
         leaveButton.getLabel().setFontScale(1.3f);
         buttonsTable.add(leaveButton).width(250).height(80);
 
-        mainTable.add(buttonsTable).colspan(2).padTop(30).row();
+        mainTable.add(buttonsTable).colspan(3).padTop(30).row();
 
         stage.addActor(mainTable);
     }
 
-    private void updatePlayersTable(ArrayList<String> players, Map<String, Boolean> readyStatus) {
+
+    private void updatePlayersTable(ArrayList<String> players, Map<String, Boolean> readyStatus, Map<String, String> farmTypes) {
         playersTable.clear();
         playersTable.defaults().pad(15);
         Label playerHeaderLabel = new Label("Player", skin);
         playerHeaderLabel.setFontScale(1.3f);
         Label statusHeaderLabel = new Label("Status", skin);
         statusHeaderLabel.setFontScale(1.3f);
-        playersTable.add(playerHeaderLabel).width(350);
-        playersTable.add(statusHeaderLabel).width(200).row();
+        Label farmTypeHeaderLabel = new Label("Farm Type", skin);
+        farmTypeHeaderLabel.setFontScale(1.3f);
+
+        playersTable.add(playerHeaderLabel).width(300);
+        playersTable.add(statusHeaderLabel).width(150);
+        playersTable.add(farmTypeHeaderLabel).width(150).row();
 
         readyStatusCheckboxes.clear();
+        farmTypeSelectBoxes.clear();
 
         boolean allReady = true;
 
@@ -237,18 +263,40 @@ public class LobbyView implements Screen {
             if (i == 0) {
                 nameLabel.setColor(ADMIN_COLOR);
             }
-            playersTable.add(nameLabel).width(350);
+            playersTable.add(nameLabel).width(300);
 
             boolean isReady = readyStatus.getOrDefault(playerName, false);
             if (!isReady) {
                 allReady = false;
             }
 
-
             Label rowStatusLabel = new Label(isReady ? "Ready" : "Not Ready", skin);
             rowStatusLabel.setFontScale(1.1f);
             rowStatusLabel.setColor(isReady ? new Color(0.2f, 0.8f, 0.2f, 1f) : new Color(0.8f, 0.2f, 0.2f, 1f));
-            playersTable.add(rowStatusLabel).width(200).row();
+            playersTable.add(rowStatusLabel).width(170);
+
+
+            String currentFarmType = farmTypes.getOrDefault(playerName, "1");
+            SelectBox<String> farmTypeSelectBox = new SelectBox<>(skin);
+            farmTypeSelectBox.setItems(new Array<>(new String[]{"1", "2"}));
+            farmTypeSelectBox.setSelected(currentFarmType);
+            farmTypeSelectBox.getStyle().font.getData().setScale(0.8f);
+
+
+            if (!playerName.equals(networkManager.getUsername())) {
+                farmTypeSelectBox.setDisabled(true);
+            } else {
+
+                farmTypeSelectBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        String selectedFarmType = farmTypeSelectBox.getSelected();
+                        networkManager.sendFarmTypeUpdate(selectedFarmType);
+                    }
+                });
+            }
+            playersTable.add(farmTypeSelectBox).width(150).row();
+
 
             if (playerName.equals(networkManager.getUsername())) {
                 CheckBox checkbox = (CheckBox) mainTable.findActor("readyCheckbox");
@@ -257,21 +305,19 @@ public class LobbyView implements Screen {
                     readyStatusCheckboxes.put(playerName, checkbox);
                 }
             }
+            farmTypeSelectBoxes.put(playerName, farmTypeSelectBox);
         }
-
 
         boolean nowAdmin = !players.isEmpty() && players.get(0).equals(networkManager.getUsername());
         if (nowAdmin != isAdmin) {
             isAdmin = nowAdmin;
             startGameButton.setVisible(isAdmin);
-            statusLabel.setText(isAdmin ? "You are the lobby admin" : "Waiting for the game to start...");
+            statusLabel.setText(isAdmin ? "You are the lobby admin" : "Waiting for the game to start... कोशिका");
             statusLabel.setColor(isAdmin ? ADMIN_COLOR : PLAYER_COLOR);
         }
 
-
         if (startGameButton != null) {
             startGameButton.setDisabled(!isAdmin || !allReady || players.size() < 2);
-
 
             if (isAdmin) {
                 if (players.size() < 2) {
@@ -335,9 +381,9 @@ public class LobbyView implements Screen {
         networkManager.setOnError(null);
         networkManager.setOnGameStarted(null);
 
-        if (!networkManager.isInGame()) {
-            networkManager.disconnect();
-        }
+//        if (!networkManager.isInGame()) {
+//            networkManager.disconnect();
+//        }
     }
 
     @Override

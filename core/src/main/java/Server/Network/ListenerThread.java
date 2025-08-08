@@ -24,8 +24,6 @@ public class ListenerThread extends Thread {
     private final Map<Socket, String> socketToUsername = new HashMap<>();
     private final Map<String, String> userToLobbyId = new HashMap<>();
 
-
-
     public ListenerThread(int port, String password) throws IOException {
         this.port = port;
         this.serverPassword = (password != null && !password.isEmpty()) ? password : null;
@@ -67,7 +65,7 @@ public class ListenerThread extends Thread {
         try (DataInputStream input = new DataInputStream(socket.getInputStream())) {
             while (true) {
                 try {
-                    String json = input.readUTF();  // will throw if socket is closed
+                    String json = input.readUTF();
                     System.out.println("Received JSON: " + json);
 
                     Message message = JsonUtils.fromJsonWithType(json);
@@ -100,6 +98,10 @@ public class ListenerThread extends Thread {
 
                         case START_GAME:
                             handleStartGame(socket, (StartGameMessage) message);
+                            break;
+
+                        case PLAYER_FARM_TYPE_UPDATE:
+                            handlePlayerFarmTypeUpdate(socket, (PlayerFarmTypeUpdateMessage) message);
                             break;
 
                         default:
@@ -167,6 +169,7 @@ public class ListenerThread extends Thread {
         if (isPrivate && password != null && !password.isEmpty()) {
             lobby.setPassword(password);
         }
+        lobby.getPlayerFarmTypes().put(username, "1");
 
         lobbies.put(lobbyId, lobby);
         lobbySockets.put(lobbyId, new ArrayList<>());
@@ -253,6 +256,7 @@ public class ListenerThread extends Thread {
 
         lobby.getPlayerNames().add(username);
         lobby.getPlayersReadyStatus().put(username, false);
+        lobby.getPlayerFarmTypes().put(username, "1");
         lobbySockets.get(lobbyId).add(socket);
         userToLobbyId.put(username, lobbyId);
 
@@ -292,6 +296,46 @@ public class ListenerThread extends Thread {
         }
     }
 
+
+    private void handlePlayerFarmTypeUpdate(Socket socket, PlayerFarmTypeUpdateMessage updateMsg) throws IOException {
+        String username = socketToUsername.get(socket);
+
+        if (username == null) {
+            sendError(socket, "You need to join the server first.");
+            return;
+        }
+
+        String lobbyId = userToLobbyId.get(username);
+
+        if (lobbyId == null) {
+            sendError(socket, "You are not in a lobby.");
+            return;
+        }
+
+        Lobby lobby = lobbies.get(lobbyId);
+
+        if (lobby == null) {
+            sendError(socket, "Lobby not found.");
+            return;
+        }
+
+
+        if (!username.equals(updateMsg.getUsername())) {
+            sendError(socket, "Unauthorized farm type update for another player.");
+            return;
+        }
+
+        String newFarmType = updateMsg.getFarmType();
+
+        if (lobby.getPlayerNames().contains(username)) {
+            lobby.getPlayerFarmTypes().put(username, newFarmType);
+            System.out.println(username + " changed farm type to: " + newFarmType + " in lobby: " + lobby.getName());
+            broadcastLobbyUpdate(lobbyId);
+        } else {
+            sendError(socket, "Player not found in lobby.");
+        }
+    }
+
     private void handleLeaveLobby(Socket socket, LeavelobbyMessage leaveMsg) throws IOException {
         String username = socketToUsername.get(socket);
 
@@ -312,6 +356,7 @@ public class ListenerThread extends Thread {
         if (lobby.getPlayerNames().contains(username)) {
             lobby.getPlayerNames().remove(username);
             lobby.getPlayersReadyStatus().remove(username);
+            lobby.getPlayerFarmTypes().remove(username);
             lobbySockets.get(lobbyId).remove(socket);
             userToLobbyId.remove(username);
 
@@ -369,7 +414,7 @@ public class ListenerThread extends Thread {
 
         System.out.println("Game is starting in lobby: " + lobby.getName());
 
-        //Assign a seed for creating map and the name of other players
+
         startMsg.setWorldSeed(ThreadLocalRandom.current().nextLong());
         startMsg.setPlayerNames(lobby.getPlayerNames());
 
@@ -386,6 +431,8 @@ public class ListenerThread extends Thread {
             LobbyUpdateMessage updateMsg = new LobbyUpdateMessage(
                 lobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
             );
+
+            updateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
 
             for (Socket playerSocket : lobbySockets.get(lobbyId)) {
                 try {

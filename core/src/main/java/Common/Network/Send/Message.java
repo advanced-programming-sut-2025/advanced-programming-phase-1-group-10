@@ -35,6 +35,7 @@ public class Message {
         LOBBY_UPDATE,
         PLAYER_READY,
         LEAVE_LOBBY,
+        PLAYER_FARM_TYPE_UPDATE,
         ERROR,
         ;
     }

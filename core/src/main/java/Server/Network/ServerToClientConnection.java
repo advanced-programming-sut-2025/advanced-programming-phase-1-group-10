@@ -1,11 +1,11 @@
 package Server.Network;
 
-import Client.Views.MainMenuView;
 import Common.Models.Lobby;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
+import Client.Views.MainMenuView;
 import Server.Main;
 import com.badlogic.gdx.Gdx;
 
@@ -41,7 +41,6 @@ public class ServerToClientConnection extends ConnectionThread {
             case CREATE_LOBBY:
                 CreateLobbyMessage createMsg = (CreateLobbyMessage) message;
 
-
                 this.username = createMsg.getCreatorUsername();
 
                 Lobby newLobby = lobbyManager.createLobby(
@@ -51,10 +50,8 @@ public class ServerToClientConnection extends ConnectionThread {
                     createMsg.getPassword()
                 );
 
-
                 lobbyManager.addPlayerToLobby(newLobby.getLobbyId(), username, this);
                 currentLobbyId = newLobby.getLobbyId();
-
 
                 JoinLobbyResponseMessage response = new JoinLobbyResponseMessage(
                     true, null, newLobby.getLobbyId(), newLobby.getName(),
@@ -65,7 +62,6 @@ public class ServerToClientConnection extends ConnectionThread {
 
             case LIST_LOBBIES_REQUEST:
                 ListLobbiesRequestMessage listMsg = (ListLobbiesRequestMessage) message;
-
 
                 if (this.username == null || this.username.equals(clientId)) {
                     this.username = listMsg.getUsername();
@@ -97,13 +93,11 @@ public class ServerToClientConnection extends ConnectionThread {
                     return true;
                 }
 
-
                 this.username = joinMsg.getUsername();
 
                 boolean isAdmin = targetLobby.getPlayerNames().isEmpty();
                 lobbyManager.addPlayerToLobby(targetLobby.getLobbyId(), username, this);
                 currentLobbyId = targetLobby.getLobbyId();
-
 
                 JoinLobbyResponseMessage joinResponse = new JoinLobbyResponseMessage(
                     true, null, targetLobby.getLobbyId(), targetLobby.getName(),
@@ -115,6 +109,7 @@ public class ServerToClientConnection extends ConnectionThread {
                 LobbyUpdateMessage updateMessage = new LobbyUpdateMessage(
                     targetLobby.getLobbyId(), targetLobby.getPlayerNames(), targetLobby.getPlayersReadyStatus()
                 );
+                updateMessage.setFarmTypes(targetLobby.getPlayerFarmTypes());
                 lobbyManager.broadcastToLobby(targetLobby.getLobbyId(), updateMessage);
                 return true;
 
@@ -123,12 +118,37 @@ public class ServerToClientConnection extends ConnectionThread {
                 if (currentLobbyId != null) {
                     lobbyManager.setPlayerReady(currentLobbyId, username, readyMsg.isReady());
 
-
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
                     LobbyUpdateMessage readyUpdateMsg = new LobbyUpdateMessage(
                         currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
                     );
+                    readyUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
                     lobbyManager.broadcastToLobby(currentLobbyId, readyUpdateMsg);
+                }
+                return true;
+
+            case PLAYER_FARM_TYPE_UPDATE:
+                PlayerFarmTypeUpdateMessage farmTypeUpdateMsg = (PlayerFarmTypeUpdateMessage) message;
+                if (currentLobbyId != null) {
+
+                    if (!username.equals(farmTypeUpdateMsg.getUsername())) {
+                        ErrorMessage errorMsg = new ErrorMessage("Unauthorized farm type update for another player.");
+                        sendMessage(errorMsg);
+                        return true;
+                    }
+
+                    Lobby lobby = lobbyManager.getLobby(currentLobbyId);
+                    if (lobby != null) {
+                        lobby.getPlayerFarmTypes().put(username, farmTypeUpdateMsg.getFarmType());
+                        System.out.println(username + " changed farm type to: " + farmTypeUpdateMsg.getFarmType() + " in lobby: " + lobby.getName());
+
+
+                        LobbyUpdateMessage updateMsg = new LobbyUpdateMessage(
+                            currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
+                        );
+                        updateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
+                        lobbyManager.broadcastToLobby(currentLobbyId, updateMsg);
+                    }
                 }
                 return true;
 
@@ -136,12 +156,12 @@ public class ServerToClientConnection extends ConnectionThread {
                 if (currentLobbyId != null) {
                     lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
 
-
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
                     if (lobby != null) {
                         LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
                             currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
                         );
+                        leaveUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
                         lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
                     }
 
@@ -154,17 +174,13 @@ public class ServerToClientConnection extends ConnectionThread {
                 if (currentLobbyId != null) {
                     Lobby lobby = lobbyManager.getLobby(currentLobbyId);
 
-
                     if (!lobby.getPlayerNames().isEmpty() &&
                         lobby.getPlayerNames().get(0).equals(username)) {
 
-
                         if (lobbyManager.areAllPlayersReady(currentLobbyId)) {
-
                             lobbyManager.broadcastToLobby(currentLobbyId, message);
                             return true;
                         } else {
-
                             ErrorMessage errorMsg = new ErrorMessage(
                                 "Not all players are ready to start the game."
                             );
@@ -172,7 +188,6 @@ public class ServerToClientConnection extends ConnectionThread {
                             return true;
                         }
                     } else {
-
                         ErrorMessage errorMsg = new ErrorMessage(
                             "Only the lobby admin can start the game."
                         );
@@ -193,16 +208,20 @@ public class ServerToClientConnection extends ConnectionThread {
         if (currentLobbyId != null) {
             LobbyManager lobbyManager = LobbyManager.getInstance();
 
+
             lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
 
             Lobby lobby = lobbyManager.getLobby(currentLobbyId);
             if (lobby != null) {
+
                 LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
                     currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
                 );
+                leaveUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
                 lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
             }
-            Client.Main.getInstance().switchScreen(new MainMenuView());
+
+
 
             currentLobbyId = null;
         }

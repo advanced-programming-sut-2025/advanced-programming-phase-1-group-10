@@ -55,6 +55,8 @@ public class JsonUtils {
                     return gson.fromJson(json, LeavelobbyMessage.class);
                 case ERROR:
                     return gson.fromJson(json, ErrorMessage.class);
+                case PLAYER_FARM_TYPE_UPDATE:
+                    return gson.fromJson(json, PlayerFarmTypeUpdateMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }
