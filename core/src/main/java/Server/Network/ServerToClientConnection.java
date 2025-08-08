@@ -28,6 +28,8 @@ public class ServerToClientConnection extends ConnectionThread {
         setOtherSidePort(clientSocket.getPort());
     }
 
+    /* ---------------------- Lifecycle ---------------------- */
+
     @Override
     public boolean initialHandshake() {
         System.out.println("Handshake started with client: " + clientId);
@@ -46,6 +48,22 @@ public class ServerToClientConnection extends ConnectionThread {
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
             default -> false;
         };
+    }
+
+    @Override
+    protected void onConnectionClosed() {
+        System.out.println("Connection closed for client: " + username + " (" + clientId + ")");
+        handleLeaveLobby();
+    }
+
+    /* ---------------------- Centralized Send ---------------------- */
+
+    public void sendMessage(Message msg) {
+        try {
+            super.sendMessage(msg);
+        } catch (Exception e) {
+            System.err.println("Error sending message to " + username + ": " + e.getMessage());
+        }
     }
 
     /* ---------------------- Message Handlers ---------------------- */
@@ -143,8 +161,7 @@ public class ServerToClientConnection extends ConnectionThread {
         }
     }
 
-
-    /* ---------------------- Utility Methods ---------------------- */
+    /* ---------------------- Utility ---------------------- */
 
     private boolean isPasswordCorrect(Lobby lobby, String providedPassword) {
         return providedPassword != null && providedPassword.equals(lobby.getPassword());
@@ -163,14 +180,6 @@ public class ServerToClientConnection extends ConnectionThread {
         LobbyUpdateMessage update = new LobbyUpdateMessage(lobby.getLobbyId(), lobby.getPlayerNames(), lobby.getPlayersReadyStatus());
         update.setFarmTypes(lobby.getPlayerFarmTypes());
         lobbyManager.broadcastToLobby(lobby.getLobbyId(), update);
-    }
-
-    /* ---------------------- Connection Lifecycle ---------------------- */
-
-    @Override
-    protected void onConnectionClosed() {
-        System.out.println("Connection closed for client: " + username + " (" + clientId + ")");
-        handleLeaveLobby();
     }
 
     /* ---------------------- Getters ---------------------- */
