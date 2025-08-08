@@ -1,30 +1,31 @@
 package Server.Network;
 
 import Common.Models.Lobby;
-import Common.Models.PlayerStuff.Player;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
-import Client.Views.MainMenuView;
-import Server.Main;
-import com.badlogic.gdx.Gdx;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ServerToClientConnection extends ConnectionThread {
 
     private final String clientId;
     private String username;
     private String currentLobbyId;
+    private final String serverPassword;
+    private final LobbyManager lobbyManager;
 
-    public ServerToClientConnection(Socket clientSocket, String clientId) throws IOException {
+    public ServerToClientConnection(Socket clientSocket, String clientId, String serverPassword) throws IOException {
         super(clientSocket);
         this.clientId = clientId;
         this.username = clientId;
-        this.setOtherSideIP(clientSocket.getInetAddress().getHostAddress());
-        this.setOtherSidePort(clientSocket.getPort());
+        this.serverPassword = serverPassword;
+        this.lobbyManager = LobbyManager.getInstance();
+        setOtherSideIP(clientSocket.getInetAddress().getHostAddress());
+        setOtherSidePort(clientSocket.getPort());
     }
 
     @Override
@@ -35,197 +36,144 @@ public class ServerToClientConnection extends ConnectionThread {
 
     @Override
     protected boolean handleMessage(Message message) {
-        LobbyManager lobbyManager = LobbyManager.getInstance();
+        return switch (message.getType()) {
+            case CREATE_LOBBY -> { handleCreateLobby((CreateLobbyMessage) message); yield true; }
+            case LIST_LOBBIES_REQUEST -> { handleListLobbies((ListLobbiesRequestMessage) message); yield true; }
+            case JOIN_LOBBY_REQUEST -> { handleJoinLobby((JoinLobbyRequestMessage) message); yield true; }
+            case PLAYER_READY -> { handlePlayerReady((PlayerReadyMessage) message); yield true; }
+            case PLAYER_FARM_TYPE_UPDATE -> { handleFarmTypeUpdate((PlayerFarmTypeUpdateMessage) message); yield true; }
+            case LEAVE_LOBBY -> { handleLeaveLobby(); yield true; }
+            case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
+            default -> false;
+        };
+    }
 
-        switch (message.getType()) {
-            case CREATE_LOBBY:
-                CreateLobbyMessage createMsg = (CreateLobbyMessage) message;
+    /* ---------------------- Message Handlers ---------------------- */
 
-                this.username = createMsg.getCreatorUsername();
+    private void handleCreateLobby(CreateLobbyMessage msg) {
+        this.username = msg.getCreatorUsername();
+        Lobby newLobby = lobbyManager.createLobby(msg.getLobbyName(), msg.isPrivate(), msg.isVisible(), msg.getPassword());
+        lobbyManager.addPlayerToLobby(newLobby.getLobbyId(), username, this);
+        currentLobbyId = newLobby.getLobbyId();
+        sendMessage(new JoinLobbyResponseMessage(true, null, newLobby.getLobbyId(), newLobby.getName(), newLobby.getPlayerNames(), true));
+    }
 
-                Lobby newLobby = lobbyManager.createLobby(
-                    createMsg.getLobbyName(),
-                    createMsg.isPrivate(),
-                    createMsg.isVisible(),
-                    createMsg.getPassword()
-                );
+    private void handleListLobbies(ListLobbiesRequestMessage msg) {
+        if (username == null || username.equals(clientId)) {
+            username = msg.getUsername();
+        }
+        sendMessage(new ListLobbiesResponseMessage(lobbyManager.getVisibleLobbies()));
+    }
 
-                lobbyManager.addPlayerToLobby(newLobby.getLobbyId(), username, this);
-                currentLobbyId = newLobby.getLobbyId();
+    private void handleJoinLobby(JoinLobbyRequestMessage msg) {
+        Lobby targetLobby = lobbyManager.getLobby(msg.getLobbyId());
 
-                JoinLobbyResponseMessage response = new JoinLobbyResponseMessage(
-                    true, null, newLobby.getLobbyId(), newLobby.getName(),
-                    newLobby.getPlayerNames(), true
-                );
-                sendMessage(response);
-                return true;
-
-            case LIST_LOBBIES_REQUEST:
-                ListLobbiesRequestMessage listMsg = (ListLobbiesRequestMessage) message;
-
-                if (this.username == null || this.username.equals(clientId)) {
-                    this.username = listMsg.getUsername();
-                }
-
-                ListLobbiesResponseMessage listResponse = new ListLobbiesResponseMessage(
-                    lobbyManager.getVisibleLobbies()
-                );
-                sendMessage(listResponse);
-                return true;
-
-            case JOIN_LOBBY_REQUEST:
-                JoinLobbyRequestMessage joinMsg = (JoinLobbyRequestMessage) message;
-                Lobby targetLobby = lobbyManager.getLobby(joinMsg.getLobbyId());
-
-                if (targetLobby == null) {
-                    sendMessage(new JoinLobbyResponseMessage(
-                        false, "Lobby not found", null, null, null, false
-                    ));
-                    return true;
-                }
-
-                if (targetLobby.isPrivate() &&
-                    (joinMsg.getPassword() == null ||
-                        !joinMsg.getPassword().equals(targetLobby.getPassword()))) {
-                    sendMessage(new JoinLobbyResponseMessage(
-                        false, "Incorrect password", null, null, null, false
-                    ));
-                    return true;
-                }
-
-                this.username = joinMsg.getUsername();
-
-                boolean isAdmin = targetLobby.getPlayerNames().isEmpty();
-                lobbyManager.addPlayerToLobby(targetLobby.getLobbyId(), username, this);
-                currentLobbyId = targetLobby.getLobbyId();
-
-                JoinLobbyResponseMessage joinResponse = new JoinLobbyResponseMessage(
-                    true, null, targetLobby.getLobbyId(), targetLobby.getName(),
-                    targetLobby.getPlayerNames(), isAdmin
-                );
-                sendMessage(joinResponse);
-
-
-                LobbyUpdateMessage updateMessage = new LobbyUpdateMessage(
-                    targetLobby.getLobbyId(), targetLobby.getPlayerNames(), targetLobby.getPlayersReadyStatus()
-                );
-                updateMessage.setFarmTypes(targetLobby.getPlayerFarmTypes());
-                lobbyManager.broadcastToLobby(targetLobby.getLobbyId(), updateMessage);
-                return true;
-
-            case PLAYER_READY:
-                PlayerReadyMessage readyMsg = (PlayerReadyMessage) message;
-                if (currentLobbyId != null) {
-                    lobbyManager.setPlayerReady(currentLobbyId, username, readyMsg.isReady());
-
-                    Lobby lobby = lobbyManager.getLobby(currentLobbyId);
-                    LobbyUpdateMessage readyUpdateMsg = new LobbyUpdateMessage(
-                        currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
-                    );
-                    readyUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
-                    lobbyManager.broadcastToLobby(currentLobbyId, readyUpdateMsg);
-                }
-                return true;
-
-            case PLAYER_FARM_TYPE_UPDATE:
-                PlayerFarmTypeUpdateMessage farmTypeUpdateMsg = (PlayerFarmTypeUpdateMessage) message;
-                if (currentLobbyId != null) {
-
-                    if (!username.equals(farmTypeUpdateMsg.getUsername())) {
-                        ErrorMessage errorMsg = new ErrorMessage("Unauthorized farm type update for another player.");
-                        sendMessage(errorMsg);
-                        return true;
-                    }
-
-                    Lobby lobby = lobbyManager.getLobby(currentLobbyId);
-                    if (lobby != null) {
-                        lobby.getPlayerFarmTypes().put(username, farmTypeUpdateMsg.getFarmType());
-                        System.out.println(username + " changed farm type to: " + farmTypeUpdateMsg.getFarmType() + " in lobby: " + lobby.getName());
-
-
-                        LobbyUpdateMessage updateMsg = new LobbyUpdateMessage(
-                            currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
-                        );
-                        updateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
-                        lobbyManager.broadcastToLobby(currentLobbyId, updateMsg);
-                    }
-                }
-                return true;
-
-            case LEAVE_LOBBY:
-                if (currentLobbyId != null) {
-                    lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
-
-                    Lobby lobby = lobbyManager.getLobby(currentLobbyId);
-                    if (lobby != null) {
-                        LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
-                            currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
-                        );
-                        leaveUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
-                        lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
-                    }
-
-                    currentLobbyId = null;
-                }
-                return true;
-
-            case START_GAME:
-                StartGameMessage startMsg = (StartGameMessage) message;
-                if (currentLobbyId != null) {
-                    Lobby lobby = lobbyManager.getLobby(currentLobbyId);
-
-                    if (!lobby.getPlayerNames().isEmpty() &&
-                        lobby.getPlayerNames().get(0).equals(username)) {
-
-                        if (lobbyManager.areAllPlayersReady(currentLobbyId)) {
-                            lobbyManager.broadcastToLobby(currentLobbyId, message);
-                            return true;
-                        } else {
-                            ErrorMessage errorMsg = new ErrorMessage(
-                                "Not all players are ready to start the game."
-                            );
-                            sendMessage(errorMsg);
-                            return true;
-                        }
-                    } else {
-                        ErrorMessage errorMsg = new ErrorMessage(
-                            "Only the lobby admin can start the game."
-                        );
-                        sendMessage(errorMsg);
-                        return true;
-                    }
-                }
-                return true;
+        if (targetLobby == null) {
+            sendMessage(new JoinLobbyResponseMessage(false, "Lobby not found", null, null, null, false));
+            return;
+        }
+        if (targetLobby.isPrivate() && !isPasswordCorrect(targetLobby, msg.getPassword())) {
+            sendMessage(new JoinLobbyResponseMessage(false, "Incorrect password", null, null, null, false));
+            return;
         }
 
-        return false;
+        username = msg.getUsername();
+        boolean isAdmin = targetLobby.getPlayerNames().isEmpty();
+
+        lobbyManager.addPlayerToLobby(targetLobby.getLobbyId(), username, this);
+        currentLobbyId = targetLobby.getLobbyId();
+
+        sendMessage(new JoinLobbyResponseMessage(true, null, targetLobby.getLobbyId(), targetLobby.getName(), targetLobby.getPlayerNames(), isAdmin));
+        broadcastLobbyUpdate(targetLobby);
     }
+
+    private void handlePlayerReady(PlayerReadyMessage msg) {
+        if (!isInLobby()) return;
+        lobbyManager.setPlayerReady(currentLobbyId, username, msg.isReady());
+        broadcastLobbyUpdate(lobbyManager.getLobby(currentLobbyId));
+    }
+
+    private void handleFarmTypeUpdate(PlayerFarmTypeUpdateMessage msg) {
+        if (!isInLobby()) return;
+
+        if (!username.equals(msg.getUsername())) {
+            sendMessage(new ErrorMessage("Unauthorized farm type update for another player."));
+            return;
+        }
+        Lobby lobby = lobbyManager.getLobby(currentLobbyId);
+        if (lobby != null) {
+            lobby.getPlayerFarmTypes().put(username, msg.getFarmType());
+            broadcastLobbyUpdate(lobby);
+        }
+    }
+
+    private void handleLeaveLobby() {
+        if (!isInLobby()) return;
+        lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
+        broadcastLobbyUpdate(lobbyManager.getLobby(currentLobbyId));
+        currentLobbyId = null;
+    }
+
+    private void handleStartGame(StartGameMessage msg) {
+        if (!isInLobby()) return;
+
+        Lobby lobby = lobbyManager.getLobby(currentLobbyId);
+        if (!isLobbyAdmin(lobby)) {
+            sendMessage(new ErrorMessage("Only the lobby admin can start the game."));
+            return;
+        }
+        if (!lobbyManager.areAllPlayersReady(currentLobbyId)) {
+            sendMessage(new ErrorMessage("Not all players are ready."));
+            return;
+        }
+
+        Map<String, String> farmTypes = lobby.getPlayerFarmTypes();
+        if (farmTypes == null || farmTypes.isEmpty()) {
+            sendMessage(new ErrorMessage("No players in lobby to start the game."));
+            return;
+        }
+
+        msg.setWorldSeed(ThreadLocalRandom.current().nextLong());
+        msg.setPlayers(farmTypes);
+
+        int index = 0;
+        for (ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
+            msg.setIndex(index++);
+            connection.sendMessage(msg);
+        }
+    }
+
+
+    /* ---------------------- Utility Methods ---------------------- */
+
+    private boolean isPasswordCorrect(Lobby lobby, String providedPassword) {
+        return providedPassword != null && providedPassword.equals(lobby.getPassword());
+    }
+
+    private boolean isInLobby() {
+        return currentLobbyId != null;
+    }
+
+    private boolean isLobbyAdmin(Lobby lobby) {
+        return lobby != null && !lobby.getPlayerNames().isEmpty() && lobby.getPlayerNames().get(0).equals(username);
+    }
+
+    private void broadcastLobbyUpdate(Lobby lobby) {
+        if (lobby == null) return;
+        LobbyUpdateMessage update = new LobbyUpdateMessage(lobby.getLobbyId(), lobby.getPlayerNames(), lobby.getPlayersReadyStatus());
+        update.setFarmTypes(lobby.getPlayerFarmTypes());
+        lobbyManager.broadcastToLobby(lobby.getLobbyId(), update);
+    }
+
+    /* ---------------------- Connection Lifecycle ---------------------- */
 
     @Override
     protected void onConnectionClosed() {
         System.out.println("Connection closed for client: " + username + " (" + clientId + ")");
-
-        if (currentLobbyId != null) {
-            LobbyManager lobbyManager = LobbyManager.getInstance();
-
-
-            lobbyManager.removePlayerFromLobby(currentLobbyId, username, this);
-
-            Lobby lobby = lobbyManager.getLobby(currentLobbyId);
-            if (lobby != null) {
-
-                LobbyUpdateMessage leaveUpdateMsg = new LobbyUpdateMessage(
-                    currentLobbyId, lobby.getPlayerNames(), lobby.getPlayersReadyStatus()
-                );
-                leaveUpdateMsg.setFarmTypes(lobby.getPlayerFarmTypes());
-                lobbyManager.broadcastToLobby(currentLobbyId, leaveUpdateMsg);
-            }
-
-
-
-            currentLobbyId = null;
-        }
+        handleLeaveLobby();
     }
+
+    /* ---------------------- Getters ---------------------- */
 
     public String getClientId() {
         return clientId;

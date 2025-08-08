@@ -38,10 +38,10 @@ public class CropAsset {
             if (TextureCache.exists(stagePath)) {
                 Sprite stageSprite = new Sprite(TextureCache.get(stagePath));
                 stageSprites.put(stage, stageSprite);
-                System.out.println("Loaded crop stage: " + stagePath);
+//                System.out.println("Loaded crop stage: " + stagePath);
             } else {
                 if (stage > cropType.getCropTypes().size()) {
-                    System.out.println("No more stages found for: " + cropName + " after stage " + (stage - 1));
+//                    System.out.println("No more stages found for: " + cropName + " after stage " + (stage - 1));
                     break;
                 } else {
                     System.err.println("Required crop stage not found: " + stagePath);
@@ -61,9 +61,9 @@ public class CropAsset {
         if (TextureCache.exists(fruitPath)) {
             Sprite fruitSprite = new Sprite(TextureCache.get(fruitPath));
             fruitSprites.put(cropType.getName(), fruitSprite);
-            System.out.println("Loaded crop fruit: " + fruitPath);
+//            System.out.println("Loaded crop fruit: " + fruitPath);
         } else {
-            System.err.println("Crop fruit sprite not found: " + fruitPath);
+//            System.err.println("Crop fruit sprite not found: " + fruitPath);
         }
     }
 
@@ -76,9 +76,9 @@ public class CropAsset {
         if (TextureCache.exists(seedPath)) {
             Sprite seedSprite = new Sprite(TextureCache.get(seedPath));
             seedSprites.put(seedType.getName(), seedSprite);
-            System.out.println("Loaded seed sprite: " + seedPath);
+//            System.out.println("Loaded seed sprite: " + seedPath);
         } else {
-            System.err.println("Seed sprite not found: " + seedPath);
+//            System.err.println("Seed sprite not found: " + seedPath);
         }
     }
 

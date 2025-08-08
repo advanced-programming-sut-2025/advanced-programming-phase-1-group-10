@@ -118,4 +118,9 @@ public class LobbyManager {
             }
         }
     }
+
+    public List<ServerToClientConnection> getLobbyConnections(String lobbyId) {
+        return lobbyConnections.getOrDefault(lobbyId, new ArrayList<>());
+    }
+
 }
