@@ -204,7 +204,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float cameraY = Math.max(halfHeight, Math.min(targetY, mapPixelHeight - halfHeight));
         camera.position.set(cameraX, cameraY, 0);
 
-        camera.zoom = 4f;
+        camera.zoom = 0.6f;
         camera.update();
 
         // ----- Render game world -----
