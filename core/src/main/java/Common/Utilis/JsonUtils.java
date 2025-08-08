@@ -58,6 +58,8 @@ public class JsonUtils {
                     return gson.fromJson(json, ErrorMessage.class);
                 case PLAYER_FARM_TYPE_UPDATE:
                     return gson.fromJson(json, PlayerFarmTypeUpdateMessage.class);
+                case MOVE_PLAYER:
+                    return gson.fromJson(json, MovePlayerMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

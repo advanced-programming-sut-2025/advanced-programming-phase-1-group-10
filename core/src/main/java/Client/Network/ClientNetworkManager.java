@@ -1,5 +1,6 @@
 package Client.Network;
 
+import Client.Network.Handlers.ClientHandler;
 import Common.Network.ConnectionThread;
 import Common.Network.Send.Message;
 import Common.Network.Send.MessageTypes.*;
@@ -27,6 +28,9 @@ public class ClientNetworkManager {
     private Consumer<LobbyUpdateMessage> onLobbyUpdated;
     private Consumer<String> onError;
     private Consumer<StartGameMessage> onGameStarted;
+
+    //Handler
+    private final ClientHandler clientHandler = new ClientHandler();
 
     private ClientNetworkManager() {
         availableLobbies = new ArrayList<>();
@@ -203,6 +207,11 @@ public class ClientNetworkManager {
                 case START_GAME -> {
                     StartGameMessage startGameMsg = (StartGameMessage) message;
                     if (onGameStarted != null) onGameStarted.accept(startGameMsg);
+                }
+                case MOVE_PLAYER -> {
+                    MovePlayerMessage movePlayerMsg = (MovePlayerMessage) message;
+                    clientHandler.movePlayerHandle(movePlayerMsg);
+
                 }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());

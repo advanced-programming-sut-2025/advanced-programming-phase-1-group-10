@@ -47,6 +47,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case PLAYER_FARM_TYPE_UPDATE -> { handleFarmTypeUpdate((PlayerFarmTypeUpdateMessage) message); yield true; }
             case LEAVE_LOBBY -> { handleLeaveLobby(); yield true; }
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
+            case MOVE_PLAYER -> {handleMovePlayer((MovePlayerMessage) message); yield true; }
             default -> false;
         };
     }
@@ -162,6 +163,16 @@ public class ServerToClientConnection extends ConnectionThread {
         }
     }
 
+    public void handleMovePlayer(MovePlayerMessage msg) {
+        if (!isInLobby()) return;
+
+        for (ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(msg.getPlayerName())) {continue;}
+            connection.sendMessage(msg);
+            System.out.println("Send Message To: " + connection.getUsername());
+        }
+
+    }
     /* ---------------------- Utility ---------------------- */
 
     private boolean isPasswordCorrect(Lobby lobby, String providedPassword) {

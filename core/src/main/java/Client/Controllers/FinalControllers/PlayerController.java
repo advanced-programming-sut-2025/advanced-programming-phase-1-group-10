@@ -85,8 +85,10 @@ public class PlayerController {
                 player.getX(),
                 player.getY(),
                 player.getDirection(),
-                player.isMoving()
+                player.isMoving(),
+                player.getPosition()
             );
+            ClientNetworkManager.getInstance().sendMessage(movePlayerMessage);
         }
 
     }
@@ -108,6 +110,7 @@ public class PlayerController {
 
 
         batch.draw(currentFrame, player.getX(), player.getY(), Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
+        System.out.println(player.getName() + " : " + player.getX() + " " + player.getY());
     }
 
 

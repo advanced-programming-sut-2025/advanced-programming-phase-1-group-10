@@ -1,29 +1,32 @@
 package Common.Network.Send.MessageTypes;
 
 import Common.Models.PlayerStuff.Player;
+import Common.Models.Position;
 import Common.Network.Send.Message;
 
 
 public class MovePlayerMessage extends Message {
-    private final String playerId;
+    private final String playerName;
     private final float x;
     private final float y;
     private final Player.Direction direction;
+    private final Position position;
     private final boolean moving;
 
     // Constructor
-    public MovePlayerMessage(String playerId, float x, float y, Player.Direction direction, boolean moving) {
+    public MovePlayerMessage(String playerId, float x, float y, Player.Direction direction, boolean moving, Position pos) {
         super(Message.MessageType.MOVE_PLAYER);
-        this.playerId = playerId;
+        this.playerName = playerId;
         this.x = x;
         this.y = y;
         this.direction = direction;
         this.moving = moving;
+        this.position = pos;
     }
 
     // Getters
-    public String getPlayerId() {
-        return playerId;
+    public String getPlayerName() {
+        return playerName;
     }
 
     public float getX() {
@@ -42,11 +45,17 @@ public class MovePlayerMessage extends Message {
         return moving;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+
+
     // Optional: toString() for logging
     @Override
     public String toString() {
         return "MovePlayerMessage{" +
-            "playerId='" + playerId + '\'' +
+            "playerName='" + playerName + '\'' +
             ", x=" + x +
             ", y=" + y +
             ", direction=" + direction +
