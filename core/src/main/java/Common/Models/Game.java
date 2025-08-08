@@ -22,6 +22,8 @@ public class Game {
     private final ArrayList<Store> stores = new ArrayList<>();
     private HashMap<String , Animal> animals = new HashMap<>();
 
+    private boolean isOnline;
+
     private final Map gameMap;
 
     private Player currentPlayer;
@@ -29,7 +31,8 @@ public class Game {
     private Weather weather;
     private Weather nextDayWeather;
 
-    public Game(String gameOwner) {
+    public Game(String gameOwner, boolean isOnline) {
+        this.isOnline = isOnline;
         this.gameOwner = gameOwner;
         this.gameTime = new DateTime(Season.SPRING,2000,1,1,9);
         this.weather = Weather.SUNNY;
@@ -96,5 +99,9 @@ public class Game {
 
     public HashMap<String, Animal> getAnimals() {
         return animals;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
     }
 }

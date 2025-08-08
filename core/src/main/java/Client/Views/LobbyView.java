@@ -109,7 +109,7 @@ public class LobbyView implements Screen {
          networkManager.setOnGameStarted((StartGameMessage startGameMessage) -> {
               Gdx.app.postRunnable(() -> {
                   java.util.Map<String,String> players = startGameMessage.getPlayers();
-                  Result result = gameMenuControllers.createGame(new ArrayList<>(players.keySet()),startGameMessage.getWorldSeed());
+                  Result result = gameMenuControllers.createGame(new ArrayList<>(players.keySet()),startGameMessage.getWorldSeed(),true);
                   if(result.state()){
                       gameMenuControllers.setUpFarms(new ArrayList<>(players.values()),startGameMessage.getWorldSeed());
                       Main.getInstance().switchScreen(new GameLauncherView(Main.getInstance().getSkin()));

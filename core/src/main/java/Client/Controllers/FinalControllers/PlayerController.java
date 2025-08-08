@@ -2,11 +2,14 @@ package Client.Controllers.FinalControllers;
 
 import Client.Assets.FaintAsset;
 import Client.Assets.PlayerAsset;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Map;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
 import Common.Models.Tile;
+import Common.Network.Send.MessageTypes.MovePlayerMessage;
+import Server.Network.ServerToClientConnection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,7 +32,6 @@ public class PlayerController {
     private final PlayerAsset movementAnimation = new PlayerAsset();
     private final Map map;
 
-    private float faintStateTime = 0f;
 
 
 
@@ -75,6 +77,18 @@ public class PlayerController {
         int row = (int) (player.getY() / Map.tileSize);
         int col = (int) (player.getX() / Map.tileSize);
         player.setPosition(new Position(row, col));
+
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            MovePlayerMessage movePlayerMessage = new MovePlayerMessage(
+                App.getInstance().getCurrentGame().getCurrentPlayer().getName(),
+                player.getX(),
+                player.getY(),
+                player.getDirection(),
+                player.isMoving()
+            );
+        }
+
     }
 
     public void render(Player player, SpriteBatch batch) {
@@ -91,6 +105,7 @@ public class PlayerController {
         } else {
             currentFrame = asset.getIdleFrame(player.getGender());
         }
+
 
         batch.draw(currentFrame, player.getX(), player.getY(), Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
     }

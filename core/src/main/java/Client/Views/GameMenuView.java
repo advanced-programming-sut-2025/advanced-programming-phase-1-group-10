@@ -220,7 +220,7 @@ public class GameMenuView implements Screen, AppMenu {
                 }
 
 
-                Result result = controller.createGame(usernames,sharedSeed);
+                Result result = controller.createGame(usernames,sharedSeed,false);
 
                 if (result.state()) {
                     // Generate a shared seed for farm setup, e.g., current time or from server
