@@ -2,6 +2,7 @@ package Client.Views;
 
 import Client.Main;
 import Client.Network.ClientNetworkManager;
+import Common.Network.Send.MessageTypes.JoinLobbyResponseMessage;
 import Common.Network.Send.MessageTypes.ListLobbiesResponseMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -111,6 +112,15 @@ public class LobbyMenuView implements Screen {
         });
         mainTable.add(listLobbiesButton).width(300).height(80).padBottom(20).row();
 
+        TextButton searchLobbyButton = new TextButton("Search Lobby by ID", skin);
+        searchLobbyButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showSearchLobbyDialog();
+            }
+        });
+        mainTable.add(searchLobbyButton).width(300).height(80).padBottom(20).row();
+
         TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ClickListener() {
             @Override
@@ -118,7 +128,7 @@ public class LobbyMenuView implements Screen {
                 Main.getInstance().switchScreen(new MainMenuView());
             }
         });
-        mainTable.add(backButton).width(300).height(60).padTop(20).row();
+        mainTable.add(backButton).width(300).height(80).padTop(20).row();
 
         stage.addActor(mainTable);
     }
@@ -373,6 +383,78 @@ public class LobbyMenuView implements Screen {
             (Gdx.graphics.getHeight() - lobbyListDialog.getHeight()) / 2
         );
     }
+
+    private void showSearchLobbyDialog() {
+        Dialog searchLobbyDialog = new Dialog("Search Lobby by ID", skin) {
+            private final TextField lobbyIdField;
+            private final TextField passwordField;
+            private final Table passwordTable;
+            private CheckBox privateCheckBox;
+
+            {
+                getContentTable().pad(20);
+
+                lobbyIdField = new TextField("", skin);
+                lobbyIdField.setMessageText("Enter Lobby ID...");
+                getContentTable().add(new Label("Lobby ID:", skin)).align(Align.left).padRight(10);
+                getContentTable().add(lobbyIdField).width(400).pad(10).row();
+
+                privateCheckBox = new CheckBox(" Private Lobby?", skin);
+                getContentTable().add(privateCheckBox).colspan(2).align(Align.left).padTop(10).padBottom(10).row();
+
+                passwordTable = new Table();
+                passwordField = new TextField("", skin);
+                passwordField.setMessageText("Enter password...");
+                passwordField.setPasswordMode(true);
+                passwordField.setPasswordCharacter('*');
+                passwordTable.add(new Label("Password:", skin)).align(Align.left).padRight(10);
+                passwordTable.add(passwordField).width(400).pad(10);
+                passwordTable.setVisible(false);
+
+                getContentTable().add(passwordTable).colspan(2).padTop(10).padBottom(10).row();
+
+                privateCheckBox.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        passwordTable.setVisible(privateCheckBox.isChecked());
+                        pack();
+                    }
+                });
+
+                button("Search & Join", "search_join");
+                button("Cancel", "cancel");
+            }
+
+            @Override
+            protected void result(Object object) {
+                if (object.equals("search_join")) {
+                    String lobbyId = lobbyIdField.getText().trim();
+                    boolean isPrivate = privateCheckBox.isChecked();
+                    String password = isPrivate ? passwordField.getText() : "";
+
+                    if (!lobbyId.isEmpty()) {
+                        if (isPrivate && password.isEmpty()) {
+                            showErrorDialog("Password is required for private lobbies.");
+                        } else {
+                            showLoadingDialog("Joining Lobby", "Searching and joining lobby, please wait...");
+                            networkManager.joinLobby(lobbyId, password);
+                            hide();
+                        }
+                    } else {
+                        showErrorDialog("Lobby ID cannot be empty.");
+                    }
+                }
+            }
+        };
+
+        searchLobbyDialog.show(stage);
+        searchLobbyDialog.setSize(800, 500);
+        searchLobbyDialog.setPosition(
+            (Gdx.graphics.getWidth() - searchLobbyDialog.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - searchLobbyDialog.getHeight()) / 2
+        );
+    }
+
 
     @Override
     public void show() {
