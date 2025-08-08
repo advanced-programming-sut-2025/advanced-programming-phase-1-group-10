@@ -2,9 +2,6 @@ package Client.Controllers;
 
 import Client.Assets.GreenHouseAsset;
 import Client.Assets.HouseAsset;
-import Client.Main;
-import Client.Network.ClientNetworkManager;
-import Client.Views.GameLauncherView;
 import Common.Models.*;
 import Common.Models.Map;
 import Common.Models.NPC.*;
@@ -29,7 +26,7 @@ import static Common.Models.App.getInstance;
 public class GameMenuControllers {
 
 
-    public Result createGame(List<String> names, long seed) {
+    public Result createGame(List<String> names, long seed, boolean isOnline) {
         //for (String name : names)
         //    if (!isUsernameExist(name)) return new Result(false, "Username " + name + " not found.");
 
@@ -41,7 +38,7 @@ public class GameMenuControllers {
         }
 
 
-        Game game = new Game(admin);
+        Game game = new Game(admin,isOnline);
 
         for (String name : names) {
             game.getPlayers().add(new Player(name, seed));
@@ -56,7 +53,7 @@ public class GameMenuControllers {
     }
 
     public Result quickGame(long seed){
-        return createGame(Arrays.asList("user1","user2","user3","user4"),seed);
+        return createGame(Arrays.asList("user1","user2","user3","user4"),seed,false);
     }
 
     public boolean isUsernameExist(String username) {
