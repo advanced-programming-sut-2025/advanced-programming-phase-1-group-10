@@ -416,7 +416,7 @@ public class ListenerThread extends Thread {
 
 
         startMsg.setWorldSeed(ThreadLocalRandom.current().nextLong());
-        startMsg.setPlayerNames(lobby.getPlayerNames());
+        startMsg.setPlayers(lobby.getPlayerFarmTypes());
 
         for (Socket playerSocket : lobbySockets.get(lobbyId)) {
             sendMessage(playerSocket, startMsg);

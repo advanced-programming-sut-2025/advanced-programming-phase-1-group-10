@@ -2,12 +2,13 @@ package Common.Network.Send.MessageTypes;
 
 import Common.Network.Send.Message;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StartGameMessage extends Message {
     private String username;
     private  long worldSeed;
-    private ArrayList<String> playerNames;
+    private Map<String,String> players;
 
     public StartGameMessage() {
         super(MessageType.START_GAME);
@@ -34,11 +35,11 @@ public class StartGameMessage extends Message {
         this.username = username;
     }
 
-    public void setPlayerNames(ArrayList<String> playerNames) {
-        this.playerNames = playerNames;
+    public void setPlayers(Map<String,String> players) {
+        this.players = players;
     }
 
-    public ArrayList<String> getPlayerNames() {
-        return playerNames;
+    public Map<String, String> getPlayers() {
+        return players;
     }
 }

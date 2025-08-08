@@ -6,6 +6,7 @@ import Client.Main;
 import Client.Network.ClientNetworkManager;
 import Client.Views.GameLauncherView;
 import Common.Models.*;
+import Common.Models.Map;
 import Common.Models.NPC.*;
 import Common.Models.Place.*;
 import Common.Models.Place.Store.*;
@@ -20,10 +21,7 @@ import Common.Models.Planets.TreeType;
 import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static Common.Models.App.getInstance;
@@ -420,10 +418,10 @@ public class GameMenuControllers {
     public void setUpcallBack(){
         ClientNetworkManager.getInstance().setOnGameStarted(
             (startGameMessage) -> {
-                ArrayList<String> playerNames = startGameMessage.getPlayerNames();
-                Result result = createGame(playerNames,startGameMessage.getWorldSeed());
+                java.util.Map<String,String> players = startGameMessage.getPlayers();
+                Result result = createGame(new ArrayList<>(players.keySet()),startGameMessage.getWorldSeed());
                 if(result.state()){
-                    setUpFarms(Arrays.asList("1","1"),startGameMessage.getWorldSeed());
+                    setUpFarms(new ArrayList<>(players.values()),startGameMessage.getWorldSeed());
                     Main.getInstance().switchScreen(new GameLauncherView(Main.getInstance().getSkin()));
                 }
             }
