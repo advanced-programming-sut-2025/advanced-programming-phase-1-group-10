@@ -1,5 +1,6 @@
 package Client.Network.Handlers;
 
+import Client.Controllers.ChatManager;
 import Client.Controllers.Utils.ItemUtility;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
@@ -73,6 +74,8 @@ public class ClientHandler {
             message.getText(),
             false
         ));
+        // for private chats
+        handlePrivateChat(message);
     }
 
     public void hanldeSendGift(SendGiftMessage message){
@@ -94,4 +97,8 @@ public class ClientHandler {
         System.out.println("FUCK");
     }
 
+
+    public void handlePrivateChat(MessageSendMessage message) {
+        ChatManager.getInstance().handleMessageSendMessage(message);
+    }
 }
