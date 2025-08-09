@@ -204,6 +204,10 @@ public class CheatBoxController {
             );
         } else if((matcher = CheatCodeCommands.ADD_FERTILIZER.getMatcher(input)) != null){
             cheatCodeController.addFertilizerToInventory();
+        } else if((matcher = CheatCodeCommands.GET_BOUQUET.getMatcher(input)) != null){
+            cheatCodeController.getBouquet();
+        } else if((matcher = CheatCodeCommands.GET_RING.getMatcher(input)) != null){
+            cheatCodeController.getRing();
         }
     }
 

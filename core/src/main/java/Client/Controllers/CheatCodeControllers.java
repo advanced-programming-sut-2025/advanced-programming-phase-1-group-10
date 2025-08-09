@@ -4,6 +4,8 @@ import Common.Models.Animal.Animal;
 import Common.Models.App;
 import Common.Models.Mineral.Mineral;
 import Common.Models.Mineral.MineralTypes;
+import Common.Models.OtherItems.Bouquet;
+import Common.Models.OtherItems.Ring;
 import Common.Models.Place.GreenHouse;
 import Common.Models.Planets.Crop.Crop;
 import Common.Models.Planets.Seed;
@@ -151,5 +153,33 @@ public class CheatCodeControllers {
         }
             else
             MessageSystem.showError("Cant't add fertilizer!",4.0f);
+    }
+
+    public void getRing(){
+        Ring ring = new Ring();
+        boolean added = App.getInstance().getCurrentGame().
+            getCurrentPlayer().getInventory()
+            .getBackPack().addItem(ring);
+        if(added){
+            MessageSystem.showInfo("Ring added successfully!",4.0f);
+            App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().
+                getCurrentGame().getCurrentPlayer().getGold() - 1000);
+        }
+        else
+            MessageSystem.showError("Can't add ring!",4.0f);
+    }
+
+    public void getBouquet(){
+        Bouquet bouquet = new Bouquet();
+        boolean added = App.getInstance().getCurrentGame().
+            getCurrentPlayer().getInventory()
+            .getBackPack().addItem(bouquet);
+        if(added){
+            MessageSystem.showInfo("Bouquet added successfully!",4.0f);
+            App.getInstance().getCurrentGame().getCurrentPlayer().setGold(App.getInstance().
+                getCurrentGame().getCurrentPlayer().getGold() - 300);
+        }
+        else
+            MessageSystem.showError("Can't add bouquet!",4.0f);
     }
 }
