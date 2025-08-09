@@ -74,6 +74,8 @@ public class JsonUtils {
                     return gson.fromJson(json, SendGiftMessage.class);
                 case RATE_GIFT:
                     return gson.fromJson(json, RateGiftMessage.class);
+                case PUBLIC_CHAT:
+                    return gson.fromJson(json, PublicChatMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

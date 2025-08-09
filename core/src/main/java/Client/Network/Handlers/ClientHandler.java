@@ -101,4 +101,8 @@ public class ClientHandler {
     public void handlePrivateChat(MessageSendMessage message) {
         ChatManager.getInstance().handleMessageSendMessage(message);
     }
+
+    public void handlePublicChat(PublicChatMessage message) {
+        ChatManager.getInstance().handlePublicChatMessage(message);
+    }
 }

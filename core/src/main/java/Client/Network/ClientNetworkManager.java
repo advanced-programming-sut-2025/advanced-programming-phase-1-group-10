@@ -240,6 +240,10 @@ public class ClientNetworkManager {
                     RateGiftMessage msg = (RateGiftMessage) message;
                     clientHandler.handldeRateGift(msg);
                 }
+                case PUBLIC_CHAT -> {
+                    PublicChatMessage msg = (PublicChatMessage) message;
+                    clientHandler.handlePublicChat(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

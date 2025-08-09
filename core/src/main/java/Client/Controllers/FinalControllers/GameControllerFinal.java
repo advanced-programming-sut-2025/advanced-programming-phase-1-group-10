@@ -45,6 +45,7 @@ public class GameControllerFinal {
     private MapLayerController mapLayerController;
     private TreeController treeController;
     private CropController cropController;
+    private ChatController chatController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -76,6 +77,7 @@ public class GameControllerFinal {
         this.mapLayerController = new MapLayerController();
         this.treeController = new TreeController();
         this.cropController = new CropController();
+        this.chatController = new ChatController();
 
 
 
@@ -237,5 +239,9 @@ public class GameControllerFinal {
 
     public FriendshipController getFriendshipController() {
         return friendshipController;
+    }
+
+    public ChatController getChatController() {
+        return chatController;
     }
 }

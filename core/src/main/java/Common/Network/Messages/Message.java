@@ -33,6 +33,7 @@ public class Message {
         SEND_GIFT,
         SEND_TEXT_FRIEND,
         RATE_GIFT,
+        PUBLIC_CHAT,
         ;
     }
 }

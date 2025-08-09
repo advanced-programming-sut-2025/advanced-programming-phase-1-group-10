@@ -53,6 +53,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case SEND_TEXT_FRIEND -> {handleSendTextFromFriend((MessageSendMessage) message); yield true; }
             case SEND_GIFT -> {handleSendGift((SendGiftMessage) message); yield true; }
             case RATE_GIFT -> {hanldeRateGift((RateGiftMessage) message); yield true; }
+            case PUBLIC_CHAT -> {handlePublicChat((PublicChatMessage) message); yield true; }
             default -> false;
         };
     }
@@ -220,6 +221,11 @@ public class ServerToClientConnection extends ConnectionThread {
                 connection.sendMessage(message);
             }
         }
+    }
+
+    public void handlePublicChat(PublicChatMessage message) {
+        if (!isInLobby()) return;
+        lobbyManager.broadcastToLobby(currentLobbyId, message);
     }
 
     /* ---------------------- Utility ---------------------- */

@@ -227,7 +227,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                     playerButton.addListener(new ClickListener() {
                         @Override
                         public void clicked(InputEvent event, float x, float y) {
-                            openPrivateChatWindow(player.getName());
+                            controller.getChatController().openPrivateChatWindow(player.getName(), stage);
                         }
                     });
                     privatePlayersTable.add(playerButton).pad(5).row();
@@ -239,164 +239,18 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         publicTab.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO add public messages
-                chatTextArea.setText("[Public messages here]");
+                controller.getChatController().openPublicChatWindow(stage);
             }
         });
-        initializeChatNotifications();
-    }
 
-    private void initializeChatNotifications() {
-        ChatManager.getInstance().addMessageListener("ALL_MESSAGES", new ChatManager.ChatMessageListener() {
-            @Override
-            public void onNewMessage(ChatManager.ChatMessage message) {
-                if (!message.isSentByMe()) {
-                    String senderName = message.getSenderName();
-
-                    Dialog existingDialog = findExistingChatDialog(senderName);
-                    if (existingDialog == null) {
-                        Gdx.app.postRunnable(() -> {
-                            MessageSystem.showInfo("New message from " + senderName, 10.0f);
-                        });
-                    }
-                }
-            }
-        });
-    }
-
-    private void openPrivateChatWindow(String playerName) {
-        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
-        Player receiverPlayer = App.getInstance().getCurrentGame().getPlayerByName(playerName);
-
-        Dialog existingDialog = findExistingChatDialog(playerName);
-        if (existingDialog != null) {
-            existingDialog.toFront();
-            return;
-        }
-
-        Dialog privateChatDialog = new Dialog("Chat with " + playerName, getSkin()) {
-            private final TextArea messagesArea;
-            private final TextField inputField;
-            private final ChatManager.ChatMessageListener chatListener;
-
-            {
-                messagesArea = new TextArea("", getSkin());
-                messagesArea.setDisabled(true);
-                messagesArea.setPrefRows(10);
-
-                java.util.List<ChatManager.ChatMessage> history = ChatManager.getInstance().getMessagesForPlayer(playerName);
-                for (ChatManager.ChatMessage msg : history) {
-                    String prefix = msg.isSentByMe() ? "Me: " : playerName + ": ";
-                    messagesArea.appendText(prefix + msg.getMessageText() + "\n");
-                }
-
-                ScrollPane msgScroll = new ScrollPane(messagesArea, getSkin());
-                msgScroll.setFadeScrollBars(false);
-                msgScroll.setScrollingDisabled(true, false);
-
-                inputField = new TextField("", getSkin());
-                inputField.setMessageText("Type your message...");
-
-                inputField.setTextFieldListener((textField, c) -> {
-                    if (c == '\n') {
-                        sendMessage();
-                        return;
-                    }
-                });
-
-                TextButton sendButton = new TextButton("Send", getSkin());
-                sendButton.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        sendMessage();
-                    }
-                });
-
-                TextButton closeButton = new TextButton("Close", getSkin());
-                closeButton.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        ChatManager.getInstance().removeMessageListener(playerName, chatListener);
-                        remove();
-                    }
-                });
-
-                getContentTable().add(msgScroll).colspan(2).expand().fill().pad(10).row();
-                getContentTable().add(inputField).expandX().fillX().pad(10);
-                getContentTable().add(sendButton).pad(10).row();
-                getContentTable().add(closeButton).colspan(2).pad(10);
-
-                chatListener = new ChatManager.ChatMessageListener() {
-                    @Override
-                    public void onNewMessage(ChatManager.ChatMessage message) {
-                        if (!message.isSentByMe() && message.getSenderName().equals(playerName)) {
-                            Gdx.app.postRunnable(() -> {
-                                messagesArea.appendText(playerName + ": " + message.getMessageText() + "\n");
-                                msgScroll.setScrollY(messagesArea.getPrefHeight());
-                            });
-                        }
-                    }
-                };
-                ChatManager.getInstance().addMessageListener(playerName, chatListener);
-            }
-
-            private void sendMessage() {
-                String msg = inputField.getText().trim();
-                if (!msg.isEmpty()) {
-                    if(App.getInstance().getCurrentGame().isOnline()){
-                        MessageSendMessage message = new MessageSendMessage(
-                            currentPlayer.getName(),
-                            playerName,
-                            msg
-                        );
-                        ClientNetworkManager.getInstance().sendMessage(message);
-
-                        ChatManager.getInstance().addSentMessage(playerName, msg);
-                    }
-
-                    messagesArea.appendText("Me: " + msg + "\n");
-                    inputField.setText("");
-                    ((ScrollPane)getContentTable().getChild(0)).setScrollY(messagesArea.getPrefHeight());
-                }
-            }
-
-            @Override
-            public boolean remove() {
-                ChatManager.getInstance().removeMessageListener(playerName, chatListener);
-                return super.remove();
-            }
-        };
-
-        privateChatDialog.setSize(400, 300);
-        privateChatDialog.setPosition(
-            (Gdx.graphics.getWidth() - privateChatDialog.getWidth()) / 2,
-            (Gdx.graphics.getHeight() - privateChatDialog.getHeight()) / 2
-        );
-        privateChatDialog.show(stage);
-    }
-
-    private Dialog findExistingChatDialog(String playerName) {
-        for (Actor actor : stage.getActors()) {
-            if (actor instanceof Dialog) {
-                Dialog dialog = (Dialog) actor;
-                if (dialog.getTitleLabel().getText().toString().equals("Chat with " + playerName)) {
-                    return dialog;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    @Override
-    public void checkCommand(Scanner scanner) {
-
+        controller.getChatController().initializeChatNotifications(stage);
     }
 
     @Override
-    public void show() {
+    public void checkCommand(Scanner scanner) {}
 
-    }
+    @Override
+    public void show() {}
 
     @Override
     public void render(float delta) {
@@ -477,26 +331,20 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         settingsTable.setPosition(width - tableWidth + 30, height - tableHeight - 100);
 
         chatButton.setPosition(width - chatButton.getWidth() - 20, 20);
-        float chatWidth = 800;
-        float chatHeight = 600;
+        float chatWidth = 400;
+        float chatHeight = 300;
         chatWindowTable.setSize(chatWidth, chatHeight);
         chatWindowTable.setPosition(width - chatWidth - 30, 80);
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
