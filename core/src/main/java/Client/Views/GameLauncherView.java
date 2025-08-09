@@ -55,6 +55,18 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     private final TextButton subButton2;
     private boolean areSubButtonsVisible = false;
 
+    // chat variables
+    private final TextButton chatButton;
+    private final Table chatWindowTable;
+    private boolean isChatWindowVisible = false;
+    private final TextButton privateTab;
+    private final TextButton publicTab;
+    private final ScrollPane chatScrollPane;
+    private final TextArea chatTextArea;
+    private Table privatePlayersTable;
+
+
+
     public GameLauncherView(Skin skin) {
         this.camera = new OrthographicCamera();
         this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
@@ -159,6 +171,121 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
                 }.show(stage);
             }
         });
+
+        chatButton = new TextButton("Chat", skin);
+        stage.addActor(chatButton);
+
+        chatWindowTable = new Table(skin);
+        chatWindowTable.setVisible(false);
+        stage.addActor(chatWindowTable);
+
+        privateTab = new TextButton("Private", skin);
+        publicTab = new TextButton("Public", skin);
+
+        Table tabRow = new Table();
+        tabRow.add(privateTab).pad(5);
+        tabRow.add(publicTab).pad(5);
+
+        chatTextArea = new TextArea("", skin);
+        chatTextArea.setDisabled(true);
+        chatScrollPane = new ScrollPane(chatTextArea, skin);
+        chatScrollPane.setFadeScrollBars(false);
+
+        chatWindowTable.add(tabRow).expandX().fillX().row();
+        chatWindowTable.add(chatScrollPane).expand().fill().pad(5).row();
+
+        chatButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isChatWindowVisible = !isChatWindowVisible;
+                chatWindowTable.setVisible(isChatWindowVisible);
+            }
+        });
+
+        privateTab.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Game currentGame = App.getInstance().getCurrentGame();
+                if (!currentGame.isOnline()) {
+                    chatTextArea.setText("Private chat is only available in online mode.");
+                    return;
+                }
+
+                privatePlayersTable = new Table(getSkin());
+                privatePlayersTable.top().left();
+
+                for (Player player : currentGame.getPlayers()) {
+                    if (player.getName().equals(currentGame.getCurrentPlayer().getName())) {
+                        continue;
+                    }
+                    TextButton playerButton = new TextButton(player.getName(), getSkin());
+                    playerButton.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            openPrivateChatWindow(player.getName());
+                        }
+                    });
+                    privatePlayersTable.add(playerButton).pad(5).row();
+                }
+                chatScrollPane.setWidget(privatePlayersTable);
+            }
+        });
+
+        publicTab.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO add public messages
+                chatTextArea.setText("[Public messages here]");
+            }
+        });
+    }
+
+
+    private void openPrivateChatWindow(String playerName) {
+        Dialog privateChatDialog = new Dialog("Chat with " + playerName, getSkin()) {
+            private final TextArea messagesArea;
+            private final TextField inputField;
+
+            {
+                messagesArea = new TextArea("", getSkin());
+                messagesArea.setDisabled(true);
+                messagesArea.setPrefRows(10);
+
+                ScrollPane msgScroll = new ScrollPane(messagesArea, getSkin());
+                msgScroll.setFadeScrollBars(false);
+
+                inputField = new TextField("", getSkin());
+                inputField.setMessageText("Type your message...");
+
+                TextButton sendButton = new TextButton("Send", getSkin());
+                sendButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        String msg = inputField.getText().trim();
+                        if (!msg.isEmpty()) {
+                            // TODO add network
+                            messagesArea.appendText("Me: " + msg + "\n");
+                            inputField.setText("");
+                        }
+                    }
+                });
+
+                TextButton closeButton = new TextButton("Close", getSkin());
+                closeButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        remove();
+                    }
+                });
+
+                getContentTable().add(msgScroll).colspan(2).expand().fill().pad(10).row();
+                getContentTable().add(inputField).expandX().fillX().pad(10);
+                getContentTable().add(sendButton).pad(10).row();
+                getContentTable().add(closeButton).colspan(2).pad(10);
+            }
+        };
+        privateChatDialog.setSize(400, 300);
+        privateChatDialog.show(stage);
     }
 
     @Override
@@ -247,7 +374,13 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         stage.getViewport().update(width, height, true);
         float tableWidth = settingsTable.getPrefWidth();
         float tableHeight = settingsTable.getPrefHeight();
-        settingsTable.setPosition(width - tableWidth + 30, height - tableHeight -100);
+        settingsTable.setPosition(width - tableWidth + 30, height - tableHeight - 100);
+
+        chatButton.setPosition(width - chatButton.getWidth() - 20, 20);
+        float chatWidth = 800;
+        float chatHeight = 600;
+        chatWindowTable.setSize(chatWidth, chatHeight);
+        chatWindowTable.setPosition(width - chatWidth - 30, 80);
     }
 
     @Override
