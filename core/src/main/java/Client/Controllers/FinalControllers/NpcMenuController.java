@@ -55,7 +55,7 @@ public class NpcMenuController {
     }
 
     public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getOpenNPCMenu())) {
             showMenu = !showMenu;
         }
 

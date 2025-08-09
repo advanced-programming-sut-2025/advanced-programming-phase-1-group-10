@@ -51,7 +51,7 @@ public class DialogueController {
         batch.draw(dialogue, 20, 50);
 
         // Toggle dialogue on T
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getTalkNPCMenu())) {
             showDialogue = !showDialogue;
             if (showDialogue) {
                 currentDialogue = npc.talk(); // Assume this returns a String

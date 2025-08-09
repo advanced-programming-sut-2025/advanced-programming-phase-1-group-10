@@ -35,7 +35,7 @@ public class InventoryController {
 
     public void update(SpriteBatch batch) {
         // Toggle inventory with "I"
-        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getOpenIventoryMenu())) {
             visible = !visible;
         }
 

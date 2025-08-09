@@ -1,5 +1,6 @@
 package Client.Controllers.FinalControllers;
 
+import Common.KeySetting;
 import Common.Models.App;
 import Common.Models.Quest;
 import Client.Controllers.MessageSystem;
@@ -39,7 +40,7 @@ public class QuestMenuController {
     }
 
     public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getOpenQuestMenu())) {
             showMenu = !showMenu;
         }
 

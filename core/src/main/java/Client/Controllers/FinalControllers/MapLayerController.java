@@ -1,5 +1,6 @@
 package Client.Controllers.FinalControllers;
 
+import Common.Models.App;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +19,7 @@ public class MapLayerController {
 
     public void update(SpriteBatch batch) {
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.M)){
+        if(Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getOpenMapMenu())) {
             isMapLayerShown = !isMapLayerShown;
         }
 

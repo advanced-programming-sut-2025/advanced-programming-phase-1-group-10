@@ -1,14 +1,16 @@
 package Common.Models;
 
 import Client.Controllers.FinalControllers.GameControllerFinal;
+import Common.KeySetting;
 
 import java.util.ArrayList;
 
 public class App {
 
     private static App instance;
-    private ArrayList<User> users = new ArrayList<>();
+    private final ArrayList<User> users;
     private GameControllerFinal gameControllerFinal;
+    private final KeySetting keySetting = new KeySetting();
 
     private App() {
         games = new ArrayList<>();
@@ -88,5 +90,9 @@ public class App {
 
     public void setGameControllerFinal(GameControllerFinal controller) {
         this.gameControllerFinal = controller;
+    }
+
+    public KeySetting getKeySetting() {
+        return keySetting;
     }
 }

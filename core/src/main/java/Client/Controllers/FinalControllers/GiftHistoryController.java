@@ -46,7 +46,7 @@ public class GiftHistoryController {
      */
     public void update(SpriteBatch batch) {
         // Toggle with G
-        if (Gdx.input.isKeyJustPressed(Input.Keys.G)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getGiftHistoryMenu())) {
             visible = !visible;
         }
 

@@ -36,7 +36,7 @@ public class ChatHistoryController {
     }
 
     public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getChatHistoryMenu())) {
             visible = !visible;
         }
 

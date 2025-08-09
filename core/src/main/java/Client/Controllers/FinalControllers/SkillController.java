@@ -20,7 +20,7 @@ public class SkillController {
     }
 
     public void update(SpriteBatch batch) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getOpenSkillMenu())) {
             showSkills = !showSkills;
         }
 

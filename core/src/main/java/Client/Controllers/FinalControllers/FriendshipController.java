@@ -107,10 +107,10 @@ public class FriendshipController {
     }
 
     public void checkFKeyPress() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && !fKeyHandled) {
+        if (Gdx.input.isKeyJustPressed(App.getInstance().getKeySetting().getFriendshipMenu()) && !fKeyHandled) {
             fKeyHandled = true;
             toggleVisibility();
-        } else if (!Gdx.input.isKeyPressed(Input.Keys.F)) {
+        } else if (!Gdx.input.isKeyPressed(App.getInstance().getKeySetting().getFriendshipMenu())) {
             fKeyHandled = false;
         }
     }
