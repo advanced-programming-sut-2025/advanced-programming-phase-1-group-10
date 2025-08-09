@@ -1,9 +1,12 @@
 package Client.Controllers.FinalControllers;
 
 import Client.Controllers.MessageSystem;
+import Client.Network.ClientNetworkManager;
+import Client.Network.Handlers.ClientHandler;
 import Common.Models.App;
 import Common.Models.FriendShip.Gift;
 import Common.Models.PlayerStuff.Player;
+import Common.Network.Messages.MessageTypes.RateGiftMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -158,6 +161,14 @@ public class GiftHistoryController {
                             g.setRate(newRate);
                             propagateRatingToSender(g);
                             MessageSystem.showMessage("You rate a gift from " + senderName, 2f, Color.GREEN);// mirror into sender's sent gift
+                            if(App.getInstance().getCurrentGame().isOnline()){
+                                ClientNetworkManager.getInstance().sendMessage(new RateGiftMessage(
+                                    g.getSender().getName(),
+                                    g.getSeed(),
+                                    g.getRate()
+                                    )
+                                );
+                            }
                         }
                     }
                 }
@@ -186,6 +197,7 @@ public class GiftHistoryController {
                 // Only propagate if sender's rate is still zero (avoid overwriting)
                 if (sent.getRate() <= 0) {
                     sent.setRate(receivedGift.getRate());
+
                 }
                 break;
             }

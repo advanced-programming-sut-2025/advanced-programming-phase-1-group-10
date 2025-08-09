@@ -38,7 +38,7 @@ public class GameMenuControllers {
         }
 
 
-        Game game = new Game(admin,isOnline);
+        Game game = new Game(admin,isOnline,seed);
 
         for (String name : names) {
             game.getPlayers().add(new Player(name, seed));

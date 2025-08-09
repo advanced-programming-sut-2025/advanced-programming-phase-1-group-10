@@ -20,24 +20,27 @@ public class Game {
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<NPC> npcs = new ArrayList<>();
     private final ArrayList<Store> stores = new ArrayList<>();
-    private HashMap<String , Animal> animals = new HashMap<>();
+    private final HashMap<String , Animal> animals = new HashMap<>();
 
-    private boolean isOnline;
+    private final boolean isOnline;
 
     private final Map gameMap;
+
+    private final long seed;
 
     private Player currentPlayer;
 
     private Weather weather;
     private Weather nextDayWeather;
 
-    public Game(String gameOwner, boolean isOnline) {
+    public Game(String gameOwner, boolean isOnline, long seed) {
         this.isOnline = isOnline;
         this.gameOwner = gameOwner;
         this.gameTime = new DateTime(Season.SPRING,2000,1,1,9);
         this.weather = Weather.SUNNY;
         this.nextDayWeather = Weather.SUNNY;
         this.gameMap = new Map();
+        this.seed = seed;
     }
 
     public Weather getWeather() {
@@ -103,5 +106,9 @@ public class Game {
 
     public boolean isOnline() {
         return isOnline;
+    }
+
+    public long getSeed() {
+        return seed;
     }
 }

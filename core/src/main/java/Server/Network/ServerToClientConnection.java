@@ -52,6 +52,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case ADD_XP -> {handleAddXp((AddXpMessage) message); yield true; }
             case SEND_TEXT_FRIEND -> {handleSendTextFromFriend((MessageSendMessage) message); yield true; }
             case SEND_GIFT -> {handleSendGift((SendGiftMessage) message); yield true; }
+            case RATE_GIFT -> {hanldeRateGift((RateGiftMessage) message); yield true; }
             default -> false;
         };
     }
@@ -207,6 +208,15 @@ public class ServerToClientConnection extends ConnectionThread {
         if(!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(message.getRecieverName())) {
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void hanldeRateGift(RateGiftMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getTargetPlayerName())){
                 connection.sendMessage(message);
             }
         }

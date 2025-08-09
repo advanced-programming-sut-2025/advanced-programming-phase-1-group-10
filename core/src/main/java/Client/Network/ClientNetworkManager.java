@@ -236,7 +236,10 @@ public class ClientNetworkManager {
                     SendGiftMessage msg = (SendGiftMessage) message;
                     clientHandler.hanldeSendGift(msg);
                 }
-
+                case RATE_GIFT -> {
+                    RateGiftMessage msg = (RateGiftMessage) message;
+                    clientHandler.handldeRateGift(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

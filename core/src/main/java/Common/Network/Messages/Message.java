@@ -32,6 +32,7 @@ public class Message {
         ADD_XP,
         SEND_GIFT,
         SEND_TEXT_FRIEND,
+        RATE_GIFT,
         ;
     }
 }

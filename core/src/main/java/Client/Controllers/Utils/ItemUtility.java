@@ -61,6 +61,9 @@ public class ItemUtility {
 
     public static Item createItem(String name, int number) {
         Function<Integer, Item> creator = ITEM_CREATORS.get(name.toLowerCase(Locale.ROOT));
+        if(creator instanceof Mineral){
+            ((Mineral) creator).setAxed(true);
+        }
         if (creator != null) {
             return creator.apply(number);
         }

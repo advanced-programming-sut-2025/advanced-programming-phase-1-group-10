@@ -82,4 +82,16 @@ public class ClientHandler {
         gift.setSeed(message.getGiftSeed());
         reciever.getRecievedGifts().add(gift);
     }
+
+    public void handldeRateGift(RateGiftMessage message) {
+        Player reciever = App.getInstance().getCurrentGame().getCurrentPlayer();
+        for(Gift gift : reciever.getSendedGifts()) {
+            System.out.println(gift.getSeed());
+            if(gift.getSeed() ==  message.getGiftSeed()){
+                gift.setRate(message.getRate());
+            }
+        }
+        System.out.println("FUCK");
+    }
+
 }
