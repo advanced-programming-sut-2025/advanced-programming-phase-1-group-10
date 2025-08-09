@@ -13,10 +13,10 @@ import Common.Models.Game;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
-import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
 import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
+import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -183,6 +183,36 @@ public class ClientHandler {
             fs1.setXp(-fs1.getXp());
             fs2.setXp(-fs2.getXp());
             MessageSystem.showInfo("You saved your life.",2f);
+        }
+    }
+
+    public void handleTradeRequest(TradeRequestMessage message) {
+        AtomicBoolean isAccepted = new AtomicBoolean(false);
+        DialogSystem.show("Player: " + message.getSender() + " wants to start trade, accept?",
+            () -> {
+                isAccepted.set(true);
+                App.getInstance().getGameControllerFinal().getFriendshipController().setShowMenu(false);
+                App.getInstance().getGameControllerFinal().getTradeController().setShown(true);
+            },
+
+            () -> {
+                isAccepted.set(false);
+            }
+            );
+        ClientNetworkManager.getInstance().sendMessage(new TradeRequestResponseMessage(
+            message.getSender(),
+            message.getReceiver(),
+            isAccepted.get()
+        ));
+    }
+
+    public void handleTradeRequestResponse(TradeRequestResponseMessage message) {
+        if(message.isAccepted()){
+            MessageSystem.showInfo("Trade request accepted your trade!", 2f);
+            App.getInstance().getGameControllerFinal().getFriendshipController().setShowMenu(false);
+            App.getInstance().getGameControllerFinal().getTradeController().setShown(true);
+        } else {
+            MessageSystem.showMessage("Trade request did not accepted!",2f, Color.RED);
         }
     }
 }

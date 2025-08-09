@@ -256,6 +256,14 @@ public class ClientNetworkManager {
                     ResponseMarriage msg = (ResponseMarriage) message;
                     clientHandler.handleResponseMarriage(msg);
                 }
+                case TRADE_REQUEST -> {
+                    TradeRequestMessage msg = (TradeRequestMessage) message;
+                    clientHandler.handleTradeRequest(msg);
+                }
+                case TRADE_REQUEST_RESPONSE -> {
+                    TradeRequestResponseMessage msg = (TradeRequestResponseMessage) message;
+                    clientHandler.handleTradeRequestResponse(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

@@ -14,10 +14,10 @@ import Client.Main;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
 import Common.Network.Messages.MessageTypes.MessageSendMessage;
 import Common.Network.Messages.MessageTypes.SendGiftMessage;
+import Common.Network.Messages.MessageTypes.TradeRequestMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -47,6 +47,7 @@ public class FriendshipController {
     private final Sprite fullHeart = new Sprite(new Texture("friendship/fullHeart.png"));
     private final Sprite emptyHeart = new Sprite(new Texture("friendship/emptyHeart.png"));
     private final Sprite giftIcon = new Sprite(new Texture("friendship/giftIcon.png"));
+    private final Sprite tradeIcon = new Sprite(new Texture("friendship/tradeIcon.png"));
 
     private final ArrayList<Item> giftItems = new ArrayList<>();
     private final SlotAsset slotAsset = new SlotAsset();
@@ -181,6 +182,7 @@ public class FriendshipController {
         int rowHeight = boxHeight / 4;
         int columnWidth = boxWidth / columns;
 
+        // Draw icons and names
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
             Player friend = friendship.getPlayer();
@@ -196,6 +198,7 @@ public class FriendshipController {
             font.draw(batch, friend.getName(), colX + (columnWidth / 2f) - 10, iconY - 10);
         }
 
+        // Draw hearts
         for (int i = 0; i < friendships.size(); i++) {
             Friendship friendship = friendships.get(i);
             int level = friendship.getLevel();
@@ -251,17 +254,22 @@ public class FriendshipController {
                 batch.draw(itemInSlot.show(), slotX + 8, slotY + 8, 64, 64);
             }
 
+            // --- Gift icon ---
             int giftY = centerY + boxHeight - 3 * rowHeight + 40;
             int giftSize = 48;
-            float giftX = colX + (columnWidth - giftSize) / 2f;
+            float giftX = colX + (columnWidth - (giftSize * 2 + 10)) / 2f; // center both icons together
 
             giftIcon.setSize(giftSize, giftSize);
             giftIcon.setPosition(giftX, giftY);
             giftIcon.draw(batch);
 
-            mouseX = Gdx.input.getX();
-            mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+            // --- Trade icon ---
+            float tradeX = giftX + giftSize + 10; // 10px gap from gift icon
+            tradeIcon.setSize(giftSize, giftSize);
+            tradeIcon.setPosition(tradeX, giftY);
+            tradeIcon.draw(batch);
 
+            // Gift click handling
             boolean giftHovered = mouseX >= giftX && mouseX <= giftX + giftSize &&
                 mouseY >= giftY && mouseY <= giftY + giftSize;
 
@@ -278,8 +286,20 @@ public class FriendshipController {
                     giftClickHandled = false;
                 }
             }
+
+            // Trade click handling
+            boolean tradeHovered = mouseX >= tradeX && mouseX <= tradeX + giftSize &&
+                mouseY >= giftY && mouseY <= giftY + giftSize;
+
+            if (tradeHovered) {
+                if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                    Player receiver = friendships.get(i).getPlayer();
+                    onTradeButtonClicked(receiver.getName());
+                }
+            }
         }
     }
+
 
 
     private void sendItem(int slotIndex, Player receiver) {
@@ -428,6 +448,15 @@ public class FriendshipController {
         }
     }
 
+    private void onTradeButtonClicked(String playerName) {
+        if(!App.getInstance().getCurrentGame().isOnline()) return;
+        this.showMenu = false;
+        ClientNetworkManager.getInstance().sendMessage(new TradeRequestMessage(
+            App.getInstance().getCurrentGame().getCurrentPlayer().getName(),
+            playerName
+        ));
+        MessageSystem.showMessage("Trade request sent to " + playerName, 2f, Color.GREEN);
+    }
 
     public void dispose() {
         font.dispose();
@@ -438,4 +467,11 @@ public class FriendshipController {
         return stage;
     }
 
+    public boolean isShowMenu() {
+        return showMenu;
+    }
+
+    public void setShowMenu(boolean showMenu) {
+        this.showMenu = showMenu;
+    }
 }

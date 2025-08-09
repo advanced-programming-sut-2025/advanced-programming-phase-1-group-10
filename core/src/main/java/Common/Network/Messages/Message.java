@@ -37,6 +37,12 @@ public class Message {
         PUBLIC_CHAT,
         ASK_MARARIAGE,
         RESPONSE_MARARIAGE,
+        TRADE_REQUEST,
+        TRADE_REQUEST_RESPONSE,
+        CHANGE_ITEMS_SLOT,
+        CANCEL_TRADING,
+        ACCEPT_TRADING,
+        ACCEPT_TRADING_RESPONSE,
         ;
     }
 }

@@ -13,7 +13,6 @@ import Common.Network.Messages.MessageTypes.GiveBouquetMessage;
 import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -209,29 +208,20 @@ public class PlayersNearbyActionController {
             MessageSystem.showMessage("No ring found!", 2f, Color.RED);
             return;
         }
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new AskMarriageMessage(
+                currentPlayer.getName(),
+                other.getName()
+            ));
+        }
 
-        ClientNetworkManager.getInstance().sendMessage(new AskMarriageMessage(
-            currentPlayer.getName(),
-            other.getName()
-        ));
-
-        /*
         currentPlayer.setCouple(other);
         other.setCouple(currentPlayer);
         currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
         other.getInventory().getBackPack().addItem(ring);
         fs1.setMarried(true);
         fs2.setMarried(true);
-        MessageSystem.showMessage("Happy your Marriage!", 2f, Color.GREEN);
-        */
-
-        /*
-         *     fs1.setXp(-fs1.getXp());
-         *     fs2.setXp(-fs2.getXp());
-         *     return new Result(true, "Inshallah next time!");
-         *
-         * */
-
+        MessageSystem.showInfo("Happy your Marriage!", 2f);
     }
 
     public void addXpToPlayers(Player player, int xp) {

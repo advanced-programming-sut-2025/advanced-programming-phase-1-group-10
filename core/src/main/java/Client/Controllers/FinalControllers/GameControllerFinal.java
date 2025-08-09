@@ -46,6 +46,7 @@ public class GameControllerFinal {
     private TreeController treeController;
     private CropController cropController;
     private ChatController chatController;
+    private TradeController tradeController;
 
 
     public void setView(GameLauncherView gameLauncherView) {
@@ -78,8 +79,7 @@ public class GameControllerFinal {
         this.treeController = new TreeController();
         this.cropController = new CropController();
         this.chatController = new ChatController();
-
-
+        this.tradeController = new TradeController();
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {
@@ -137,6 +137,7 @@ public class GameControllerFinal {
         giftHistoryController.update(batch);
         playersNearbyActionController.update(batch);
         mapLayerController.update(batch);
+        tradeController.update(batch);
         MessageSystem.update(batch, viewport);
         if (fishingMiniGameActive) {
             fishingMiniGameController.update(batch, delta);
@@ -243,5 +244,9 @@ public class GameControllerFinal {
 
     public ChatController getChatController() {
         return chatController;
+    }
+
+    public TradeController getTradeController() {
+        return tradeController;
     }
 }

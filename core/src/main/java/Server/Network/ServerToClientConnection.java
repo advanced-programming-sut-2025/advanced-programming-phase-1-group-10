@@ -57,6 +57,8 @@ public class ServerToClientConnection extends ConnectionThread {
             case PUBLIC_CHAT -> {handlePublicChat((PublicChatMessage) message); yield true; }
             case ASK_MARARIAGE -> {handleAskMarriage((AskMarriageMessage) message); yield true; }
             case RESPONSE_MARARIAGE -> {handleResponseMarriage((ResponseMarriage)message ); yield true; }
+            case TRADE_REQUEST -> {handleTradeRequest((TradeRequestMessage) message); yield true; }
+            case TRADE_REQUEST_RESPONSE -> {handleTradeRequestResponse((TradeRequestResponseMessage) message); yield true; }
             default -> false;
         };
     }
@@ -248,6 +250,24 @@ public class ServerToClientConnection extends ConnectionThread {
         if(!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleTradeRequest(TradeRequestMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleTradeRequestResponse(TradeRequestResponseMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getSender())){
                 connection.sendMessage(message);
             }
         }

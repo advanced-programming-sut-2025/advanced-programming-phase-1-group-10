@@ -82,6 +82,10 @@ public class JsonUtils {
                     return gson.fromJson(json, AskMarriageMessage.class);
                 case RESPONSE_MARARIAGE:
                     return gson.fromJson(json, ResponseMarriage.class);
+                case TRADE_REQUEST:
+                    return gson.fromJson(json, TradeRequestMessage.class);
+                case TRADE_REQUEST_RESPONSE:
+                    return gson.fromJson(json, TradeRequestResponseMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }
