@@ -3,6 +3,7 @@ package Client.Views;
 import Client.Assets.TextureCache;
 import Client.Controllers.ChatManager;
 import Client.Controllers.DialogSystem;
+import Client.Controllers.EmotionMenuSystem;
 import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Game;
@@ -71,6 +72,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     private final TextArea chatTextArea;
     private Table privatePlayersTable;
 
+    // emotionmenu variables
+    private final TextButton emotionButton;
+
 
 
     public GameLauncherView(Skin skin) {
@@ -105,6 +109,21 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         subButton1.setVisible(false);
         subButton2.setVisible(false);
         DialogSystem.initialize();
+
+        EmotionMenuSystem.initialize();
+        emotionButton = new TextButton("Reactions", skin);
+        stage.addActor(emotionButton);
+
+        emotionButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                EmotionMenuSystem.show(item -> {
+                    MessageSystem.showInfo("You selected: " + item.getText(), 3.0f);
+                    // TODO add network
+                });
+            }
+        });
+
 
         settingsButton.addListener(new ClickListener() {
             @Override
@@ -324,6 +343,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         batch.begin();
         DialogSystem.update(batch, viewport);
         batch.end();
+        batch.begin();
+        EmotionMenuSystem.update(batch, viewport);
+        batch.end();
     }
 
     @Override
@@ -340,6 +362,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         float chatHeight = 300;
         chatWindowTable.setSize(chatWidth, chatHeight);
         chatWindowTable.setPosition(width - chatWidth - 30, 80);
+
+        emotionButton.setPosition(width - chatWidth - 60, 20);
+
     }
 
     @Override
@@ -360,6 +385,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             controller.getFishController().dispose();
         }
         DialogSystem.dispose();
+        EmotionMenuSystem.dispose();
         controller.getFishingMiniGameController().dispose();
         TextureCache.disposeAll();
         stage.dispose();
@@ -437,6 +463,11 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        if (EmotionMenuSystem.isVisible()) {
+            return true;
+        }
+
         if (stage.touchDown(screenX, screenY, pointer, button)) {
             return true;
         }
