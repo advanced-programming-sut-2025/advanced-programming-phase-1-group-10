@@ -2,6 +2,7 @@ package Client.Views;
 
 import Client.Assets.TextureCache;
 import Client.Controllers.ChatManager;
+import Client.Controllers.DialogSystem;
 import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Game;
@@ -103,6 +104,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         settingsTable.add(subButton2).pad(5);
         subButton1.setVisible(false);
         subButton2.setVisible(false);
+        DialogSystem.initialize();
 
         settingsButton.addListener(new ClickListener() {
             @Override
@@ -319,6 +321,9 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
 
         controller.getCheatBoxController().render();
         elapsedTime += delta;
+        batch.begin();
+        DialogSystem.update(batch, viewport);
+        batch.end();
     }
 
     @Override
@@ -354,6 +359,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         if (controller.getFishController() != null) {
             controller.getFishController().dispose();
         }
+        DialogSystem.dispose();
         controller.getFishingMiniGameController().dispose();
         TextureCache.disposeAll();
         stage.dispose();
