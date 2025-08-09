@@ -232,6 +232,10 @@ public class ClientNetworkManager {
                     MessageSendMessage msg = (MessageSendMessage) message;
                     clientHandler.hanldeMessageSendToFrieend(msg);
                 }
+                case SEND_GIFT -> {
+                    SendGiftMessage msg = (SendGiftMessage) message;
+                    clientHandler.hanldeSendGift(msg);
+                }
 
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());

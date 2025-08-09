@@ -1,7 +1,6 @@
 package Common.Models;
 
 import Client.Controllers.FinalControllers.GameControllerFinal;
-import Common.KeySetting;
 
 import java.util.ArrayList;
 

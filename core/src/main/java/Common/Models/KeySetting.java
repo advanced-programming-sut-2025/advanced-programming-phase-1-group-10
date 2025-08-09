@@ -1,4 +1,4 @@
-package Common;
+package Common.Models;
 
 import com.badlogic.gdx.Input;
 

@@ -51,6 +51,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case HOE_USED, PICKAXE_USED,WATERING_CAN_USED ->  {handleToolUsage(message); yield true; }
             case ADD_XP -> {handleAddXp((AddXpMessage) message); yield true; }
             case SEND_TEXT_FRIEND -> {handleSendTextFromFriend((MessageSendMessage) message); yield true; }
+            case SEND_GIFT -> {handleSendGift((SendGiftMessage) message); yield true; }
             default -> false;
         };
     }
@@ -200,7 +201,15 @@ public class ServerToClientConnection extends ConnectionThread {
                 connection.sendMessage(message);
             }
         }
+    }
 
+    public void handleSendGift(SendGiftMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getRecieverName())) {
+                connection.sendMessage(message);
+            }
+        }
     }
 
     /* ---------------------- Utility ---------------------- */

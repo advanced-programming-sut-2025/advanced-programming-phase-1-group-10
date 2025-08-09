@@ -1,10 +1,8 @@
 package Common.Network.Messages;
 
-import java.util.Map;
 
 public class Message {
-    private MessageType type;
-    private Map<String, Object> data;
+    private final MessageType type;
 
     public Message(MessageType type) {
         this.type = type;
@@ -12,14 +10,6 @@ public class Message {
 
     public MessageType getType() {
         return type;
-    }
-
-    public void setData(Map<String, Object> data) {
-        this.data = data;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
     }
 
     public enum MessageType {
@@ -40,6 +30,7 @@ public class Message {
         PICKAXE_USED,
         WATERING_CAN_USED,
         ADD_XP,
+        SEND_GIFT,
         SEND_TEXT_FRIEND,
         ;
     }

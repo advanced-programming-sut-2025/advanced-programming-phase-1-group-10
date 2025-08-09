@@ -1,12 +1,13 @@
 package Client.Network.Handlers;
 
+import Client.Controllers.Utils.ItemUtility;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
+import Common.Models.FriendShip.Gift;
 import Common.Models.FriendShip.MessageFriend;
 import Common.Models.Game;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
-import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
 
 import java.util.ArrayList;
@@ -74,4 +75,11 @@ public class ClientHandler {
         ));
     }
 
+    public void hanldeSendGift(SendGiftMessage message){
+        Player reciever = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player sender = App.getInstance().getCurrentGame().getPlayerByName(message.getSenderName());
+        Gift gift = new Gift(sender,reciever, ItemUtility.createItem(message.getItemName(), message.getItemNumber()),false);
+        gift.setSeed(message.getGiftSeed());
+        reciever.getRecievedGifts().add(gift);
+    }
 }

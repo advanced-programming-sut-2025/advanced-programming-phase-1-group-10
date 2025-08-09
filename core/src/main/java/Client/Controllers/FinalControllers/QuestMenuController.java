@@ -1,6 +1,5 @@
 package Client.Controllers.FinalControllers;
 
-import Common.KeySetting;
 import Common.Models.App;
 import Common.Models.Quest;
 import Client.Controllers.MessageSystem;

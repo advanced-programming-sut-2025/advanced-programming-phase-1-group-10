@@ -70,6 +70,8 @@ public class JsonUtils {
                     return gson.fromJson(json, AddXpMessage.class);
                 case SEND_TEXT_FRIEND:
                     return gson.fromJson(json, MessageSendMessage.class);
+                case SEND_GIFT:
+                    return gson.fromJson(json, SendGiftMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

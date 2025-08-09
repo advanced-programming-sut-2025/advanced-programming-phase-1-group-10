@@ -13,9 +13,11 @@ import Common.Models.PlayerStuff.Player;
 import Client.Main;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
 import Common.Network.Messages.MessageTypes.MessageSendMessage;
+import Common.Network.Messages.MessageTypes.SendGiftMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -309,6 +311,15 @@ public class FriendshipController {
 
         // Deliver: assume receiver has a list to receive gifts; adjust accessor if different
         try {
+            if(App.getInstance().getCurrentGame().isOnline()){
+                ClientNetworkManager.getInstance().sendMessage(new SendGiftMessage(
+                    currentPlayer.getName(),
+                    receiver.getName(),
+                    item.getName(),
+                    item.getNumber(),
+                    gift.getSeed()
+                ));
+            }
             receiver.getRecievedGifts().add(gift);
             currentPlayer.getSendedGifts().add(gift);
         } catch (Exception e) {
@@ -325,8 +336,6 @@ public class FriendshipController {
         if (item.getNumber() <= 0) {
             giftItems.set(slotIndex, null);
         }
-
-
 
         MessageSystem.showMessage("Gift sent to " + receiver.getName() + "!", 2f, Color.GREEN);
     }

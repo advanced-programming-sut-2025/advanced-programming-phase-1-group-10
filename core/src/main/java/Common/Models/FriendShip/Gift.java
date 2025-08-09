@@ -10,12 +10,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Gift {
 
-    private final Player sender;
-    private final Player receiver;
+    private final  Player sender;
+    private final  Player receiver;
     private double rate;
     private Item item;
     private boolean isNotified;
-    private final int seed;
+    private  int seed;
 
     public Gift(Player sender,Player receiver, Item item, boolean isNotified) {
         this.sender = sender;
@@ -60,5 +60,9 @@ public class Gift {
 
     public int getSeed() {
         return seed;
+    }
+
+    public void setSeed(int seed) {
+        this.seed = seed;
     }
 }
