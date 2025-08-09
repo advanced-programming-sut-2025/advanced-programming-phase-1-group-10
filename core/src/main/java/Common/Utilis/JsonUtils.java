@@ -86,6 +86,8 @@ public class JsonUtils {
                     return gson.fromJson(json, TradeRequestMessage.class);
                 case TRADE_REQUEST_RESPONSE:
                     return gson.fromJson(json, TradeRequestResponseMessage.class);
+                case EMOTION:
+                    return gson.fromJson(json, EmotionMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

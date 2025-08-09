@@ -264,6 +264,10 @@ public class ClientNetworkManager {
                     TradeRequestResponseMessage msg = (TradeRequestResponseMessage) message;
                     clientHandler.handleTradeRequestResponse(msg);
                 }
+                case EMOTION -> {
+                    EmotionMessage emotionMsg = (EmotionMessage) message;
+                    clientHandler.handleEmotion(emotionMsg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

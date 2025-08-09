@@ -2,6 +2,7 @@ package Client.Network.Handlers;
 
 import Client.Controllers.ChatManager;
 import Client.Controllers.DialogSystem;
+import Client.Controllers.EmotionDisplaySystem;
 import Client.Controllers.MessageSystem;
 import Client.Controllers.Utils.ItemUtility;
 import Client.Network.ClientNetworkManager;
@@ -213,6 +214,19 @@ public class ClientHandler {
             App.getInstance().getGameControllerFinal().getTradeController().setShown(true);
         } else {
             MessageSystem.showMessage("Trade request did not accepted!",2f, Color.RED);
+        }
+    }
+
+    public void handleEmotion(EmotionMessage message) {
+        Game currentGame = App.getInstance().getCurrentGame();
+
+        for(Player player : currentGame.getPlayers()){
+            EmotionDisplaySystem.addEmotion(
+                player.getName(),
+                message.getEmotionText(),
+                message.isEmoji(),
+                message.getEmojiIndex()
+            );
         }
     }
 }
