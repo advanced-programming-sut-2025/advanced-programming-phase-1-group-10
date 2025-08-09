@@ -10,8 +10,10 @@ import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
 import Common.Network.Messages.MessageTypes.GiveBouquetMessage;
+import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -208,7 +210,12 @@ public class PlayersNearbyActionController {
             return;
         }
 
-        //TODO send a message for other player to ask for marrriage.
+        ClientNetworkManager.getInstance().sendMessage(new AskMarriageMessage(
+            currentPlayer.getName(),
+            other.getName()
+        ));
+
+        /*
         currentPlayer.setCouple(other);
         other.setCouple(currentPlayer);
         currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
@@ -216,7 +223,7 @@ public class PlayersNearbyActionController {
         fs1.setMarried(true);
         fs2.setMarried(true);
         MessageSystem.showMessage("Happy your Marriage!", 2f, Color.GREEN);
-
+        */
 
         /*
          *     fs1.setXp(-fs1.getXp());

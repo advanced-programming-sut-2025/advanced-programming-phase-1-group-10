@@ -1,8 +1,10 @@
 package Client.Network.Handlers;
 
 import Client.Controllers.ChatManager;
+import Client.Controllers.DialogSystem;
 import Client.Controllers.MessageSystem;
 import Client.Controllers.Utils.ItemUtility;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
 import Common.Models.FriendShip.Gift;
@@ -11,9 +13,13 @@ import Common.Models.Game;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
+import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
+import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientHandler {
     public void movePlayerHandle(MovePlayerMessage movePlayerMsg) {
@@ -117,5 +123,66 @@ public class ClientHandler {
 
     public void handlePublicChat(PublicChatMessage message) {
         ChatManager.getInstance().handlePublicChatMessage(message);
+    }
+
+    public void handleAskMarriage(AskMarriageMessage message) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player other = App.getInstance().getCurrentGame().getPlayerByName(message.getSender());
+        Friendship fs1 = getFriendship(currentPlayer, other);
+        Friendship fs2 = getFriendship(other, currentPlayer);
+        Item ring = ItemUtility.createItem("Ring",1);
+
+        AtomicBoolean isAccepted = new AtomicBoolean(false);
+
+        DialogSystem.show("Player: " + message.getSender() + " wants to marry. Do you agree?",
+            () ->{
+                currentPlayer.setCouple(other);
+                other.setCouple(currentPlayer);
+                currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
+                other.getInventory().getBackPack().addItem(ring);
+                fs1.setMarried(true);
+                fs2.setMarried(true);
+                MessageSystem.showInfo("Happy your Marriage!", 2f);
+                isAccepted.set(true);
+            },
+            () ->{
+                fs1.setXp(-fs1.getXp());
+                fs2.setXp(-fs2.getXp());
+                MessageSystem.showInfo("You saved your life.",2f);
+                isAccepted.set(false);
+            }
+            );
+
+        ClientNetworkManager.getInstance().sendMessage(new ResponseMarriage(
+            message.getReceiver(),
+            message.getSender(),
+            isAccepted.get())
+        );
+    }
+
+    public Friendship getFriendship(Player player, Player goal) {
+        return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
+    }
+
+    public void handleResponseMarriage(ResponseMarriage message) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+        Player other = App.getInstance().getCurrentGame().getPlayerByName(message.getSender());
+        Friendship fs1 = getFriendship(currentPlayer, other);
+        Friendship fs2 = getFriendship(other, currentPlayer);
+        Item ring = ItemUtility.createItem("Ring",1);
+
+        if(message.isAccepted()){
+            currentPlayer.setCouple(other);
+            other.setCouple(currentPlayer);
+            currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
+            other.getInventory().getBackPack().addItem(ring);
+            fs1.setMarried(true);
+            fs2.setMarried(true);
+            MessageSystem.showInfo("Happy your Marriage!", 2f);
+        } else {
+            fs1.setXp(-fs1.getXp());
+            fs2.setXp(-fs2.getXp());
+            MessageSystem.showInfo("You saved your life.",2f);
+        }
     }
 }

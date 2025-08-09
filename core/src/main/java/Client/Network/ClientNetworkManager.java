@@ -248,6 +248,14 @@ public class ClientNetworkManager {
                     GiveBouquetMessage msg = (GiveBouquetMessage) message;
                     clientHandler.handleGiveBouquet(msg);
                 }
+                case ASK_MARARIAGE -> {
+                    AskMarriageMessage msg = (AskMarriageMessage) message;
+                    clientHandler.handleAskMarriage(msg);
+                }
+                case RESPONSE_MARARIAGE -> {
+                    ResponseMarriage msg = (ResponseMarriage) message;
+                    clientHandler.handleResponseMarriage(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;
