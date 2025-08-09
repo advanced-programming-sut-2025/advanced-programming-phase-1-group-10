@@ -9,7 +9,6 @@ import Common.Models.Map;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
 import Common.Models.Tile;
-import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.MovePlayerMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

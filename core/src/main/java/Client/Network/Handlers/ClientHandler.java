@@ -2,6 +2,7 @@ package Client.Network.Handlers;
 
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
+import Common.Models.FriendShip.MessageFriend;
 import Common.Models.Game;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
@@ -60,6 +61,17 @@ public class ClientHandler {
                 friendship.setXp(message.getXp() + friendship.getXp());
             }
         }
+    }
+
+    public void hanldeMessageSendToFrieend(MessageSendMessage message) {
+        Game game = App.getInstance().getCurrentGame();
+        Player reciever = App.getInstance().getCurrentGame().getCurrentPlayer();
+        reciever.getRecievedMessages().add(new MessageFriend(
+            game.getPlayerByName(message.getSenderPlayerName()),
+            game.getPlayerByName(message.getReceiverPlayerName()),
+            message.getText(),
+            false
+        ));
     }
 
 }

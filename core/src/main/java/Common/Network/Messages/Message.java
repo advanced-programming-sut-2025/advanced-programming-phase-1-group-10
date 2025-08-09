@@ -40,6 +40,7 @@ public class Message {
         PICKAXE_USED,
         WATERING_CAN_USED,
         ADD_XP,
+        SEND_TEXT_FRIEND,
         ;
     }
 }

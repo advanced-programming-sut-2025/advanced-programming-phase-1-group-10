@@ -228,6 +228,11 @@ public class ClientNetworkManager {
                     AddXpMessage addXpMsg = (AddXpMessage) message;
                     clientHandler.handleAddXp(addXpMsg);
                 }
+                case SEND_TEXT_FRIEND -> {
+                    MessageSendMessage msg = (MessageSendMessage) message;
+                    clientHandler.hanldeMessageSendToFrieend(msg);
+                }
+
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

@@ -68,6 +68,8 @@ public class JsonUtils {
                     return gson.fromJson(json, WateringCanUsedMessage.class);
                 case ADD_XP:
                     return gson.fromJson(json, AddXpMessage.class);
+                case SEND_TEXT_FRIEND:
+                    return gson.fromJson(json, MessageSendMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

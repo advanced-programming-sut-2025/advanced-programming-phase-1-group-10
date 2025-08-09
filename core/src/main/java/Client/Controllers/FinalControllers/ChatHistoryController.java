@@ -1,7 +1,7 @@
 package Client.Controllers.FinalControllers;
 
 import Common.Models.App;
-import Common.Models.FriendShip.Message;
+import Common.Models.FriendShip.MessageFriend;
 import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -57,7 +57,7 @@ public class ChatHistoryController {
 
         batch.draw(chatBoxMenu, x, y, boxWidth, boxHeight);
 
-        List<Message> inbox = currentPlayer.getRecievedMessages();
+        List<MessageFriend> inbox = currentPlayer.getRecievedMessages();
         if (inbox == null) return;
 
         float textX = x + PADDING_X;
@@ -66,7 +66,7 @@ public class ChatHistoryController {
 
         int lineCount = 0;
         for (int i = Math.max(0, inbox.size() - maxLines); i < inbox.size(); i++) {
-            Message msg = inbox.get(i);
+            MessageFriend msg = inbox.get(i);
             String senderName = (msg.getSender() != null) ? msg.getSender().getName() : "Unknown";
             String line = senderName + ": " + msg.getMessage();
 

@@ -19,8 +19,8 @@ public class Friendship {
     private final Player player;
     private int xp ;
 
-    private final ArrayList<Message> messages = new ArrayList<>();
-    private final ArrayList<Message> messageHistory = new ArrayList<>();
+    private final ArrayList<MessageFriend> messageFriends = new ArrayList<>();
+    private final ArrayList<MessageFriend> messageFriendHistory = new ArrayList<>();
     private final ArrayList<Gift> giftHistory = new ArrayList<>();
     private final ArrayList<TradeRequest> tradeRequestHistory = new ArrayList<>();
 
@@ -56,12 +56,12 @@ public class Friendship {
     }
 
 
-    public ArrayList<Message> getMessages() {
-        return messages;
+    public ArrayList<MessageFriend> getMessages() {
+        return messageFriends;
     }
 
-    public ArrayList<Message> getMessageHistory() {
-        return messageHistory;
+    public ArrayList<MessageFriend> getMessageHistory() {
+        return messageFriendHistory;
     }
 
     public ArrayList<Gift> getGiftHistory() {

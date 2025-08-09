@@ -2,7 +2,7 @@ package Common.Models.FriendShip;
 
 import Common.Models.PlayerStuff.Player;
 
-public class Message {
+public class MessageFriend {
 
     private Player sender;
     private Player receiver;
@@ -10,7 +10,7 @@ public class Message {
     private String message;
     private boolean isNotified;
 
-    public Message(Player sender, Player receiver, String message, boolean isNotified) {
+    public MessageFriend(Player sender, Player receiver, String message, boolean isNotified) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;

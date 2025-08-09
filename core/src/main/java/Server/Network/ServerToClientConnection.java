@@ -49,7 +49,8 @@ public class ServerToClientConnection extends ConnectionThread {
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
             case MOVE_PLAYER -> {handleMovePlayer((MovePlayerMessage) message); yield true; }
             case HOE_USED, PICKAXE_USED,WATERING_CAN_USED ->  {handleToolUsage(message); yield true; }
-            case ADD_XP -> {handleAddXp(message); yield true; }
+            case ADD_XP -> {handleAddXp((AddXpMessage) message); yield true; }
+            case SEND_TEXT_FRIEND -> {handleSendTextFromFriend((MessageSendMessage) message); yield true; }
             default -> false;
         };
     }
@@ -182,14 +183,24 @@ public class ServerToClientConnection extends ConnectionThread {
         }
     }
 
-    public void handleAddXp(Message message){
+    public void handleAddXp(AddXpMessage message){
         if(!isInLobby()) return;
-        String playerName = ((AddXpMessage) message).getGoalPlayer();
+        String playerName = message.getGoalPlayer();
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(playerName)){
                 connection.sendMessage(message);
             }
         }
+    }
+
+    public void handleSendTextFromFriend(MessageSendMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiverPlayerName())){
+                connection.sendMessage(message);
+            }
+        }
+
     }
 
     /* ---------------------- Utility ---------------------- */

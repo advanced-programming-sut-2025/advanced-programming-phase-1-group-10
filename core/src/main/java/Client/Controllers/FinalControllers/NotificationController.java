@@ -3,7 +3,7 @@ package Client.Controllers.FinalControllers;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.FriendShip.Gift;
-import Common.Models.FriendShip.Message;
+import Common.Models.FriendShip.MessageFriend;
 import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.graphics.Color;
 
@@ -16,7 +16,7 @@ public class NotificationController {
     }
 
     private void notifyUnseenMessages(Player player) {
-        for (Message msg : player.getRecievedMessages()) {
+        for (MessageFriend msg : player.getRecievedMessages()) {
             if (!msg.isNotified()) {
                 msg.setNotified(true);
                 MessageSystem.showMessage(

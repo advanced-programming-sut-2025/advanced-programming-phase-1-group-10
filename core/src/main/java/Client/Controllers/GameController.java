@@ -15,7 +15,7 @@ import Common.Models.Crafting.CraftingType;
 import Common.Models.DateTime.DateTime;
 import Common.Models.FriendShip.Friendship;
 import Common.Models.FriendShip.Gift;
-import Common.Models.FriendShip.Message;
+import Common.Models.FriendShip.MessageFriend;
 import Common.Models.NPC.NPC;
 import Common.Models.DateTime.Season;
 import Common.Models.Place.Store.CarpenterShop;
@@ -1321,11 +1321,11 @@ public class GameController {
         if(player.getCouple() != null && player.getCouple().getName().equals(App.getInstance().getCurrentGame().getCurrentPlayer().getName())){
             addXpToPlayers(player,30);
         }
-        Message messageObj = new Message(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message,true);
+        MessageFriend messageFriendObj = new MessageFriend(App.getInstance().getCurrentGame().getCurrentPlayer(), player, message,true);
 
 
-        getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer()).getMessages().add(messageObj);
-        getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessageHistory().add(messageObj);
+        getFriendship(player,App.getInstance().getCurrentGame().getCurrentPlayer()).getMessages().add(messageFriendObj);
+        getFriendship(App.getInstance().getCurrentGame().getCurrentPlayer(),player).getMessageHistory().add(messageFriendObj);
         return new Result(true,"Message sent to " + player.getName() + " successfully!");
     }
 
@@ -1342,11 +1342,11 @@ public class GameController {
             return new Result(false, "No conversation history found.");
         }
 
-        for (Message message : friendship.getMessageHistory()) {
-            if (message.getSender().getName().equals(player.getName())) {
-                result.append(player.getName()).append(": ").append(message.getMessage()).append("\n");
+        for (MessageFriend messageFriend : friendship.getMessageHistory()) {
+            if (messageFriend.getSender().getName().equals(player.getName())) {
+                result.append(player.getName()).append(": ").append(messageFriend.getMessage()).append("\n");
             } else {
-                result.append("You: ").append(message.getMessage()).append("\n");
+                result.append("You: ").append(messageFriend.getMessage()).append("\n");
             }
         }
 
@@ -2484,11 +2484,11 @@ public class GameController {
         int numOfTradeRequests = 0;
 
         for (Friendship fs : player.getFriendships()) {
-            Iterator<Message> iterator = fs.getMessages().iterator();
+            Iterator<MessageFriend> iterator = fs.getMessages().iterator();
             while (iterator.hasNext()) {
-                Message message = iterator.next();
+                MessageFriend messageFriend = iterator.next();
                 numOfReceivedMessages++;
-                fs.getMessageHistory().add(message);
+                fs.getMessageHistory().add(messageFriend);
                 iterator.remove(); // safe removal
             }
 

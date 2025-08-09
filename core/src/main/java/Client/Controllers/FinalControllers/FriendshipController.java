@@ -6,12 +6,13 @@ import Common.Models.FriendShip.Gift;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
-import Common.Models.FriendShip.Message;
+import Common.Models.FriendShip.MessageFriend;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
 import Client.Main;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
+import Common.Network.Messages.MessageTypes.MessageSendMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -363,13 +364,22 @@ public class FriendshipController {
 
         Player receiver = friendships.get(selectedIndex).getPlayer();
 
-        Message msg = new Message(
+        MessageFriend msg = new MessageFriend(
             currentPlayer,
             receiver,
             text,
             false
         );
-        // deliver; assumes Player has receiveMessage(Message)
+
+        // deliver; Player has receiveMessage(Message)
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new MessageSendMessage(
+                currentPlayer.getName(),
+                receiver.getName(),
+                text
+                )
+            );
+        }
         receiver.getRecievedMessages().add(msg);
 
         // Clear after send
