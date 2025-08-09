@@ -13,6 +13,8 @@ public enum CheatCodeCommands implements Commands {
 
     ADD_SEED("^seed (?<seedname>.+)$"),
     ADD_FERTILIZER("^add fertilizer$"),
+    GET_RING("^get ring$"),
+    GET_BOUQUET("^get bouquet$"),
     SET_ENERGY("^energy set -v (?<value>[\\S]+)$"),
     SET_ENERGY_UNLIMITED("^energy unlimited$"),
     SET_ANIMAL_FRIENDSHIP("^cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>[\\S]+)\\s+-c\\s+(?<amount>\\d+)$"),
