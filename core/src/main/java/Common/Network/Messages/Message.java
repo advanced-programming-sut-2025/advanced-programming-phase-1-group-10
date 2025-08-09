@@ -35,6 +35,8 @@ public class Message {
         RATE_GIFT,
         GIVE_BOUQUET,
         PUBLIC_CHAT,
+        ASK_MARARIAGE,
+        RESPONSE_MARARIAGE,
         ;
     }
 }

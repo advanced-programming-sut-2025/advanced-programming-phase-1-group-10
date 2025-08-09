@@ -78,6 +78,10 @@ public class JsonUtils {
                     return gson.fromJson(json, PublicChatMessage.class);
                 case GIVE_BOUQUET:
                     return gson.fromJson(json, GiveBouquetMessage.class);
+                case ASK_MARARIAGE:
+                    return gson.fromJson(json, AskMarriageMessage.class);
+                case RESPONSE_MARARIAGE:
+                    return gson.fromJson(json, ResponseMarriage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }
