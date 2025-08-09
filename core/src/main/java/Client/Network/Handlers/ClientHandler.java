@@ -1,12 +1,14 @@
 package Client.Network.Handlers;
 
 import Client.Controllers.ChatManager;
+import Client.Controllers.MessageSystem;
 import Client.Controllers.Utils.ItemUtility;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
 import Common.Models.FriendShip.Gift;
 import Common.Models.FriendShip.MessageFriend;
 import Common.Models.Game;
+import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.MessageTypes.*;
@@ -95,6 +97,17 @@ public class ClientHandler {
             }
         }
         System.out.println("FUCK");
+    }
+
+    public void handleGiveBouquet(GiveBouquetMessage message) {
+        Item flower = ItemUtility.createItem("Bouquet",1);
+        App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(flower);
+        MessageSystem.showInfo("You recieved a bouquet from " + message.getSenderName(),2f);
+        for(Friendship friendship: App.getInstance().getCurrentGame().getCurrentPlayer().getFriendships()) {
+            if(friendship.getPlayer().getName().equals(message.getSenderName())){
+                friendship.setFlowerGiven(true);
+            }
+        }
     }
 
 

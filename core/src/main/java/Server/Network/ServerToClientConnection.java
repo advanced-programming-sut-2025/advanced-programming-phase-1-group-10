@@ -53,6 +53,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case SEND_TEXT_FRIEND -> {handleSendTextFromFriend((MessageSendMessage) message); yield true; }
             case SEND_GIFT -> {handleSendGift((SendGiftMessage) message); yield true; }
             case RATE_GIFT -> {hanldeRateGift((RateGiftMessage) message); yield true; }
+            case GIVE_BOUQUET -> {handleGiveBouquet((GiveBouquetMessage) message); yield true; }
             case PUBLIC_CHAT -> {handlePublicChat((PublicChatMessage) message); yield true; }
             default -> false;
         };
@@ -218,6 +219,15 @@ public class ServerToClientConnection extends ConnectionThread {
         if(!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(message.getTargetPlayerName())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleGiveBouquet(GiveBouquetMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiverName())){
                 connection.sendMessage(message);
             }
         }

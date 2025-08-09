@@ -9,6 +9,7 @@ import Common.Models.Item;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
+import Common.Network.Messages.MessageTypes.GiveBouquetMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -123,6 +124,7 @@ public class PlayersNearbyActionController {
     private void hugPlayer(Player other) {
         addXpToPlayers(other, 50);
         MessageSystem.showMessage("You hugged " + other.getName(), 2f, Color.GREEN);
+
     }
 
     private void giveBouquet(Player other) {
@@ -157,6 +159,12 @@ public class PlayersNearbyActionController {
         f2.setFlowerGiven(true);
 
         MessageSystem.showMessage("You gave " + other.getName() + " a flower! What's next?", 2f, Color.GREEN);
+
+        ClientNetworkManager.getInstance().sendMessage(new GiveBouquetMessage(
+            currentPlayer.getName(),
+            other.getName()
+        ));
+
     }
 
     private void proposeMarriage(Player other) {

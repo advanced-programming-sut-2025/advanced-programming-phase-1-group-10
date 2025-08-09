@@ -244,6 +244,10 @@ public class ClientNetworkManager {
                     PublicChatMessage msg = (PublicChatMessage) message;
                     clientHandler.handlePublicChat(msg);
                 }
+                case GIVE_BOUQUET -> {
+                    GiveBouquetMessage msg = (GiveBouquetMessage) message;
+                    clientHandler.handleGiveBouquet(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;
