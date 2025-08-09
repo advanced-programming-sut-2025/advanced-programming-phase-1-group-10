@@ -1,5 +1,6 @@
 package Client.Network.Handlers;
 
+import Client.Controllers.ChatManager;
 import Client.Controllers.Utils.ItemUtility;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
@@ -73,6 +74,8 @@ public class ClientHandler {
             message.getText(),
             false
         ));
+        // for private chats
+        handlePrivateChat(message);
     }
 
     public void hanldeSendGift(SendGiftMessage message){
@@ -81,5 +84,9 @@ public class ClientHandler {
         Gift gift = new Gift(sender,reciever, ItemUtility.createItem(message.getItemName(), message.getItemNumber()),false);
         gift.setSeed(message.getGiftSeed());
         reciever.getRecievedGifts().add(gift);
+    }
+
+    public void handlePrivateChat(MessageSendMessage message) {
+        ChatManager.getInstance().handleMessageSendMessage(message);
     }
 }
