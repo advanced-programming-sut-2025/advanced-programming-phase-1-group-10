@@ -363,7 +363,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         DialogSystem.update(batch, viewport);
         batch.end();
         batch.begin();
-        EmotionMenuSystem.update(batch, viewport);
+        EmotionMenuSystem.update(batch, viewport,delta);
         batch.end();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
@@ -481,7 +481,11 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public boolean keyTyped(char c) {
+    public boolean keyTyped(char character) {
+        if (EmotionMenuSystem.isVisible() && EmotionMenuSystem.isTypingActive()) {
+            EmotionMenuSystem.handleKeyTyped(character);
+            return true;
+        }
         return false;
     }
 
