@@ -66,6 +66,8 @@ public class JsonUtils {
                     return gson.fromJson(json, PickaxeUsedMessage.class);
                 case WATERING_CAN_USED:
                     return gson.fromJson(json, WateringCanUsedMessage.class);
+                case ADD_XP:
+                    return gson.fromJson(json, AddXpMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

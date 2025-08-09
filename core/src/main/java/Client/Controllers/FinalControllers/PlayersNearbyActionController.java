@@ -1,5 +1,6 @@
 package Client.Controllers.FinalControllers;
 
+import Client.Network.ClientNetworkManager;
 import Common.Models.Map;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
@@ -7,6 +8,7 @@ import Common.Models.FriendShip.Friendship;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
+import Common.Network.Messages.MessageTypes.AddXpMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -233,6 +235,15 @@ public class PlayersNearbyActionController {
         } catch (Exception e) {
             System.err.println("Failed to add xp to player");
         }
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new AddXpMessage(
+                currentPlayer.getName(),
+                player.getName(),
+                xp
+            ));
+        }
+
     }
 
     public Friendship getFriendship(Player player, Player goal) {

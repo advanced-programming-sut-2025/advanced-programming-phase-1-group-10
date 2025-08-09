@@ -49,6 +49,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case START_GAME -> { handleStartGame((StartGameMessage) message); yield true; }
             case MOVE_PLAYER -> {handleMovePlayer((MovePlayerMessage) message); yield true; }
             case HOE_USED, PICKAXE_USED,WATERING_CAN_USED ->  {handleToolUsage(message); yield true; }
+            case ADD_XP -> {handleAddXp(message); yield true; }
             default -> false;
         };
     }
@@ -180,6 +181,17 @@ public class ServerToClientConnection extends ConnectionThread {
             connection.sendMessage(message);
         }
     }
+
+    public void handleAddXp(Message message){
+        if(!isInLobby()) return;
+        String playerName = ((AddXpMessage) message).getGoalPlayer();
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(playerName)){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
     /* ---------------------- Utility ---------------------- */
 
     private boolean isPasswordCorrect(Lobby lobby, String providedPassword) {

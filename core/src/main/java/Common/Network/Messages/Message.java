@@ -38,6 +38,8 @@ public class Message {
         ERROR,
         HOE_USED,
         PICKAXE_USED,
-        WATERING_CAN_USED;
+        WATERING_CAN_USED,
+        ADD_XP,
+        ;
     }
 }

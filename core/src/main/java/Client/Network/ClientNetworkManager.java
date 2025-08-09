@@ -224,6 +224,10 @@ public class ClientNetworkManager {
                     WateringCanUsedMessage wateringCanUsedMsg = (WateringCanUsedMessage) message;
                     clientHandler.handleWateringCan(wateringCanUsedMsg);
                 }
+                case ADD_XP -> {
+                    AddXpMessage addXpMsg = (AddXpMessage) message;
+                    clientHandler.handleAddXp(addXpMsg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

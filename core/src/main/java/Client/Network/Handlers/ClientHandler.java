@@ -1,14 +1,14 @@
 package Client.Network.Handlers;
 
 import Common.Models.App;
+import Common.Models.FriendShip.Friendship;
 import Common.Models.Game;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.Message;
-import Common.Network.Messages.MessageTypes.HoeUsedMessage;
-import Common.Network.Messages.MessageTypes.MovePlayerMessage;
-import Common.Network.Messages.MessageTypes.PickaxeUsedMessage;
-import Common.Network.Messages.MessageTypes.WateringCanUsedMessage;
+import Common.Network.Messages.MessageTypes.*;
+
+import java.util.ArrayList;
 
 public class ClientHandler {
     public void movePlayerHandle(MovePlayerMessage movePlayerMsg) {
@@ -50,6 +50,15 @@ public class ClientHandler {
         Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
         if (tile != null) {
             tile.setWatered(message.isWatered());
+        }
+    }
+
+    public void handleAddXp(AddXpMessage message) {
+        ArrayList<Friendship> friendships = App.getInstance().getCurrentGame().getCurrentPlayer().getFriendships();
+        for(Friendship friendship : friendships) {
+            if(friendship.getPlayer().getName().equals(message.getSenderPlayer())){
+                friendship.setXp(message.getXp() + friendship.getXp());
+            }
         }
     }
 

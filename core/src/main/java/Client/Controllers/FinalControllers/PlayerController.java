@@ -148,16 +148,18 @@ public class PlayerController {
     }
 
     public void handlePlayerSwitching() {
-
-        if(App.getInstance().getCurrentGame().isOnline()){
-            MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
-            return;
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) { // '.'
+            if(App.getInstance().getCurrentGame().isOnline()){
+                MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
+                return;
+            }
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
             App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.COMMA)) { // ','
+            if(App.getInstance().getCurrentGame().isOnline()){
+                MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
+                return;
+            }
             currentPlayerIndex = (currentPlayerIndex - 1 + players.size()) % players.size();
             App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));
         }

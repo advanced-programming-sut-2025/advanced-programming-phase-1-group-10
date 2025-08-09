@@ -1,6 +1,7 @@
 package Client.Controllers.FinalControllers;
 
 import Client.Assets.SlotAsset;
+import Client.Network.ClientNetworkManager;
 import Common.Models.FriendShip.Gift;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
@@ -10,6 +11,7 @@ import Common.Models.Item;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
 import Client.Main;
+import Common.Network.Messages.MessageTypes.AddXpMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -396,6 +398,14 @@ public class FriendshipController {
             if (f2 != null) f2.setXp(f2.getXp() + xp);
         } catch (Exception e) {
             System.err.println("Failed to add xp to player");
+        }
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new AddXpMessage(
+                currentPlayer.getName(),
+                player.getName(),
+                xp
+            ));
         }
     }
 
