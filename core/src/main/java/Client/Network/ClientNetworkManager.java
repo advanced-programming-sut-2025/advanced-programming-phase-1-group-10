@@ -264,6 +264,10 @@ public class ClientNetworkManager {
                     TradeRequestResponseMessage msg = (TradeRequestResponseMessage) message;
                     clientHandler.handleTradeRequestResponse(msg);
                 }
+                case EMOTION -> {
+                    EmotionMessage emotionMsg = (EmotionMessage) message;
+                    clientHandler.handleEmotion(emotionMsg);
+                }
                 case CHANGE_ITEMS_SLOT -> {
                     ChangeItemTradeMessage msg = (ChangeItemTradeMessage) message;
                     clientHandler.handleChangeItemTrade(msg);

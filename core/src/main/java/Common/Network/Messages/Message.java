@@ -43,6 +43,7 @@ public class Message {
         CANCEL_TRADING,
         ACCEPT_TRADING,
         ACCEPT_TRADING_RESPONSE,
+        EMOTION,
         ;
     }
 }

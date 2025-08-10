@@ -59,6 +59,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case RESPONSE_MARARIAGE -> {handleResponseMarriage((ResponseMarriage)message ); yield true; }
             case TRADE_REQUEST -> {handleTradeRequest((TradeRequestMessage) message); yield true; }
             case TRADE_REQUEST_RESPONSE -> {handleTradeRequestResponse((TradeRequestResponseMessage) message); yield true; }
+            case EMOTION -> {handleEmotion((EmotionMessage) message); yield true; }
             case CHANGE_ITEMS_SLOT ->  {handleChangeItemSlot((ChangeItemTradeMessage) message); yield true; }
             case CANCEL_TRADING -> {handleCancelTrade((CancelTradeMessage) message); yield true; }
             case ACCEPT_TRADING -> {handleAcceptTrade((AceeptTradeMessage) message); yield true; }
@@ -280,6 +281,13 @@ public class ServerToClientConnection extends ConnectionThread {
     public void handlePublicChat(PublicChatMessage message) {
         if (!isInLobby()) return;
         lobbyManager.broadcastToLobby(currentLobbyId, message);
+    }
+
+    public void handleEmotion(EmotionMessage message) {
+        if (!isInLobby()) return;
+        for (ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
+            connection.sendMessage(message);
+        }
     }
 
     public void handleChangeItemSlot(ChangeItemTradeMessage message){

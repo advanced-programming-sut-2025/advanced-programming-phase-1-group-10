@@ -1,17 +1,15 @@
 package Client.Views;
 
 import Client.Assets.TextureCache;
-import Client.Controllers.ChatManager;
-import Client.Controllers.DialogSystem;
-import Client.Controllers.EmotionMenuSystem;
+import Client.Controllers.*;
 import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Game;
 import Common.Models.Map;
 import Client.Controllers.FinalControllers.AnimalListController;
 import Client.Controllers.FinalControllers.GameControllerFinal;
-import Client.Controllers.MessageSystem;
 import Common.Models.PlayerStuff.Player;
+import Common.Network.Messages.MessageTypes.EmotionMessage;
 import Common.Network.Messages.MessageTypes.MessageSendMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -109,6 +107,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         subButton1.setVisible(false);
         subButton2.setVisible(false);
         DialogSystem.initialize();
+        EmotionDisplaySystem.initialize();
 
         EmotionMenuSystem.initialize();
         emotionButton = new TextButton("Reactions", skin);
@@ -118,11 +117,31 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 EmotionMenuSystem.show(item -> {
-                    MessageSystem.showInfo("You selected: " + item.getText(), 3.0f);
-                    // TODO add network
+                    String currentPlayerName = App.getInstance().getCurrentGame().getCurrentPlayer().getName();
+                    boolean isEmoji = item.getText().startsWith("emoji");
+                    int emojiIndex = -1;
+
+                    if (isEmoji) {
+                        try {
+                            emojiIndex = Integer.parseInt(item.getText().substring(5));
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error parsing emoji index: " + e.getMessage());
+                        }
+                    }
+
+                    EmotionMessage message = new EmotionMessage(
+                        currentPlayerName,
+                        isEmoji ? "" : item.getText(),
+                        isEmoji,
+                        emojiIndex
+                    );
+
+                    ClientNetworkManager.getInstance().sendMessage(message);
+                    MessageSystem.showInfo("Emotion sent: " + (isEmoji ? "Emoji " + emojiIndex : item.getText()), 3.0f);
                 });
             }
         });
+
 
 
         settingsButton.addListener(new ClickListener() {
@@ -344,7 +363,11 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         DialogSystem.update(batch, viewport);
         batch.end();
         batch.begin();
-        EmotionMenuSystem.update(batch, viewport);
+        EmotionMenuSystem.update(batch, viewport,delta);
+        batch.end();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        EmotionDisplaySystem.update(batch);
         batch.end();
     }
 
@@ -386,6 +409,7 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
         }
         DialogSystem.dispose();
         EmotionMenuSystem.dispose();
+        EmotionDisplaySystem.dispose();
         controller.getFishingMiniGameController().dispose();
         TextureCache.disposeAll();
         stage.dispose();
@@ -457,7 +481,11 @@ public class GameLauncherView implements AppMenu, Screen, InputProcessor {
     }
 
     @Override
-    public boolean keyTyped(char c) {
+    public boolean keyTyped(char character) {
+        if (EmotionMenuSystem.isVisible() && EmotionMenuSystem.isTypingActive()) {
+            EmotionMenuSystem.handleKeyTyped(character);
+            return true;
+        }
         return false;
     }
 
