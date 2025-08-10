@@ -272,6 +272,14 @@ public class ClientNetworkManager {
                     CancelTradeMessage msg = (CancelTradeMessage) message;
                     clientHandler.handleCancelTradeRequest(msg);
                 }
+                case ACCEPT_TRADING -> {
+                    AceeptTradeMessage msg = (AceeptTradeMessage) message;
+                    clientHandler.handleAcceptTrade(msg);
+                }
+                case ACCEPT_TRADING_RESPONSE -> {
+                    AcceptTradeResponseMessage msg = (AcceptTradeResponseMessage) message;
+                    clientHandler.handleAcceptTradeResponse(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

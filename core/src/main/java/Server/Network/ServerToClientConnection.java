@@ -61,6 +61,8 @@ public class ServerToClientConnection extends ConnectionThread {
             case TRADE_REQUEST_RESPONSE -> {handleTradeRequestResponse((TradeRequestResponseMessage) message); yield true; }
             case CHANGE_ITEMS_SLOT ->  {handleChangeItemSlot((ChangeItemTradeMessage) message); yield true; }
             case CANCEL_TRADING -> {handleCancelTrade((CancelTradeMessage) message); yield true; }
+            case ACCEPT_TRADING -> {handleAcceptTrade((AceeptTradeMessage) message); yield true; }
+            case ACCEPT_TRADING_RESPONSE -> {handleAcceptTradeResponse((AcceptTradeResponseMessage) message); yield true; }
             default -> false;
         };
     }
@@ -293,6 +295,24 @@ public class ServerToClientConnection extends ConnectionThread {
         if(!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleAcceptTrade(AceeptTradeMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleAcceptTradeResponse(AcceptTradeResponseMessage message){
+        if (!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReciever())){
                 connection.sendMessage(message);
             }
         }

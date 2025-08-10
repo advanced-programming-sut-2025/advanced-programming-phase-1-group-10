@@ -4,6 +4,7 @@ import Client.Network.ClientNetworkManager;
 import Common.Models.Item;
 import Common.Models.Tools.Tool;
 import Common.Models.App;
+import Common.Network.Messages.MessageTypes.AceeptTradeMessage;
 import Common.Network.Messages.MessageTypes.CancelTradeMessage;
 import Common.Network.Messages.MessageTypes.ChangeItemTradeMessage;
 import com.badlogic.gdx.Gdx;
@@ -151,6 +152,22 @@ public class TradeController {
         float textX = buttonX + buttonW / 2f - font.getRegion().getRegionWidth() / 8f + 93;
         float textY = buttonY + buttonH / 2f + 10;
         font.draw(batch, "Send", textX, textY);
+
+        // --- New Code for Button Click Detection ---
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            int mouseX = Gdx.input.getX();
+            int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Invert Y
+
+            // Check if the click is within the button bounds
+            if (mouseX >= buttonX && mouseX <= buttonX + buttonW &&
+                mouseY >= buttonY && mouseY <= buttonY + buttonH) {
+                ClientNetworkManager.getInstance().sendMessage(new AceeptTradeMessage(
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getName(),
+                    goalPlayerName
+                ));
+            }
+        }
+        // --- End of New Code ---
     }
 
     private void handleRightClick(float menuX, float menuY, float menuHeight,

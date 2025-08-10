@@ -14,6 +14,7 @@ import Common.Models.Game;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
 import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
@@ -273,5 +274,46 @@ public class ClientHandler {
         tradeController.setGoalPlayerName(null);
         tradeController.getHisItems().clear();
         tradeController.getMyItems().clear();
+    }
+
+    public void handleAcceptTrade(AceeptTradeMessage message) {
+        DialogSystem.show("Other player asks to accept the trade, do you accept?",
+            () -> {
+            TradeController tradeController = App.getInstance().getGameControllerFinal().getTradeController();
+                for(Item item: tradeController.getHisItems()){
+                    App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(item);
+                }
+                ClientNetworkManager.getInstance().sendMessage(new AcceptTradeResponseMessage(
+                    message.getReceiver(),
+                    message.getSender(),
+                    true
+                ));
+
+                tradeController.getHisItems().clear();
+                tradeController.getMyItems().clear();
+
+            },
+            () -> {
+                ClientNetworkManager.getInstance().sendMessage(new AcceptTradeResponseMessage(
+                    message.getReceiver(),
+                    message.getSender(),
+                    false
+                ));
+            }
+            );
+    }
+
+    public void handleAcceptTradeResponse(AcceptTradeResponseMessage message) {
+        if(message.isAccepted()){
+            TradeController tradeController = App.getInstance().getGameControllerFinal().getTradeController();
+            for(Item item: tradeController.getHisItems()){
+                App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(item);
+            }
+            tradeController.getHisItems().clear();
+            tradeController.getMyItems().clear();
+            MessageSystem.showInfo("Trade accepted!", 2f);
+        } else {
+            MessageSystem.showMessage("Trade request did not accepted!",2f, Color.RED);
+        }
     }
 }
