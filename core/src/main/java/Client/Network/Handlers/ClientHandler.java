@@ -2,6 +2,7 @@ package Client.Network.Handlers;
 
 import Client.Controllers.ChatManager;
 import Client.Controllers.DialogSystem;
+import Client.Controllers.FinalControllers.TradeController;
 import Client.Controllers.MessageSystem;
 import Client.Controllers.Utils.ItemUtility;
 import Client.Network.ClientNetworkManager;
@@ -19,7 +20,7 @@ import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
 import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Iterator;
 
 public class ClientHandler {
     public void movePlayerHandle(MovePlayerMessage movePlayerMsg) {
@@ -130,12 +131,13 @@ public class ClientHandler {
         Player other = App.getInstance().getCurrentGame().getPlayerByName(message.getSender());
         Friendship fs1 = getFriendship(currentPlayer, other);
         Friendship fs2 = getFriendship(other, currentPlayer);
-        Item ring = ItemUtility.createItem("Ring",1);
+        Item ring = ItemUtility.createItem("Ring", 1);
 
-        AtomicBoolean isAccepted = new AtomicBoolean(false);
+        DialogSystem.show(
+            "Player: " + message.getSender() + " wants to marry. Do you agree?",
 
-        DialogSystem.show("Player: " + message.getSender() + " wants to marry. Do you agree?",
-            () ->{
+            // On accept
+            () -> {
                 currentPlayer.setCouple(other);
                 other.setCouple(currentPlayer);
                 currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
@@ -143,22 +145,25 @@ public class ClientHandler {
                 fs1.setMarried(true);
                 fs2.setMarried(true);
                 MessageSystem.showInfo("Happy your Marriage!", 2f);
-                isAccepted.set(true);
+
+                ClientNetworkManager.getInstance().sendMessage(
+                    new ResponseMarriage(message.getReceiver(), message.getSender(), true)
+                );
             },
-            () ->{
+
+            // On decline
+            () -> {
                 fs1.setXp(-fs1.getXp());
                 fs2.setXp(-fs2.getXp());
-                MessageSystem.showInfo("You saved your life.",2f);
-                isAccepted.set(false);
-            }
-            );
+                MessageSystem.showInfo("You saved your life.", 2f);
 
-        ClientNetworkManager.getInstance().sendMessage(new ResponseMarriage(
-            message.getReceiver(),
-            message.getSender(),
-            isAccepted.get())
+                ClientNetworkManager.getInstance().sendMessage(
+                    new ResponseMarriage(message.getReceiver(), message.getSender(), false)
+                );
+            }
         );
     }
+
 
     public Friendship getFriendship(Player player, Player goal) {
         return player.getFriendships().stream().filter(f -> f.getPlayer().equals(goal)).findFirst().orElse(null);
@@ -187,32 +192,86 @@ public class ClientHandler {
     }
 
     public void handleTradeRequest(TradeRequestMessage message) {
-        AtomicBoolean isAccepted = new AtomicBoolean(false);
-        DialogSystem.show("Player: " + message.getSender() + " wants to start trade, accept?",
+        DialogSystem.show(
+            "Player: " + message.getSender() + " wants to start trade, accept?",
+
+            // On accept
             () -> {
-                isAccepted.set(true);
                 App.getInstance().getGameControllerFinal().getFriendshipController().setShowMenu(false);
                 App.getInstance().getGameControllerFinal().getTradeController().setShown(true);
+                App.getInstance().getGameControllerFinal().getTradeController().setGoalPlayerName(message.getSender());
+
+                ClientNetworkManager.getInstance().sendMessage(
+                    new TradeRequestResponseMessage(
+                        message.getReceiver(),
+                        message.getSender(),
+                        true
+                    )
+                );
             },
 
+            // On decline
             () -> {
-                isAccepted.set(false);
+                ClientNetworkManager.getInstance().sendMessage(
+                    new TradeRequestResponseMessage(
+                        message.getReceiver(),
+                        message.getSender(),
+                        false
+                    )
+                );
             }
-            );
-        ClientNetworkManager.getInstance().sendMessage(new TradeRequestResponseMessage(
-            message.getSender(),
-            message.getReceiver(),
-            isAccepted.get()
-        ));
+        );
     }
+
 
     public void handleTradeRequestResponse(TradeRequestResponseMessage message) {
         if(message.isAccepted()){
             MessageSystem.showInfo("Trade request accepted your trade!", 2f);
             App.getInstance().getGameControllerFinal().getFriendshipController().setShowMenu(false);
             App.getInstance().getGameControllerFinal().getTradeController().setShown(true);
+            App.getInstance().getGameControllerFinal().getTradeController().setGoalPlayerName(message.getSender());
         } else {
             MessageSystem.showMessage("Trade request did not accepted!",2f, Color.RED);
         }
+    }
+
+    public void handleChangeItemTrade(ChangeItemTradeMessage msg) {
+        ArrayList<Item> hisItems = App.getInstance().getGameControllerFinal().getTradeController().getHisItems();
+        Iterator<Item> iterator = hisItems.iterator();
+        boolean isFound = false;
+
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (item.getName().equals(msg.getItem())) {
+                item.setNumber(item.getNumber() + msg.getNumber());
+                isFound = true;
+                // Remove if number <= 0
+                if (item.getNumber() <= 0) {
+                    iterator.remove();
+                }
+                break;  // assuming unique names, can break here
+            }
+        }
+
+        if (!isFound && msg.getNumber() > 0) {
+            Item newItem = ItemUtility.createItem(msg.getItem(),msg.getNumber());
+            if (newItem != null) {
+                newItem.setNumber(msg.getNumber());
+                hisItems.add(newItem);
+            } else {
+                System.err.println("Item creation failed: unknown item name " + msg.getItem());
+            }
+        }
+    }
+
+    public void handleCancelTradeRequest(CancelTradeMessage msg) {
+        TradeController tradeController = App.getInstance().getGameControllerFinal().getTradeController();
+        tradeController.setShown(false);
+        for(Item item: tradeController.getMyItems()){
+            App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(item);
+        }
+        tradeController.setGoalPlayerName(null);
+        tradeController.getHisItems().clear();
+        tradeController.getMyItems().clear();
     }
 }

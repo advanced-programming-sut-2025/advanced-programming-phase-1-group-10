@@ -59,6 +59,8 @@ public class ServerToClientConnection extends ConnectionThread {
             case RESPONSE_MARARIAGE -> {handleResponseMarriage((ResponseMarriage)message ); yield true; }
             case TRADE_REQUEST -> {handleTradeRequest((TradeRequestMessage) message); yield true; }
             case TRADE_REQUEST_RESPONSE -> {handleTradeRequestResponse((TradeRequestResponseMessage) message); yield true; }
+            case CHANGE_ITEMS_SLOT ->  {handleChangeItemSlot((ChangeItemTradeMessage) message); yield true; }
+            case CANCEL_TRADING -> {handleCancelTrade((CancelTradeMessage) message); yield true; }
             default -> false;
         };
     }
@@ -267,7 +269,7 @@ public class ServerToClientConnection extends ConnectionThread {
     public void handleTradeRequestResponse(TradeRequestResponseMessage message){
         if(!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
-            if(connection.getUsername().equals(message.getSender())){
+            if(connection.getUsername().equals(message.getReciever())){
                 connection.sendMessage(message);
             }
         }
@@ -276,6 +278,24 @@ public class ServerToClientConnection extends ConnectionThread {
     public void handlePublicChat(PublicChatMessage message) {
         if (!isInLobby()) return;
         lobbyManager.broadcastToLobby(currentLobbyId, message);
+    }
+
+    public void handleChangeItemSlot(ChangeItemTradeMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    public void handleCancelTrade(CancelTradeMessage message){
+        if(!isInLobby()) return;
+        for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if(connection.getUsername().equals(message.getReceiver())){
+                connection.sendMessage(message);
+            }
+        }
     }
 
     /* ---------------------- Utility ---------------------- */

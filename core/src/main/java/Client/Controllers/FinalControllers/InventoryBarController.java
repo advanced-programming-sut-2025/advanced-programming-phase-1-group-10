@@ -2,9 +2,11 @@ package Client.Controllers.FinalControllers;
 
 import Client.Assets.SlotAsset;
 import Client.Controllers.Utils.InventoryUtils;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
+import Common.Network.Messages.MessageTypes.ChangeItemTradeMessage;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -22,12 +24,14 @@ public class InventoryBarController {
 
     private final NpcMenuController npcMenuController;
     private final FriendshipController friendshipController;
+    private final TradeController tradeController;
 
-    public InventoryBarController(NpcMenuController npcMenuController, FriendshipController friendshipController) {
+    public InventoryBarController(NpcMenuController npcMenuController, FriendshipController friendshipController, TradeController tradeController) {
         this.slotAsset = new SlotAsset();
         this.npcMenuController = npcMenuController;
         this.friendshipController = friendshipController;
         this.player = App.getInstance().getCurrentGame().getCurrentPlayer();
+        this.tradeController = tradeController;
     }
 
     public void update(SpriteBatch batch) {
@@ -81,7 +85,24 @@ public class InventoryBarController {
                         continue; // empty slot, skip
                     }
 
-                    if (npcMenuController.isMenuOpen()) {
+
+                    if(tradeController.isShown()){
+                        Item clone = selected.copyItem(1);
+                        if(tradeController.addItem(clone)){
+                            if(App.getInstance().getCurrentGame().isOnline()){
+                                ClientNetworkManager.getInstance().sendMessage(new ChangeItemTradeMessage(
+                                    App.getInstance().getCurrentGame().getCurrentPlayer().getName(),
+                                    tradeController.getGoalPlayerName(),
+                                    clone.getName(),
+                                    1
+                                ));
+                            }
+                            selected.setNumber(selected.getNumber() - 1);
+                            if (selected.getNumber() <= 0) {
+                                barItems.remove(i);
+                            }
+                        }
+                    } else if (npcMenuController.isMenuOpen()) {
                         int hovered = npcMenuController.getHoveredSlotIndex();
                         if (hovered != -1) {
                             Item clone = selected.copyItem(1);

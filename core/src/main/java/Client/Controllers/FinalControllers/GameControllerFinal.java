@@ -67,7 +67,6 @@ public class GameControllerFinal {
         this.dialogueController = new DialogueController();
         this.npcMenuController = new NpcMenuController();
         this.friendshipController = new FriendshipController();
-        this.inventoryBarController = new InventoryBarController(npcMenuController, friendshipController);
         this.questMenuController = new QuestMenuController();
         this.animalListController = new AnimalListController(new AnimalAsset());
         this.notificationController = new NotificationController();
@@ -80,6 +79,7 @@ public class GameControllerFinal {
         this.cropController = new CropController();
         this.chatController = new ChatController();
         this.tradeController = new TradeController();
+        this.inventoryBarController = new InventoryBarController(npcMenuController, friendshipController,tradeController);
 
         List<Lake> allLakes = FishController.findAllLakes();
         if (!allLakes.isEmpty()) {

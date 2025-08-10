@@ -61,11 +61,15 @@ public class ItemUtility {
 
     public static Item createItem(String name, int number) {
         Function<Integer, Item> creator = ITEM_CREATORS.get(name.toLowerCase(Locale.ROOT));
-        if(creator instanceof Mineral){
-            ((Mineral) creator).setAxed(true);
-        }
+
         if (creator != null) {
-            return creator.apply(number);
+            Item item = creator.apply(number); // Apply the function to create the item
+
+            if (item instanceof Mineral) {
+                ((Mineral) item).setAxed(true); // Now you can safely cast and call the method
+            }
+
+            return item;
         }
         throw new IllegalArgumentException("Unknown item name: " + name);
     }

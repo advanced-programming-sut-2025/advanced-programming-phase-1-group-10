@@ -19,6 +19,7 @@ public class BackPack {
         return items;
     }
 
+
     public void setBackpackType(BackpackType backpackType) {
         this.backpackType = backpackType;
     }
@@ -26,7 +27,7 @@ public class BackPack {
     public boolean addItem(Item item) {
         final ArrayList<Item> barItems = App.getInstance().getCurrentGame().getCurrentPlayer().getIventoryBarItems();
         final int barCapacity = Player.PLAYER_INENTORY_BAR_SIZE;
-        final int backpackCapacity = backpackType.getCapacity();
+        final int backpackCapacity = backpackType.capacity;
 
         // 1. Try to stack in bar
         for (Item barItem : barItems) {

@@ -86,6 +86,10 @@ public class JsonUtils {
                     return gson.fromJson(json, TradeRequestMessage.class);
                 case TRADE_REQUEST_RESPONSE:
                     return gson.fromJson(json, TradeRequestResponseMessage.class);
+                case CHANGE_ITEMS_SLOT:
+                    return gson.fromJson(json, ChangeItemTradeMessage.class);
+                case CANCEL_TRADING:
+                    return gson.fromJson(json, CancelTradeMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }
