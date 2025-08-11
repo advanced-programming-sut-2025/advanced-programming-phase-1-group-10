@@ -330,4 +330,14 @@ public class ClientHandler {
             );
         }
     }
+
+    public void handleFertilizerUsed(FertilizerUsedMessage message){
+        Game game = App.getInstance().getCurrentGame();
+        Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
+
+        if(tile != null){
+            tile.setPlow(true);
+            tile.setFertilizer(true);
+        }
+    }
 }

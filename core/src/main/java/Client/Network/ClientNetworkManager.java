@@ -284,6 +284,10 @@ public class ClientNetworkManager {
                     AcceptTradeResponseMessage msg = (AcceptTradeResponseMessage) message;
                     clientHandler.handleAcceptTradeResponse(msg);
                 }
+                case FERTILIZER_USED -> {
+                    FertilizerUsedMessage msg = (FertilizerUsedMessage) message;
+                    clientHandler.handleFertilizerUsed(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;

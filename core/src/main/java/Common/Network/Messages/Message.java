@@ -44,6 +44,7 @@ public class Message {
         ACCEPT_TRADING,
         ACCEPT_TRADING_RESPONSE,
         EMOTION,
+        FERTILIZER_USED,
         ;
     }
 }

@@ -1,10 +1,12 @@
 package Common.Models.Tools;
 
 import Client.Controllers.MessageSystem;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
+import Common.Network.Messages.MessageTypes.FertilizerUsedMessage;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -61,6 +63,14 @@ public class Fertilizer implements Item {
                 player.setFarmingAbility(player.getFarmingAbility() + 10);
                 player.getInventory().getBackPack().removeItem(this);
                 player.getIventoryBarItems().remove(this);
+            }
+
+            if(App.getInstance().getCurrentGame().isOnline()) {
+                ClientNetworkManager.getInstance().sendMessage(new FertilizerUsedMessage(
+                    tile.getPosition().getX(),
+                    tile.getPosition().getY(),
+                    tile.isFertilizer()
+                ));
             }
         }
     }
