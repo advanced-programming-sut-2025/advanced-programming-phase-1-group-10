@@ -47,6 +47,7 @@ public class Message {
         FERTILIZER_USED,
         SEYTH_USED,
         AXE_USED,
+        PLANT_SEED,
         ;
     }
 }

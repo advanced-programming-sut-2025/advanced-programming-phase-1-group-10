@@ -7,19 +7,18 @@ import Client.Controllers.FinalControllers.TradeController;
 import Client.Controllers.MessageSystem;
 import Client.Controllers.Utils.ItemUtility;
 import Client.Network.ClientNetworkManager;
-import Common.Models.App;
+import Common.Models.*;
 import Common.Models.FriendShip.Friendship;
 import Common.Models.FriendShip.Gift;
 import Common.Models.FriendShip.MessageFriend;
-import Common.Models.Game;
-import Common.Models.Item;
 import Common.Models.Planets.Crop.Crop;
 import Common.Models.Planets.Crop.CropTypeNormal;
 import Common.Models.Planets.Crop.ForagingCropType;
 import Common.Models.Planets.Fruit;
+import Common.Models.Planets.SeedType;
 import Common.Models.Planets.Tree;
+import Common.Models.Planets.TreeType;
 import Common.Models.PlayerStuff.Player;
-import Common.Models.Tile;
 import Common.Network.Messages.MessageTypes.*;
 import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
@@ -395,6 +394,66 @@ public class ClientHandler {
             tree.setChoped(true);
             tile.setItem(null);
             tile.setTree(null);
+        }
+    }
+
+    public void handlePlantSeed(PlantSeedMessage message){
+        Game game = App.getInstance().getCurrentGame();
+        Tile targetTile = game.getGameMap().getMap()[message.getX()][message.getY()];
+
+        if (targetTile == null) {
+            System.err.println("Network: Error: Tile not found for PlantSeedMessage at (" + message.getX() + "," + message.getY() + ")");
+            return;
+        }
+
+        targetTile.setPlow(true);
+        SeedType seedType = null;
+        for(SeedType st : SeedType.values()){
+            if(st.getName().equals(message.getSeedTypeName())) {
+                seedType = st;
+                break;
+            }
+        }
+        if (seedType == null) {
+            System.err.println("Network: Error: SeedType not found for name: " + message.getSeedTypeName());
+            return;
+        }
+        if(message.isTree()) {
+            if (seedType.getTreeCropType() != null) {
+                String treeTypeName = seedType.getTreeCropType().getName() + "_TREE";
+                try {
+                    Tree newTree = new Tree(TreeType.valueOf(treeTypeName.toUpperCase()));
+                    newTree.setPosition(new Position(message.getX(), message.getY()));
+                    targetTile.setTree(newTree);
+                    targetTile.setItem(newTree);
+                    if (App.getInstance().getGameControllerFinal() != null &&
+                        App.getInstance().getGameControllerFinal().getTreeController() != null) {
+                        App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
+                    } else {
+                        System.err.println("Network: TreeController not available for adding tree.");
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Network: Invalid tree type received: " + treeTypeName + ". Error: " + e.getMessage());
+                }
+            } else {
+                System.err.println("Network: SeedType " + message.getSeedTypeName() + " is marked as tree, but has no TreeCropType.");
+            }
+        } else {
+            CropTypeNormal cropTypeNormal = null;
+            for (CropTypeNormal ctn : CropTypeNormal.values()) {
+                if (ctn.getSource() == seedType) {
+                    cropTypeNormal = ctn;
+                    break;
+                }
+            }
+            if (cropTypeNormal != null) {
+                Crop newCrop = new Crop(cropTypeNormal, 1);
+                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
+                targetTile.setCrop(newCrop);
+                targetTile.setItem(newCrop);
+            } else {
+                System.err.println("Network: CropTypeNormal not found for SeedType: " + message.getSeedTypeName());
+            }
         }
     }
 }

@@ -102,6 +102,8 @@ public class JsonUtils {
                     return gson.fromJson(json, SeythUsedMessage.class);
                 case AXE_USED:
                     return gson.fromJson(json, AxeUsedMessage.class);
+                case PLANT_SEED:
+                    return gson.fromJson(json, PlantSeedMessage.class);
                 default:
                     throw new IllegalArgumentException("Unknown message type: " + type);
             }

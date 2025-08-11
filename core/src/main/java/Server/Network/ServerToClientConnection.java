@@ -64,6 +64,7 @@ public class ServerToClientConnection extends ConnectionThread {
             case CANCEL_TRADING -> {handleCancelTrade((CancelTradeMessage) message); yield true; }
             case ACCEPT_TRADING -> {handleAcceptTrade((AceeptTradeMessage) message); yield true; }
             case ACCEPT_TRADING_RESPONSE -> {handleAcceptTradeResponse((AcceptTradeResponseMessage) message); yield true; }
+            case PLANT_SEED -> { handlePlantSeed((PlantSeedMessage) message); yield true; }
             default -> false;
         };
     }
@@ -85,6 +86,7 @@ public class ServerToClientConnection extends ConnectionThread {
     }
 
     /* ---------------------- Message Handlers ---------------------- */
+
 
     private void handleCreateLobby(CreateLobbyMessage msg) {
         this.username = msg.getCreatorUsername();
@@ -321,6 +323,15 @@ public class ServerToClientConnection extends ConnectionThread {
         if (!isInLobby()) return;
         for(ServerToClientConnection connection: lobbyManager.getLobbyConnections(currentLobbyId)) {
             if(connection.getUsername().equals(message.getReciever())){
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    private void handlePlantSeed(PlantSeedMessage message) {
+        if (!isInLobby()) return;
+        for (ServerToClientConnection connection : lobbyManager.getLobbyConnections(currentLobbyId)) {
+            if (!connection.getUsername().equals(message.getPlayerName())) {
                 connection.sendMessage(message);
             }
         }

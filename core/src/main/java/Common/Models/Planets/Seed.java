@@ -3,6 +3,7 @@ package Common.Models.Planets;
 import Client.Assets.CropAsset;
 import Client.Assets.TreesAsset;
 import Client.Controllers.MessageSystem;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.DateTime.Season;
 import Common.Models.Item;
@@ -11,6 +12,7 @@ import Common.Models.Planets.Crop.CropTypeNormal;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Position;
 import Common.Models.Tile;
+import Common.Network.Messages.MessageTypes.PlantSeedMessage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.ArrayList;
@@ -74,66 +76,68 @@ public class Seed implements Item {
             MessageSystem.showError("You should plow this tile to plant!", 5.0f);
             return;
         }
-
         if (tile.getPlace() != null || tile.getItem() != null || tile.getCrop() != null || tile.getTree() != null) {
             MessageSystem.showError("This tile is not empty!", 5.0f);
             return;
         }
 
+        boolean isTreePlanted = false;
+        String plantedItemName = null;
+
         if (seedType.getTreeCropType() != null) {
-            String treeType = seedType.getTreeCropType().getName() + "_TREE";
+            String treeTypeString = seedType.getTreeCropType().getName() + "_TREE";
             try {
-                Tree newTree = new Tree(TreeType.valueOf(treeType.toUpperCase()));
+                Tree newTree = new Tree(TreeType.valueOf(treeTypeString.toUpperCase()));
                 newTree.setPosition(new Position(tile.getPosition().getX(), tile.getPosition().getY()));
                 tile.setTree(newTree);
                 tile.setItem(newTree);
                 App.getInstance().getGameControllerFinal().getTreeController().addTree(newTree);
                 MessageSystem.showInfo("The new tree planted successfully!", 5.0f);
+                isTreePlanted = true;
+                plantedItemName = newTree.getName();
             } catch (IllegalArgumentException e) {
-                MessageSystem.showError("Invalid tree type: " + treeType, 5.0f);
+                MessageSystem.showError("Invalid tree type: " + treeTypeString, 5.0f);
                 return;
             }
         }
         else {
-            CropTypeNormal cropType = null;
+            CropTypeNormal selectedCropType = null;
 
-            for (CropTypeNormal type : CropTypeNormal.values()) {
-                if (type.getSource() == seedType) {
-                    cropType = type;
-                    break;
+            if (mixed) {
+                Season currentSeason = App.getInstance().getCurrentGame().getGameTime().getSeason();
+                List<CropTypeNormal> suitableCrops = new ArrayList<>();
+                for(CropTypeNormal ctn : CropTypeNormal.values()){
+                    if(ctn.getSeasons().contains(currentSeason))
+                        suitableCrops.add(ctn);
+                }
+                if (suitableCrops.isEmpty()) {
+                    MessageSystem.showError("No suitable mixed crop for this season!", 5.0f);
+                    return;
+                }
+                selectedCropType = suitableCrops.get(new Random().nextInt(suitableCrops.size()));
+            } else {
+                for (CropTypeNormal ctn : CropTypeNormal.values()) {
+                    if (ctn.getSource() == seedType) {
+                        selectedCropType = ctn;
+                        break;
+                    }
                 }
             }
 
-            if (cropType != null) {
-                if (!cropType.getSeasons().contains(App.getInstance().getCurrentGame().getGameTime().getSeason())) {
-                    MessageSystem.showError("You can't plant " + cropType.getName() + " in this season!", 5.0f);
+            if (selectedCropType != null) {
+                if (!selectedCropType.getSeasons().contains(App.getInstance().getCurrentGame().getGameTime().getSeason())) {
+                    MessageSystem.showError("You can't plant " + selectedCropType.getName() + " in this season!", 5.0f);
                     return;
                 }
 
-                Crop newCrop = new Crop(cropType, 1);
-                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
+                Crop newCrop = new Crop(selectedCropType, 1);
+                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy()); // زمان کاشت
                 tile.setCrop(newCrop);
                 tile.setItem(newCrop);
                 MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
-            } else if(mixed){
-                Season season = App.getInstance().getCurrentGame().getGameTime().getSeason();
-                List<CropTypeNormal> crops = new ArrayList<>();
-                for(CropTypeNormal cropTypeNormal : CropTypeNormal.values()){
-                    for(Season season1 : cropTypeNormal.getSeasons()){
-                        if(season1.equals(season))
-                            crops.add(cropTypeNormal);
-                    }
-                }
-                int index = new Random().nextInt(0,crops.size() - 1);
-                cropType = crops.get(index);
-                Crop newCrop = new Crop(cropType,1);
-                newCrop.setWhenPlanted(App.getInstance().getCurrentGame().getGameTime().copy());
-                tile.setCrop(newCrop);
-                tile.setItem(newCrop);
-                MessageSystem.showInfo("The new crop planted successfully!", 5.0f);
-            }
-            else if(cropType == null) {
-                MessageSystem.showError("Invalid seed type!", 5.0f);
+                plantedItemName = newCrop.getName();
+            } else {
+                MessageSystem.showError("Invalid seed type or no crop found!", 5.0f);
                 return;
             }
         }
@@ -142,6 +146,16 @@ public class Seed implements Item {
         if (this.numberOfSeed <= 0) {
             player.getInventory().getBackPack().removeItem(this);
             player.getIventoryBarItems().remove(this);
+        }
+
+        if (App.getInstance().getCurrentGame().isOnline()) {
+            ClientNetworkManager.getInstance().sendMessage(new PlantSeedMessage(
+                player.getName(),
+                tile.getPosition().getX(),
+                tile.getPosition().getY(),
+                isTreePlanted,
+                seedType.getName()
+            ));
         }
     }
 }

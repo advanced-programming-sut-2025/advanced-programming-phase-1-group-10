@@ -297,6 +297,10 @@ public class ClientNetworkManager {
                     AxeUsedMessage msg = (AxeUsedMessage) message;
                     clientHandler.handleAxeUsed(msg);
                 }
+                case PLANT_SEED -> {
+                    PlantSeedMessage plantSeedMsg = (PlantSeedMessage) message;
+                    clientHandler.handlePlantSeed(plantSeedMsg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;
