@@ -13,6 +13,11 @@ import Common.Models.FriendShip.Gift;
 import Common.Models.FriendShip.MessageFriend;
 import Common.Models.Game;
 import Common.Models.Item;
+import Common.Models.Planets.Crop.Crop;
+import Common.Models.Planets.Crop.CropTypeNormal;
+import Common.Models.Planets.Crop.ForagingCropType;
+import Common.Models.Planets.Fruit;
+import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.Message;
@@ -338,6 +343,41 @@ public class ClientHandler {
         if(tile != null){
             tile.setPlow(true);
             tile.setFertilizer(true);
+        }
+    }
+
+    public void handleSythUsed(SeythUsedMessage message){
+        Game game = App.getInstance().getCurrentGame();
+        Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
+
+        Item item = tile.getItem();
+
+        if(item instanceof Crop){
+            if(((Crop) tile.getItem()).getCropType() instanceof ForagingCropType) {
+                Crop crop = (Crop) tile.getItem();
+                crop.setShowCrop(false);
+                tile.setCrop(null);
+                tile.setItem(null);
+            } else if(((Crop) tile.getItem()).getCropType() instanceof CropTypeNormal){
+                Crop crop = (Crop) tile.getItem();
+                if(crop.isHarvestable())
+                    crop.harvestCrop();
+
+                if (crop.getCropType() instanceof CropTypeNormal) {
+                    CropTypeNormal normalCrop = (CropTypeNormal) crop.getCropType();
+                    if (normalCrop.isOneTime()) {
+                        tile.setItem(null);
+                        tile.setCrop(null);
+                    }
+                }
+            }
+        }
+
+        else if(tile.getItem() instanceof Tree){
+            Tree tree = (Tree) tile.getItem();
+            if (tree.hasFruits()) {
+                tree.harvestFruit();
+            }
         }
     }
 }

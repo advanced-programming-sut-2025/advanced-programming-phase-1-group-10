@@ -2,6 +2,7 @@ package Common.Models.Tools;
 
 import Client.Assets.ToolAsset;
 import Client.Controllers.MessageSystem;
+import Client.Network.ClientNetworkManager;
 import Common.Models.App;
 import Common.Models.Item;
 import Common.Models.Planets.Crop.Crop;
@@ -12,6 +13,7 @@ import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.SeythUsedMessage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Seythe extends Tool {
@@ -82,6 +84,15 @@ public class Seythe extends Tool {
             else
                 MessageSystem.showWarning("This tree has no fruit to harvest yet!",3.0f);
         }
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new SeythUsedMessage(
+                tile.getPosition().getX(),
+                tile.getPosition().getY(),
+                tile.getItem()
+            ));
+        }
+
         return null;
     }
 }

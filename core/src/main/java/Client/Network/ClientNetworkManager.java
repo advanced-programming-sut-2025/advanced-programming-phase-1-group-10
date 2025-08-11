@@ -288,6 +288,10 @@ public class ClientNetworkManager {
                     FertilizerUsedMessage msg = (FertilizerUsedMessage) message;
                     clientHandler.handleFertilizerUsed(msg);
                 }
+                case SEYTH_USED -> {
+                    SeythUsedMessage msg = (SeythUsedMessage) message;
+                    clientHandler.handleSythUsed(msg);
+                }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());
                     return false;
