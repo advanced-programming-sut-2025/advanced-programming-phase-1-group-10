@@ -88,8 +88,7 @@ public class Seythe extends Tool {
         if(App.getInstance().getCurrentGame().isOnline()){
             ClientNetworkManager.getInstance().sendMessage(new SeythUsedMessage(
                 tile.getPosition().getX(),
-                tile.getPosition().getY(),
-                tile.getItem()
+                tile.getPosition().getY()
             ));
         }
 

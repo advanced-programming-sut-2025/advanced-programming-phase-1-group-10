@@ -5,13 +5,11 @@ import Common.Network.Messages.Message;
 
 public class SeythUsedMessage extends Message {
     private int x, y;
-    private Item tileItem;
 
-    public SeythUsedMessage(int x, int y, Item item){
+    public SeythUsedMessage(int x, int y){
         super(MessageType.SEYTH_USED);
         this.x = x;
         this.y = y;
-        this.tileItem = item;
     }
 
     public int getX() {
@@ -20,9 +18,5 @@ public class SeythUsedMessage extends Message {
 
     public int getY() {
         return y;
-    }
-
-    public Item getTileItem() {
-        return tileItem;
     }
 }
