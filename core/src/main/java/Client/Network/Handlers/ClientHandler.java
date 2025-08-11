@@ -20,7 +20,6 @@ import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
-import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
 import Common.Network.Messages.MessageTypes.LobbyMessages.AskMarriageMessage;
 import Common.Network.Messages.MessageTypes.LobbyMessages.ResponseMarriage;
@@ -346,7 +345,7 @@ public class ClientHandler {
         }
     }
 
-    public void handleSythUsed(SeythUsedMessage message){
+    public void handleSeythUsed(SeythUsedMessage message){
         Game game = App.getInstance().getCurrentGame();
         Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
 
@@ -378,6 +377,24 @@ public class ClientHandler {
             if (tree.hasFruits()) {
                 tree.harvestFruit();
             }
+        }
+    }
+
+    public void handleAxeUsed(AxeUsedMessage message){
+        Game game = App.getInstance().getCurrentGame();
+        Tile tile = game.getGameMap().getMap()[message.getX()][message.getY()];
+
+        Item item = tile.getItem();
+
+        if(item instanceof Tree){
+            Tree tree = (Tree) tile.getItem();
+            if (tree.hasFruits()) {
+                tree.harvestFruit();
+            }
+
+            tree.setChoped(true);
+            tile.setItem(null);
+            tile.setTree(null);
         }
     }
 }

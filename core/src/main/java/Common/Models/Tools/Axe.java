@@ -2,12 +2,15 @@ package Common.Models.Tools;
 
 import Client.Assets.ToolAsset;
 import Client.Controllers.MessageSystem;
+import Client.Network.ClientNetworkManager;
+import Client.Network.Handlers.ClientHandler;
 import Common.Models.App;
 import Common.Models.Planets.Fruit;
 import Common.Models.Planets.Tree;
 import Common.Models.PlayerStuff.Player;
 import Common.Models.Tile;
 import Common.Network.Messages.Message;
+import Common.Network.Messages.MessageTypes.AxeUsedMessage;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Random;
@@ -60,6 +63,13 @@ public class Axe extends Tool {
         player.getEnergy().setEnergyAmount(
             player.getEnergy().getEnergyAmount() - (isUsed ? energyCost : energyCost - 1)
         );
+
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new AxeUsedMessage(
+                tile.getPosition().getX(),
+                tile.getPosition().getY()
+            ));
+        }
         return null;
     }
 

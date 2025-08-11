@@ -1,6 +1,7 @@
 package Client.Network;
 
 import Client.Network.Handlers.ClientHandler;
+import Common.Models.Tools.Axe;
 import Common.Network.ConnectionThread;
 import Common.Network.Messages.Message;
 import Common.Network.Messages.MessageTypes.*;
@@ -290,7 +291,11 @@ public class ClientNetworkManager {
                 }
                 case SEYTH_USED -> {
                     SeythUsedMessage msg = (SeythUsedMessage) message;
-                    clientHandler.handleSythUsed(msg);
+                    clientHandler.handleSeythUsed(msg);
+                }
+                case AXE_USED -> {
+                    AxeUsedMessage msg = (AxeUsedMessage) message;
+                    clientHandler.handleAxeUsed(msg);
                 }
                 default -> {
                     System.out.println("Unhandled message type: " + message.getType());

@@ -46,6 +46,7 @@ public class Message {
         EMOTION,
         FERTILIZER_USED,
         SEYTH_USED,
+        AXE_USED,
         ;
     }
 }
