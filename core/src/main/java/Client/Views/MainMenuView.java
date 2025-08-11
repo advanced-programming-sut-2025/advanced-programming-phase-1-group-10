@@ -165,24 +165,24 @@ public class MainMenuView implements Screen, AppMenu {
         createMenuButton("Profile Menu", "profile menu");
         createMenuButton("Go To Lobby","lobby menu");
 
-        serverSettingsButton = new TextButton("Server Settings", skin);
-        serverSettingsButton.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                serverSettingsButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                serverSettingsButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
-            }
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                showServerSettingsDialog();
-            }
-        });
-        mainTable.add(serverSettingsButton).colspan(2).width(300).height(60).padBottom(20).row();
+//        serverSettingsButton = new TextButton("Server Settings", skin);
+//        serverSettingsButton.addListener(new ClickListener() {
+//            @Override
+//            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+//                serverSettingsButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
+//            }
+//
+//            @Override
+//            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+//                serverSettingsButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
+//            }
+//
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                showServerSettingsDialog();
+//            }
+//        });
+//        mainTable.add(serverSettingsButton).colspan(2).width(300).height(60).padBottom(20).row();
 
 
         TextButton quickGame = new TextButton("quick game", skin);
@@ -229,6 +229,15 @@ public class MainMenuView implements Screen, AppMenu {
 
             mainTable.add(logoutButton).colspan(2).width(300).height(60).padBottom(20).row();
         }
+
+        TextButton exit = new TextButton("Exit",skin);
+        exit.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.exit(0);
+            }
+        });
+        mainTable.add(exit).colspan(2).width(120).height(90).padTop(100).row();
 
 
         mainTable.add().height(30).row();

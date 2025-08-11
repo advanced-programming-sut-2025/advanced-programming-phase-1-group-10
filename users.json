@@ -124,7 +124,7 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 1
   },
   {
     "nickname": "qwe",
@@ -263,7 +263,7 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0
+    "games": 1
   },
   {
     "nickname": "sksk",
@@ -280,7 +280,7 @@
     },
     "stayLoggedIn": false,
     "gold": 0,
-    "games": 0,
+    "games": 1,
     "avatarPath": "avatars/avatar2.png"
   },
   {
@@ -350,5 +350,41 @@
     "stayLoggedIn": false,
     "gold": 0,
     "games": 0
+  },
+  {
+    "nickname": "hosi",
+    "password": "O6P!m0N\u003e[X",
+    "hashPassword": "OxHH2MIhgDm1wWcVRVs8sw\u003d\u003d:qHnIripOFXfJJwqIRJZd0aXJ+r0LaUGDI87KHGzH/x4\u003d",
+    "username": "hasanan",
+    "gender": "Male",
+    "email": "salam@jdjs.co",
+    "pickQuestionNumber": 4,
+    "pickQuestion": {
+      "4": {
+        "What was the name of your favorite book?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 1,
+    "avatarPath": "avatars/avatar2.png"
+  },
+  {
+    "nickname": "adas",
+    "password": ")2YeohR\u0026WE,Q",
+    "hashPassword": "6Hv5yQ5gwx2f2MQr7uF4Qw\u003d\u003d:Ofj9z9zAYhc+qafLiIgV7dCIZpZFQzcLOFKbI9Ir4eA\u003d",
+    "username": "kdkdk",
+    "gender": "Male",
+    "email": "saas@asggjh.os",
+    "pickQuestionNumber": 2,
+    "pickQuestion": {
+      "2": {
+        "Who was your best friend in childhood?": "salam"
+      }
+    },
+    "stayLoggedIn": false,
+    "gold": 0,
+    "games": 0,
+    "avatarPath": "assets/avatars/avatar1.png"
   }
 ]

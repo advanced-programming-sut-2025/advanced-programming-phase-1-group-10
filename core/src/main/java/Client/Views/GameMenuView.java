@@ -1,9 +1,13 @@
 package Client.Views;
 
+import Common.Models.App;
+import Common.Models.PlayerStuff.Player;
 import Common.Models.Result;
 import Client.Controllers.GameMenuControllers;
 
 import Client.Main;
+import Common.Models.SaveData;
+import Common.Models.User;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -227,6 +231,11 @@ public class GameMenuView implements Screen, AppMenu {
                      // Or get from server for consistency
 
                     controller.setUpFarms(farmTypes, sharedSeed);
+                    for(Player player : App.getInstance().getCurrentGame().getPlayers()){
+                        User user = App.getInstance().getUserByUserName(player.getName());
+                        user.games ++;
+                    }
+                    SaveData.saveUsersToFile(App.getInstance().getUsers());
                     Main.getInstance().switchScreen(new GameLauncherView(skin));
                     // newGameDialog.hide(); // Hide dialog after switching screen
                     newGameDialog.hide();

@@ -137,4 +137,12 @@ public class User {
     public void setAvatarPath(String avatarPath) {
         this.avatarPath = avatarPath;
     }
+
+    public void setHashPassword(String hashPassword) {
+        this.hashPassword = hashPassword;
+    }
+
+    public String getHashPassword() {
+        return hashPassword;
+    }
 }
