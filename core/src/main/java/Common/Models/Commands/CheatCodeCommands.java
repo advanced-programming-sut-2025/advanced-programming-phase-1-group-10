@@ -11,6 +11,7 @@ public enum CheatCodeCommands implements Commands {
     CHANGE_NEXT_DAY_WEATHER("^cheat weather set (?<Type>[\\S]+)$"),
     ADD_MONEY("^cheat add (?<count>[\\S]+) dollars$"),
 
+    ADD_ITEM("add item (?<type>[\\S ]+) (?<number>[\\S]+)"),
     ADD_SEED("^seed (?<seedname>.+)$"),
     ADD_FERTILIZER("^add fertilizer$"),
     GET_RING("^get ring$"),

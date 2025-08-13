@@ -63,7 +63,7 @@ public class InventoryBarController {
                 batch.draw(item.show(), slotX, y, SLOT_SIZE, SLOT_SIZE);
 
                 if (item.getNumber() > 1) {
-                    font.draw(batch, String.valueOf(item.getNumber()), slotX + SLOT_SIZE - 12, y + 14);
+                    font.draw(batch, String.valueOf(item.getNumber()), slotX + SLOT_SIZE - 16, y + 14);
                 }
             }
         }

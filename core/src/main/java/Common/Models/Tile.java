@@ -138,6 +138,10 @@ public class Tile {
 
     public boolean isWalkable() {
 
+        if(App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount() <= 0){
+            return false;
+        }
+
         if(place != null && place instanceof GreenHouse){
             if(!((GreenHouse) place).isFixed()){
                 return false;

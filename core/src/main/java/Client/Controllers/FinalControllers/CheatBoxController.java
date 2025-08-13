@@ -210,6 +210,8 @@ public class CheatBoxController {
             cheatCodeController.getRing();
         } else if(( matcher = CheatCodeCommands.BUILD_GREENHOUSE.getMatcher(input)) != null){
             cheatCodeController.buildGreenhouse();
+        } else if((matcher = CheatCodeCommands.ADD_ITEM.getMatcher(input)) != null){
+            cheatCodeController.addItem(matcher.group("type").trim(),Integer.parseInt(matcher.group("number").trim()));
         }
     }
 

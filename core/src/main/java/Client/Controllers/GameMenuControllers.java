@@ -251,12 +251,15 @@ public class GameMenuControllers {
         Tile[][] tiles = getPlaceByName(farm.getPlaces(), "Quarry").getPlaceTiles();
         ArrayList<Item> minerals = new ArrayList<>();
         for (MineralTypes type : MineralTypes.values()) {
-            minerals.add(new Mineral(type, 1));
+            Mineral mineral = new Mineral(type, 1);
+            mineral.setAxed(false);
+            minerals.add(mineral);
         }
 
         for (int i = 0; i < numberOfRandom; i++) {
             Tile randomTile = getRandomTile(tiles, random);
             Mineral mineral = new Mineral(MineralTypes.STONE, 1);
+            mineral.setAxed(false);
             if (!isAvailableTileForMineral(randomTile)) continue;
             randomTile.setItem(mineral);
         }
@@ -264,6 +267,7 @@ public class GameMenuControllers {
         for (int i = 0; i < numberOfRandom; i++) {
             Tile randomTile = getRandomTile(tiles, random);
             Mineral mineral = (Mineral) getRandomItem(minerals, random);
+            mineral.setAxed(false);
             if (!isAvailableTileForMineral(randomTile)) continue;
             randomTile.setItem(mineral);
         }

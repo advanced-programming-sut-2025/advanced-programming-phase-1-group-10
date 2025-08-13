@@ -1,5 +1,6 @@
 package Client.Controllers;
 
+import Client.Controllers.Utils.ItemUtility;
 import Common.Models.*;
 import Common.Models.Animal.Animal;
 import Common.Models.Mineral.Mineral;
@@ -205,4 +206,17 @@ public class CheatCodeControllers {
     }
 
 
+    public void addItem(String type, int number) {
+        Item item = ItemUtility.createItem(type, number);
+        if(item == null){
+            MessageSystem.showError("Item not found!",2.0f);
+            return;
+        }
+        boolean result = App.getInstance().getCurrentGame().getCurrentPlayer().getInventory().getBackPack().addItem(item);
+        if(result){
+            MessageSystem.showInfo("Item added successfully!",2.0f);
+            return;
+        }
+        MessageSystem.showError("Can't add item!",2.0f);
+    }
 }

@@ -12,7 +12,7 @@ public class Mineral implements Item {
     public Mineral(MineralTypes mineralType, int numberOfMineral) {
         this.mineralType = mineralType;
         this.numberOfMineral = numberOfMineral;
-        this.isAxed = false;
+        this.isAxed = true;
     }
 
 

@@ -20,7 +20,7 @@ public class Bar implements Item {
 
     @Override
     public Sprite show() {
-        return null;
+        return barType.getSprite();
     }
 
     @Override

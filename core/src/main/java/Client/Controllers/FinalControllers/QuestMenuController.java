@@ -168,7 +168,10 @@ public class QuestMenuController {
             if (inBounds(mouseX, mouseY, completeX, y, BUTTON_WIDTH, BUTTON_HEIGHT)) {
                 if (currentQuest != null && player.getInventory().getBackPack().hasItem(currentQuest.getGivenItems(), 1)) {
                     player.getInventory().getBackPack().removeItemNumber(currentQuest.getGivenItems().getName(), 1);
-                    player.getInventory().getBackPack().addItem(currentQuest.getItemAward());
+                    if(currentQuest.getItemAward() != null) {
+                        player.getInventory().getBackPack().addItem(currentQuest.getItemAward());
+
+                    }
                     player.addGold(currentQuest.getGoldAward());
 
                     currentQuest.setCompleted(true); // ✅ Mark quest as completed

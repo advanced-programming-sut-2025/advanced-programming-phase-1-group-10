@@ -71,6 +71,6 @@ public class ItemUtility {
 
             return item;
         }
-        throw new IllegalArgumentException("Unknown item name: " + name);
+        return null;
     }
 }
