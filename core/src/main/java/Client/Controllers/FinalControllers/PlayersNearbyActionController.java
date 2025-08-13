@@ -1,11 +1,13 @@
 package Client.Controllers.FinalControllers;
 
+import Client.Controllers.DialogSystem;
 import Client.Network.ClientNetworkManager;
 import Common.Models.Map;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.FriendShip.Friendship;
 import Common.Models.Item;
+import Common.Models.OtherItems.Bouquet;
 import Common.Models.PlayerStuff.Gender;
 import Common.Models.PlayerStuff.Player;
 import Common.Network.Messages.MessageTypes.AddXpMessage;
@@ -139,33 +141,45 @@ public class PlayersNearbyActionController {
                 break;
             }
         }
+        for (Item item : currentPlayer.getIventoryBarItems()) {
+            if (item.getName().equals("Bouquet")) {
+                flower = item;
+                break;
+            }
+        }
+
 
         if (flower == null) {
             MessageSystem.showMessage("You don't have any Bouquet", 2f, Color.RED);
             return;
         }
 
+
         Friendship f1 = getFriendship(currentPlayer, other);
         Friendship f2 = getFriendship(other, currentPlayer);
 
         if (f1.getLevel() < 2 || f2.getLevel() < 2) {
-            MessageSystem.showMessage("Friendship level is not enough to gift a flower!", 2f, Color.RED);
+            MessageSystem.showMessage("Friendship level is not enough!", 2f, Color.RED);
             return;
         }
 
-        other.getInventory().getBackPack().addItem(flower);
+        Bouquet newBouquet = new Bouquet(); // create new instance
+
+        other.getInventory().getBackPack().addItem(newBouquet);
         currentPlayer.getInventory().getBackPack().removeItemNumber(flower.getName(), 1);
+
 
         f1.setFlowerGiven(true);
         f2.setFlowerGiven(true);
 
         MessageSystem.showMessage("You gave " + other.getName() + " a flower! What's next?", 2f, Color.GREEN);
 
-        ClientNetworkManager.getInstance().sendMessage(new GiveBouquetMessage(
-            currentPlayer.getName(),
-            other.getName()
-        ));
-
+        if(App.getInstance().getCurrentGame().isOnline()){
+            ClientNetworkManager.getInstance().sendMessage(new GiveBouquetMessage(
+                currentPlayer.getName(),
+                other.getName()
+            ));
+        }
     }
 
     private void proposeMarriage(Player other) {
@@ -213,15 +227,26 @@ public class PlayersNearbyActionController {
                 currentPlayer.getName(),
                 other.getName()
             ));
+        } else {
+            Item finalRing = ring;
+            DialogSystem.show("Do you want to marry: " + currentPlayer.getName(),
+                () ->{
+                    currentPlayer.setCouple(other);
+                    other.setCouple(currentPlayer);
+                    currentPlayer.getInventory().getBackPack().removeItemNumber(finalRing.getName(), 1);
+                    other.getInventory().getBackPack().addItem(finalRing);
+                    fs1.setMarried(true);
+                    fs2.setMarried(true);
+                    MessageSystem.showInfo("Happy your Marriage!", 2f);
+                },
+                ()-> {
+                    fs1.setXp(-fs1.getXp());
+                    fs2.setXp(-fs2.getXp());
+                    MessageSystem.showInfo("You saved your life.",2f);
+                }
+            );
         }
 
-        currentPlayer.setCouple(other);
-        other.setCouple(currentPlayer);
-        currentPlayer.getInventory().getBackPack().removeItemNumber(ring.getName(), 1);
-        other.getInventory().getBackPack().addItem(ring);
-        fs1.setMarried(true);
-        fs2.setMarried(true);
-        MessageSystem.showInfo("Happy your Marriage!", 2f);
     }
 
     public void addXpToPlayers(Player player, int xp) {

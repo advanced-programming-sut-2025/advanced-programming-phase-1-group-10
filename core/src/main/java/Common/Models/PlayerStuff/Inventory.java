@@ -9,8 +9,8 @@ public class Inventory {
     private BackPack backPack;
     private Refrigerator refrigerator;
 
-    Inventory(){
-        this.backPack = new BackPack();
+    Inventory(Player player) {
+        this.backPack = new BackPack(player);
         this.backPack.setBackpackType(BackpackType.STARTER);
         this.refrigerator = new Refrigerator(100);
     }

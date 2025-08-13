@@ -5,6 +5,11 @@ import Common.Models.Item;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Bouquet implements Item {
+
+    public Bouquet() {
+        setNumber(1);
+    }
+
     @Override
     public String getName() {
         return "Bouquet";
@@ -17,7 +22,7 @@ public class Bouquet implements Item {
 
     @Override
     public int getNumber() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -27,6 +32,6 @@ public class Bouquet implements Item {
 
     @Override
     public Item copyItem(int number) {
-        return null;
+        return new Bouquet();
     }
 }

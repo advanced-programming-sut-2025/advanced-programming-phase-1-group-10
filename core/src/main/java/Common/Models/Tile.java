@@ -6,7 +6,10 @@ import Common.Models.Place.Place;
 import Common.Models.Planets.Crop.Crop;
 import Common.Models.Planets.Seed;
 import Common.Models.Planets.Tree;
+import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.util.Arrays;
 
 public class Tile {
 
@@ -137,20 +140,31 @@ public class Tile {
     }
 
     public boolean isWalkable() {
+        Player current = App.getInstance().getCurrentGame().getCurrentPlayer();
 
-        if(App.getInstance().getCurrentGame().getCurrentPlayer().getEnergy().getEnergyAmount() <= 0){
+        // Check farm access
+        if(farm != null && farm != current.getFarm()) {
+            if(current.getCouple() == null || farm != current.getCouple().getFarm()) {
+                return false; // not your farm or your couple's farm
+            }
+        }
+
+        // Energy check
+        if(current.getEnergy().getEnergyAmount() <= 0){
             return false;
         }
 
+        // Greenhouse check
         if(place != null && place instanceof GreenHouse){
             if(!((GreenHouse) place).isFixed()){
                 return false;
             }
         }
 
-
+        // Tile occupancy check
         return tileType.isWalkable() && item == null && animal == null;
     }
+
 
     public void setAssetRegionInside(TextureRegion region) {
         this.assetRegionInside = region;

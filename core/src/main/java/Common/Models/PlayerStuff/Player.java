@@ -72,7 +72,7 @@ public class Player implements Person {
         this.name = name;
         this.energy = new Energy(Energy.MAX_ENERGY_AMOUNT);
         this.isFainted = false;
-        this.inventory = new Inventory();
+        this.inventory = new Inventory(this);
         this.gold = STARTING_GOLD;
         this.iventoryBarItems = new ArrayList<>();
         this.iventoryBarItems.addAll(Arrays.asList(

@@ -8,8 +8,14 @@ import java.util.ArrayList;
 
 public class BackPack {
 
+
+    private final Player player;
     private BackpackType backpackType;
     private final ArrayList<Item> items = new ArrayList<>();
+
+    public BackPack(Player player) {
+        this.player = player;
+    }
 
     public BackpackType getBackpackType() {
         return backpackType;
@@ -25,7 +31,7 @@ public class BackPack {
     }
 
     public boolean addItem(Item item) {
-        final ArrayList<Item> barItems = App.getInstance().getCurrentGame().getCurrentPlayer().getIventoryBarItems();
+        final ArrayList<Item> barItems = player.getIventoryBarItems();
         final int barCapacity = Player.PLAYER_INENTORY_BAR_SIZE;
         final int backpackCapacity = backpackType.capacity;
 
@@ -68,15 +74,23 @@ public class BackPack {
     }
 
     public boolean removeItemNumber(String name, int number) {
-        for (Item it : items) {
+        for (Item it : player.getIventoryBarItems()) {
             if (it.getName().equals(name)) {
-                if (it.getNumber() <= number) items.remove(it);
+                if (it.getNumber() <= number) player.getIventoryBarItems().remove(it);
+                else it.setNumber(it.getNumber() - number);
+                return true;
+            }
+        }
+        for (Item it : player.getInventory().getBackPack().getItems()) {
+            if (it.getName().equals(name)) {
+                if (it.getNumber() <= number) player.getInventory().getBackPack().getItems().remove(it);
                 else it.setNumber(it.getNumber() - number);
                 return true;
             }
         }
         return false;
     }
+
 
     public void setItemNumber(Item item, int number) {
         for (Item i : items) {
