@@ -144,9 +144,11 @@ public class AnimalController {
         switch (buttonText) {
             case "Feed":
                 System.out.println("Feeding " + selectedAnimal.getName());
+                selectedAnimal.feed();
                 App.getInstance().getGameControllerFinal().getAnimalBuildingController().startFeeding(selectedAnimal);
                 break;
             case "Pet":
+                selectedAnimal.pet();
                 if (!selectedAnimal.isFree()) {
                     float releaseX, releaseY;
                     float offset = Map.tileSize;
@@ -212,6 +214,7 @@ public class AnimalController {
                     }
                 }
                 for(AnimalProduct product : successfullyHarvested) {
+                    selectedAnimal.setFriendShip(selectedAnimal.getFriendShip() + 5);
                     selectedAnimal.removeProduct(product);
                 }
                 if (harvestedCount > 0) {

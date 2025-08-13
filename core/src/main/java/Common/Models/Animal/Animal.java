@@ -124,13 +124,12 @@ public class Animal {
         }
     }
 
-    // this methode should be fixed
     public void produce() {
         AnimalProduct newProduct;
         if (friendShip > 10 && animalProductTypes.size() > 1) {
             double random = 0.5 + Math.random();
             double probability = (friendShip + 150 * random) / 1500;
-            if (probability > 0.05) {
+            if (probability > 0.5) {
                 newProduct = new AnimalProduct(animalProductTypes.get(1), calculateQuality(), 1);
             } else {
                 newProduct = new AnimalProduct(animalProductTypes.get(0), calculateQuality(), 1);
@@ -175,24 +174,22 @@ public class Animal {
         return null;
     }
 
-    // this method should be complete
     public static void updateAnimalState(Animal animal) {
         DateTime dateAndTime = App.getInstance().getCurrentGame().getGameTime();
-//        if (!animal.isFed()) {
-//            animal.setFriendShip(animal.getFriendShip() - 20);
-//        }
-//        if (!animal.isPetted()) {
-//            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip() / 200) - 10);
-//        }
-//        if (!isCorrectEnclosure(animal)) {
-//            animal.setFriendShip(animal.getFriendShip() - 20);
-//        }
+
+        if (!animal.isFed()) {
+            animal.setFriendShip(animal.getFriendShip() - 20);
+        }
+        if (!animal.isPetted()) {
+            animal.setFriendShip(animal.getFriendShip() + (animal.getFriendShip() / 200) - 10);
+        }
 
         if (true) {
             animal.produce();
         }
-//        animal.petted = false;
-//        animal.fed = false;
+        animal.petted = false;
+        animal.fed = false;
+        animal.free = false;
     }
 
     private static boolean isCorrectEnclosure(Animal animal) {
