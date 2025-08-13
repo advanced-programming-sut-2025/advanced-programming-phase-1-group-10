@@ -1,6 +1,7 @@
 package Common.Models;
 
 import Common.Models.Animal.Animal;
+import Common.Models.Place.GreenHouse;
 import Common.Models.Place.Place;
 import Common.Models.Planets.Crop.Crop;
 import Common.Models.Planets.Seed;
@@ -30,6 +31,7 @@ public class Tile {
 
     private TextureRegion assetRegionOutside;
     private TextureRegion assetRegionInside;
+    private TextureRegion brokenOutsideForGreenhouse;
     private boolean renderInside = false; // default to false
 
     private Seed plantedSeed;
@@ -135,6 +137,14 @@ public class Tile {
     }
 
     public boolean isWalkable() {
+
+        if(place != null && place instanceof GreenHouse){
+            if(!((GreenHouse) place).isFixed()){
+                return false;
+            }
+        }
+
+
         return tileType.isWalkable() && item == null && animal == null;
     }
 
@@ -168,5 +178,17 @@ public class Tile {
 
     public void setTree(Tree tree) {
         this.tree = tree;
+    }
+
+    public boolean isPlow() {
+        return plow;
+    }
+
+    public TextureRegion getBrokenOutsideForGreenhouse() {
+        return brokenOutsideForGreenhouse;
+    }
+
+    public void setBrokenOutsideForGreenhouse(TextureRegion brokenOutsideForGreenhouse) {
+        this.brokenOutsideForGreenhouse = brokenOutsideForGreenhouse;
     }
 }

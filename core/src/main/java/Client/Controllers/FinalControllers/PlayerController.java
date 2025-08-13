@@ -22,7 +22,7 @@ public class PlayerController {
 
     private int currentPlayerIndex = 0;
     private final FaintAsset faintAsset = new FaintAsset(0.1f); // adjust speed
-    private final HashMap<Player,Float> faintStateTimes = new HashMap<>();
+    private final HashMap<Player, Float> faintStateTimes = new HashMap<>();
 
     public PlayerController(Map map) {
         this.map = map;
@@ -31,8 +31,6 @@ public class PlayerController {
     private final ArrayList<Player> players = App.getInstance().getCurrentGame().getPlayers();
     private final PlayerAsset movementAnimation = new PlayerAsset();
     private final Map map;
-
-
 
 
     public void updatePosition(Player player, float delta) {
@@ -79,7 +77,7 @@ public class PlayerController {
         player.setPosition(new Position(row, col));
 
 
-        if(App.getInstance().getCurrentGame().isOnline()){
+        if (App.getInstance().getCurrentGame().isOnline()) {
             MovePlayerMessage movePlayerMessage = new MovePlayerMessage(
                 App.getInstance().getCurrentGame().getCurrentPlayer().getName(),
                 player.getX(),
@@ -148,15 +146,15 @@ public class PlayerController {
 
     public void handlePlayerSwitching() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.PERIOD)) { // '.'
-            if(App.getInstance().getCurrentGame().isOnline()){
-                MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
+            if (App.getInstance().getCurrentGame().isOnline()) {
+                MessageSystem.showError("Cannont switch player in multiplayer", 2f);
                 return;
             }
             currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
             App.getInstance().getCurrentGame().setCurrentPlayer(players.get(currentPlayerIndex));
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.COMMA)) { // ','
-            if(App.getInstance().getCurrentGame().isOnline()){
-                MessageSystem.showError("Cannont switch player in multiplayer" ,2f);
+            if (App.getInstance().getCurrentGame().isOnline()) {
+                MessageSystem.showError("Cannont switch player in multiplayer", 2f);
                 return;
             }
             currentPlayerIndex = (currentPlayerIndex - 1 + players.size()) % players.size();
@@ -168,11 +166,11 @@ public class PlayerController {
         handlePlayerSwitching();
 
         updatePosition(App.getInstance().getCurrentGame().getCurrentPlayer(),
-                    Gdx.graphics.getDeltaTime());
+            Gdx.graphics.getDeltaTime());
 
         for (Player player : players) {
             render(player, batch);
-            updateFaint(batch,player);
+            updateFaint(batch, player);
         }
     }
 

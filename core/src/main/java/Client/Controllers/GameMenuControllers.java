@@ -153,7 +153,7 @@ public class GameMenuControllers {
                 if (!setUpPlace(game, height, width, absPos, place)) {
                     throw new RuntimeException("Failed to place greenhouse at: " + absPos);
                 }
-                //TextureRegion[][] broken = new GreenHouseAsset().getBroken();
+                TextureRegion[][] broken = new GreenHouseAsset().getBroken();
                 TextureRegion[][] greenhouseInside = new GreenHouseAsset().getGreenhouseInside();
                 TextureRegion[][] greenhouseOutside = new GreenHouseAsset().getGreenhouuseOutside();
 
@@ -161,6 +161,7 @@ public class GameMenuControllers {
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
                         Tile tile = place.getPlaceTiles()[i][j];
+                        tile.setBrokenOutsideForGreenhouse(broken[height - 1 - i][j]);
                         tile.setAssetRegionOutside(greenhouseOutside[height - 1 - i][j]);
                         tile.setAssetRegionInside(greenhouseInside[height - 1 - i][j]);
                     }

@@ -1,7 +1,7 @@
 package Common.Models.PlayerStuff;
 
 public class Energy {
-    public static int MAX_ENERGY_AMOUNT = 200;
+    public static int MAX_ENERGY_AMOUNT = 1000;
     private double energyAmount;
 
     public Energy(double energy) {

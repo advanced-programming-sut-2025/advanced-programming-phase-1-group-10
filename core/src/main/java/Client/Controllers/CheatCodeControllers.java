@@ -1,19 +1,18 @@
 package Client.Controllers;
 
+import Common.Models.*;
 import Common.Models.Animal.Animal;
-import Common.Models.App;
 import Common.Models.Mineral.Mineral;
 import Common.Models.Mineral.MineralTypes;
 import Common.Models.OtherItems.Bouquet;
 import Common.Models.OtherItems.Ring;
 import Common.Models.Place.GreenHouse;
+import Common.Models.Place.Place;
 import Common.Models.Planets.Crop.Crop;
 import Common.Models.Planets.Seed;
 import Common.Models.Planets.SeedType;
 import Common.Models.Planets.Tree;
-import Common.Models.Position;
-import Common.Models.Result;
-import Common.Models.Tile;
+import Common.Models.PlayerStuff.Player;
 import Common.Models.Tools.Fertilizer;
 import Common.Models.Weather.Weather;
 
@@ -182,4 +181,28 @@ public class CheatCodeControllers {
         else
             MessageSystem.showError("Can't add bouquet!",4.0f);
     }
+
+    public void buildGreenhouse(){
+        GreenHouse greenHouse = (GreenHouse) getPlaceByType("greenhouse");
+        greenHouse.setFixed(true);
+        MessageSystem.showInfo("Greenhouse builded successfully!",2.0f);
+    }
+
+    public Place getPlaceByType(String placeType) {
+        Player currentPlayer = App.getInstance().getCurrentGame().getCurrentPlayer();
+
+        if (currentPlayer.getFarm() == null) {
+            return null;
+        }
+
+        Farm playerFarm = currentPlayer.getFarm();
+        for (Place place : playerFarm.getPlaces()) {
+            if (place.getClass().getSimpleName().equalsIgnoreCase(placeType)) {
+                return place;
+            }
+        }
+        return null;
+    }
+
+
 }

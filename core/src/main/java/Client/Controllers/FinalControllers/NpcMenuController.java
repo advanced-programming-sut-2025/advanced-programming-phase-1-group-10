@@ -4,9 +4,9 @@ import Client.Assets.SlotAsset;
 import Client.Controllers.MessageSystem;
 import Common.Models.App;
 import Common.Models.Item;
+import Common.Models.NPC.NPC;
 import Common.Models.NPCRelation;
 import Common.Models.PlayerStuff.Player;
-import Common.Models.NPC.NPC;
 import Common.Models.Tools.Tool;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,7 +33,6 @@ public class NpcMenuController {
 
 
     private int hoveredSlotIndex = -1; // -1 means none is hovered
-
 
 
     private final BitmapFont font;
@@ -119,7 +118,7 @@ public class NpcMenuController {
             int level = relation.getFrinendShipLevel();
             for (int h = 0; h < NPCRelation.MAX_RELATION_LEVEL; h++) {
                 Sprite heart = (h < level) ? fullHeart : emptyHeart;
-                batch.draw(heart, heartsX + h * 40 , rowY + 10, 32, 32);
+                batch.draw(heart, heartsX + h * 40, rowY + 10, 32, 32);
             }
 
             int giftX = rowStartX + 600;
@@ -155,9 +154,10 @@ public class NpcMenuController {
             }
 
             Item gift = null;
-            try{
+            try {
                 gift = giftItems.get(i);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             if (gift != null) {
                 batch.draw(gift.show(), slotX, slotY, 64, 64);
             }
@@ -239,7 +239,6 @@ public class NpcMenuController {
             MessageSystem.showMessage("You gave " + npc.getName() + " a gift.", 3f, Color.LIGHT_GRAY);
         }
     }
-
 
 
     public NPCRelation getNPCRealtion(NPC npc) {

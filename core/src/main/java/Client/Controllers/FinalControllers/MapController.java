@@ -3,6 +3,7 @@ package Client.Controllers.FinalControllers;
 import Client.Assets.GrassAssets;
 import Client.Assets.OtherAssets;
 import Common.Models.*;
+import Common.Models.Place.GreenHouse;
 import Common.Models.Place.Lake;
 import Common.Models.Place.Quarry;
 import Common.Models.Planets.Crop.Crop;
@@ -56,7 +57,8 @@ public class MapController {
                         cropsToRender.add(tile.getCrop());
                         cropPositions.add(new int[]{y, x});
                     }
-                } catch (NullPointerException ignored) {}
+                } catch (NullPointerException ignored) {
+                }
             }
         }
 
@@ -74,12 +76,11 @@ public class MapController {
             int[] position = treePositions.get(i);
             int y = position[0];
             int x = position[1];
-            if(tree.getTreeType().isForaging() && tree != null && !tree.isChoped()) {
+            if (tree.getTreeType().isForaging() && tree != null && !tree.isChoped()) {
                 tree.renderAt(batch, y, x);
             }
         }
     }
-
 
 
     public void updateTileType(Tile tile) {
@@ -95,7 +96,7 @@ public class MapController {
             tile.setTileType(TileType.Plowed);
         } else if (tile.getisPlow() && tile.isWatered()) {
             tile.setTileType(TileType.Watered);
-        } else if (tile.getisPlow() && tile.isFertilizer()){
+        } else if (tile.getisPlow() && tile.isFertilizer()) {
             tile.setTileType(TileType.Fertilized);
         }
     }
@@ -105,6 +106,25 @@ public class MapController {
             App.getInstance().getCurrentGame().getGameTime().getSeason()
         );
 
+        // Special handling for Greenhouse
+        if (tile.getPlace() instanceof GreenHouse) {
+            if (tile.isRenderInside() && tile.getAssetRegionInside() != null) {
+                // Inside greenhouse
+                batch.draw(baseGrass, x, y);
+                batch.draw(tile.getAssetRegionInside(), x, y);
+            } else if (tile.getBrokenOutsideForGreenhouse() != null && !((GreenHouse) tile.getPlace()).isFixed()) {
+                // Broken outside view for greenhouse
+                batch.draw(baseGrass, x, y);
+                batch.draw(tile.getBrokenOutsideForGreenhouse(), x, y);
+            } else if (tile.getAssetRegionOutside() != null) {
+                // Normal outside view
+                batch.draw(baseGrass, x, y);
+                batch.draw(tile.getAssetRegionOutside(), x, y);
+            }
+            return; // Greenhouse handled — skip the normal logic
+        }
+
+        // Default handling for other places
         TextureRegion regionToDraw = tile.isRenderInside()
             ? tile.getAssetRegionInside()
             : tile.getAssetRegionOutside();
@@ -121,4 +141,5 @@ public class MapController {
             batch.draw(tile.getTileType().getSprite(), x, y);
         }
     }
+
 }

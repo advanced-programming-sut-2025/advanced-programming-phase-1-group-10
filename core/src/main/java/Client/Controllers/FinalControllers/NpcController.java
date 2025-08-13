@@ -8,9 +8,9 @@ import Common.Models.NPC.NPC;
 import Common.Models.Place.NpcHosue;
 import Common.Models.PlayerStuff.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class NpcController {
 
@@ -73,7 +73,7 @@ public class NpcController {
                 int npcDrawX = npc.getPosition().getY() * Map.tileSize;
                 int npcDrawY = npc.getPosition().getX() * Map.tileSize;
 
-                batch.draw(currentFrame, npcDrawX, npcDrawY, Player.PLAYER_WIDTH,Player.PLAYER_HEIGHT);
+                batch.draw(currentFrame, npcDrawX, npcDrawY, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT);
             }
         }
     }

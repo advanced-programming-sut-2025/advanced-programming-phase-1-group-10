@@ -19,7 +19,7 @@ public enum CheatCodeCommands implements Commands {
     SET_ENERGY_UNLIMITED("^energy unlimited$"),
     SET_ANIMAL_FRIENDSHIP("^cheat\\s+set\\s+friendship\\s+-n\\s+(?<animalName>[\\S]+)\\s+-c\\s+(?<amount>\\d+)$"),
     THOR_TILE("^cheat Thor -l\\s*<\\s*(?<x>-?\\d+)\\s*,\\s*(?<y>-?\\d+)\\s*>$"),
-    ;
+    BUILD_GREENHOUSE("^build greenhouse$");
 
     private final String pattern;
     private final Pattern compiledPattern;
