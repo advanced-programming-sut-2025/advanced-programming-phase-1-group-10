@@ -215,14 +215,8 @@ public class LoginMenuView implements Screen, AppMenu {
             return;
         }
 
-        App.getInstance().setCurrentUser(user);
-        String password = passwordField.getText();
-        String stayLoggedIn = stayLoggedInCheckbox.isChecked() ? "true" : "";
-
-        Result result = controller.login(username, password, stayLoggedIn);
-
-        if (result.state()) {
-            showSuccessMessage(result.message());
+        if(user.isStayLoggedIn()){
+            showSuccessMessage("You logged in successfully!");
             App.getInstance().setCurrentUser(user);
             stage.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence(
                 com.badlogic.gdx.scenes.scene2d.actions.Actions.delay(1.5f),
@@ -233,9 +227,31 @@ public class LoginMenuView implements Screen, AppMenu {
                     }
                 })
             ));
+        }
 
-        } else {
-            showErrorMessage(result.message());
+        else {
+            App.getInstance().setCurrentUser(user);
+            String password = passwordField.getText();
+            String stayLoggedIn = stayLoggedInCheckbox.isChecked() ? "true" : "";
+
+            Result result = controller.login(username, password, stayLoggedIn);
+
+            if (result.state()) {
+                showSuccessMessage(result.message());
+                App.getInstance().setCurrentUser(user);
+                stage.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence(
+                    com.badlogic.gdx.scenes.scene2d.actions.Actions.delay(1.5f),
+                    com.badlogic.gdx.scenes.scene2d.actions.Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            Main.getInstance().switchScreen(new MainMenuView());
+                        }
+                    })
+                ));
+            }
+            else {
+                showErrorMessage(result.message());
+            }
         }
     }
 

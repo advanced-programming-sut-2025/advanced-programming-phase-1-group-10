@@ -46,7 +46,7 @@
     "avatarPath": "avatars/avatar2.png"
   },
   {
-    "nickname": "salami",
+    "nickname": "salam",
     "password": ":%9J{}Kp|\u003el8",
     "username": "hasan",
     "gender": "Male",
@@ -59,7 +59,8 @@
     },
     "stayLoggedIn": true,
     "gold": 0,
-    "games": 0
+    "games": 0,
+    "avatarPath": "assets/avatars/avatar1.png"
   },
   {
     "nickname": "salam",
