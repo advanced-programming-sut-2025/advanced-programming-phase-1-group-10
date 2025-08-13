@@ -30,6 +30,8 @@ public class Player implements Person {
     private final ArrayList<Item> iventoryBarItems;
     private int selectedSlot;
 
+    private float startx,starty;
+
     private float x, y;
     private float speed = 500f;
     private float stateTime;
@@ -318,5 +320,21 @@ public class Player implements Person {
 
     public ArrayList<Gift> getSendedGifts() {
         return sendedGifts;
+    }
+
+    public float getStartx() {
+        return startx;
+    }
+
+    public void setStartx(float startx) {
+        this.startx = startx;
+    }
+
+    public float getStarty() {
+        return starty;
+    }
+
+    public void setStarty(float starty) {
+        this.starty = starty;
     }
 }

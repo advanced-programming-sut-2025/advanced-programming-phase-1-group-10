@@ -394,6 +394,11 @@ public class GameMenuControllers {
             player.setX(playerPos.getY() * Map.tileSize);
             player.setY(playerPos.getX() * Map.tileSize);
 
+            player.setStartx(playerPos.getY() * Map.tileSize);
+            player.setStarty(playerPos.getX() * Map.tileSize);
+
+
+
             // Place the player into the map
             getTileByPosition(playerPos).setPerson(player);
 

@@ -7,6 +7,7 @@ import Common.Models.Animal.FishType;
 import Common.Models.Map;
 import Common.Models.Place.*;
 import Common.Models.Planets.*;
+import Common.Models.PlayerStuff.Energy;
 import Common.Models.Tools.*;
 import Common.Models.Cooking.Cooking;
 import Common.Models.Cooking.CookingType;
@@ -2252,7 +2253,7 @@ public class GameController {
         Game game = App.getInstance().getCurrentGame();
         GameMenuControllers setRandoms = new GameMenuControllers();
 
-        long daySeed = System.currentTimeMillis();  // Or any deterministic seed you prefer (e.g., game day count)
+        long daySeed = App.getInstance().getCurrentGame().getSeed();  // Or any deterministic seed you prefer (e.g., game day count)
         // For consistency across clients, better to use a game-day-based seed, e.g.:
         // long daySeed = game.getCurrentDay();
 
@@ -2265,9 +2266,14 @@ public class GameController {
 
             if (player.isFainted()) {
                 player.setFainted(false);
-                player.getEnergy().setEnergyAmount(100);
+                player.getEnergy().setEnergyAmount((double) Energy.MAX_ENERGY_AMOUNT / 2);
             } else {
-                player.getEnergy().setEnergyAmount(200);
+                player.getEnergy().setEnergyAmount(Energy.MAX_ENERGY_AMOUNT);
+            }
+
+            for(Player p: App.getInstance().getCurrentGame().getPlayers()){
+                p.setX(p.getStartx());
+                p.setY(p.getStarty());
             }
 
             // Deterministic seeds per player for minerals and plants
