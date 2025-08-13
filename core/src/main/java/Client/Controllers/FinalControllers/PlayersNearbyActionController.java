@@ -218,6 +218,12 @@ public class PlayersNearbyActionController {
             }
         }
 
+        for (Item item : currentPlayer.getIventoryBarItems()) {
+            if (item.getName().equals("Ring")) {
+                ring = item;
+            }
+        }
+
         if (ring == null) {
             MessageSystem.showMessage("No ring found!", 2f, Color.RED);
             return;
