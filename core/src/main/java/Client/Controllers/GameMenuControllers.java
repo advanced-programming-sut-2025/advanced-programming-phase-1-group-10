@@ -53,7 +53,7 @@ public class GameMenuControllers {
     }
 
     public Result quickGame(long seed){
-        return createGame(Arrays.asList("user1","user2","user3","user4"),seed,false);
+        return createGame(Arrays.asList("Mohsen","Ilia","Hossein","Saeed"),seed,false);
     }
 
     public boolean isUsernameExist(String username) {

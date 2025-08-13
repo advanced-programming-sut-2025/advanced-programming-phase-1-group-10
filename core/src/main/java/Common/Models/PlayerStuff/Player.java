@@ -85,10 +85,12 @@ public class Player implements Person {
                 new Shear(Quality.STARTER,2),
                 new MilkPail(Quality.STARTER,2)
         ));
-        this.gender = new Random(seed).nextBoolean() ? Gender.Male : Gender.Female;
+        long nameHash = name.toLowerCase().hashCode();
+        long combinedSeed = seed ^ nameHash; // XOR mixes both
+
+        Random rand = new Random(combinedSeed);
+        this.gender = rand.nextBoolean() ? Gender.Male : Gender.Female;
     }
-
-
 
     public void setEnergy(int energyAmount) {}
 
